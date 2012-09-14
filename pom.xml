@@ -39,7 +39,7 @@
   <scm>
     <connection>scm:git:https://github.com/rbygrave/avaje-ebeanorm-agent.git</connection>
     <developerConnection>scm:git:https://github.com/rbygrave/avaje-ebeanorm-agent.git</developerConnection>
-    <url>https://github.com/rbygrave/avaje-ebeanorm-api.git</url>
+    <url>https://github.com/rbygrave/avaje-ebeanorm-agent.git</url>
   </scm>
 
   <dependencies>
