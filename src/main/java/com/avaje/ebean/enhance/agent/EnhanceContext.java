@@ -1,16 +1,17 @@
 package com.avaje.ebean.enhance.agent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintStream;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Used to hold meta data, arguments and log levels for the enhancement.
  */
 public class EnhanceContext {
 
-	private static final Logger logger = Logger.getLogger(EnhanceContext.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(EnhanceContext.class);
 
 	private final IgnoreClassHelper ignoreClassHelper;
 
@@ -60,7 +61,7 @@ public class EnhanceContext {
 				logLevel = Integer.parseInt(debugValue);
 			} catch (NumberFormatException e) {
 				String msg = "Agent debug argument [" + debugValue+ "] is not an int?";
-				logger.log(Level.WARNING, msg);
+				logger.warn(msg);
 			}
 		}
 
