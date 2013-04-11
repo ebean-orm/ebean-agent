@@ -1,20 +1,20 @@
 package com.avaje.ebean.enhance.agent;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.avaje.ebean.enhance.asm.AnnotationVisitor;
 import com.avaje.ebean.enhance.asm.ClassAdapter;
 import com.avaje.ebean.enhance.asm.ClassVisitor;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ClassAdapter used to add transactional support.
  */
 public class ClassAdapterTransactional extends ClassAdapter {
 
-	static final Logger logger = Logger.getLogger(ClassAdapterTransactional.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ClassAdapterTransactional.class);
 
 	final ArrayList<String> transactionalMethods = new ArrayList<String>();
 
@@ -69,7 +69,7 @@ public class ClassAdapterTransactional extends ClassAdapter {
 							+ transactionalInterfaces + "] found more than one match for the transactional method:"
 							+ methodName + " " + methodDesc;
 
-					logger.log(Level.SEVERE, msg);
+					logger.error(msg);
 
 				} else {
 					interfaceAnnotationInfo = ai;

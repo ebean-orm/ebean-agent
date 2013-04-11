@@ -7,21 +7,21 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.avaje.ebean.enhance.asm.AnnotationVisitor;
 import com.avaje.ebean.enhance.asm.ClassVisitor;
 import com.avaje.ebean.enhance.asm.EmptyVisitor;
 import com.avaje.ebean.enhance.asm.FieldVisitor;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Holds the meta data for an entity bean class that is being enhanced.
  */
 public class ClassMeta {
 
-	private static final Logger logger = Logger.getLogger(ClassMeta.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ClassMeta.class);
 
 	private static final String OBJECT_CLASS = Object.class.getName().replace('.', '/');
 	
@@ -116,7 +116,7 @@ public class ClassMeta {
 							+ "] found more than one match for the transactional method:" + methodName + " "
 							+ methodDesc;
 					
-					logger.log(Level.SEVERE, msg);
+					logger.error(msg);
 					log(msg);
 					
 				} else {
