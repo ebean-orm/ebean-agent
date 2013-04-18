@@ -145,11 +145,6 @@ public class OfflineFileTransform {
 			if(listener!=null) {
 				listener.logEvent("Enhanced "+file);
 			}
-		} else {
-		  // No enhancement required 
-			//if(listener!=null) {
-		//		listener.log(9,"Unable to enhance "+file);
-			//}
 		}
 	}
 
