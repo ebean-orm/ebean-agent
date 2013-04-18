@@ -36,9 +36,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:https://github.com/rbygrave/avaje-ebeanorm-agent.git</connection>
-    <developerConnection>scm:git:https://github.com/rbygrave/avaje-ebeanorm-agent.git</developerConnection>
-    <url>https://github.com/rbygrave/avaje-ebeanorm-agent.git</url>
+    <connection>scm:git:https://github.com/ebean-orm/avaje-ebeanorm-agent.git</connection>
+    <developerConnection>scm:git:https://github.com/ebean-orm/avaje-ebeanorm-agent.git</developerConnection>
+    <url>https://github.com/ebean-orm/avaje-ebeanorm-agent.git</url>
   </scm>
 
   <dependencies>
