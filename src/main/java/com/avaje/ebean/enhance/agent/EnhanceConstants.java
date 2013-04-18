@@ -39,7 +39,7 @@ public interface EnhanceConstants {
 
     public static final String INTERCEPT_FIELD = "_ebean_intercept";
     
-    public static final String C_ENHANCEDTRANSACTIONAL = "com/avaje/ebean/enhance/agent/EnhancedTransactional";
+    public static final String C_ENHANCEDTRANSACTIONAL = "com/avaje/ebean/bean/EnhancedTransactional";
     
     public static final String C_ENTITYBEAN = "com/avaje/ebean/bean/EntityBean";
     

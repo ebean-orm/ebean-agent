@@ -44,7 +44,7 @@ public class OfflineFileTransform {
 		this.outDir = outDir == null ? inDir : outDir;
 	}
 
-	/** Register a listner to receive event notification */
+	/** Register a listener to receive event notification */
 	public void setListener(TransformationListener v) {
 		this.listener = v;
 	}
@@ -146,9 +146,10 @@ public class OfflineFileTransform {
 				listener.logEvent("Enhanced "+file);
 			}
 		} else {
-			if(listener!=null) {
-				listener.logError("Unable to enhance "+file);
-			}
+		  // No enhancement required 
+			//if(listener!=null) {
+		//		listener.log(9,"Unable to enhance "+file);
+			//}
 		}
 	}
 

@@ -95,6 +95,7 @@ public class Transformer implements ClassFileTransformer {
 
       // ignore JDK and JDBC classes etc
       if (enhanceContext.isIgnoreClass(className)) {
+        enhanceContext.log(9, "ignore class " + className);
         return null;
       }
 
@@ -124,7 +125,6 @@ public class Transformer implements ClassFileTransformer {
       }
 
       if (transformTransactional && detect.isTransactional()) {
-
         if (detect.isEnhancedTransactional()) {
           detect.log(1, "already enhanced transactional");
 
@@ -134,6 +134,7 @@ public class Transformer implements ClassFileTransformer {
         }
       }
 
+      enhanceContext.log(9, "no enhancement on class " + className);
       return null;
 
     } catch (NoEnhancementRequiredException e) {
