@@ -14,8 +14,6 @@ public class EnhanceContext {
 
 	private final IgnoreClassHelper ignoreClassHelper;
 
-	private final boolean subclassing;
-
 	private final HashMap<String, String> agentArgsMap;
 
 	private final boolean readOnly;
@@ -43,10 +41,9 @@ public class EnhanceContext {
 	 * @param agentArgs
 	 *            parameters for enhancement such as log level
 	 */
-	public EnhanceContext(ClassBytesReader classBytesReader, boolean subclassing, String agentArgs) {
+	public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs) {
 
 		this.ignoreClassHelper = new IgnoreClassHelper(agentArgs);
-		this.subclassing = subclassing;
 		this.agentArgsMap = ArgParser.parse(agentArgs);
 
 		this.logout = System.out;
@@ -109,7 +106,7 @@ public class EnhanceContext {
 	 * Create a new meta object for enhancing a class.
 	 */
 	public ClassMeta createClassMeta() {
-		return new ClassMeta(this, subclassing, logLevel, logout);
+		return new ClassMeta(this, logLevel, logout);
 	}
 
 	/**

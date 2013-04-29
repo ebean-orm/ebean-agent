@@ -289,11 +289,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 	 * Append bytecode to return the Id value (for primitives).
 	 */
 	public void appendGetPrimitiveIdValue(MethodVisitor mv, ClassMeta classMeta) {
-		if (classMeta.isSubclassing()){
-			mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getSuperClassName(), publicGetterName, getMethodDesc);
-		} else {
-			mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc);		
-		}
+		mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc);
 	}
 	
 	/**
@@ -349,21 +345,15 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 	 */
 	public void addFieldCopy(MethodVisitor mv, ClassMeta classMeta) {
 		
-		if (classMeta.isSubclassing()){
-			String copyClassName = classMeta.getSuperClassName();
-			mv.visitMethodInsn(INVOKESPECIAL, copyClassName, publicGetterName, getMethodDesc);
-			mv.visitMethodInsn(INVOKEVIRTUAL, copyClassName, publicSetterName, setMethodDesc);
+		if (isLocalField(classMeta)){
+			mv.visitFieldInsn(GETFIELD, fieldClass, fieldName, fieldDesc);
+			mv.visitFieldInsn(PUTFIELD, fieldClass, fieldName, fieldDesc);	
 		} else {
-			if (isLocalField(classMeta)){
-				mv.visitFieldInsn(GETFIELD, fieldClass, fieldName, fieldDesc);
-				mv.visitFieldInsn(PUTFIELD, fieldClass, fieldName, fieldDesc);	
-			} else {
-				if (classMeta.isLog(4)) {
-					classMeta.log(" ... addFieldCopy on non-local field ["+fieldName+"] type[" + fieldDesc+"]");
-				}
-				mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc);
-				mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc);
+			if (classMeta.isLog(4)) {
+				classMeta.log(" ... addFieldCopy on non-local field ["+fieldName+"] type[" + fieldDesc+"]");
 			}
+			mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc);
+			mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc);
 		}
 	}
 	
@@ -372,26 +362,16 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 	 */
 	public void appendSwitchGet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
 
-		if (classMeta.isSubclassing()){
-			// need to use super with the publicGetterName
-			if (intercept){
-				//classMeta.log(" switch GET " + publicGetterName + " " + getMethodDesc);
-				mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), publicGetterName, getMethodDesc);			
-			} else {
-				//classMeta.log(" switch GET super." + publicGetterName + " " + getMethodDesc);
-				mv.visitMethodInsn(INVOKESPECIAL, classMeta.getSuperClassName(), publicGetterName, getMethodDesc);			
-			}			
+	
+		if (intercept){
+			// use the special get method with interception...
+			mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc);				
 		} else {
-			if (intercept){
-				// use the special get method with interception...
-				mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc);				
+			if (isLocalField(classMeta)){
+				mv.visitFieldInsn(GETFIELD, classMeta.getClassName(), fieldName , fieldDesc);	
 			} else {
-				if (isLocalField(classMeta)){
-					mv.visitFieldInsn(GETFIELD, classMeta.getClassName(), fieldName , fieldDesc);	
-				} else {
-					// field is on a superclass... so use virtual getNoInterceptMethodName 
-					mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc);									
-				}
+				// field is on a superclass... so use virtual getNoInterceptMethodName 
+				mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc);									
 			}
 		}
 
@@ -417,26 +397,16 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 			mv.visitTypeInsn(CHECKCAST, asmType.getInternalName());
 		}
 		
-		if (classMeta.isSubclassing()){
-			if (intercept){
-				//classMeta.log(" switch SET " + publicSetterName+ " " + setMethodDesc+" "+primitiveDesc);
-				mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), publicSetterName, setMethodDesc);								
-			} else {
-				//classMeta.log(" switch SET super." + publicSetterName+ " " + setMethodDesc+" "+primitiveDesc);
-				mv.visitMethodInsn(INVOKESPECIAL, classMeta.getSuperClassName(), publicSetterName, setMethodDesc);				
-			}
+	
+		if (intercept){
+			// go through the set method to check for interception...
+			mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setMethodName, setMethodDesc);
 			
 		} else {
-			if (intercept){
-				// go through the set method to check for interception...
-				mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setMethodName, setMethodDesc);
-				
+			if (isLocalField(classMeta)){
+				mv.visitFieldInsn(PUTFIELD, fieldClass, fieldName, fieldDesc);
 			} else {
-				if (isLocalField(classMeta)){
-					mv.visitFieldInsn(PUTFIELD, fieldClass, fieldName, fieldDesc);
-				} else {
-					mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc);
-				}
+				mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc);
 			}
 		}
 	}

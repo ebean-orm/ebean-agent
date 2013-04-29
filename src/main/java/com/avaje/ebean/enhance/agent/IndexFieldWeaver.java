@@ -265,20 +265,15 @@ public class IndexFieldWeaver implements Opcodes {
 	private static void generateCreateCopy(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields) {
 
 		String className = classMeta.getClassName();
-
-		String copyClassName = className;
-		if (classMeta.isSubclassing()) {
-			copyClassName = classMeta.getSuperClassName();
-		}
-
+		
 		MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_createCopy", "()Ljava/lang/Object;", null, null);
 		mv.visitCode();
 		Label l0 = new Label();
 		mv.visitLabel(l0);
 		mv.visitLineNumber(1, l0);
-		mv.visitTypeInsn(NEW, copyClassName);
+		mv.visitTypeInsn(NEW, className);
 		mv.visitInsn(DUP);
-		mv.visitMethodInsn(INVOKESPECIAL, copyClassName, "<init>", "()V");
+		mv.visitMethodInsn(INVOKESPECIAL, className, "<init>", "()V");
 		mv.visitVarInsn(ASTORE, 1);
 
 		Label l1 = null;
@@ -314,7 +309,7 @@ public class IndexFieldWeaver implements Opcodes {
 			l1 = l4;
 		}
 		mv.visitLocalVariable("this", "L" + className + ";", null, l0, l5, 0);
-		mv.visitLocalVariable("p", "L" + copyClassName + ";", null, l1, l5, 1);
+		mv.visitLocalVariable("p", "L" + className + ";", null, l1, l5, 1);
 		mv.visitMaxs(2, 2);
 		mv.visitEnd();
 	}

@@ -56,7 +56,7 @@ public class Transformer implements ClassFileTransformer {
   }
 
   public Transformer(ClassBytesReader r, String agentArgs) {
-    this.enhanceContext = new EnhanceContext(r, false, agentArgs);
+    this.enhanceContext = new EnhanceContext(r, agentArgs);
     this.performDetect = enhanceContext.getPropertyBoolean("detect", true);
     this.transformTransactional = enhanceContext.getPropertyBoolean("transactional", true);
     this.transformEntityBeans = enhanceContext.getPropertyBoolean("entity", true);
