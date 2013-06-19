@@ -209,6 +209,11 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 				log("... add marker field \""+marker+"\"");					
 			}
 			
+			IndexFieldWeaver.addPropertiesField(cv, classMeta);
+			if (isLog(4)){
+        log("... add _ebean_props field");         
+      }
+			
 			if (!classMeta.isSuperClassEntity()){
 				// only add the intercept and identity fields if 
 				// the superClass is not also enhanced
@@ -225,14 +230,26 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 
 		classMeta.addExistingMethod(name, desc);
 		
-		if (isDefaultConstructor(name, desc)){
-		    // make sure the access is public
-	        MethodVisitor mv =  super.visitMethod(Opcodes.ACC_PUBLIC, name, desc, signature, exceptions);
-			// also create the entityBeanIntercept object
-			return new ConstructorAdapter(mv, classMeta, desc);
-		}
+    if (isLog(4)) {
+      log("--- #### method name["+name+"] desc["+desc+"] sig["+signature+"]");
+    }
+    
+    if (isDefaultConstructor(name, desc)) {
+      // make sure the access is public
+      MethodVisitor mv = super.visitMethod(Opcodes.ACC_PUBLIC, name, desc, signature, exceptions);
+      // also create the entityBeanIntercept object
+      return new ConstructorAdapter(mv, classMeta, desc);
+    }
 
-	    MethodVisitor mv =  super.visitMethod(access, name, desc, signature, exceptions);
+    if (isStaticInit(name, desc)) {
+      if (isLog(4)) {
+        log("... --- #### enhance existing static init method");
+      }
+      MethodVisitor mv = super.visitMethod(Opcodes.ACC_STATIC, name, desc, signature, exceptions);
+      return new MethodStaticInitAdapter(mv, classMeta);
+    }
+        
+	  MethodVisitor mv =  super.visitMethod(access, name, desc, signature, exceptions);
 
 		if (interceptEntityMethod(access, name, desc, signature, exceptions)) {
 			// change the method replacing the relevant GETFIELD PUTFIELD with
@@ -254,12 +271,22 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 			throw new NoEnhancementRequiredException();
 		}
 		
+		if (!classMeta.hasStaticInit()) {
+		  IndexFieldWeaver.addPropertiesInit(cv, classMeta);
+		}
+		
 		if (!classMeta.hasDefaultConstructor()){
-		    DefaultConstructor.add(cv, classMeta);
+		  DefaultConstructor.add(cv, classMeta);
 		}
 
 		MarkerField.addGetMarker(cv, classMeta.getClassName());
 		
+		if (isLog(4)){
+		  log("... add _ebean_getPropertyNames() and _ebean_getPropertyName()");
+		}
+		IndexFieldWeaver.addGetPropertyNames(cv, classMeta);
+		IndexFieldWeaver.addGetPropertyName(cv, classMeta);
+    
 		if (!classMeta.isSuperClassEntity()){
 			// Add the _ebean_getIntercept() _ebean_setIntercept() methods
 			InterceptField.addGetterSetter(cv, classMeta.getClassName());
@@ -277,7 +304,7 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 		
 		MethodSetEmbeddedLoaded.addMethod(cv, classMeta);
 		MethodIsEmbeddedNewOrDirty.addMethod(cv, classMeta);
-        MethodNewInstance.addMethod(cv, classMeta);
+    MethodNewInstance.addMethod(cv, classMeta);
 		
 		// register with the agentContext
 		enhanceContext.addClassMeta(classMeta);
@@ -296,6 +323,16 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 		
 		return false;
 	}
+	
+  private boolean isStaticInit(String name, String desc) {
+
+    if (name.equals("<clinit>") && desc.equals("()V")) {
+      classMeta.setHasStaticInit(true);
+      return true;
+    }
+
+    return false;
+  }
 	
 	private boolean interceptEntityMethod(int access, String name, String desc, String signature,
 			String[] exceptions) {

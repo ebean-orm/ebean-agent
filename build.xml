@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<project name="ebean-ant-enhancement" default="bin-ormEnhance" basedir=".">
+
+  <!-- ANT tasks for manually testing enhancement -->
+	
+	<!-- the AntEnhanceTask is in here -->
+   <property name="task.bin.dir" value="target/classes"/>
+
+	<!-- the entity classes we want to enhance are in here -->	
+	<property name="bin.dir" value="target/test-classes"/>
+
+	<taskdef name="ebeanEnhance" classname="com.avaje.ebean.enhance.ant.AntEnhanceTask">
+		<classpath>
+			<dirset dir="${task.bin.dir}"></dirset>
+		</classpath>
+	</taskdef>
+
+	<!-- on the bin for running in the IDE. Using Eclipse IDE Enhancement another option -->
+	<target name="bin-ormTransactionalEnhance">
+		<ebeanEnhance classSource="${bin.dir}" packages="com/avaje/tests/model/basic/xtra**" transformArgs="debug=2"/>
+	</target>
+	
+	<!-- on the bin for running in the IDE. Using Eclipse IDE Enhancement another option -->
+	<target name="bin-ormEnhance">
+		<ebeanEnhance classSource="${bin.dir}" packages="test/**" transformArgs="debug=9;transientInternalFields=false;checkNullManyFields=true"/>
+	</target>
+	
+	<target name="bin-enhance" depends="bin-ormEnhance,bin-ormTransactionalEnhance">
+		<tstamp />
+	</target>
+
+</project>

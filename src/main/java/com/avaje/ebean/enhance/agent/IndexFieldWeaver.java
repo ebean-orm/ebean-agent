@@ -1,27 +1,9 @@
-/**
- * Copyright (C) 2006  Robin Bygrave
- * 
- * This file is part of Ebean.
- * 
- * Ebean is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation; either version 2.1 of the License, or
- * (at your option) any later version.
- *  
- * Ebean is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with Ebean; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA  
- */
 package com.avaje.ebean.enhance.agent;
 
 import java.util.List;
 
 import com.avaje.ebean.enhance.asm.ClassVisitor;
+import com.avaje.ebean.enhance.asm.FieldVisitor;
 import com.avaje.ebean.enhance.asm.Label;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
 import com.avaje.ebean.enhance.asm.Opcodes;
@@ -34,6 +16,85 @@ import com.avaje.ebean.enhance.asm.Opcodes;
  */
 public class IndexFieldWeaver implements Opcodes {
 
+  public static void addPropertiesField(ClassVisitor cv, ClassMeta classMeta) {
+    FieldVisitor fv = cv.visitField(ACC_PUBLIC + ACC_STATIC, "_ebean_props", "[Ljava/lang/String;", null, null);
+    fv.visitEnd();
+  }
+  
+  public static void addPropertiesInit(ClassVisitor cv, ClassMeta classMeta) {
+    MethodVisitor mv = cv.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+    mv.visitCode();    
+    addPropertiesInit(mv, classMeta);
+    
+    Label l1 = new Label();
+    mv.visitLabel(l1);
+    mv.visitLineNumber(1, l1);
+    mv.visitInsn(RETURN);
+    mv.visitMaxs(4, 0);
+    mv.visitEnd();
+  }
+  
+  public static void addPropertiesInit(MethodVisitor mv, ClassMeta classMeta) {
+
+    List<FieldMeta> fields = classMeta.getAllFields();
+    
+    Label l0 = new Label();
+    mv.visitLabel(l0);
+    mv.visitLineNumber(1, l0);
+    visitIntInsn(mv, fields.size());
+    mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
+    
+    if (fields.isEmpty()) {
+      classMeta.log("Has no fields?");
+      
+    } else {
+      for (int i=0; i<fields.size(); i++) {
+        FieldMeta field = fields.get(i);
+        mv.visitInsn(DUP);
+        visitIntInsn(mv, i);
+        mv.visitLdcInsn(field.getName());
+        mv.visitInsn(AASTORE);        
+      }  
+    }
+    
+    mv.visitFieldInsn(PUTSTATIC, classMeta.getClassName(), "_ebean_props", "[Ljava/lang/String;");
+  }
+  
+  
+  public static void addGetPropertyNames(ClassVisitor cv, ClassMeta classMeta) {
+
+    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getPropertyNames", "()[Ljava/lang/String;", null, null);
+    mv.visitCode();
+    Label l0 = new Label();
+    mv.visitLabel(l0);
+    mv.visitLineNumber(13, l0);
+    mv.visitFieldInsn(GETSTATIC, classMeta.getClassName(), "_ebean_props", "[Ljava/lang/String;");
+    mv.visitInsn(ARETURN);
+    Label l1 = new Label();
+    mv.visitLabel(l1);
+    mv.visitLocalVariable("this", "L" + classMeta.getClassName() + ";", null, l0, l1, 0);
+    mv.visitMaxs(1, 1);
+    mv.visitEnd();
+  }
+  
+  public static void addGetPropertyName(ClassVisitor cv, ClassMeta classMeta) {
+    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getPropertyName", "(I)Ljava/lang/String;", null, null);
+    mv.visitCode();
+    Label l0 = new Label();
+    mv.visitLabel(l0);
+    mv.visitLineNumber(16, l0);
+    mv.visitFieldInsn(GETSTATIC, classMeta.getClassName(), "_ebean_props", "[Ljava/lang/String;");
+    mv.visitVarInsn(ILOAD, 1);
+    mv.visitInsn(AALOAD);
+    mv.visitInsn(ARETURN);
+    Label l1 = new Label();
+    mv.visitLabel(l1);
+    mv.visitLocalVariable("this", "L" + classMeta.getClassName() + ";", null, l0, l1, 0);
+    mv.visitLocalVariable("pos", "I", null, l0, l1, 1);
+    mv.visitMaxs(2, 2);
+    mv.visitEnd();
+  }
+  
 	public static void addMethods(ClassVisitor cv, ClassMeta classMeta) {
 
 		List<FieldMeta> fields = classMeta.getAllFields();
@@ -52,8 +113,6 @@ public class IndexFieldWeaver implements Opcodes {
 
 		generateSetField(cv, classMeta, fields, false);
 		generateSetField(cv, classMeta, fields, true);
-
-		generateGetDesc(cv, classMeta, fields);
 
 		if (classMeta.hasEqualsOrHashCode()) {
 			// equals or hashCode is already implemented
@@ -103,29 +162,21 @@ public class IndexFieldWeaver implements Opcodes {
 	/**
 	 * Generate the invokeGet method.
 	 */
-	private static void generateGetField(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields,
-			boolean intercept) {
+	private static void generateGetField(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields, boolean intercept) {
 
 		String className = classMeta.getClassName();
 
 		MethodVisitor mv = null;
 		if (intercept) {
-			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getFieldIntercept", "(ILjava/lang/Object;)Ljava/lang/Object;",null, null);
+			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getFieldIntercept", "(I)Ljava/lang/Object;",null, null);
 		} else {
-			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getField", "(ILjava/lang/Object;)Ljava/lang/Object;", null, null);
+			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getField", "(I)Ljava/lang/Object;", null, null);
 		}
-
+		
 		mv.visitCode();
 		Label l0 = new Label();
 		mv.visitLabel(l0);
 		mv.visitLineNumber(1, l0);
-		mv.visitVarInsn(ALOAD, 2);
-		mv.visitTypeInsn(CHECKCAST, className);
-		mv.visitVarInsn(ASTORE, 3);
-		Label l1 = new Label();
-		mv.visitLabel(l1);
-
-		mv.visitLineNumber(1, l1);
 		mv.visitVarInsn(ILOAD, 1);
 
 		Label[] switchLabels = new Label[fields.size()];
@@ -144,8 +195,9 @@ public class IndexFieldWeaver implements Opcodes {
 
 			mv.visitLabel(switchLabels[i]);
 			mv.visitLineNumber(1, switchLabels[i]);
-			mv.visitVarInsn(ALOAD, 3);
-
+			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+      mv.visitVarInsn(ALOAD, 0);
+      
 			fieldMeta.appendSwitchGet(mv, classMeta, intercept);
 
 			mv.visitInsn(ARETURN);
@@ -164,13 +216,12 @@ public class IndexFieldWeaver implements Opcodes {
 		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
 		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V");
 		mv.visitInsn(ATHROW);
+		
 		Label l5 = new Label();
 		mv.visitLabel(l5);
 		mv.visitLocalVariable("this", "L" + className + ";", null, l0, l5, 0);
 		mv.visitLocalVariable("index", "I", null, l0, l5, 1);
-		mv.visitLocalVariable("o", "Ljava/lang/Object;", null, l0, l5, 2);
-		mv.visitLocalVariable("p", "L" + className + ";", null, l1, l5, 3);
-		mv.visitMaxs(5, 4);
+		mv.visitMaxs(5, 2);
 		mv.visitEnd();
 	}
 
@@ -189,19 +240,17 @@ public class IndexFieldWeaver implements Opcodes {
 
 		MethodVisitor mv = null;
 		if (intercept) {
-			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_setFieldIntercept", "(ILjava/lang/Object;Ljava/lang/Object;)V",
+			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_setFieldIntercept", "(ILjava/lang/Object;)V",
 				null, null);
 		} else {
-			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_setField", "(ILjava/lang/Object;Ljava/lang/Object;)V", null, null);
+			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_setField", "(ILjava/lang/Object;)V", null, null);
 		}
-
+		
 		mv.visitCode();
 		Label l0 = new Label();
 		mv.visitLabel(l0);
 		mv.visitLineNumber(1, l0);
-		mv.visitVarInsn(ALOAD, 2);
-		mv.visitTypeInsn(CHECKCAST, className);
-		mv.visitVarInsn(ASTORE, 4);
+
 		Label l1 = new Label();
 		mv.visitLabel(l1);
 		mv.visitLineNumber(1, l1);
@@ -219,12 +268,15 @@ public class IndexFieldWeaver implements Opcodes {
 		mv.visitTableSwitchInsn(0, maxIndex, labelException, switchLabels);
 
 		for (int i = 0; i < fields.size(); i++) {
+	    
 			FieldMeta fieldMeta = fields.get(i);
 
 			mv.visitLabel(switchLabels[i]);
 			mv.visitLineNumber(1, switchLabels[i]);
-			mv.visitVarInsn(ALOAD, 4);
-			mv.visitVarInsn(ALOAD, 3);
+			
+      mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+      mv.visitVarInsn(ALOAD, 0);
+      mv.visitVarInsn(ALOAD, 2);
 
 			fieldMeta.appendSwitchSet(mv, classMeta, intercept);
 
@@ -232,7 +284,6 @@ public class IndexFieldWeaver implements Opcodes {
 			mv.visitLabel(l6);
 			mv.visitLineNumber(1, l6);
 			mv.visitInsn(RETURN);
-
 		}
 
 		mv.visitLabel(labelException);
@@ -312,37 +363,6 @@ public class IndexFieldWeaver implements Opcodes {
 		mv.visitLocalVariable("p", "L" + className + ";", null, l1, l5, 1);
 		mv.visitMaxs(2, 2);
 		mv.visitEnd();
-	}
-
-	private static void generateGetDesc(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields) {
-
-		String className = classMeta.getClassName();
-
-		int size = fields.size();
-
-		MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getFieldNames", "()[Ljava/lang/String;", null, null);
-		mv.visitCode();
-		Label l0 = new Label();
-		mv.visitLabel(l0);
-		mv.visitLineNumber(1, l0);
-		visitIntInsn(mv, size);
-		mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
-
-		for (int i = 0; i < size; i++) {
-			FieldMeta fieldMeta = fields.get(i);
-			mv.visitInsn(DUP);
-			visitIntInsn(mv, i);
-			mv.visitLdcInsn(fieldMeta.getName());
-			mv.visitInsn(AASTORE);
-		}
-
-		mv.visitInsn(ARETURN);
-		Label l1 = new Label();
-		mv.visitLabel(l1);
-		mv.visitLocalVariable("this", "L" + className + ";", null, l0, l1, 0);
-		mv.visitMaxs(4, 1);
-		mv.visitEnd();
-
 	}
 
 	/**

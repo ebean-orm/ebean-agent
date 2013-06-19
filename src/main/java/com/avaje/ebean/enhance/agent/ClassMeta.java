@@ -55,6 +55,8 @@ public class ClassMeta {
 	private boolean hasEqualsOrHashcode;
 
 	private boolean hasDefaultConstructor;
+	
+	private boolean hasStaticInit;
 
 	private HashSet<String> existingMethods = new HashSet<String>();
 
@@ -70,6 +72,8 @@ public class ClassMeta {
 
 	private final EnhanceContext enhanceContext;
 	
+  private List<FieldMeta> allFields;
+  
 	public ClassMeta(EnhanceContext enhanceContext, int logLevel, PrintStream logout) {
 		this.enhanceContext = enhanceContext;
 		this.logLevel = logLevel;
@@ -291,8 +295,16 @@ public class ClassMeta {
 	 */
 	public List<FieldMeta> getAllFields() {
 
+	  if (allFields != null) {
+	    return allFields;
+	  }
 		List<FieldMeta> list = getLocalFields();
 		getInheritedFields(list);
+		
+		this.allFields = list;
+		for (int i=0; i<allFields.size(); i++) {
+		  allFields.get(i).setIndexPosition(i);
+		}
 		
 		return list;
 	}
@@ -324,9 +336,6 @@ public class ClassMeta {
 		if (classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
 			return true;
 		}
-        if (classAnnotation.contains(EnhanceConstants.LDAPDOMAIN_ANNOTATION)) {
-            return true;
-        }
 		return false;
 	}
 
@@ -466,6 +475,14 @@ public class ClassMeta {
 
 	public void setHasDefaultConstructor(boolean hasDefaultConstructor) {
 		this.hasDefaultConstructor = hasDefaultConstructor;
+	}
+
+  public void setHasStaticInit(boolean hasStaticInit) {
+    this.hasStaticInit = hasStaticInit;
+  }
+
+	public boolean hasStaticInit() {
+	  return hasStaticInit;
 	}
 
 	public String getDescription() {
