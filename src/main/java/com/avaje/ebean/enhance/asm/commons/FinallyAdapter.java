@@ -3,14 +3,12 @@ package com.avaje.ebean.enhance.asm.commons;
 import com.avaje.ebean.enhance.asm.Label;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
 
-public class FinallyAdapter extends AdviceAdapter {
-	
-	private String name;
-	private Label startFinally = new Label();
+public abstract class FinallyAdapter extends AdviceAdapter {
+
+	protected Label startFinally = new Label();
 
 	public FinallyAdapter(MethodVisitor mv, int acc, String name, String desc) {
 		super(mv, acc, name, desc);
-		this.name = name;
 	}
 
 	public void visitCode() {
@@ -28,16 +26,13 @@ public class FinallyAdapter extends AdviceAdapter {
 		mv.visitMaxs(maxStack, maxLocals);
 	}
 
-	protected void onMethodExit(int opcode) {
+	protected final void onMethodExit(int opcode) {
 		if (opcode != ATHROW) {
 			onFinally(opcode);
 		}
 	}
 
-	private void onFinally(int opcode) {
-		mv.visitFieldInsn(GETSTATIC, "java/lang/System", "err", "Ljava/io/PrintStream;");
-		mv.visitLdcInsn("Exiting " + name);
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
-	}
+	protected abstract void onFinally(int opcode);
+	
 
 }

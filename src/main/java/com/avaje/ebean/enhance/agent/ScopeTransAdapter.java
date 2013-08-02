@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.avaje.ebean.enhance.asm.AnnotationVisitor;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
 import com.avaje.ebean.enhance.asm.Type;
-import com.avaje.ebean.enhance.asm.commons.MethodAdviceAdapter;
+import com.avaje.ebean.enhance.asm.commons.FinallyAdapter;
 
 /**
  * Adapts a method to support Transactional.
@@ -16,7 +16,7 @@ import com.avaje.ebean.enhance.asm.commons.MethodAdviceAdapter;
  * rollback or not.
  * </p>
  */
-public class ScopeTransAdapter extends MethodAdviceAdapter implements EnhanceConstants {
+public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstants {
 
 
 	private static final Type txScopeType = Type.getType("L"+C_TXSCOPE+";");
@@ -26,7 +26,9 @@ public class ScopeTransAdapter extends MethodAdviceAdapter implements EnhanceCon
 	private final AnnotationInfo annotationInfo;
 
 	private final ClassAdapterTransactional owner;
-	
+
+  private final String methodName;
+
 	private boolean transactional;
 
 	private int posTxScope;
@@ -35,6 +37,7 @@ public class ScopeTransAdapter extends MethodAdviceAdapter implements EnhanceCon
 	public ScopeTransAdapter(ClassAdapterTransactional owner, final MethodVisitor mv, final int access, final String name, final String desc) {
 		super(mv, access, name, desc);
 		this.owner = owner;
+		this.methodName = name;
 		
 		// inherit from class level Transactional annotation
 		AnnotationInfo parentInfo = owner.classAnnotationInfo;
@@ -196,8 +199,13 @@ public class ScopeTransAdapter extends MethodAdviceAdapter implements EnhanceCon
 		mv.visitVarInsn(ASTORE, posScopeTrans);
 	}
 
+
 	@Override
-	protected void onMethodExit(int opcode) {
+  protected void onFinally(int opcode) {
+	  onExit(opcode);
+  }
+
+  protected void onExit(int opcode) {
 
 		if (!transactional) {
 			return;
@@ -224,19 +232,4 @@ public class ScopeTransAdapter extends MethodAdviceAdapter implements EnhanceCon
 				+ scopeTransType.getDescriptor() + ")V");
 	}
 
-//	 private void test(int opCode, Object returnOrThrowable) {
-//		 boolean b = Boolean.TRUE;
-//	 TxScope txScope = new TxScope();
-//	 txScope.setType(TxType.valueOf("MANDATORY"));
-//	 txScope.setNoRollbackFor(RuntimeException.class);
-//	 txScope.setNoRollbackFor(IOException.class);
-//	 txScope.setReadonly(true);
-//	 txScope.setReadonly(false);
-//
-//	 
-//	 ScopeTrans t = HelpScopeTransEnhance.createScopeTrans(txScope);
-//	 //ScopeTrans t = new ScopeTrans();
-//	 System.out.println("stuff...");
-//	 HelpScopeTransEnhance.onExitScopeTrans(returnOrThrowable, opCode, t);
-//	 }
 }
