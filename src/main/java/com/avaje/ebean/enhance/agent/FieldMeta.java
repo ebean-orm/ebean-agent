@@ -620,7 +620,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       if (ebCollection != null) {
         return true;
       } else {
-        classMeta.log("Error unepxected many type " + fieldDesc);
+        classMeta.log("Error unexpected many type " + fieldDesc);
       }
     }
     return false;
