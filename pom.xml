@@ -50,11 +50,19 @@
       <scope>provided</scope>
     </dependency>
 
+<!-- 
     <dependency>
       <groupId>org.avaje.ebeanorm</groupId>
       <artifactId>avaje-ebeanorm</artifactId>
       <version>4.0.1-SNAPSHOT</version>
       <scope>test</scope>
+    </dependency>
+ -->    
+ 
+     <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <version>1.0</version>
     </dependency>
     
     <dependency>
