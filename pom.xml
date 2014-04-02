@@ -4,12 +4,12 @@
   <parent>
     <groupId>org.avaje</groupId>
     <artifactId>avaje-javaparent</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
   </parent>
 
   <groupId>org.avaje.ebeanorm</groupId>
   <artifactId>avaje-ebeanorm-agent</artifactId>
-  <version>3.2.3-SNAPSHOT</version>
+  <version>4.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>avaje-ebeanorm-agent</name>
@@ -50,6 +50,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.avaje.ebeanorm</groupId>
+      <artifactId>avaje-ebeanorm</artifactId>
+      <version>3.3.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

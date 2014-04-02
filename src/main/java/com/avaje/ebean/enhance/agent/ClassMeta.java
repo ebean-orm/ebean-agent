@@ -29,8 +29,6 @@ public class ClassMeta {
 
 	private final int logLevel;
 
-	private final boolean subclassing;
-
 	private String className;
 
 	private String superClassName;
@@ -57,6 +55,8 @@ public class ClassMeta {
 	private boolean hasEqualsOrHashcode;
 
 	private boolean hasDefaultConstructor;
+	
+	private boolean hasStaticInit;
 
 	private HashSet<String> existingMethods = new HashSet<String>();
 
@@ -72,9 +72,10 @@ public class ClassMeta {
 
 	private final EnhanceContext enhanceContext;
 	
-	public ClassMeta(EnhanceContext enhanceContext, boolean subclassing, int logLevel, PrintStream logout) {
+  private List<FieldMeta> allFields;
+  
+	public ClassMeta(EnhanceContext enhanceContext, int logLevel, PrintStream logout) {
 		this.enhanceContext = enhanceContext;
-	    this.subclassing = subclassing;
 		this.logLevel = logLevel;
 		this.logout = logout;
 	}
@@ -163,10 +164,6 @@ public class ClassMeta {
 		return superClassName;
 	}
 
-	public boolean isSubclassing() {
-		return subclassing;
-	}
-
 	public boolean isLog(int level) {
 		return level <= logLevel;
 	}
@@ -190,15 +187,14 @@ public class ClassMeta {
 	}
 
 	/**
-	 * Return true if we are enhancing (not subclassing) and the super class is
-	 * also an entity.
+	 * Return true if the super class is also an entity.
 	 * <p>
 	 * In this case we will not add the identity based methods because we will
 	 * inherit this from the enhanced super class.
 	 * </p>
 	 */
 	public boolean isInheritEqualsFromSuper() {
-		return !subclassing && isSuperClassEntity();
+		return isSuperClassEntity();
 	}
 
 	public ClassMeta getSuperMeta() {
@@ -299,8 +295,16 @@ public class ClassMeta {
 	 */
 	public List<FieldMeta> getAllFields() {
 
+	  if (allFields != null) {
+	    return allFields;
+	  }
 		List<FieldMeta> list = getLocalFields();
 		getInheritedFields(list);
+		
+		this.allFields = list;
+		for (int i=0; i<allFields.size(); i++) {
+		  allFields.get(i).setIndexPosition(i);
+		}
 		
 		return list;
 	}
@@ -332,9 +336,6 @@ public class ClassMeta {
 		if (classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
 			return true;
 		}
-        if (classAnnotation.contains(EnhanceConstants.LDAPDOMAIN_ANNOTATION)) {
-            return true;
-        }
 		return false;
 	}
 
@@ -446,8 +447,7 @@ public class ClassMeta {
 	 */
 	public FieldVisitor createLocalFieldVisitor(ClassVisitor cv, FieldVisitor fv, String name, String desc) {
 
-		String fieldClass = subclassing ? superClassName : className;
-		FieldMeta fieldMeta = new FieldMeta(this, name, desc, fieldClass);
+		FieldMeta fieldMeta = new FieldMeta(this, name, desc, className);
 		LocalFieldVisitor localField = new LocalFieldVisitor(cv, fv, fieldMeta);
 		if (name.startsWith("_ebean")) {
 			// can occur when reading inheritance information on
@@ -475,6 +475,14 @@ public class ClassMeta {
 
 	public void setHasDefaultConstructor(boolean hasDefaultConstructor) {
 		this.hasDefaultConstructor = hasDefaultConstructor;
+	}
+
+  public void setHasStaticInit(boolean hasStaticInit) {
+    this.hasStaticInit = hasStaticInit;
+  }
+
+	public boolean hasStaticInit() {
+	  return hasStaticInit;
 	}
 
 	public String getDescription() {
