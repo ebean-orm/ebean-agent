@@ -37,6 +37,22 @@ public class ConstructorAdapter extends MethodAdapter implements EnhanceConstant
 		addInitialisationIfRequired(opcode, owner, name, desc);
 	}
 
+  public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+
+    if (opcode == Opcodes.PUTFIELD && meta.isFieldPersistent(name)) {
+      // intercept any PUTFIELD that happen in the constructor
+      String methodName = "_ebean_set_" + name;
+      String methodDesc = "(" + desc + ")V";
+      if (meta.isLog(4)) {
+        meta.log("... Constructor PUTFIELD replaced with:" + methodName + methodDesc);
+      }
+      super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc);
+
+    } else {
+      super.visitFieldInsn(opcode, owner, name, desc);
+    }
+  }
+	
 	/**
 	 * Add initialisation of EntityBeanIntercept to constructor.
 	 * 

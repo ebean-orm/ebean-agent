@@ -49,6 +49,11 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
 					throw new RuntimeException("Error closing InputStream for "+className, e);
 				}
 			}
+      try {
+        cl.close();
+      } catch (IOException e) {
+        throw new RuntimeException("Error closing URLClassLoader for "+className, e);
+      }
 		}
 	}
 	

@@ -41,9 +41,12 @@ public class IgnoreClassHelper {
 
     pkg = pkg.trim().replace('.', '/');
 
-    if (pkg.endsWith("*")) {
-      // wild card, remove the * ... and
-      // don't add a "/" to the end
+    if (pkg.endsWith("**")) {
+      // wild card, remove the ** 
+      return pkg.substring(0, pkg.length() - 2);
+
+    } else if (pkg.endsWith("*")) {
+      // wild card, remove the *
       return pkg.substring(0, pkg.length() - 1);
 
     } else if (pkg.endsWith("/")) {
