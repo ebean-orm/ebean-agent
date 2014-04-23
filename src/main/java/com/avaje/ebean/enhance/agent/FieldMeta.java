@@ -713,6 +713,11 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitMethodInsn(INVOKESPECIAL, ebCollection, "<init>", "()V");
       mv.visitFieldInsn(PUTFIELD, className, fieldName, fieldDesc);
 
+      mv.visitVarInsn(ALOAD, 0);
+      mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
+      IndexFieldWeaver.visitIntInsn(mv, indexPosition);
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "initialisedMany", "(I)V");
+
       if (isManyToMany()) {
         // turn on modify listening for ManyToMany
         if (classMeta.isLog(3)) {
