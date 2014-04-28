@@ -212,8 +212,20 @@ public class ClassMeta {
 		this.hasEqualsOrHashcode = hasEqualsOrHashcode;
 	}
 
+	/**
+	 * Return true if Equals/hashCode is implemented on this class or a super class.
+	 */
 	public boolean hasEqualsOrHashCode() {
-		return hasEqualsOrHashcode;
+	  if (hasEqualsOrHashcode) {
+	    return true;
+	    
+	  } else if (superMeta != null) {
+      // search up the inheritance hierarchy to see if Equals/hashCode is implemented
+      return superMeta.hasEqualsOrHashCode();
+      
+    } else {
+      return false;
+    }
 	}
 
 	/**

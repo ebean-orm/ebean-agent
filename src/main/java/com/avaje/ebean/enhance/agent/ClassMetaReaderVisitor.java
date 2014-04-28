@@ -77,22 +77,30 @@ public class ClassMetaReaderVisitor extends EmptyVisitor implements EnhanceConst
 			}
 			return super.visitField(access, name, desc, signature, value);
 		}
-        if ((access & Opcodes.ACC_TRANSIENT) != 0) {
-            if (isLog(2)) {
-                log("Skip transient field " + name);
-            }
-            // no interception of transient fields
-            return super.visitField(access, name, desc, signature, value);
-        }
+    if ((access & Opcodes.ACC_TRANSIENT) != 0) {
+      if (isLog(2)) {
+        log("Skip transient field " + name);
+      }
+      // no interception of transient fields
+      return super.visitField(access, name, desc, signature, value);
+    }
 		return classMeta.createLocalFieldVisitor(name, desc);
 	}
 
 	/**
-	 * Not interested.
+	 * Look for equals/hashCode implementations.
 	 */
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 
 		boolean staticAccess = ((access & Opcodes.ACC_STATIC) != 0);
+		
+    if (name.equals("hashCode") && desc.equals("()I")) {
+      classMeta.setHasEqualsOrHashcode(true);
+    }
+
+    if (name.equals("equals") && desc.equals("(Ljava/lang/Object;)Z")) {
+      classMeta.setHasEqualsOrHashcode(true);
+    }
 		
 		MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
 		if (!staticAccess && readMethodMeta){
