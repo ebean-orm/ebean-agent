@@ -14,22 +14,22 @@ import com.avaje.ebean.enhance.asm.MethodVisitor;
  */
 public class ClassAdapterTransactional extends ClassAdapter {
 
-	static final Logger logger = Logger.getLogger(ClassAdapterTransactional.class.getName());
+	private static final Logger logger = Logger.getLogger(ClassAdapterTransactional.class.getName());
 
-	final ArrayList<String> transactionalMethods = new ArrayList<String>();
+	private final ArrayList<String> transactionalMethods = new ArrayList<String>();
 
-	final EnhanceContext enhanceContext;
+	private final EnhanceContext enhanceContext;
 
-	final ClassLoader classLoader;
+	private final ClassLoader classLoader;
 
-	ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<ClassMeta>();
+	private ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<ClassMeta>();
 
 	/**
 	 * Class level annotation information.
 	 */
-	AnnotationInfo classAnnotationInfo;
+	private AnnotationInfo classAnnotationInfo;
 
-	String className;
+	private String className;
 
 	public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
 		super(cv);
@@ -45,6 +45,10 @@ public class ClassAdapterTransactional extends ClassAdapter {
 		enhanceContext.log(className, msg);
 	}
 
+  public AnnotationInfo getClassAnnotationInfo() {
+    return classAnnotationInfo;
+  }
+  
 	/**
 	 * Returns Transactional information from a matching interface method.
 	 * <p>

@@ -40,7 +40,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		this.methodName = name;
 		
 		// inherit from class level Transactional annotation
-		AnnotationInfo parentInfo = owner.classAnnotationInfo;
+		AnnotationInfo parentInfo = owner.getClassAnnotationInfo();
 		
 		// inherit from interface method transactional annotation
 		AnnotationInfo interfaceInfo = owner.getInterfaceTransactionalInfo(name, desc);

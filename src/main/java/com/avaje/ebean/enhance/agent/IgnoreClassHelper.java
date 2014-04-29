@@ -96,6 +96,10 @@ public class IgnoreClassHelper {
    */
   public boolean isIgnoreClass(String className) {
 
+    if (className == null) {
+      return true;
+    }
+    
     className = className.replace('.', '/');
 
     // the special entity beans supplied by Ebean SHOULD be processed

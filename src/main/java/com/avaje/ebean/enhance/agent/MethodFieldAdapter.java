@@ -16,13 +16,13 @@ import com.avaje.ebean.enhance.asm.Opcodes;
  */
 public class MethodFieldAdapter extends MethodAdapter implements Opcodes {
 
-	final ClassMeta meta;
+	private final ClassMeta meta;
 
-	final String className;
+	private final String className;
 
-	final String methodDescription;
+	private final String methodDescription;
 
-	boolean transientAnnotation = false;
+	private boolean transientAnnotation;
 
 	public MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
 		super(mv);

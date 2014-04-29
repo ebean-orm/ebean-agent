@@ -442,7 +442,7 @@ public class ClassMeta {
 		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 			AnnotationVisitor av = mv.visitAnnotation(desc, visible);
 
-			return new AnnotationInfoVisitor(null, methodMeta.annotationInfo, av);
+			return new AnnotationInfoVisitor(null, methodMeta.getAnnotationInfo(), av);
 		}
 
 	}

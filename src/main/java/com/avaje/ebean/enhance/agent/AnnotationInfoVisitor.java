@@ -7,11 +7,11 @@ import com.avaje.ebean.enhance.asm.AnnotationVisitor;
  */
 public class AnnotationInfoVisitor implements AnnotationVisitor {
 
-	final AnnotationVisitor av;
+	private final AnnotationVisitor av;
 	
-	final AnnotationInfo info;
+	private final AnnotationInfo info;
 	
-	final String prefix;
+	private final String prefix;
 	
 	public AnnotationInfoVisitor(String prefix, AnnotationInfo info, AnnotationVisitor av) {
 		this.av = av;

@@ -19,8 +19,8 @@ import java.lang.instrument.IllegalClassFormatException;
  */
 public class InputStreamTransform {
 
-	final Transformer transformer;
-	final ClassLoader classLoader;
+	private final Transformer transformer;
+	private final ClassLoader classLoader;
 	
 	public InputStreamTransform(Transformer transformer, ClassLoader classLoader){
 		this.transformer = transformer;

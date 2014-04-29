@@ -54,7 +54,9 @@ public class ClassMetaReader {
 			
 		byte[] classBytes = enhanceContext.getClassBytes(className, classLoader);
 		if (classBytes == null){
-			enhanceContext.log(1, "Class ["+className+"] not found.");
+		  if (enhanceContext.isLog(1)) {
+	      enhanceContext.log(null, "Could not read meta data for class ["+className+"].");		    
+		  }
 			return null;
 		} else {
 			if (enhanceContext.isLog(3)) {

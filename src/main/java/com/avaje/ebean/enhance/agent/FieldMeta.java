@@ -40,7 +40,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   private final String publicSetterName;
   private final String publicGetterName;
 
-  int indexPosition;
+  private int indexPosition;
 
   /**
    * Construct based on field name and desc from reading byte code.
