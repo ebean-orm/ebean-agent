@@ -43,7 +43,7 @@ public interface EnhanceConstants {
 
   public static final String C_TXISOLATION = "com/avaje/ebean/TxIsolation";
 
-  public static final String EBEAN_META_PREFIX = "com/avaje/ebean/meta/";
+  public static final String EBEAN_MODEL = "com/avaje/ebean/Model";
 
   public static final String EBEAN_PREFIX = "com/avaje/ebean";
 

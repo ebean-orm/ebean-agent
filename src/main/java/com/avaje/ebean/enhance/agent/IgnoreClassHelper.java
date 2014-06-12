@@ -103,7 +103,7 @@ public class IgnoreClassHelper {
     className = className.replace('.', '/');
 
     // the special entity beans supplied by Ebean SHOULD be processed
-    if (className.startsWith(EnhanceConstants.EBEAN_META_PREFIX)) {
+    if (className.equals(EnhanceConstants.EBEAN_MODEL)) {
       return false;
     }
 

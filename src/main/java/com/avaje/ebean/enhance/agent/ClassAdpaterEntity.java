@@ -77,6 +77,9 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 		} else {
 			// Add the EntityBean interface
 			c[c.length - 1] = C_ENTITYBEAN;
+      if (classMeta.isLog(8)) {
+        classMeta.log("... add EntityBean interface");
+      }
 		}
 		
 		if (!superName.equals("java/lang/Object")){
@@ -288,7 +291,9 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 		IndexFieldWeaver.addGetPropertyName(cv, classMeta);
     
 		if (!classMeta.isSuperClassEntity()){
-			// Add the _ebean_getIntercept() _ebean_setIntercept() methods
+	    if (isLog(8)){
+	      log("... add _ebean_getIntercept() and _ebean_setIntercept()");
+	    }
 			InterceptField.addGetterSetter(cv, classMeta.getClassName());
 			
 			// Add add/removePropertyChangeListener methods
