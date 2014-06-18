@@ -48,6 +48,8 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
 			}
       try {
         cl.close();
+      } catch (NoSuchMethodError e) {
+        // ignoring as running in JDK6 
       } catch (IOException e) {
         throw new RuntimeException("Error closing URLClassLoader for "+className, e);
       }
