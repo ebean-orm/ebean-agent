@@ -51,8 +51,7 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 	/**
 	 * Create the class definition replacing the className and super class.
 	 */
-	public void visit(int version, int access, String name, String signature, String superName,
-			String[] interfaces) {
+	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
 		classMeta.setClassName(name, superName);
 
@@ -85,8 +84,7 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 		if (!superName.equals("java/lang/Object")){
 			// read information about superClasses... 
 			if (classMeta.isLog(7)){
-				classMeta.log("read information about superClasses "+superName
-					+" to see if it is entity/embedded/mappedSuperclass");
+				classMeta.log("read information about superClasses " + superName + " to see if it is entity/embedded/mappedSuperclass");
 			}
 			ClassMeta superMeta = enhanceContext.getSuperMeta(superName, classLoader);
 			if (superMeta != null && superMeta.isEntity()){
@@ -100,7 +98,7 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 					if (superMeta == null){
 						classMeta.log("unable to read superMeta for "+superName);
 					} else {
-						classMeta.log("superMeta "+superName+" is not an entity/embedded/mappedsuperclass "+superMeta.getClassAnnotations());
+						classMeta.log("superMeta "+superName+" is not an entity/embedded/mappedsuperclass (with persistent fields)");
 					}
 				}	
 			}
@@ -123,30 +121,18 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 	 * <p>
 	 */
 	private boolean isEbeanFieldMarker(String name, String desc, String signature) {
-		
-		if (name.equals(MarkerField._EBEAN_MARKER)){
-			if (!desc.equals("Ljava/lang/String;")){
-				String m = "Error: _EBEAN_MARKER field of wrong type? "+desc;
-				classMeta.log(m);
-			}
-			return true;
-		}
-		return false;
+		return name.equals(MarkerField._EBEAN_MARKER);
 	}
 
 	private boolean isPropertyChangeListenerField(String name, String desc, String signature) {
-		if (desc.equals("Ljava/beans/PropertyChangeSupport;")){
-			return true;
-		}
-		return false;
+		return desc.equals("Ljava/beans/PropertyChangeSupport;");
 	}
 	
 	/**
 	 * The ebeanIntercept field is added once but thats all. Note the other
 	 * fields are defined in the superclass.
 	 */
-	public FieldVisitor visitField(int access, String name, String desc, String signature,
-			Object value) {
+	public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
 
 		if ((access & Opcodes.ACC_STATIC) != 0) {
 			// static field...
@@ -193,8 +179,7 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 	/**
 	 * Replace the method code with field interception.
 	 */
-	public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-			String[] exceptions) {
+	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		
 		if (firstMethod){
 			if (!classMeta.isEntityEnhancementRequired()) {

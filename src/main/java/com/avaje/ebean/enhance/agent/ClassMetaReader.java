@@ -27,8 +27,7 @@ public class ClassMetaReader {
 		return getWithCache(readMethodAnnotations, name, classLoader);
 	}
 
-	private ClassMeta getWithCache(boolean readMethodAnnotations, String name, ClassLoader classLoader)
-			throws ClassNotFoundException {
+	private ClassMeta getWithCache(boolean readMethodAnnotations, String name, ClassLoader classLoader) throws ClassNotFoundException {
 		
 		synchronized (cache) {
 			ClassMeta meta = cache.get(name);
