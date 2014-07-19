@@ -81,7 +81,11 @@ public class Transformer implements ClassFileTransformer {
   }
 
   public void log(int level, String msg) {
-    enhanceContext.log(level, msg);
+    log(level, null, msg);
+  }
+  
+  private void log(int level, String className, String msg) {
+    enhanceContext.log(level, className, msg);
   }
 
   public int getLogLevel() {
@@ -95,20 +99,20 @@ public class Transformer implements ClassFileTransformer {
 
       // ignore JDK and JDBC classes etc
       if (enhanceContext.isIgnoreClass(className)) {
-        enhanceContext.log(9, "ignore class " + className);
+        log(9, className, "ignore class");
         return null;
       }
 
       ClassAdapterDetectEnhancement detect = null;
 
       if (performDetect) {
-        enhanceContext.log(5, "performing detection on " + className);
+        log(5, className, "performing detection");
         detect = detect(loader, classfileBuffer);
       }
 
       if (detect == null) {
         // default only looks entity beans to enhance
-        enhanceContext.log(1, "no detection so enhancing entity " + className);
+        log(1, className, "no detection so enhancing entity");
         return entityEnhancement(loader, classfileBuffer);
       }
 
@@ -118,7 +122,6 @@ public class Transformer implements ClassFileTransformer {
           detect.log(1, "already enhanced entity");
 
         } else {
-          //
           detect.log(2, "performing entity transform");
           return entityEnhancement(loader, classfileBuffer);
         }
@@ -133,13 +136,12 @@ public class Transformer implements ClassFileTransformer {
           return transactionalEnhancement(loader, classfileBuffer);
         }
       }
-
-      enhanceContext.log(9, "no enhancement on class " + className);
+      log(9, className, "no enhancement on class");
       return null;
 
     } catch (NoEnhancementRequiredException e) {
       // the class is an interface
-      log(8, "No Enhancement required " + e.getMessage());
+      log(8, className, "No Enhancement required " + e.getMessage());
       return null;
 
     } catch (Exception e) {

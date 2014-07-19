@@ -172,7 +172,7 @@ public class ClassMeta {
 		if (className != null) {
 			msg = "cls: " + className + "  msg: " + msg;
 		}
-		logout.println("transform> " + msg);
+		logout.println("ebean-enhance> " + msg);
 	}
 	
 	public void logEnhanced() {
@@ -302,6 +302,25 @@ public class ClassMeta {
 	}
 	
 	/**
+	 * Return true if the class contains persistent fields.
+	 */
+  public boolean hasPersistentFields() {
+    
+    for (FieldMeta fieldMeta : fields.values()) {
+      if (fieldMeta.isPersistent()) {
+        return true;
+      }
+    }
+    
+    if (superMeta != null) {
+      // recurse checking inherited fields
+      return superMeta.hasPersistentFields();
+    }
+    
+    return false;
+  }
+  
+	/**
 	 * Return the list of all fields including ones inherited from entity super
 	 * types and mappedSuperclasses.
 	 */
@@ -346,7 +365,13 @@ public class ClassMeta {
 			return true;
 		}
 		if (classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
-			return true;
+		  // only 'interesting' if it has persistent fields. Some MappedSuperclass
+		  // like com.avaje.ebean.Model don't need any enhancement
+		  boolean persistentFields = hasPersistentFields();
+		  if (isLog(8)) {
+		    log("mappedSuperClass with persistentFields: "+persistentFields);
+		  }
+		  return persistentFields;
 		}
 		return false;
 	}

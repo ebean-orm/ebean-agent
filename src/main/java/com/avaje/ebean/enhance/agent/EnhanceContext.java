@@ -153,9 +153,9 @@ public class EnhanceContext {
 	/**
 	 * Log some debug output.
 	 */
-	public void log(int level, String msg) {
+	public void log(int level, String className, String msg) {
 		if (logLevel >= level) {
-			logout.println(msg);
+		  log(className, msg);
 		}
 	}
 	
