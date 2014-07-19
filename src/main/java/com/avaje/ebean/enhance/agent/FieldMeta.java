@@ -16,8 +16,6 @@ import com.avaje.ebean.enhance.asm.Type;
  */
 public class FieldMeta implements Opcodes, EnhanceConstants {
 
-  private static final Type BOOLEAN_OBJECT_TYPE = Type.getType(Boolean.class);
-
   private final ClassMeta classMeta;
   private final String fieldClass;
   private final String fieldName;
@@ -37,9 +35,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   private final String getNoInterceptMethodName;
   private final String setNoInterceptMethodName;
 
-  private final String publicSetterName;
-  private final String publicGetterName;
-
   private int indexPosition;
 
   /**
@@ -49,67 +44,25 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * </p>
    */
   public FieldMeta(ClassMeta classMeta, String name, String desc, String fieldClass) {
+    
     this.classMeta = classMeta;
     this.fieldName = name;
     this.fieldDesc = desc;
     this.fieldClass = fieldClass;
-
-    asmType = Type.getType(desc);
+    this.asmType = Type.getType(desc);
 
     int sort = asmType.getSort();
-    primativeType = sort > Type.VOID && sort <= Type.DOUBLE;
-    objectType = sort == Type.OBJECT;
+    this.primativeType = sort > Type.VOID && sort <= Type.DOUBLE;
+    this.objectType = sort == Type.OBJECT;
 
-    getMethodName = "_ebean_get_" + name;
-    getMethodDesc = "()" + desc;
+    this.getMethodDesc = "()" + desc;
+    this.setMethodDesc = "(" + desc + ")V";
+    
+    this.getMethodName = "_ebean_get_" + name;
+    this.setMethodName = "_ebean_set_" + name;
 
-    setMethodName = "_ebean_set_" + name;
-    setMethodDesc = "(" + desc + ")V";
-
-    getNoInterceptMethodName = "_ebean_getni_" + name;
-    setNoInterceptMethodName = "_ebean_setni_" + name;
-
-    if (classMeta != null && classMeta.hasScalaInterface()) {
-      // use scala property name
-      publicSetterName = name + "_$eq";
-      publicGetterName = name;
-
-    } else {
-      String publicFieldName = getFieldName(name, asmType);
-      // use java bean property name convention
-      String initCap = Character.toUpperCase(publicFieldName.charAt(0)) + publicFieldName.substring(1);
-      publicSetterName = "set" + initCap;
-
-      if (fieldDesc.equals("Z")) {
-        publicGetterName = "is" + initCap;
-      } else {
-        publicGetterName = "get" + initCap;
-      }
-    }
-
-    if (classMeta != null && classMeta.isLog(6)) {
-      classMeta.log(" ... public getter [" + publicGetterName + "]");
-      classMeta.log(" ... public setter [" + publicSetterName + "]");
-    }
-  }
-
-  /**
-   * Handle the case where a boolean variable starts with 'is'.
-   */
-  private String getFieldName(String name, Type asmType) {
-    if ((BOOLEAN_OBJECT_TYPE.equals(asmType) || Type.BOOLEAN_TYPE.equals(asmType))
-        && name.startsWith("is") && name.length() > 2) {
-
-      // boolean starting with "is" ... maybe trim off the "is"
-      char c = name.charAt(2);
-      if (Character.isUpperCase(c)) {
-        if (classMeta.isLog(6)) {
-          classMeta.log("trimming off \"is\" from boolean field name " + name + "]");
-        }
-        return name.substring(2);
-      }
-    }
-    return name;
+    this.getNoInterceptMethodName = "_ebean_getni_" + name;
+    this.setNoInterceptMethodName = "_ebean_setni_" + name;
   }
 
   public void setIndexPosition(int indexPosition) {
@@ -139,26 +92,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    */
   public boolean isPrimativeType() {
     return primativeType;
-  }
-
-  /**
-   * The expected public getter name following bean naming convention.
-   * <p>
-   * This is generally used for subclassing rather than javaagent enhancement.
-   * </p>
-   */
-  public String getPublicGetterName() {
-    return publicGetterName;
-  }
-
-  /**
-   * The expected public setter name following bean naming convention.
-   * <p>
-   * This is generally used for subclassing rather than javaagent enhancement.
-   * </p>
-   */
-  public String getPublicSetterName() {
-    return publicSetterName;
   }
 
   /**
@@ -421,159 +354,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     }
   }
 
-  /**
-   * Only for subclass generation - add public getter and setter methods for
-   * interception.
-   */
-  public void addPublicGetSetMethods(ClassVisitor cv, ClassMeta classMeta, boolean checkExisting) {
-
-    if (isPersistent()) {
-
-      if (isId()) {
-        // don't intercept id properties
-        // setter required for propertyChangeListener
-        addPublicSetMethod(cv, classMeta, checkExisting);
-
-      } else {
-        addPublicGetMethod(cv, classMeta, checkExisting);
-        addPublicSetMethod(cv, classMeta, checkExisting);
-      }
-    }
-  }
-
-  private void addPublicGetMethod(ClassVisitor cv, ClassMeta classMeta, boolean checkExisting) {
-
-    if (checkExisting && !classMeta.isExistingSuperMethod(publicGetterName, getMethodDesc)) {
-      if (classMeta.isLog(1)) {
-        classMeta.log("excluding " + publicGetterName + " as not on super object");
-      }
-      return;
-    }
-
-    addPublicGetMethod(new VisitMethodParams(cv, ACC_PUBLIC, publicGetterName, getMethodDesc, null, null), classMeta);
-  }
-
-  private void addPublicGetMethod(VisitMethodParams params, ClassMeta classMeta) {
-
-    MethodVisitor mv = params.visitMethod();
-    int iReturnOpcode = asmType.getOpcode(Opcodes.IRETURN);
-
-    mv.visitCode();
-    Label l0 = new Label();
-    mv.visitLabel(l0);
-    mv.visitLineNumber(1, l0);
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, classMeta.getClassName(), INTERCEPT_FIELD, L_INTERCEPT);
-
-    IndexFieldWeaver.visitIntInsn(mv, indexPosition);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V");
-
-    Label l1 = new Label();
-    mv.visitLabel(l1);
-    mv.visitLineNumber(1, l1);
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKESPECIAL, classMeta.getSuperClassName(), params.getName(), params.getDesc());
-    mv.visitInsn(iReturnOpcode);
-    Label l2 = new Label();
-    mv.visitLabel(l2);
-    mv.visitLocalVariable("this", "L" + classMeta.getClassName() + ";", null, l0, l2, 0);
-    mv.visitMaxs(2, 1);
-    mv.visitEnd();
-  }
-
-  private void addPublicSetMethod(ClassVisitor cv, ClassMeta classMeta, boolean checkExisting) {
-
-    if (checkExisting && !classMeta.isExistingSuperMethod(publicSetterName, setMethodDesc)) {
-      if (classMeta.isLog(1)) {
-        classMeta.log("excluding " + publicSetterName + " as not on super object");
-      }
-      return;
-    }
-
-    addPublicSetMethod(new VisitMethodParams(cv, ACC_PUBLIC, publicSetterName, setMethodDesc, null, null), classMeta);
-  }
-
-  private void addPublicSetMethod(VisitMethodParams params, ClassMeta classMeta) {
-
-    MethodVisitor mv = params.visitMethod();
-
-    String publicGetterName = getPublicGetterName();
-
-    String preSetterArgTypes = "Ljava/lang/Object;Ljava/lang/Object;";
-    if (primativeType) {
-      // preSetter method overloaded for primitive type comparison
-      preSetterArgTypes = fieldDesc + fieldDesc;
-    }
-
-    // ALOAD or ILOAD etc
-    int iLoadOpcode = asmType.getOpcode(Opcodes.ILOAD);
-
-    // double and long have a size of 2
-    int iPosition = asmType.getSize();
-
-    String className = classMeta.getClassName();
-    String superClassName = classMeta.getSuperClassName();
-
-    mv.visitCode();
-    Label l0 = new Label();
-    mv.visitLabel(l0);
-    mv.visitLineNumber(1, l0);
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
-    if (isInterceptSet()) {
-      mv.visitInsn(ICONST_1);
-    } else {
-      // id or OneToMany field etc
-      mv.visitInsn(ICONST_0);
-    }
-
-    String preSetterMethod = "preSetter";
-    if (isMany()) {
-      preSetterMethod = "preSetterMany";
-    }
-
-    IndexFieldWeaver.visitIntInsn(mv, indexPosition);
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKEVIRTUAL, className, publicGetterName, getMethodDesc);
-    mv.visitVarInsn(iLoadOpcode, 1);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, preSetterMethod, "(ZI"+ preSetterArgTypes + ")Ljava/beans/PropertyChangeEvent;");
-    mv.visitVarInsn(ASTORE, 1 + iPosition);
-
-    Label l1 = new Label();
-    mv.visitLabel(l1);
-    mv.visitLineNumber(1, l1);
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitVarInsn(iLoadOpcode, 1);
-    mv.visitMethodInsn(INVOKESPECIAL, superClassName, params.getName(), params.getDesc());
-
-    Label levt = new Label();
-    mv.visitLabel(levt);
-    mv.visitLineNumber(3, levt);
-
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
-    mv.visitVarInsn(ALOAD, 1 + iPosition);
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKESPECIAL, superClassName, publicGetterName, getMethodDesc);
-    if (primativeType) {
-      appendValueOf(mv, classMeta);
-    }
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "postSetter", "(Ljava/beans/PropertyChangeEvent;Ljava/lang/Object;)V");
-
-    Label l2 = new Label();
-    mv.visitLabel(l2);
-    mv.visitLineNumber(1, l2);
-    mv.visitInsn(RETURN);
-
-    Label l3 = new Label();
-    mv.visitLabel(l3);
-    mv.visitLocalVariable("this", "L" + className + ";", null, l0, l3, 0);
-    mv.visitLocalVariable("newValue", fieldDesc, null, l0, l3, 1);
-    mv.visitLocalVariable("evt", "Ljava/beans/PropertyChangeEvent;", null, l1, l3, 2);
-    mv.visitMaxs(5, 3);
-    mv.visitEnd();
-
-  }
 
   /**
    * Add get and set methods for field access/interception.
