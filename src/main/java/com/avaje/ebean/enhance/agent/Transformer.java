@@ -147,7 +147,7 @@ public class Transformer implements ClassFileTransformer {
 
     ClassReader cr = new ClassReader(classfileBuffer);
     ClassWriter cw = new CLAwareClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
-    ClassAdpaterEntity ca = new ClassAdpaterEntity(cw, loader, enhanceContext);
+    ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
     try {
 
       cr.accept(ca, 0);

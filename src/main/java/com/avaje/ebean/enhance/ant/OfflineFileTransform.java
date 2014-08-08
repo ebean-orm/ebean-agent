@@ -98,7 +98,8 @@ public class OfflineFileTransform {
 		String dirPath = inDir + "/" + dir;
 		File d = new File(dirPath);
 		if (!d.exists()) {
-			String m = "File not found " + dirPath;
+      File currentDir = new File(".");
+			String m = "File not found " + dirPath+"  currentDir:"+currentDir.getAbsolutePath();
 			throw new RuntimeException(m);
 		}
 

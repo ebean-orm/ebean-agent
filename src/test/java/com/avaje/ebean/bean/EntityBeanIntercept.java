@@ -1,5 +1,8 @@
 package com.avaje.ebean.bean;
 
+import com.avaje.ebean.EntityNotFoundException;
+import com.avaje.ebean.PersistenceException;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -26,11 +29,11 @@ public final class EntityBeanIntercept implements Serializable {
 
 //  private transient PersistenceContext persistenceContext;
 
-//  private transient BeanLoader beanLoader;
+  private transient BeanLoader beanLoader;
   
   private int beanLoaderIndex;
 
-//  private String ebeanServerName;
+  private String ebeanServerName;
 
   /**
    * The actual entity bean that 'owns' this intercept.
@@ -199,16 +202,16 @@ public final class EntityBeanIntercept implements Serializable {
 //    this.ebeanServerName = ebeanServerName;
 //  }
 //
-//  /**
-//   * Set the BeanLoader for general lazy loading.
-//   */
-//  public void setBeanLoader(int index, BeanLoader beanLoader, PersistenceContext ctx) {
-//    this.beanLoaderIndex = index;
-//    this.beanLoader = beanLoader;
+  /**
+   * Set the BeanLoader for general lazy loading.
+   */
+  public void setBeanLoader(int index, BeanLoader beanLoader, Object ctx ){//PersistenceContext ctx) {
+    this.beanLoaderIndex = index;
+    this.beanLoader = beanLoader;
 //    this.persistenceContext = ctx;
-//    this.ebeanServerName = beanLoader.getName();
-//  }
-//  
+    this.ebeanServerName = beanLoader.getName();
+  }
+
   public boolean isFullyLoadedBean() {
     return fullyLoadedBean;
   }
@@ -639,66 +642,66 @@ public final class EntityBeanIntercept implements Serializable {
     return getProperty(lazyLoadProperty);
   }
 
-//  /**
-//   * Load the bean when it is a reference.
-//   */
-//  protected void loadBean(int loadProperty) {
-//
-//    synchronized (this) {
-//      if (beanLoader == null) {
-//        BeanLoader serverLoader = (BeanLoader) Ebean.getServer(ebeanServerName);
-//        if (serverLoader == null) {
-//          throw new PersistenceException("Server [" + ebeanServerName + "] was not found?");
-//        }
-//
-//        // For stand alone reference bean or after deserialisation lazy load
-//        // using the ebeanServer. Synchronise only on the bean.
-//        loadBeanInternal(loadProperty, serverLoader);
-//        return;
-//      }
-//    }
-//
-//    synchronized (beanLoader) {
-//      // Lazy loading using LoadBeanContext which supports batch loading
-//      // Synchronise on the beanLoader (a 'node' of the LoadBeanContext 'tree')
-//      loadBeanInternal(loadProperty, beanLoader);
-//    }
-//  }
-//
-//  /**
-//   * Invoke the lazy loading. This method is synchronised externally.
-//   */
-//  private void loadBeanInternal(int loadProperty, BeanLoader loader) {
-//
-//    if (loadedProps == null || loadedProps[loadProperty]) {
-//      // race condition where multiple threads calling preGetter concurrently
-//      return;
-//    }
-//
-//    if (lazyLoadFailure) {
-//      // failed when batch lazy loaded by another bean in the batch
-//      throw new EntityNotFoundException("Bean has been deleted - lazy loading failed");
-//    }
-//
-//    if (lazyLoadProperty == -1) {
-//
-//      lazyLoadProperty = loadProperty;
-//
+  /**
+   * Load the bean when it is a reference.
+   */
+  protected void loadBean(int loadProperty) {
+
+    synchronized (this) {
+      if (beanLoader == null) {
+        BeanLoader serverLoader = null;//(BeanLoader) Ebean.getServer(ebeanServerName);
+        if (serverLoader == null) {
+          throw new PersistenceException("Server [" + ebeanServerName + "] was not found?");
+        }
+
+        // For stand alone reference bean or after deserialisation lazy load
+        // using the ebeanServer. Synchronise only on the bean.
+        loadBeanInternal(loadProperty, serverLoader);
+        return;
+      }
+    }
+
+    synchronized (beanLoader) {
+      // Lazy loading using LoadBeanContext which supports batch loading
+      // Synchronise on the beanLoader (a 'node' of the LoadBeanContext 'tree')
+      loadBeanInternal(loadProperty, beanLoader);
+    }
+  }
+
+  /**
+   * Invoke the lazy loading. This method is synchronised externally.
+   */
+  private void loadBeanInternal(int loadProperty, BeanLoader loader) {
+
+    if (loadedProps == null || loadedProps[loadProperty]) {
+      // race condition where multiple threads calling preGetter concurrently
+      return;
+    }
+
+    if (lazyLoadFailure) {
+      // failed when batch lazy loaded by another bean in the batch
+      throw new EntityNotFoundException("Bean has been deleted - lazy loading failed");
+    }
+
+    if (lazyLoadProperty == -1) {
+
+      lazyLoadProperty = loadProperty;
+
 //      if (nodeUsageCollector != null) {
 //        nodeUsageCollector.setLoadProperty(getProperty(lazyLoadProperty));
 //      }
-//
-//      loader.loadBean(this);
-//
-//      if (lazyLoadFailure) {
-//        // failed when lazy loading this bean
-//        throw new EntityNotFoundException("Bean has been deleted - lazy loading failed");
-//      }
-//
-//      // bean should be loaded and intercepting now. setLoaded() has
-//      // been called by the lazy loading mechanism
-//    }
-//  }
+
+      loader.loadBean(this);
+
+      if (lazyLoadFailure) {
+        // failed when lazy loading this bean
+        throw new EntityNotFoundException("Bean has been deleted - lazy loading failed");
+      }
+
+      // bean should be loaded and intercepting now. setLoaded() has
+      // been called by the lazy loading mechanism
+    }
+  }
 
   /**
    * Helper method to check if two objects are equal.
@@ -747,9 +750,9 @@ public final class EntityBeanIntercept implements Serializable {
       return;
     }
     
-//    if (!isLoadedProperty(propertyIndex)) {
-//      loadBean(propertyIndex);
-//    }
+    if (!isLoadedProperty(propertyIndex)) {
+      loadBean(propertyIndex);
+    }
 //
 //    if (nodeUsageCollector != null) {
 //      nodeUsageCollector.addUsed(getProperty(propertyIndex));
