@@ -16,7 +16,7 @@ import com.avaje.ebean.enhance.asm.Opcodes;
  * This is NOT used for subclass generation.
  * </p>
  */
-public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants {
+public class ClassAdapterEntity extends ClassAdapter implements EnhanceConstants {
 		
 	private final EnhanceContext enhanceContext;
 	
@@ -26,7 +26,7 @@ public class ClassAdpaterEntity extends ClassAdapter implements EnhanceConstants
 
 	private boolean firstMethod = true;
 
-	public ClassAdpaterEntity(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
+	public ClassAdapterEntity(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
 		super(cv);
 		this.classLoader = classLoader;
 		this.enhanceContext = context;

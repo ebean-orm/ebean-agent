@@ -38,8 +38,7 @@ public class Transformer implements ClassFileTransformer {
     }
   }
 
-  private static final int CLASS_WRITER_COMPUTEFLAGS = ClassWriter.COMPUTE_FRAMES
-      + ClassWriter.COMPUTE_MAXS;
+  private static final int CLASS_WRITER_COMPUTEFLAGS = ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS;
 
   private final EnhanceContext enhanceContext;
 
@@ -60,17 +59,6 @@ public class Transformer implements ClassFileTransformer {
     this.performDetect = enhanceContext.getPropertyBoolean("detect", true);
     this.transformTransactional = enhanceContext.getPropertyBoolean("transactional", true);
     this.transformEntityBeans = enhanceContext.getPropertyBoolean("entity", true);
-  }
-
-  /**
-   * Override when you need transformation to occur with knowledge of other
-   * classes.
-   * <p>
-   * Note: Added to support Play framework.
-   * </p>
-   */
-  protected ClassWriter createClassWriter() {
-    return new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);
   }
 
   /**
@@ -158,7 +146,7 @@ public class Transformer implements ClassFileTransformer {
   private byte[] entityEnhancement(ClassLoader loader, byte[] classfileBuffer) {
 
     ClassReader cr = new ClassReader(classfileBuffer);
-    ClassWriter cw = createClassWriter();
+    ClassWriter cw = new CLAwareClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
     ClassAdpaterEntity ca = new ClassAdpaterEntity(cw, loader, enhanceContext);
     try {
 
@@ -195,7 +183,7 @@ public class Transformer implements ClassFileTransformer {
   private byte[] transactionalEnhancement(ClassLoader loader, byte[] classfileBuffer) {
 
     ClassReader cr = new ClassReader(classfileBuffer);
-    ClassWriter cw = createClassWriter();
+    ClassWriter cw = new CLAwareClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
 
     try {
