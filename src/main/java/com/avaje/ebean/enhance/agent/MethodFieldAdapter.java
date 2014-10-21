@@ -2,7 +2,6 @@ package com.avaje.ebean.enhance.agent;
 
 import com.avaje.ebean.enhance.asm.AnnotationVisitor;
 import com.avaje.ebean.enhance.asm.Label;
-import com.avaje.ebean.enhance.asm.MethodAdapter;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
 import com.avaje.ebean.enhance.asm.Opcodes;
 
@@ -14,7 +13,7 @@ import com.avaje.ebean.enhance.asm.Opcodes;
  * Transient annotation then it is not transformed in this way.
  * </p>
  */
-public class MethodFieldAdapter extends MethodAdapter implements Opcodes {
+public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 
 	private final ClassMeta meta;
 
@@ -25,7 +24,7 @@ public class MethodFieldAdapter extends MethodAdapter implements Opcodes {
 	private boolean transientAnnotation;
 
 	public MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
-		super(mv);
+		super(Opcodes.ASM5, mv);
 		this.meta = meta;
 		this.className = meta.getClassName();
 		this.methodDescription = methodDescription;
@@ -53,9 +52,9 @@ public class MethodFieldAdapter extends MethodAdapter implements Opcodes {
 	}
 
 	@Override
-	public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
 
-		super.visitMethodInsn(opcode, owner, name, desc);
+		super.visitMethodInsn(opcode, owner, name, desc, itf);
 	}
 
 	public void visitFieldInsn(int opcode, String owner, String name, String desc) {
@@ -90,7 +89,7 @@ public class MethodFieldAdapter extends MethodAdapter implements Opcodes {
 				meta.log("GETFIELD method:" + methodDescription 
 					+ " field:" + name + " > " + methodName + " "+ methodDesc);
 			}
-			super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc);
+			super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
 
 		} else if (opcode == Opcodes.PUTFIELD) {
 			String methodName = "_ebean_set_" + name;
@@ -99,7 +98,7 @@ public class MethodFieldAdapter extends MethodAdapter implements Opcodes {
 				meta.log("PUTFIELD method:" + methodDescription 
 					+ " field:" + name + " > " + methodName + " "+ methodDesc);
 			}
-			super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc);
+			super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
 
 		} else {
 			meta.log("Warning adapting method:" + methodDescription 

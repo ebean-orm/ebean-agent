@@ -10,7 +10,7 @@ import com.avaje.ebean.enhance.agent.ClassMetaReader;
 import com.avaje.ebean.enhance.agent.ClassPathClassBytesReader;
 import com.avaje.ebean.enhance.agent.EnhanceContext;
 
-public class TestClassMetaReader {
+public class ClassMetaReaderTests {
 
   @Test
   public void checkNoEnhanceMappedSuper_hasNoPersistentFields() throws ClassNotFoundException {

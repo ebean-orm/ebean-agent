@@ -1,20 +1,14 @@
 package com.avaje.ebean.enhance.agent;
 
+import com.avaje.ebean.enhance.asm.*;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.avaje.ebean.enhance.asm.AnnotationVisitor;
-import com.avaje.ebean.enhance.asm.ClassVisitor;
-import com.avaje.ebean.enhance.asm.EmptyVisitor;
-import com.avaje.ebean.enhance.asm.FieldVisitor;
-import com.avaje.ebean.enhance.asm.MethodVisitor;
 
 /**
  * Holds the meta data for an entity bean class that is being enhanced.
@@ -60,7 +54,7 @@ public class ClassMeta {
 
 	private HashSet<String> existingMethods = new HashSet<String>();
 
-	private HashSet<String> existingSuperMethods = new HashSet<String>();
+//	private HashSet<String> existingSuperMethods = new HashSet<String>();
 
 	private LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<String, FieldMeta>();
 
@@ -87,12 +81,12 @@ public class ClassMeta {
         return enhanceContext;
     }
 	
-    /**
-	 * Return the class level annotations.
-	 */
-	public Set<String> getClassAnnotations() {
-		return classAnnotation;
-	}
+//    /**
+//	 * Return the class level annotations.
+//	 */
+//	public Set<String> getClassAnnotations() {
+//		return classAnnotation;
+//	}
 	
 	/**
 	 * Return the AnnotationInfo collected on methods. 
@@ -133,27 +127,20 @@ public class ClassMeta {
 	}
 
 	public boolean isCheckSuperClassForEntity() {
-		if (isEntity()) {
-			 
-			return !superClassName.equals(OBJECT_CLASS);
-		}
-		return false;
-	}
+    return isEntity() && !superClassName.equals(OBJECT_CLASS);
+  }
 
 	public String toString() {
 		return className;
 	}
 
 	public boolean isTransactional() {
-		if (classAnnotation.contains(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
-			return true;
-		}
-		return false;
-	}
+    return classAnnotation.contains(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION);
+  }
 
-	public ArrayList<MethodMeta> getMethodMeta() {
-		return methodMetaList;
-	}
+//	public ArrayList<MethodMeta> getMethodMeta() {
+//		return methodMetaList;
+//	}
 
 	public void setClassName(String className, String superClassName) {
 		this.className = className;
@@ -186,20 +173,20 @@ public class ClassMeta {
 		log(m);
 	}
 
-	/**
-	 * Return true if the super class is also an entity.
-	 * <p>
-	 * In this case we will not add the identity based methods because we will
-	 * inherit this from the enhanced super class.
-	 * </p>
-	 */
-	public boolean isInheritEqualsFromSuper() {
-		return isSuperClassEntity();
-	}
-
-	public ClassMeta getSuperMeta() {
-		return superMeta;
-	}
+//	/**
+//	 * Return true if the super class is also an entity.
+//	 * <p>
+//	 * In this case we will not add the identity based methods because we will
+//	 * inherit this from the enhanced super class.
+//	 * </p>
+//	 */
+//	public boolean isInheritEqualsFromSuper() {
+//		return isSuperClassEntity();
+//	}
+//
+//	public ClassMeta getSuperMeta() {
+//		return superMeta;
+//	}
 
 	public void setSuperMeta(ClassMeta superMeta) {
 		this.superMeta = superMeta;
@@ -219,12 +206,8 @@ public class ClassMeta {
 	  if (hasEqualsOrHashcode) {
 	    return true;
 	    
-	  } else if (superMeta != null) {
-      // search up the inheritance hierarchy to see if Equals/hashCode is implemented
-      return superMeta.hasEqualsOrHashCode();
-      
-    } else {
-      return false;
+	  } else {
+      return (superMeta != null && superMeta.hasEqualsOrHashCode());
     }
 	}
 
@@ -237,14 +220,7 @@ public class ClassMeta {
 		if (f != null) {
 			return f.isPersistent();
 		}
-		if (superMeta == null) {
-			// the field is unknown?
-			return false;
-
-		} else {
-			// look in the inheritance hierarchy
-			return superMeta.isFieldPersistent(fieldName);
-		}
+    return superMeta != null && superMeta.isFieldPersistent(fieldName);
 	}
 
 	/**
@@ -254,25 +230,23 @@ public class ClassMeta {
 
 		ArrayList<FieldMeta> list = new ArrayList<FieldMeta>();
 
-		Iterator<FieldMeta> it = fields.values().iterator();
-		while (it.hasNext()) {
-			FieldMeta fm = it.next();
-			if (!fm.isObjectArray()) {
-				// add field local to this entity type
-				list.add(fm);
-			}
-		}
+    for (FieldMeta fm : fields.values()) {
+      if (!fm.isObjectArray()) {
+        // add field local to this entity type
+        list.add(fm);
+      }
+    }
 
 		return list;
 	}
 
-	/**
-	 * Return a List of inherited fields. These are fields from inherited objects
-	 * via MappedSuperClass or Entity inheritance.
-	 */
-	public List<FieldMeta> getInheritedFields() {
-		return getInheritedFields(new ArrayList<FieldMeta>());
-	}
+//	/**
+//	 * Return a List of inherited fields. These are fields from inherited objects
+//	 * via MappedSuperClass or Entity inheritance.
+//	 */
+//	public List<FieldMeta> getInheritedFields() {
+//		return getInheritedFields(new ArrayList<FieldMeta>());
+//	}
 	
 	/**
 	 * Return the list of fields inherited from super types that are entities.
@@ -311,13 +285,8 @@ public class ClassMeta {
         return true;
       }
     }
-    
-    if (superMeta != null) {
-      // recurse checking inherited fields
-      return superMeta.hasPersistentFields();
-    }
-    
-    return false;
+
+    return superMeta != null && superMeta.hasPersistentFields();
   }
   
 	/**
@@ -344,13 +313,11 @@ public class ClassMeta {
 	 * Add field level get set methods for each field.
 	 */
 	public void addFieldGetSetMethods(ClassVisitor cv) {
-		if (isEntityEnhancementRequired()) {
 
-			Iterator<FieldMeta> it = fields.values().iterator();
-			while (it.hasNext()) {
-				FieldMeta fm = it.next();
-				fm.addGetSetMethods(cv, this);
-			}
+		if (isEntityEnhancementRequired()) {
+      for (FieldMeta fm : fields.values()) {
+        fm.addGetSetMethods(cv, this);
+      }
 		}
 	}
 
@@ -380,14 +347,8 @@ public class ClassMeta {
 	 * Return true for classes not already enhanced and yet annotated with entity, embeddable or mappedSuperclass.
 	 */
 	public boolean isEntityEnhancementRequired() {
-		if (alreadyEnhanced) {
-			return false;
-		}
-		if (isEntity()){
-			return true;
-		}
-		return false;
-	}
+    return !alreadyEnhanced && isEntity();
+  }
 
 	/**
 	 * Return the className of this entity class.
@@ -400,11 +361,7 @@ public class ClassMeta {
 	 * Return true if this entity bean has a super class that is an entity.
 	 */
 	public boolean isSuperClassEntity() {
-		if (superMeta == null) {
-			return false;
-		} else {
-			return superMeta.isEntity();
-		}
+    return superMeta != null && superMeta.isEntity();
 	}
 
 	/**
@@ -412,17 +369,6 @@ public class ClassMeta {
 	 */
 	public void addClassAnnotation(String desc) {
 		classAnnotation.add(desc);
-	}
-
-	/**
-	 * Only for subclassing, add known methods on the original entity class.
-	 * <p>
-	 * Used to check that the methods exist. They may not in special cases such
-	 * as entity beans that use a finder etc with read only properties.
-	 * </p>
-	 */
-	public void addExistingSuperMethod(String methodName, String methodDesc) {
-		existingSuperMethods.add(methodName + methodDesc);
 	}
 
 	/**
@@ -438,14 +384,6 @@ public class ClassMeta {
 	public boolean isExistingMethod(String methodName, String methodDesc) {
 		return existingMethods.contains(methodName + methodDesc);
 	}
-	
-	/**
-	 * Only for subclassing return true if the method exists on the original
-	 * entity class.
-	 */
-	public boolean isExistingSuperMethod(String methodName, String methodDesc) {
-		return existingSuperMethods.contains(methodName + methodDesc);
-	}
 
 	public MethodVisitor createMethodVisitor(MethodVisitor mv, int access, String name, String desc) {
 
@@ -455,12 +393,12 @@ public class ClassMeta {
 		return new MethodReader(mv, methodMeta);
 	}
 
-	private static final class MethodReader extends EmptyVisitor {
-		final MethodVisitor mv;
-		final MethodMeta methodMeta;
+	private static final class MethodReader extends MethodVisitor {
+
+    final MethodMeta methodMeta;
 
 		MethodReader(MethodVisitor mv, MethodMeta methodMeta) {
-			this.mv = mv;
+      super(Opcodes.ASM5, mv);
 			this.methodMeta = methodMeta;
 		}
 
@@ -476,16 +414,16 @@ public class ClassMeta {
 	 * Create and return a read only fieldVisitor for subclassing option.
 	 */
 	public FieldVisitor createLocalFieldVisitor(String name, String desc) {
-		return createLocalFieldVisitor(null, null, name, desc);
+		return createLocalFieldVisitor(null, name, desc);
 	}
 
 	/**
 	 * Create and return a new fieldVisitor for use when enhancing a class.
 	 */
-	public FieldVisitor createLocalFieldVisitor(ClassVisitor cv, FieldVisitor fv, String name, String desc) {
+	public FieldVisitor createLocalFieldVisitor(FieldVisitor fv, String name, String desc) {
 
 		FieldMeta fieldMeta = new FieldMeta(this, name, desc, className);
-		LocalFieldVisitor localField = new LocalFieldVisitor(cv, fv, fieldMeta);
+		LocalFieldVisitor localField = new LocalFieldVisitor(fv, fieldMeta);
 		if (name.startsWith("_ebean")) {
 			// can occur when reading inheritance information on
 			// a entity that has already been enhanced
@@ -496,10 +434,6 @@ public class ClassMeta {
 			fields.put(localField.getName(), fieldMeta);
 		}
 		return localField;
-	}
-
-	public boolean isAlreadyEnhanced() {
-		return alreadyEnhanced;
 	}
 
 	public void setAlreadyEnhanced(boolean alreadyEnhanced) {

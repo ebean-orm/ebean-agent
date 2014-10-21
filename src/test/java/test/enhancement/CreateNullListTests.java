@@ -12,7 +12,7 @@ import com.avaje.ebean.bean.EntityBean;
 import com.avaje.ebean.bean.EntityBeanIntercept;
 import com.avaje.ebean.common.BeanList;
 
-public class TestCreateNullList extends BaseTest {
+public class CreateNullListTests extends BaseTest {
 
   @Test
   public void test() {

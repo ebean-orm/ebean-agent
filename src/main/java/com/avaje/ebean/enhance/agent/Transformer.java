@@ -1,14 +1,13 @@
 package com.avaje.ebean.enhance.agent;
 
+import com.avaje.ebean.enhance.asm.*;
+
 import java.io.PrintStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.net.URL;
 import java.security.ProtectionDomain;
-
-import com.avaje.ebean.enhance.asm.ClassReader;
-import com.avaje.ebean.enhance.asm.ClassWriter;
 
 /**
  * A Class file Transformer that enhances entity beans.

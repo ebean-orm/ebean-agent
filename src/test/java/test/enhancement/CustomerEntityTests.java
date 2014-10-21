@@ -10,7 +10,7 @@ import test.model.Customer;
 import java.lang.reflect.Field;
 import java.util.Date;
 
-public class TestCustomerEntity extends BaseTest {
+public class CustomerEntityTests extends BaseTest {
 
   private static final int PROPERTY_COUNT = 6;
 

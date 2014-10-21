@@ -1,12 +1,8 @@
 package com.avaje.ebean.enhance.agent;
 
-import java.util.List;
+import com.avaje.ebean.enhance.asm.*;
 
-import com.avaje.ebean.enhance.asm.ClassVisitor;
-import com.avaje.ebean.enhance.asm.FieldVisitor;
-import com.avaje.ebean.enhance.asm.Label;
-import com.avaje.ebean.enhance.asm.MethodVisitor;
-import com.avaje.ebean.enhance.asm.Opcodes;
+import java.util.List;
 
 /**
  * Generate the methods based on the list of fields.
@@ -16,7 +12,7 @@ import com.avaje.ebean.enhance.asm.Opcodes;
  */
 public class IndexFieldWeaver implements Opcodes {
 
-  public static void addPropertiesField(ClassVisitor cv, ClassMeta classMeta) {
+  public static void addPropertiesField(ClassVisitor cv) {
     FieldVisitor fv = cv.visitField(ACC_PUBLIC + ACC_STATIC, "_ebean_props", "[Ljava/lang/String;", null, null);
     fv.visitEnd();
   }
@@ -166,7 +162,7 @@ public class IndexFieldWeaver implements Opcodes {
 
 		String className = classMeta.getClassName();
 
-		MethodVisitor mv = null;
+		MethodVisitor mv;
 		if (intercept) {
 			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getFieldIntercept", "(I)Ljava/lang/Object;",null, null);
 		} else {
@@ -210,11 +206,11 @@ public class IndexFieldWeaver implements Opcodes {
 		mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
 		mv.visitInsn(DUP);
 		mv.visitLdcInsn("Invalid index ");
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false);
 		mv.visitVarInsn(ILOAD, 1);
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;");
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V");
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V", false);
 		mv.visitInsn(ATHROW);
 		
 		Label l5 = new Label();
@@ -238,7 +234,7 @@ public class IndexFieldWeaver implements Opcodes {
 		
 		String className = classMeta.getClassName();
 
-		MethodVisitor mv = null;
+		MethodVisitor mv;
 		if (intercept) {
 			mv = cv.visitMethod(ACC_PUBLIC, "_ebean_setFieldIntercept", "(ILjava/lang/Object;)V",
 				null, null);
@@ -293,11 +289,11 @@ public class IndexFieldWeaver implements Opcodes {
 		mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
 		mv.visitInsn(DUP);
 		mv.visitLdcInsn("Invalid index ");
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V");
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false);
 		mv.visitVarInsn(ILOAD, 1);
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;");
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V");
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V", false);
 		mv.visitInsn(ATHROW);
 		Label l9 = new Label();
 		mv.visitLabel(l9);
@@ -324,7 +320,7 @@ public class IndexFieldWeaver implements Opcodes {
 		mv.visitLineNumber(1, l0);
 		mv.visitTypeInsn(NEW, className);
 		mv.visitInsn(DUP);
-		mv.visitMethodInsn(INVOKESPECIAL, className, "<init>", "()V");
+		mv.visitMethodInsn(INVOKESPECIAL, className, "<init>", "()V", false);
 		mv.visitVarInsn(ASTORE, 1);
 
 		Label l1 = null;

@@ -64,7 +64,7 @@ public class MethodPropertyChangeListener implements Opcodes, EnhanceConstants {
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
 		mv.visitVarInsn(ALOAD, 1);
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "addPropertyChangeListener", "(Ljava/beans/PropertyChangeListener;)V");
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "addPropertyChangeListener", "(Ljava/beans/PropertyChangeListener;)V", false);
 		Label l1 = new Label();
 		mv.visitLabel(l1);
 		mv.visitLineNumber(2, l1);
@@ -99,7 +99,7 @@ public class MethodPropertyChangeListener implements Opcodes, EnhanceConstants {
 		mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
 		mv.visitVarInsn(ALOAD, 1);
 		mv.visitVarInsn(ALOAD, 2);
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "addPropertyChangeListener", "(Ljava/lang/String;Ljava/beans/PropertyChangeListener;)V");
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "addPropertyChangeListener", "(Ljava/lang/String;Ljava/beans/PropertyChangeListener;)V", false);
 		Label l1 = new Label();
 		mv.visitLabel(l1);
 		mv.visitLineNumber(2, l1);
@@ -142,7 +142,7 @@ public class MethodPropertyChangeListener implements Opcodes, EnhanceConstants {
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
 		mv.visitVarInsn(ALOAD, 1);
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "removePropertyChangeListener", "(Ljava/beans/PropertyChangeListener;)V");
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "removePropertyChangeListener", "(Ljava/beans/PropertyChangeListener;)V", false);
 		Label l1 = new Label();
 		mv.visitLabel(l1);
 		mv.visitLineNumber(2, l1);
@@ -176,7 +176,7 @@ public class MethodPropertyChangeListener implements Opcodes, EnhanceConstants {
 		mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
 		mv.visitVarInsn(ALOAD, 1);
 		mv.visitVarInsn(ALOAD, 2);
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "removePropertyChangeListener", "(Ljava/lang/String;Ljava/beans/PropertyChangeListener;)V");
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "removePropertyChangeListener", "(Ljava/lang/String;Ljava/beans/PropertyChangeListener;)V", false);
 		Label l1 = new Label();
 		mv.visitLabel(l1);
 		mv.visitLineNumber(2, l1);

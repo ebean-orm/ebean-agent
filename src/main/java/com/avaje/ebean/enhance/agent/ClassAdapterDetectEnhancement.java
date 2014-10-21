@@ -1,27 +1,18 @@
 package com.avaje.ebean.enhance.agent;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import com.avaje.ebean.enhance.asm.*;
 
-import com.avaje.ebean.enhance.asm.AnnotationVisitor;
-import com.avaje.ebean.enhance.asm.ClassAdapter;
-import com.avaje.ebean.enhance.asm.EmptyVisitor;
-import com.avaje.ebean.enhance.asm.FieldVisitor;
-import com.avaje.ebean.enhance.asm.MethodAdapter;
-import com.avaje.ebean.enhance.asm.MethodVisitor;
-import com.avaje.ebean.enhance.asm.Opcodes;
+import java.util.ArrayList;
 
 /**
  * ClassAdapter used to detect if this class needs enhancement for entity or
  * transactional support.
  */
-public class ClassAdapterDetectEnhancement extends ClassAdapter {
+public class ClassAdapterDetectEnhancement extends ClassVisitor {
 
 	private final ClassLoader classLoader;
 	
 	private final EnhanceContext enhanceContext;
-
-	private final HashSet<String> classAnnotation = new HashSet<String>();
 
 	private final ArrayList<DetectMethod> methods = new ArrayList<DetectMethod>();
 
@@ -38,29 +29,9 @@ public class ClassAdapterDetectEnhancement extends ClassAdapter {
 	private boolean enhancedTransactional;
 
 	public ClassAdapterDetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
-		super(new EmptyVisitor());
+		super(Opcodes.ASM5);
 		this.classLoader = classLoader;
 		this.enhanceContext = context;
-	}
-
-	public boolean isEntityOrTransactional() {
-		return entity || isTransactional();
-	}
-
-	public String getStatus() {
-		String s = "class: " + className;
-		if (isEntity()) {
-			s += " entity:true  enhanced:" + entityField;
-			s = "*" + s;
-
-		} else if (isTransactional()) {
-			s += " transactional:true  enhanced:" + enhancedTransactional;
-			s = "*" + s;
-
-		} else {
-			s = " " + s;
-		}
-		return s;
 	}
 
 	public boolean isLog(int level) {
@@ -99,7 +70,7 @@ public class ClassAdapterDetectEnhancement extends ClassAdapter {
 		if (transactional){
 			// implements transactional interface or
 			// transactional at class level
-			return transactional;
+			return true;
 		}
 		
 		// check each method...
@@ -134,12 +105,12 @@ public class ClassAdapterDetectEnhancement extends ClassAdapter {
 				enhancedTransactional = true;
 			
 			} else {
-				ClassMeta intefaceMeta = enhanceContext.getInterfaceMeta(interfaces[i], classLoader);
-				if (intefaceMeta != null && intefaceMeta.isTransactional()) {
+				ClassMeta interfaceMeta = enhanceContext.getInterfaceMeta(interfaces[i], classLoader);
+				if (interfaceMeta != null && interfaceMeta.isTransactional()) {
 					// implements transactional interface 
 					transactional = true;
 					if (isLog(9)) {
-						log("detected implements tranactional interface " + intefaceMeta);
+						log("detected implements transactional interface " + interfaceMeta);
 					}
 				}
 			}
@@ -160,7 +131,6 @@ public class ClassAdapterDetectEnhancement extends ClassAdapter {
 		if (isLog(8)){
 			log("visitAnnotation "+desc);					
 		}
-		classAnnotation.add(desc);
 		if (isEntityAnnotation(desc)){
 			// entity, embeddable or mappedSuperclass
 			if (isLog(5)){
@@ -204,7 +174,7 @@ public class ClassAdapterDetectEnhancement extends ClassAdapter {
 	 * enhanced (rather than solely relying on the EntityBean interface). 
 	 * <p>
 	 */
-	private boolean isEbeanFieldMarker(String name, String desc, String signature) {
+	private boolean isEbeanFieldMarker(String name, String desc) {
 		
 		if (name.equals(MarkerField._EBEAN_MARKER)){
 			if (!desc.equals("Ljava/lang/String;")){
@@ -226,7 +196,7 @@ public class ClassAdapterDetectEnhancement extends ClassAdapter {
 		
 		if ((access & Opcodes.ACC_STATIC) != 0) {
 			// static field...
-			if (isEbeanFieldMarker(name, desc, signature)){
+			if (isEbeanFieldMarker(name, desc)){
 				entityField = true;
 				if (isLog(1)){
 					log("Found ebean marker field "+name+" "+value);					
@@ -258,12 +228,12 @@ public class ClassAdapterDetectEnhancement extends ClassAdapter {
 	/**
 	 * Check methods for Transactional annotation.
 	 */
-	private static class DetectMethod extends MethodAdapter {
+	private static class DetectMethod extends MethodVisitor {
 
 		boolean transactional;
 
 		public DetectMethod(final MethodVisitor mv) {
-			super(mv);
+			super(Opcodes.ASM5, mv);
 		}
 
 		/**

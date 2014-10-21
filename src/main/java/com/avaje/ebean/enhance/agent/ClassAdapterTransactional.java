@@ -1,18 +1,15 @@
 package com.avaje.ebean.enhance.agent;
 
+import com.avaje.ebean.enhance.asm.*;
+
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.avaje.ebean.enhance.asm.AnnotationVisitor;
-import com.avaje.ebean.enhance.asm.ClassAdapter;
-import com.avaje.ebean.enhance.asm.ClassVisitor;
-import com.avaje.ebean.enhance.asm.MethodVisitor;
-
 /**
  * ClassAdapter used to add transactional support.
  */
-public class ClassAdapterTransactional extends ClassAdapter {
+public class ClassAdapterTransactional extends ClassVisitor {
 
 	private static final Logger logger = Logger.getLogger(ClassAdapterTransactional.class.getName());
 
@@ -32,7 +29,7 @@ public class ClassAdapterTransactional extends ClassAdapter {
 	private String className;
 
 	public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
-		super(cv);
+		super(Opcodes.ASM5, cv);
 		this.classLoader = classLoader;
 		this.enhanceContext = context;
 	}
@@ -158,9 +155,7 @@ public class ClassAdapterTransactional extends ClassAdapter {
 
 	@Override
 	public void visitEnd() {
-		if (isLog(3)){
-			
-		} else if (isLog(2)) {
+		if (isLog(2)) {
 			log("methods:" + transactionalMethods);
 		}
 		super.visitEnd();

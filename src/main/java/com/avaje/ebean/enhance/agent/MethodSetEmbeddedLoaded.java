@@ -1,11 +1,11 @@
 package com.avaje.ebean.enhance.agent;
 
-import java.util.List;
-
 import com.avaje.ebean.enhance.asm.ClassVisitor;
 import com.avaje.ebean.enhance.asm.Label;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
 import com.avaje.ebean.enhance.asm.Opcodes;
+
+import java.util.List;
 
 /**
  * Generate the _ebean_setEmbeddedLoaded() method.
@@ -48,7 +48,7 @@ public class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
 				mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
 				mv.visitVarInsn(ALOAD, 0);
 				fieldMeta.appendSwitchGet(mv, classMeta, false);
-				mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "setEmbeddedLoaded", "(Ljava/lang/Object;)V");
+				mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "setEmbeddedLoaded", "(Ljava/lang/Object;)V", false);
 			}
 		}
 		

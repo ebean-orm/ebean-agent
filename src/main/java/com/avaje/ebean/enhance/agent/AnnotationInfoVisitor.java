@@ -1,20 +1,19 @@
 package com.avaje.ebean.enhance.agent;
 
 import com.avaje.ebean.enhance.asm.AnnotationVisitor;
+import com.avaje.ebean.enhance.asm.Opcodes;
 
 /**
  * Reads the annotation information storing it in a AnnotationInfo.
  */
-public class AnnotationInfoVisitor implements AnnotationVisitor {
+public class AnnotationInfoVisitor extends AnnotationVisitor {
 
-	private final AnnotationVisitor av;
-	
 	private final AnnotationInfo info;
 	
 	private final String prefix;
 	
 	public AnnotationInfoVisitor(String prefix, AnnotationInfo info, AnnotationVisitor av) {
-		this.av = av;
+    super(Opcodes.ASM5, av);
 		this.info = info;
 		this.prefix = prefix;
 	}

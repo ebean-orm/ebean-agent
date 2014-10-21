@@ -6,7 +6,7 @@ import org.junit.Test;
 import test.model.AExtends;
 import test.model.BExtends;
 
-public class TestBaseWithEquals {
+public class BaseWithEqualsTests {
 
   @Test
   public void test() {

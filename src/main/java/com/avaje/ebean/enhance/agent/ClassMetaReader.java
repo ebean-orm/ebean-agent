@@ -1,9 +1,9 @@
 package com.avaje.ebean.enhance.agent;
 
+import com.avaje.ebean.enhance.asm.ClassReader;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.avaje.ebean.enhance.asm.ClassReader;
 
 /**
  * Reads class information as an alternative to using a ClassLoader.
@@ -15,7 +15,7 @@ import com.avaje.ebean.enhance.asm.ClassReader;
  */
 public class ClassMetaReader {
 
-	private Map<String, ClassMeta> cache = new HashMap<String, ClassMeta>();
+	private final Map<String, ClassMeta> cache = new HashMap<String, ClassMeta>();
 
 	private final EnhanceContext enhanceContext;
 

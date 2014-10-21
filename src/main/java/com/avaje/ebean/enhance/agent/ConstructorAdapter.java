@@ -1,6 +1,5 @@
 package com.avaje.ebean.enhance.agent;
 
-import com.avaje.ebean.enhance.asm.MethodAdapter;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
 import com.avaje.ebean.enhance.asm.Opcodes;
 
@@ -13,7 +12,7 @@ import com.avaje.ebean.enhance.asm.Opcodes;
  * _ebean_intercept = new EntityBeanIntercept(this);
  * </pre>
  */
-public class ConstructorAdapter extends MethodAdapter implements EnhanceConstants, Opcodes {
+public class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opcodes {
 
 	private final ClassMeta meta;
 
@@ -24,16 +23,16 @@ public class ConstructorAdapter extends MethodAdapter implements EnhanceConstant
 	private boolean constructorInitializationDone;
 
 	public ConstructorAdapter(MethodVisitor mv, ClassMeta meta, String constructorDesc) {
-		super(mv);
+		super(Opcodes.ASM5, mv);
 		this.meta = meta;
 		this.className = meta.getClassName();
 		this.constructorDesc = constructorDesc;
 	}
 
 	@Override
-	public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
 
-		super.visitMethodInsn(opcode, owner, name, desc);
+		super.visitMethodInsn(opcode, owner, name, desc, itf);
 		addInitialisationIfRequired(opcode, owner, name, desc);
 	}
 
@@ -46,7 +45,7 @@ public class ConstructorAdapter extends MethodAdapter implements EnhanceConstant
       if (meta.isLog(4)) {
         meta.log("... Constructor PUTFIELD replaced with:" + methodName + methodDesc);
       }
-      super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc);
+      super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
 
     } else {
       super.visitFieldInsn(opcode, owner, name, desc);
@@ -93,7 +92,7 @@ public class ConstructorAdapter extends MethodAdapter implements EnhanceConstant
 					super.visitInsn(DUP);
 					super.visitVarInsn(ALOAD, 0);
 
-					super.visitMethodInsn(INVOKESPECIAL, C_INTERCEPT, "<init>", "(Ljava/lang/Object;)V");
+					super.visitMethodInsn(INVOKESPECIAL, C_INTERCEPT, "<init>", "(Ljava/lang/Object;)V", false);
 					super.visitFieldInsn(PUTFIELD, className, INTERCEPT_FIELD, EnhanceConstants.L_INTERCEPT);
 
 					constructorInitializationDone = true;

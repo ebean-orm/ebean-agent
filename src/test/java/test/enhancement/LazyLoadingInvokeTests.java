@@ -22,7 +22,7 @@ import test.model.Customer;
 
 import java.util.List;
 
-public class TestLazyLoadingInvoke extends BaseTest {
+public class LazyLoadingInvokeTests extends BaseTest {
 
   @Test
   public void testNoLazyLoadOnToString() {

@@ -1,10 +1,6 @@
 package com.avaje.ebean.enhance.agent;
 
-import com.avaje.ebean.enhance.asm.ClassVisitor;
-import com.avaje.ebean.enhance.asm.FieldVisitor;
-import com.avaje.ebean.enhance.asm.Label;
-import com.avaje.ebean.enhance.asm.MethodVisitor;
-import com.avaje.ebean.enhance.asm.Opcodes;
+import com.avaje.ebean.enhance.asm.*;
 
 /**
  * Generate the equals hashCode method using the identity.
@@ -38,10 +34,10 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		} else {
 			if (meta.isLog(2)) {
 				meta.log("adding equals() hashCode() and _ebean_getIdentity() with Id field " 
-					+ idFieldMeta.getName()+ " index:" + idFieldIndex+" primative:"+idFieldMeta.isPrimativeType());
+					+ idFieldMeta.getName()+ " index:" + idFieldIndex+" primative:"+idFieldMeta.isPrimitiveType());
 			}
-			if (idFieldMeta.isPrimativeType()){
-				addGetIdentityPrimitive(cv, meta, idFieldIndex, idFieldMeta);
+			if (idFieldMeta.isPrimitiveType()){
+				addGetIdentityPrimitive(cv, meta, idFieldMeta);
 			} else {
 				addGetIdentityObject(cv, meta, idFieldIndex);	
 			}
@@ -89,7 +85,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 	 * }
 	 * </pre>
 	 */
-	private static void addGetIdentityPrimitive(ClassVisitor cv, ClassMeta classMeta, int idFieldIndex, FieldMeta idFieldMeta) {
+	private static void addGetIdentityPrimitive(ClassVisitor cv, ClassMeta classMeta, FieldMeta idFieldMeta) {
 		
 		String className = classMeta.getClassName();
 
@@ -142,7 +138,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitVarInsn(ALOAD, 0);
 		idFieldMeta.appendGetPrimitiveIdValue(mv, classMeta);
-		idFieldMeta.appendValueOf(mv, classMeta);
+		idFieldMeta.appendValueOf(mv);
 		mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
 		Label l10 = new Label();
 		mv.visitJumpInsn(GOTO, l10);
@@ -151,7 +147,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitTypeInsn(NEW, "java/lang/Object");
 		mv.visitInsn(DUP);
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
 		mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
 		mv.visitLabel(l10);
 		mv.visitLineNumber(1, l10);
@@ -240,7 +236,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		mv.visitLineNumber(1, l3);
 		mv.visitVarInsn(ALOAD, 0);
 		IndexFieldWeaver.visitIntInsn(mv, idFieldIndex);
-		mv.visitMethodInsn(INVOKESPECIAL, className, "_ebean_getField", "(I)Ljava/lang/Object;");
+		mv.visitMethodInsn(INVOKESPECIAL, className, "_ebean_getField", "(I)Ljava/lang/Object;", false);
 		mv.visitVarInsn(ASTORE, 2);
 		
 		Label l8 = new Label();
@@ -262,7 +258,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitTypeInsn(NEW, "java/lang/Object");
 		mv.visitInsn(DUP);
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
 		mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
 		mv.visitLabel(l11);
 		mv.visitLineNumber(1, l11);
@@ -326,10 +322,10 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		mv.visitLineNumber(3, l1);
 		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;");
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;", false);
 		mv.visitVarInsn(ALOAD, 1);
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;");
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z", false);
 		Label l3 = new Label();
 		mv.visitJumpInsn(IFNE, l3);
 		Label l4 = new Label();
@@ -353,11 +349,11 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		mv.visitLineNumber(7, l5);
 		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;");
+		mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", false);
 		mv.visitVarInsn(ALOAD, 1);
 		mv.visitTypeInsn(CHECKCAST, classMeta.getClassName());
-		mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;");
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
+		mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z", false);
 		mv.visitInsn(IRETURN);
 		Label l7 = new Label();
 		mv.visitLabel(l7);
@@ -386,8 +382,8 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		mv.visitLabel(l0);
 		mv.visitLineNumber(1, l0);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitMethodInsn(INVOKESPECIAL, meta.getClassName(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;");
-		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "hashCode", "()I");
+		mv.visitMethodInsn(INVOKESPECIAL, meta.getClassName(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "hashCode", "()I", false);
 		mv.visitInsn(IRETURN);
 		Label l1 = new Label();
 		mv.visitLabel(l1);

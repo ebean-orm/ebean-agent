@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.avaje.ebean.enhance.asm.AnnotationVisitor;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
+import com.avaje.ebean.enhance.asm.Opcodes;
 import com.avaje.ebean.enhance.asm.Type;
 import com.avaje.ebean.enhance.asm.commons.FinallyAdapter;
 
@@ -35,7 +36,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 	private int posScopeTrans;
 	
 	public ScopeTransAdapter(ClassAdapterTransactional owner, final MethodVisitor mv, final int access, final String name, final String desc) {
-		super(mv, access, name, desc);
+		super(Opcodes.ASM5, mv, access, name, desc);
 		this.owner = owner;
 		this.methodName = name;
 		
@@ -58,10 +59,6 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		transactional = parentInfo != null; 
 	}
 
-	public boolean isTransactional() {
-		return transactional;
-	}
-	
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 		if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
@@ -75,8 +72,8 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		
 		mv.visitVarInsn(ALOAD, posTxScope);
 		mv.visitLdcInsn(txType.toString());
-		mv.visitMethodInsn(INVOKESTATIC, C_TXTYPE, "valueOf", "(Ljava/lang/String;)L"+C_TXTYPE+";");
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setType", "(L"+C_TXTYPE+";)L"+C_TXSCOPE+";");
+		mv.visitMethodInsn(INVOKESTATIC, C_TXTYPE, "valueOf", "(Ljava/lang/String;)L"+C_TXTYPE+";", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setType", "(L"+C_TXTYPE+";)L"+C_TXSCOPE+";", false);
 		mv.visitInsn(POP);
 	}
 	
@@ -84,8 +81,8 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		
 		mv.visitVarInsn(ALOAD, posTxScope);
 		mv.visitLdcInsn(txIsolation.toString());
-		mv.visitMethodInsn(INVOKESTATIC, C_TXISOLATION, "valueOf", "(Ljava/lang/String;)L"+C_TXISOLATION+";");
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setIsolation", "(L"+C_TXISOLATION+";)L"+C_TXSCOPE+";");
+		mv.visitMethodInsn(INVOKESTATIC, C_TXISOLATION, "valueOf", "(Ljava/lang/String;)L"+C_TXISOLATION+";", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setIsolation", "(L"+C_TXISOLATION+";)L"+C_TXSCOPE+";", false);
 		mv.visitInsn(POP);
 	}
 	
@@ -93,7 +90,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		
 		mv.visitVarInsn(ALOAD, posTxScope);
 		mv.visitLdcInsn(serverName.toString());
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setServerName", "(Ljava/lang/String;)L"+C_TXSCOPE+";");
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setServerName", "(Ljava/lang/String;)L"+C_TXSCOPE+";", false);
 		mv.visitInsn(POP);
 	}
 	
@@ -106,7 +103,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		} else {
 			mv.visitInsn(ICONST_0);
 		}
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setReadOnly", "(Z)L"+C_TXSCOPE+";");
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setReadOnly", "(Z)L"+C_TXSCOPE+";", false);
 	}
 	
 	/**
@@ -122,7 +119,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 			
 			mv.visitVarInsn(ALOAD, posTxScope);
 			mv.visitLdcInsn(throwType);
-			mv.visitMethodInsn(INVOKEVIRTUAL, txScopeType.getInternalName(), "setNoRollbackFor", "(Ljava/lang/Class;)L"+C_TXSCOPE+";");
+			mv.visitMethodInsn(INVOKEVIRTUAL, txScopeType.getInternalName(), "setNoRollbackFor", "(Ljava/lang/Class;)L"+C_TXSCOPE+";", false);
 			mv.visitInsn(POP);
 		}
 	}
@@ -140,7 +137,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 			
 			mv.visitVarInsn(ALOAD, posTxScope);
 			mv.visitLdcInsn(throwType);
-			mv.visitMethodInsn(INVOKEVIRTUAL, txScopeType.getInternalName(), "setRollbackFor", "(Ljava/lang/Class;)L"+C_TXSCOPE+";");
+			mv.visitMethodInsn(INVOKEVIRTUAL, txScopeType.getInternalName(), "setRollbackFor", "(Ljava/lang/Class;)L"+C_TXSCOPE+";", false);
 			mv.visitInsn(POP);
 		}
 	}
@@ -160,7 +157,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
 		mv.visitTypeInsn(NEW, txScopeType.getInternalName());
 		mv.visitInsn(DUP);
-		mv.visitMethodInsn(INVOKESPECIAL, txScopeType.getInternalName(), "<init>", "()V");
+		mv.visitMethodInsn(INVOKESPECIAL, txScopeType.getInternalName(), "<init>", "()V", false);
 		mv.visitVarInsn(ASTORE, posTxScope);
 		
 		Object txType = annotationInfo.getValue("type");
@@ -195,7 +192,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
 		mv.visitVarInsn(ALOAD, posTxScope);
 		mv.visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "createScopeTrans", "("
-				+ txScopeType.getDescriptor() + ")" + scopeTransType.getDescriptor());
+				+ txScopeType.getDescriptor() + ")" + scopeTransType.getDescriptor(), false);
 		mv.visitVarInsn(ASTORE, posScopeTrans);
 	}
 
@@ -229,7 +226,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		loadLocal(posScopeTrans);
 
 		visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "onExitScopeTrans", "(Ljava/lang/Object;I"
-				+ scopeTransType.getDescriptor() + ")V");
+				+ scopeTransType.getDescriptor() + ")V", false);
 	}
 
 }

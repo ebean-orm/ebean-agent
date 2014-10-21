@@ -1,11 +1,11 @@
 package com.avaje.ebean.enhance.agent;
 
-import java.util.List;
-
 import com.avaje.ebean.enhance.asm.ClassVisitor;
 import com.avaje.ebean.enhance.asm.Label;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
 import com.avaje.ebean.enhance.asm.Opcodes;
+
+import java.util.List;
 
 /**
  * Used to detect if a class has been enhanced.
@@ -60,7 +60,7 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 				mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
 				mv.visitVarInsn(ALOAD, 0);
 				fieldMeta.appendSwitchGet(mv, classMeta, false);
-				mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "isEmbeddedNewOrDirty", "(Ljava/lang/Object;)Z");
+				mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "isEmbeddedNewOrDirty", "(Ljava/lang/Object;)Z", false);
 
 				labelNext = new Label();
 				mv.visitJumpInsn(IFEQ, labelNext);

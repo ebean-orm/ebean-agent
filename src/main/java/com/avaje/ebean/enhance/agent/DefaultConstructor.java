@@ -28,7 +28,7 @@ public class DefaultConstructor {
         mv.visitLabel(l0);
         mv.visitLineNumber(1, l0);
         mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, classMeta.getSuperClassName(), "<init>", "()V");
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, classMeta.getSuperClassName(), "<init>", "()V", false);
         Label l1 = new Label();
         mv.visitLabel(l1);
         mv.visitLineNumber(2, l1);

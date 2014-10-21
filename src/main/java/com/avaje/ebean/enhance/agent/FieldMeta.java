@@ -1,12 +1,8 @@
 package com.avaje.ebean.enhance.agent;
 
-import java.util.HashSet;
+import com.avaje.ebean.enhance.asm.*;
 
-import com.avaje.ebean.enhance.asm.ClassVisitor;
-import com.avaje.ebean.enhance.asm.Label;
-import com.avaje.ebean.enhance.asm.MethodVisitor;
-import com.avaje.ebean.enhance.asm.Opcodes;
-import com.avaje.ebean.enhance.asm.Type;
+import java.util.HashSet;
 
 /**
  * Holds meta data for a field.
@@ -69,12 +65,12 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     this.indexPosition = indexPosition;
   }
 
-  /**
-   * The index position of the field in the bean properties array.
-   */
-  public int getIndexPosition() {
-    return indexPosition;
-  }
+//  /**
+//   * The index position of the field in the bean properties array.
+//   */
+//  public int getIndexPosition() {
+//    return indexPosition;
+//  }
 
   public String toString() {
     return fieldName;
@@ -90,7 +86,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   /**
    * Return true if this is a primativeType.
    */
-  public boolean isPrimativeType() {
+  public boolean isPrimitiveType() {
     return primativeType;
   }
 
@@ -145,16 +141,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   }
 
   private boolean isInterceptSet() {
-    if (isId()) {
-      return false;
-    }
-    if (isTransient()) {
-      return false;
-    }
-    if (isMany()) {
-      return false;
-    }
-    return true;
+    return !isId() && !isTransient() && !isMany();
   }
 
   /**
@@ -196,10 +183,8 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * </p>
    */
   public boolean isId() {
-    boolean idField = (annotations.contains("Ljavax/persistence/Id;") 
-        || annotations.contains("Ljavax/persistence/EmbeddedId;"));
-
-    return idField;
+    return (annotations.contains("Ljavax/persistence/Id;")
+            || annotations.contains("Ljavax/persistence/EmbeddedId;"));
   }
 
   /**
@@ -234,7 +219,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * Append byte code to return the Id value (for primitives).
    */
   public void appendGetPrimitiveIdValue(MethodVisitor mv, ClassMeta classMeta) {
-    mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc);
+    mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc, false);
   }
 
   /**
@@ -260,10 +245,9 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
         mv.visitInsn(FCONST_0);
         mv.visitInsn(FCMPL);
 
-      } else {
-        // no extra instructions required for
-        // int, short, byte, char
       }
+      // no extra instructions required for
+      // int, short, byte, char
     }
   }
 
@@ -273,7 +257,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * This becomes a Integer.valueOf(someInt); or similar.
    * </p>
    */
-  public void appendValueOf(MethodVisitor mv, ClassMeta classMeta) {
+  public void appendValueOf(MethodVisitor mv) {
     if (primativeType) {
       // use valueOf methods to return primitives as objects
       Type objectWrapperType = PrimitiveHelper.getObjectWrapper(asmType);
@@ -281,7 +265,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       String objDesc = objectWrapperType.getInternalName();
       String primDesc = asmType.getDescriptor();
 
-      mv.visitMethodInsn(Opcodes.INVOKESTATIC, objDesc, "valueOf", "(" + primDesc + ")L" + objDesc + ";");
+      mv.visitMethodInsn(Opcodes.INVOKESTATIC, objDesc, "valueOf", "(" + primDesc + ")L" + objDesc + ";", false);
     }
   }
 
@@ -297,8 +281,8 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       if (classMeta.isLog(4)) {
         classMeta.log(" ... addFieldCopy on non-local field [" + fieldName + "] type[" + fieldDesc + "]");
       }
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc);
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc);
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc, false);
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc, false);
     }
   }
 
@@ -309,18 +293,18 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
     if (intercept) {
       // use the special get method with interception...
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc);
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc, false);
     } else {
       if (isLocalField(classMeta)) {
         mv.visitFieldInsn(GETFIELD, classMeta.getClassName(), fieldName, fieldDesc);
       } else {
         // field is on a superclass... so use virtual getNoInterceptMethodName
-        mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc);
+        mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc, false);
       }
     }
 
     if (primativeType) {
-      appendValueOf(mv, classMeta);
+      appendValueOf(mv);
     }
   }
 
@@ -335,7 +319,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       String objInt = objectWrapperType.getInternalName();
       mv.visitTypeInsn(CHECKCAST, objInt);
 
-      mv.visitMethodInsn(INVOKEVIRTUAL, objInt, primType + "Value", "()" + primDesc);
+      mv.visitMethodInsn(INVOKEVIRTUAL, objInt, primType + "Value", "()" + primDesc, false);
     } else {
       // check correct object type
       mv.visitTypeInsn(CHECKCAST, asmType.getInternalName());
@@ -343,14 +327,10 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
     if (intercept) {
       // go through the set method to check for interception...
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setMethodName, setMethodDesc);
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setMethodName, setMethodDesc, false);
 
     } else {
-      //if (isLocalField(classMeta)) {
-      //  mv.visitFieldInsn(PUTFIELD, fieldClass, fieldName, fieldDesc);
-      //} else {
-        mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc);
-      //}
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc, false);
     }
   }
 
@@ -434,18 +414,18 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     if (isInterceptGet()) {
       labelStart = new Label();
       mv.visitLabel(labelStart);
-      mv.visitLineNumber(4, labelStart);
+      mv.visitLineNumber(6, labelStart);
       mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
       IndexFieldWeaver.visitIntInsn(mv, indexPosition);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V");
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V", false);
     }
     if (labelStart == null) {
       labelStart = labelEnd;
     }
     mv.visitLabel(labelEnd);
-    mv.visitLineNumber(5, labelEnd);
+    mv.visitLineNumber(7, labelEnd);
     mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, className, fieldName, fieldDesc);
@@ -468,7 +448,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
     IndexFieldWeaver.visitIntInsn(mv, indexPosition);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V");
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V", false);
 
     Label l4 = new Label();
     if (classMeta.getEnhanceContext().isCheckNullManyFields()) {
@@ -490,13 +470,13 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitVarInsn(ALOAD, 0);
       mv.visitTypeInsn(NEW, ebCollection);
       mv.visitInsn(DUP);
-      mv.visitMethodInsn(INVOKESPECIAL, ebCollection, "<init>", "()V");
+      mv.visitMethodInsn(INVOKESPECIAL, ebCollection, "<init>", "()V", false);
       mv.visitFieldInsn(PUTFIELD, className, fieldName, fieldDesc);
 
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
       IndexFieldWeaver.visitIntInsn(mv, indexPosition);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "initialisedMany", "(I)V");
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "initialisedMany", "(I)V", false);
 
       if (isManyToMany()) {
         // turn on modify listening for ManyToMany
@@ -513,7 +493,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
         mv.visitFieldInsn(GETSTATIC, C_BEANCOLLECTION + "$ModifyListenMode", "ALL", "L"
             + C_BEANCOLLECTION + "$ModifyListenMode;");
         mv.visitMethodInsn(INVOKEINTERFACE, C_BEANCOLLECTION, "setModifyListening", "(L"
-            + C_BEANCOLLECTION + "$ModifyListenMode;)V");
+            + C_BEANCOLLECTION + "$ModifyListenMode;)V", false);
       }
     }
 
@@ -607,13 +587,13 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     }
     IndexFieldWeaver.visitIntInsn(mv, indexPosition);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKEVIRTUAL, fieldClass, getMethodName, getMethodDesc);
+    mv.visitMethodInsn(INVOKEVIRTUAL, fieldClass, getMethodName, getMethodDesc, false);
     mv.visitVarInsn(iLoadOpcode, 1);
     String preSetterMethod = "preSetter";
     if (isMany()) {
       preSetterMethod = "preSetterMany";
     }
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, preSetterMethod, "(ZI"+ preSetterArgTypes + ")Ljava/beans/PropertyChangeEvent;");
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, preSetterMethod, "(ZI"+ preSetterArgTypes + ")Ljava/beans/PropertyChangeEvent;", false);
     mv.visitVarInsn(ASTORE, 1 + iPosition);
     Label l1 = new Label();
     mv.visitLabel(l1);
@@ -628,7 +608,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, fieldClass, INTERCEPT_FIELD, L_INTERCEPT);
     mv.visitVarInsn(ALOAD, 1 + iPosition);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "postSetter", "(Ljava/beans/PropertyChangeEvent;)V");
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "postSetter", "(Ljava/beans/PropertyChangeEvent;)V", false);
 
     Label l3 = new Label();
     mv.visitLabel(l3);
@@ -677,7 +657,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, fieldClass, INTERCEPT_FIELD, L_INTERCEPT);
     IndexFieldWeaver.visitIntInsn(mv, indexPosition);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "setLoadedProperty", "(I)V");
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "setLoadedProperty", "(I)V", false);
     
     Label l2 = new Label();
     mv.visitLabel(l2);

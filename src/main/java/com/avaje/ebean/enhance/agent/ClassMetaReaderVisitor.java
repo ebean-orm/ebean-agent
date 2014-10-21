@@ -1,10 +1,6 @@
 package com.avaje.ebean.enhance.agent;
 
-import com.avaje.ebean.enhance.asm.AnnotationVisitor;
-import com.avaje.ebean.enhance.asm.EmptyVisitor;
-import com.avaje.ebean.enhance.asm.FieldVisitor;
-import com.avaje.ebean.enhance.asm.MethodVisitor;
-import com.avaje.ebean.enhance.asm.Opcodes;
+import com.avaje.ebean.enhance.asm.*;
 
 /**
  * Used by ClassMetaReader to read information about a class.
@@ -14,14 +10,14 @@ import com.avaje.ebean.enhance.asm.Opcodes;
  * (silently ignored) if they are not in the class path.
  * </p>
  */
-public class ClassMetaReaderVisitor extends EmptyVisitor implements EnhanceConstants {
+public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
 
 	private final ClassMeta classMeta;
 
 	private final boolean readMethodMeta;
 	
 	public ClassMetaReaderVisitor(boolean readMethodMeta, EnhanceContext context) {
-		super();
+		super(Opcodes.ASM5);
 		this.readMethodMeta = readMethodMeta;
 		this.classMeta = context.createClassMeta();
 	}
