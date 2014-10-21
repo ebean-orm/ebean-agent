@@ -54,8 +54,6 @@ public class ClassMeta {
 
 	private HashSet<String> existingMethods = new HashSet<String>();
 
-//	private HashSet<String> existingSuperMethods = new HashSet<String>();
-
 	private LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<String, FieldMeta>();
 
 	private HashSet<String> classAnnotation = new HashSet<String>();
@@ -80,13 +78,6 @@ public class ClassMeta {
 	public EnhanceContext getEnhanceContext() {
         return enhanceContext;
     }
-	
-//    /**
-//	 * Return the class level annotations.
-//	 */
-//	public Set<String> getClassAnnotations() {
-//		return classAnnotation;
-//	}
 	
 	/**
 	 * Return the AnnotationInfo collected on methods. 
@@ -138,10 +129,6 @@ public class ClassMeta {
     return classAnnotation.contains(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION);
   }
 
-//	public ArrayList<MethodMeta> getMethodMeta() {
-//		return methodMetaList;
-//	}
-
 	public void setClassName(String className, String superClassName) {
 		this.className = className;
 		this.superClassName = superClassName;
@@ -172,21 +159,6 @@ public class ClassMeta {
 		}
 		log(m);
 	}
-
-//	/**
-//	 * Return true if the super class is also an entity.
-//	 * <p>
-//	 * In this case we will not add the identity based methods because we will
-//	 * inherit this from the enhanced super class.
-//	 * </p>
-//	 */
-//	public boolean isInheritEqualsFromSuper() {
-//		return isSuperClassEntity();
-//	}
-//
-//	public ClassMeta getSuperMeta() {
-//		return superMeta;
-//	}
 
 	public void setSuperMeta(ClassMeta superMeta) {
 		this.superMeta = superMeta;
@@ -240,14 +212,6 @@ public class ClassMeta {
 		return list;
 	}
 
-//	/**
-//	 * Return a List of inherited fields. These are fields from inherited objects
-//	 * via MappedSuperClass or Entity inheritance.
-//	 */
-//	public List<FieldMeta> getInheritedFields() {
-//		return getInheritedFields(new ArrayList<FieldMeta>());
-//	}
-	
 	/**
 	 * Return the list of fields inherited from super types that are entities.
 	 */

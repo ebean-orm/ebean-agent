@@ -21,7 +21,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
   private final Type asmType;
 
-  private final boolean primativeType;
+  private final boolean primitiveType;
   private final boolean objectType;
 
   private final String getMethodName;
@@ -48,7 +48,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     this.asmType = Type.getType(desc);
 
     int sort = asmType.getSort();
-    this.primativeType = sort > Type.VOID && sort <= Type.DOUBLE;
+    this.primitiveType = sort > Type.VOID && sort <= Type.DOUBLE;
     this.objectType = sort == Type.OBJECT;
 
     this.getMethodDesc = "()" + desc;
@@ -65,13 +65,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     this.indexPosition = indexPosition;
   }
 
-//  /**
-//   * The index position of the field in the bean properties array.
-//   */
-//  public int getIndexPosition() {
-//    return indexPosition;
-//  }
-
   public String toString() {
     return fieldName;
   }
@@ -84,26 +77,10 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   }
 
   /**
-   * Return true if this is a primativeType.
+   * Return true if this is a primitiveType.
    */
   public boolean isPrimitiveType() {
-    return primativeType;
-  }
-
-  /**
-   * Return true if this is the public setter for this field according to bean
-   * naming convention.
-   */
-  public boolean isPersistentSetter(String methodDesc) {
-    return setMethodDesc.equals(methodDesc) && isInterceptSet();
-  }
-
-  /**
-   * Return true if this is the public getter for this field according to bean
-   * naming convention.
-   */
-  public boolean isPersistentGetter(String methodDesc) {
-    return getMethodDesc.equals(methodDesc) && isInterceptGet();
+    return primitiveType;
   }
 
   /**
@@ -226,7 +203,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * Append compare instructions if its a long, float or double.
    */
   public void appendCompare(MethodVisitor mv, ClassMeta classMeta) {
-    if (primativeType) {
+    if (primitiveType) {
       if (classMeta.isLog(4)) {
         classMeta.log(" ... getIdentity compare primitive field[" + fieldName + "] type[" + fieldDesc + "]");
       }
@@ -258,7 +235,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * </p>
    */
   public void appendValueOf(MethodVisitor mv) {
-    if (primativeType) {
+    if (primitiveType) {
       // use valueOf methods to return primitives as objects
       Type objectWrapperType = PrimitiveHelper.getObjectWrapper(asmType);
 
@@ -303,14 +280,14 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       }
     }
 
-    if (primativeType) {
+    if (primitiveType) {
       appendValueOf(mv);
     }
   }
 
   public void appendSwitchSet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
 
-    if (primativeType) {
+    if (primitiveType) {
       // convert Object to primitive first...
       Type objectWrapperType = PrimitiveHelper.getObjectWrapper(asmType);
 
