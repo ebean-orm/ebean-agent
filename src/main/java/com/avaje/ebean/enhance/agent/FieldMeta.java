@@ -467,12 +467,11 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, className, fieldName, fieldDesc);
         mv.visitTypeInsn(CHECKCAST, C_BEANCOLLECTION);
-        mv.visitFieldInsn(GETSTATIC, C_BEANCOLLECTION + "$ModifyListenMode", "ALL", "L"
-            + C_BEANCOLLECTION + "$ModifyListenMode;");
-        mv.visitMethodInsn(INVOKEINTERFACE, C_BEANCOLLECTION, "setModifyListening", "(L"
-            + C_BEANCOLLECTION + "$ModifyListenMode;)V", false);
+        mv.visitFieldInsn(GETSTATIC, C_BEANCOLLECTION + "$ModifyListenMode", "ALL", "L" + C_BEANCOLLECTION + "$ModifyListenMode;");
+        mv.visitMethodInsn(INVOKEINTERFACE, C_BEANCOLLECTION, "setModifyListening", "(L" + C_BEANCOLLECTION + "$ModifyListenMode;)V", true);
       }
     }
+
 
     mv.visitLabel(l4);
     mv.visitLineNumber(5, l4);
