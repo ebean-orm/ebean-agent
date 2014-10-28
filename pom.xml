@@ -9,7 +9,7 @@
 
   <groupId>org.avaje.ebeanorm</groupId>
   <artifactId>avaje-ebeanorm-agent</artifactId>
-  <version>4.1.9-SNAPSHOT</version>
+  <version>4.1.9</version>
   <packaging>jar</packaging>
 
   <name>avaje-ebeanorm-agent</name>
@@ -39,7 +39,7 @@
     <connection>scm:git:https://github.com/ebean-orm/avaje-ebeanorm-agent.git</connection>
     <developerConnection>scm:git:https://github.com/ebean-orm/avaje-ebeanorm-agent.git</developerConnection>
     <url>https://github.com/ebean-orm/avaje-ebeanorm-agent.git</url>
-    <tag>HEAD</tag>
+    <tag>avaje-ebeanorm-agent-4.1.9</tag>
   </scm>
 
   <dependencies>
