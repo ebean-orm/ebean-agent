@@ -13,6 +13,19 @@ import com.avaje.ebean.enhance.agent.EnhanceContext;
 public class ClassMetaReaderTests {
 
   @Test
+  public void checkOtherClass_withAnnotations() throws ClassNotFoundException {
+
+    ClassMetaReader classMetaReader = createClassMetaReader();
+
+    ClassLoader classLoader = this.getClass().getClassLoader();
+    ClassMeta classMeta = classMetaReader.get(true, "test.model.SomeClass", classLoader);
+
+    Assert.assertNotNull(classMeta);
+    Assert.assertFalse(classMeta.hasPersistentFields());
+    Assert.assertFalse(classMeta.isEntity());
+  }
+
+  @Test
   public void checkNoEnhanceMappedSuper_hasNoPersistentFields() throws ClassNotFoundException {
     
     ClassMetaReader classMetaReader = createClassMetaReader();
