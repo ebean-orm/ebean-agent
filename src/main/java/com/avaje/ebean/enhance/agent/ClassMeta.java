@@ -118,7 +118,7 @@ public class ClassMeta {
 	}
 
 	public boolean isCheckSuperClassForEntity() {
-    return isEntity() && !superClassName.equals(OBJECT_CLASS);
+    return !superClassName.equals(OBJECT_CLASS) && isCheckEntity();
   }
 
 	public String toString() {
@@ -286,7 +286,7 @@ public class ClassMeta {
 	}
 
 	/**
-	 * Return true if the class has an Entity, Embeddable, MappedSuperclass or LdapDomain annotation.
+	 * Return true if the class has an Entity, Embeddable, MappedSuperclass (with persistent fields).
 	 */
 	public boolean isEntity() {
 		if (classAnnotation.contains(EnhanceConstants.ENTITY_ANNOTATION)) {
@@ -296,16 +296,32 @@ public class ClassMeta {
 			return true;
 		}
 		if (classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
-		  // only 'interesting' if it has persistent fields. Some MappedSuperclass
-		  // like com.avaje.ebean.Model don't need any enhancement
-		  boolean persistentFields = hasPersistentFields();
+		  // only 'interesting' if it has persistent fields or equals/hashCode.
+		  // Some MappedSuperclass like com.avaje.ebean.Model don't need any enhancement
+		  boolean shouldEnhance = hasEqualsOrHashCode() || hasPersistentFields();
 		  if (isLog(8)) {
-		    log("mappedSuperClass with persistentFields: "+persistentFields);
+		    log("mappedSuperClass with equals/hashCode or persistentFields: "+shouldEnhance);
 		  }
-		  return persistentFields;
+		  return shouldEnhance;
 		}
 		return false;
 	}
+
+  /**
+   * Return true if the class has an Entity, Embeddable, or MappedSuperclass.
+   */
+  private boolean isCheckEntity() {
+    if (classAnnotation.contains(EnhanceConstants.ENTITY_ANNOTATION)) {
+      return true;
+    }
+    if (classAnnotation.contains(EnhanceConstants.EMBEDDABLE_ANNOTATION)) {
+      return true;
+    }
+    if (classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
+      return true;
+    }
+    return false;
+  }
 
 	/**
 	 * Return true for classes not already enhanced and yet annotated with entity, embeddable or mappedSuperclass.

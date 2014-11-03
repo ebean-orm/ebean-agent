@@ -93,7 +93,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 					if (superMeta == null){
 						classMeta.log("unable to read superMeta for "+superName);
 					} else {
-						classMeta.log("superMeta "+superName+" is not an entity/embedded/mappedsuperclass (with persistent fields)");
+						classMeta.log("superMeta "+superName+" is not an entity/embedded/mappedsuperclass (with equals or persistent fields)");
 					}
 				}	
 			}
