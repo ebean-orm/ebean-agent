@@ -85,6 +85,32 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setIsolation", "(L"+C_TXISOLATION+";)L"+C_TXSCOPE+";", false);
 		mv.visitInsn(POP);
 	}
+
+  private void setBatch(Object batch){
+
+    mv.visitVarInsn(ALOAD, posTxScope);
+    mv.visitLdcInsn(batch.toString());
+    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L"+C_PERSISTBATCH+";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatch", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
+    mv.visitInsn(POP);
+  }
+
+  private void setBatchOnCascade(Object batch){
+
+    mv.visitVarInsn(ALOAD, posTxScope);
+    mv.visitLdcInsn(batch.toString());
+    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L"+C_PERSISTBATCH+";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchOnCascade", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
+    mv.visitInsn(POP);
+  }
+
+  private void setBatchSize(Object batchSize){
+
+    mv.visitVarInsn(ALOAD, posTxScope);
+    IndexFieldWeaver.visitIntInsn(mv, Integer.parseInt(batchSize.toString()));
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchSize", "(I)L"+C_TXSCOPE+";", false);
+    mv.visitInsn(POP);
+  }
 	
 	private void setServerName(Object serverName){
 		
@@ -169,8 +195,23 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		if (txIsolation != null){
 			setTxIsolation(txIsolation);
 		}
-		
-		Object readOnly = annotationInfo.getValue("readOnly");
+
+    Object batch = annotationInfo.getValue("batch");
+    if (batch != null){
+      setBatch(batch);
+    }
+
+    Object batchOnCascade = annotationInfo.getValue("batchOnCascade");
+    if (batchOnCascade != null){
+      setBatchOnCascade(batchOnCascade);
+    }
+
+    Object batchSize = annotationInfo.getValue("batchSize");
+    if (batchSize != null){
+      setBatchSize(batchSize);
+    }
+
+    Object readOnly = annotationInfo.getValue("readOnly");
 		if (readOnly != null){
 			setReadOnly(readOnly);
 		}

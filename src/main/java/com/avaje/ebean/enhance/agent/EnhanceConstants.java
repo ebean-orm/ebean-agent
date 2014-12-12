@@ -43,6 +43,8 @@ public interface EnhanceConstants {
 
   public static final String C_TXISOLATION = "com/avaje/ebean/TxIsolation";
 
+  public static final String C_PERSISTBATCH = "com/avaje/ebean/config/PersistBatch";
+
   public static final String EBEAN_MODEL = "com/avaje/ebean/Model";
 
   public static final String EBEAN_PREFIX = "com/avaje/ebean";
