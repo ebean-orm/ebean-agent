@@ -134,29 +134,15 @@ public class IgnoreClassHelper {
       return true;
     }
     // ignore apache libraries
-    if (className.startsWith("org/apache/")) {
+    if (className.startsWith("org/apache/") || className.startsWith("org/eclipse/")) {
       return true;
     }
-    if (className.startsWith("org/eclipse/")) {
+    if (className.startsWith("com/fasterxml/jackson") || className.startsWith("org/joda/")) {
       return true;
     }
-    if (className.startsWith("org/joda/")) {
-      return true;
-    }
-    // ignore mysql jdbc drivers
-    if (className.startsWith("com/mysql/jdbc")) {
-      return true;
-    }
-    // ignore postgres jdbc drivers
-    if (className.startsWith("org/postgresql/")) {
-      return true;
-    }
-    // ignore h2
-    if (className.startsWith("org/h2/")) {
-      return true;
-    }
-    // ignore oracle
-    if (className.startsWith("oracle/")) {
+    // ignore various jdbc drivers
+    if (className.startsWith("org/postgresql/") || className.startsWith("com/mysql/jdbc")
+            || className.startsWith("org/h2/") || className.startsWith("oracle/")) {
       return true;
     }
     // ignore base groovy classes
