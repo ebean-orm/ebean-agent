@@ -8,6 +8,7 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.net.URL;
 import java.security.ProtectionDomain;
+import java.util.*;
 
 /**
  * A Class file Transformer that enhances entity beans.
@@ -44,6 +45,11 @@ public class Transformer implements ClassFileTransformer {
   private boolean performDetect;
   private boolean transformTransactional;
   private boolean transformEntityBeans;
+  final private Map<String, List<Throwable>> unexpectedExceptionsMap = new HashMap<String, List<Throwable>>();
+
+  public Map<String, List<Throwable>> getUnexpectedExceptions() {
+      return Collections.unmodifiableMap(unexpectedExceptionsMap);
+  }
 
   public Transformer(String extraClassPath, String agentArgs) {
     this(parseClassPaths(extraClassPath), agentArgs);
@@ -135,6 +141,10 @@ public class Transformer implements ClassFileTransformer {
       // a safety net for unexpected errors
       // in the transformation
       enhanceContext.log(e);
+        if (!unexpectedExceptionsMap.containsKey(className)) {
+            unexpectedExceptionsMap.put(className, new ArrayList<Throwable>());
+        }
+        unexpectedExceptionsMap.get(className).add(e);
       return null;
     }
   }
