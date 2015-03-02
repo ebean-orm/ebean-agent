@@ -45,10 +45,16 @@ public class Transformer implements ClassFileTransformer {
   private boolean performDetect;
   private boolean transformTransactional;
   private boolean transformEntityBeans;
-  final private Map<String, List<Throwable>> unexpectedExceptionsMap = new HashMap<String, List<Throwable>>();
+  private final Map<String, List<Throwable>> unexpectedExceptionsMap = new HashMap<String, List<Throwable>>();
 
+  /**
+   * Return a map of exceptions keyed by className.
+   * <p>
+   * These exceptions were thrown/caught as part of the transformation process.
+   * </p>
+   */
   public Map<String, List<Throwable>> getUnexpectedExceptions() {
-      return Collections.unmodifiableMap(unexpectedExceptionsMap);
+    return Collections.unmodifiableMap(unexpectedExceptionsMap);
   }
 
   public Transformer(String extraClassPath, String agentArgs) {
@@ -76,7 +82,7 @@ public class Transformer implements ClassFileTransformer {
   public void log(int level, String msg) {
     log(level, null, msg);
   }
-  
+
   private void log(int level, String className, String msg) {
     enhanceContext.log(level, className, msg);
   }
@@ -85,8 +91,7 @@ public class Transformer implements ClassFileTransformer {
     return enhanceContext.getLogLevel();
   }
 
-  public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
-      ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+  public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
     try {
 
@@ -138,13 +143,12 @@ public class Transformer implements ClassFileTransformer {
       return null;
 
     } catch (Exception e) {
-      // a safety net for unexpected errors
-      // in the transformation
       enhanceContext.log(e);
-        if (!unexpectedExceptionsMap.containsKey(className)) {
-            unexpectedExceptionsMap.put(className, new ArrayList<Throwable>());
-        }
-        unexpectedExceptionsMap.get(className).add(e);
+      // collect any unexpected errors in the transformation
+      if (!unexpectedExceptionsMap.containsKey(className)) {
+        unexpectedExceptionsMap.put(className, new ArrayList<Throwable>());
+      }
+      unexpectedExceptionsMap.get(className).add(e);
       return null;
     }
   }
@@ -243,8 +247,7 @@ public class Transformer implements ClassFileTransformer {
    */
   private ClassAdapterDetectEnhancement detect(ClassLoader classLoader, byte[] classfileBuffer) {
 
-    ClassAdapterDetectEnhancement detect = new ClassAdapterDetectEnhancement(classLoader,
-        enhanceContext);
+    ClassAdapterDetectEnhancement detect = new ClassAdapterDetectEnhancement(classLoader, enhanceContext);
 
     // skip what we can...
     ClassReader cr = new ClassReader(classfileBuffer);
