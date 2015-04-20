@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public abstract class BaseTest {
 
-  static String[] transformArgs = { "target/test-classes", "test/model/**", "debug=9" };
+  static String[] transformArgs = { "target/test-classes", "test/model/**", "debug=9;transactional=true" };
 
   static {
 //    try {

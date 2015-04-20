@@ -56,7 +56,14 @@
       <artifactId>persistence-api</artifactId>
       <version>1.0</version>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.avaje.ebeanorm</groupId>
+      <artifactId>avaje-ebeanorm</artifactId>
+      <version>4.5.5</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>

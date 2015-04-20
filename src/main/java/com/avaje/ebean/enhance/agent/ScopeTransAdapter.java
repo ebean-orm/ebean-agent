@@ -61,11 +61,13 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+		AnnotationVisitor av = super.visitAnnotation(desc, visible);
 		if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
 			transactional = true;
+			return new AnnotationInfoVisitor(null, annotationInfo, av);
+		} else {
+			return av;
 		}
-		AnnotationVisitor av = super.visitAnnotation(desc, visible);
-		return new AnnotationInfoVisitor(null, annotationInfo, av);
 	}
 
 	private void setTxType(Object txType){
