@@ -188,12 +188,29 @@ public class ClassMeta {
 	 */
 	public boolean isFieldPersistent(String fieldName) {
 
-		FieldMeta f = fields.get(fieldName);
-		if (f != null) {
-			return f.isPersistent();
-		}
-    return superMeta != null && superMeta.isFieldPersistent(fieldName);
+		FieldMeta f = getFieldPersistent(fieldName);
+		return (f == null) ? false: f.isPersistent();
 	}
+
+  /**
+   * Return true if the field is a persistent many field.
+   */
+  public boolean isFieldPersistentMany(String fieldName) {
+    FieldMeta f = getFieldPersistent(fieldName);
+    return (f != null && f.isPersistent() && f.isMany());
+  }
+
+  /**
+   * Return the field - null when not found.
+   */
+  public FieldMeta getFieldPersistent(String fieldName) {
+
+    FieldMeta f = fields.get(fieldName);
+    if (f != null) {
+      return f;
+    }
+    return (superMeta == null) ? null : superMeta.getFieldPersistent(fieldName);
+  }
 
 	/**
 	 * Return the list of fields local to this type (not inherited).
