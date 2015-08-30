@@ -1,6 +1,7 @@
 package com.avaje.ebean.enhance.agent;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Helper object used to ignore known classes. We only want to enhance the
@@ -17,14 +18,67 @@ import java.util.HashMap;
  */
 public class IgnoreClassHelper {
 
+  private static final Set<String> ignoreOneLevel = new HashSet<String>();
+
+  private static final Set<String> ignoreTwoLevel = new HashSet<String>();
+
+  private static final Set<String> ignoreThreeLevel = new HashSet<String>();
+
+  static  {
+    ignoreOneLevel.add("java");
+    ignoreOneLevel.add("javax");
+    ignoreOneLevel.add("play");
+    ignoreOneLevel.add("sbt");
+    ignoreOneLevel.add("scala");
+    ignoreOneLevel.add("sun");
+    ignoreOneLevel.add("sunw");
+    ignoreOneLevel.add("oracle");
+    ignoreOneLevel.add("groovy");
+    ignoreOneLevel.add("kotlin");
+    ignoreOneLevel.add("junit");
+    ignoreOneLevel.add("microsoft");
+
+    ignoreTwoLevel.add("com/sun");
+    ignoreTwoLevel.add("org/aopalliance");
+    ignoreTwoLevel.add("org/wc3");
+    ignoreTwoLevel.add("org/xml");
+    ignoreTwoLevel.add("org/junit");
+    ignoreTwoLevel.add("org/apache");
+    ignoreTwoLevel.add("org/eclipse");
+    ignoreTwoLevel.add("org/jetbrains");
+    ignoreTwoLevel.add("org/joda");
+    ignoreTwoLevel.add("com/mysql");
+    ignoreTwoLevel.add("org/postgresql");
+    ignoreTwoLevel.add("org/h2");
+    ignoreTwoLevel.add("com/h2database");
+    ignoreTwoLevel.add("org/hsqldb");
+    ignoreTwoLevel.add("org/ibex");
+    ignoreTwoLevel.add("org/sqlite");
+    ignoreTwoLevel.add("ch/qos");
+    ignoreTwoLevel.add("org/slf4j");
+    ignoreTwoLevel.add("org/codehaus");
+    ignoreTwoLevel.add("com/fasterxml");
+    ignoreTwoLevel.add("org/assertj");
+    ignoreTwoLevel.add("org/hamcrest");
+    ignoreTwoLevel.add("org/mockito");
+    ignoreTwoLevel.add("org/objenesis");
+    ignoreTwoLevel.add("org/objectweb");
+    ignoreTwoLevel.add("org/jboss");
+    ignoreTwoLevel.add("com/intellij");
+    ignoreTwoLevel.add("com/google");
+    ignoreTwoLevel.add("com/squareup");
+    ignoreTwoLevel.add("com/microsoft");
+
+    ignoreThreeLevel.add("com/avaje/ebeaninternal");
+    ignoreThreeLevel.add("com/avaje/ebean");
+    ignoreThreeLevel.add("org/avaje/ebean");
+  }
+
   private final String[] processPackages;
 
-  public IgnoreClassHelper(String agentArgs) {
-
-    HashMap<String, String> args = ArgParser.parse(agentArgs);
-    String packages = args.get("packages");
-    if (packages != null) {
-      String[] pkgs = packages.split(",");
+  public IgnoreClassHelper(String packages) {
+    if (packages != null && !packages.trim().isEmpty()) {
+      String[] pkgs = packages.trim().split(",");
       processPackages = new String[pkgs.length];
       for (int i = 0; i < pkgs.length; i++) {
         processPackages[i] = convertPackage(pkgs[i]);
@@ -42,7 +96,7 @@ public class IgnoreClassHelper {
     pkg = pkg.trim().replace('.', '/');
 
     if (pkg.endsWith("**")) {
-      // wild card, remove the ** 
+      // wild card, remove the **
       return pkg.substring(0, pkg.length() - 2);
 
     } else if (pkg.endsWith("*")) {
@@ -67,7 +121,7 @@ public class IgnoreClassHelper {
    * Any class at any depth under the package can be processed and all others
    * ignored.
    * </p>
-   * 
+   *
    * @return true if the class can be ignored
    */
   private boolean specificMatching(String className) {
@@ -89,7 +143,7 @@ public class IgnoreClassHelper {
    * enhancement on classes that we know are not part of the application code
    * and should not be enhanced.
    * </p>
-   * 
+   *
    * @param className
    *          the className of the class being defined.
    * @return true if this class should not be processed.
@@ -99,7 +153,7 @@ public class IgnoreClassHelper {
     if (className == null) {
       return true;
     }
-    
+
     className = className.replace('.', '/');
 
     // the special entity beans supplied by Ebean SHOULD be processed
@@ -116,43 +170,32 @@ public class IgnoreClassHelper {
     // we will ignore packages that we know we don't want to
     // process (they won't contain entity beans etc).
 
-    // the rest of Ebean should be ignored
-    if (className.startsWith(EnhanceConstants.EBEAN_PREFIX)) {
-      return true;
-    }
-    // ignore the JDK classes ...
-    if (className.startsWith("java/") || className.startsWith("javax/")) {
-      return true;
-    }
-    if (className.startsWith("sun/") || className.startsWith("sunw/") || className.startsWith("com/sun/")) {
-      return true;
-    }
-    if (className.startsWith("org/wc3/") || className.startsWith("org/xml/")) {
-      return true;
-    }
-    if (className.startsWith("org/junit/") || className.startsWith("junit/")) {
-      return true;
-    }
-    // ignore apache libraries
-    if (className.startsWith("org/apache/") || className.startsWith("org/eclipse/")) {
-      return true;
-    }
-    if (className.startsWith("com/fasterxml/jackson") || className.startsWith("org/joda/")) {
-      return true;
-    }
-    // ignore various jdbc drivers
-    if (className.startsWith("org/postgresql/") || className.startsWith("com/mysql/jdbc")
-            || className.startsWith("org/h2/") || className.startsWith("oracle/")) {
-      return true;
-    }
-    // ignore base groovy classes
-    if (className.startsWith("groovy/")) {
-      return true;
-    }
     // ignore $Proxy classes
     if (className.startsWith("$")) {
       return true;
     }
-    return false;
+
+    int firstSlash = className.indexOf('/');
+    if (firstSlash == -1) {
+      return true;
+    }
+    String firstPackage = className.substring(0, firstSlash);
+    if (ignoreOneLevel.contains(firstPackage)) {
+      return true;
+    }
+    int secondSlash = className.indexOf('/', firstSlash + 1);
+    if (secondSlash == -1) {
+      return false;
+    }
+    String secondPackage = className.substring(0, secondSlash);
+    if (ignoreTwoLevel.contains(secondPackage)) {
+      return true;
+    }
+    int thirdSlash = className.indexOf('/', secondSlash + 1);
+    if (thirdSlash == -1) {
+      return false;
+    }
+    String thirdPackage = className.substring(0, thirdSlash);
+    return ignoreThreeLevel.contains(thirdPackage);
   }
 }

@@ -32,14 +32,13 @@ public class EnhanceContext {
 
 	private HashMap<String, ClassMeta> map = new HashMap<String, ClassMeta>();
 
-	
 	/**
 	 * Construct a context for enhancement.
 	 */
 	public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs) {
 
-		this.ignoreClassHelper = new IgnoreClassHelper(agentArgs);
 		this.agentArgsMap = ArgParser.parse(agentArgs);
+    this.ignoreClassHelper = new IgnoreClassHelper(agentArgsMap.get("packages"));
 
 		this.logout = System.out;
 
@@ -60,7 +59,7 @@ public class EnhanceContext {
     this.transientInternalFields = getPropertyBoolean("transientInternalFields", false);
     this.checkNullManyFields = getPropertyBoolean("checkNullManyFields", true);
 	}
-	
+
 	public byte[] getClassBytes(String className, ClassLoader classLoader){
 		return classBytesReader.getClassBytes(className, classLoader);
 	}
