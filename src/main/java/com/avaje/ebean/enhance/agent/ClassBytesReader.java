@@ -11,5 +11,5 @@ public interface ClassBytesReader {
 	/**
 	 * Return the class bytes for a given class.
 	 */
-	public byte[] getClassBytes(String className, ClassLoader classLoader);
+	byte[] getClassBytes(String className, ClassLoader classLoader);
 }
