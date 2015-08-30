@@ -85,7 +85,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 			if (superMeta != null && superMeta.isEntity()){
 				// the superClass is an entity/embedded/mappedSuperclass...
 				classMeta.setSuperMeta(superMeta);
-				if (classMeta.isLog(1)){
+				if (classMeta.isLog(3)){
 					classMeta.log("entity extends "+superMeta.getDescription());
 				}
 			} else {
@@ -147,7 +147,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 		}
 		
 		if (isPropertyChangeListenerField(desc)) {
-			if (isLog(1)){
+			if (isLog(2)){
 				classMeta.log("Found existing PropertyChangeSupport field "+name);
 			}
 			// no interception on PropertyChangeSupport field

@@ -27,7 +27,7 @@ public class MethodPropertyChangeListener implements Opcodes, EnhanceConstants {
 	private static boolean alreadyExisting(ClassMeta classMeta, String method, String desc) {
 
 		if (classMeta.isExistingMethod(method, desc)){
-			if (classMeta.isLog(1)){
+			if (classMeta.isLog(2)){
 				classMeta.log("Existing method... "+method+desc+"  - not adding Ebean's implementation");
 			}
 			return true;

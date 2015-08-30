@@ -198,7 +198,7 @@ public class ClassAdapterDetectEnhancement extends ClassVisitor {
 			// static field...
 			if (isEbeanFieldMarker(name, desc)){
 				entityField = true;
-				if (isLog(1)){
+				if (isLog(4)){
 					log("Found ebean marker field "+name+" "+value);					
 				}				
 			}

@@ -28,13 +28,13 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		if (meta.hasEqualsOrHashCode()) {
 			// already has a equals or hashcode method...
 			// so we will not add our identity based one
-			if (meta.isLog(1)) {
+			if (meta.isLog(2)) {
 				meta.log("already has a equals() or hashCode() method. Not adding the identity based one.");
 			}
 		} else {
 			if (meta.isLog(2)) {
 				meta.log("adding equals() hashCode() and _ebean_getIdentity() with Id field " 
-					+ idFieldMeta.getName()+ " index:" + idFieldIndex+" primative:"+idFieldMeta.isPrimitiveType());
+					+ idFieldMeta.getName()+ " index:" + idFieldIndex+" primitive:"+idFieldMeta.isPrimitiveType());
 			}
 			if (idFieldMeta.isPrimitiveType()){
 				addGetIdentityPrimitive(cv, meta, idFieldMeta);

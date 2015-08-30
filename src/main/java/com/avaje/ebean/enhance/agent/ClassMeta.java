@@ -428,7 +428,7 @@ public class ClassMeta {
 		if (name.startsWith("_ebean")) {
 			// can occur when reading inheritance information on
 			// a entity that has already been enhanced
-			if (isLog(0)) {
+			if (isLog(5)) {
 				log("... ignore field " + name);
 			}
 		} else {

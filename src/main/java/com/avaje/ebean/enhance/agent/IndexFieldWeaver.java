@@ -112,7 +112,7 @@ public class IndexFieldWeaver implements Opcodes {
 
 		if (classMeta.hasEqualsOrHashCode()) {
 			// equals or hashCode is already implemented
-			if (classMeta.isLog(1)) {
+			if (classMeta.isLog(3)) {
 				classMeta.log("... skipping add equals() ... already has equals() hashcode() methods");
 			}
 			return;
@@ -145,7 +145,7 @@ public class IndexFieldWeaver implements Opcodes {
 
 		} else if (idIndex == -1) {
 			// there are no id fields local to this type
-			if (classMeta.isLog(1)) {
+			if (classMeta.isLog(3)) {
 				classMeta.log("has no id fields on this type. Not adding equals() method. Expected when Id property on superclass.");
 			}
 
