@@ -15,7 +15,7 @@ public class MainTransform {
 		}
 
 		String transformArgs = "debug=1";
-		String inDir = "D:/dev/workspace/ebeanExample/bin";
+		String inDir = "home/rob/dev/workspace/ebeanExample/bin";
 		String pkg = "app/data/test";
 
 		if (args.length > 0) {
@@ -33,7 +33,7 @@ public class MainTransform {
 
 		Transformer t = new Transformer("", transformArgs);
 
-		OfflineFileTransform ft = new OfflineFileTransform(t, cl, inDir, inDir);
+		OfflineFileTransform ft = new OfflineFileTransform(t, cl, inDir);
 
 		ft.process(pkg);
 

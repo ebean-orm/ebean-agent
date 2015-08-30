@@ -17,9 +17,6 @@ import java.io.File;
  * <ul>
  * <li> <b>classSource</b> This is the root directory where the .class files
  * are found. </li>
- * <li> <b>classDestination</b> This is the root directory where the .class
- * files are written to. If this is left out then this defaults to the
- * <b>classSource</b>. </li>
  * <li> <b>packages</b> A comma delimited list of packages that is searched for
  * classes that need to be enhanced. If the package ends with ** or * then all
  * subpackages are also searched. </li>
@@ -47,8 +44,6 @@ public class AntEnhanceTask extends Task {
 
 	String classSource;
 
-	String classDestination;
-
 	String transformArgs;
 
 	String packages;
@@ -72,7 +67,7 @@ public class AntEnhanceTask extends Task {
 		Transformer t = new Transformer(extraClassPath.toString(), transformArgs);
 	
 		ClassLoader cl = AntEnhanceTask.class.getClassLoader();
-		OfflineFileTransform ft = new OfflineFileTransform(t, cl, classSource, classDestination);
+		OfflineFileTransform ft = new OfflineFileTransform(t, cl, classSource);
 
 		ft.process(packages);
 	}
@@ -96,16 +91,6 @@ public class AntEnhanceTask extends Task {
 	 */
 	public void setClassSource(String source) {
 		this.classSource = source;
-	}
-
-	/**
-	 * Set the destination directory where we will put the transformed classes.
-	 * <p>
-	 * This is commonly the same as the classSource directory.
-	 * </p>
-	 */
-	public void setClassDestination(String destination) {
-		this.classDestination = destination;
 	}
 
 	/**
