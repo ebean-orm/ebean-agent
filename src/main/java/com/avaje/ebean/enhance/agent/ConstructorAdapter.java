@@ -1,7 +1,12 @@
 package com.avaje.ebean.enhance.agent;
 
+import com.avaje.ebean.enhance.asm.AnnotationVisitor;
+import com.avaje.ebean.enhance.asm.Attribute;
+import com.avaje.ebean.enhance.asm.Handle;
+import com.avaje.ebean.enhance.asm.Label;
 import com.avaje.ebean.enhance.asm.MethodVisitor;
 import com.avaje.ebean.enhance.asm.Opcodes;
+import com.avaje.ebean.enhance.asm.TypePath;
 
 /**
  * Modify the constructor to additionally initialise the entityBeanIntercept
@@ -23,99 +28,70 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
 	private boolean constructorInitializationDone;
 
   /**
-   * Holds an init instruction to see if it is an init of a persistent
-   * many property. Init of a ArrayList, HashSet, LinkedHashSet.
+   * Holds an init instructions to see if it is an init of a OneToMany or ManyToMany.
    */
-  private ConsumedInit consumedInit;
+  private final ConstructorDeferredCode deferredCode;
 
 	public ConstructorAdapter(MethodVisitor mv, ClassMeta meta, String constructorDesc) {
 		super(Opcodes.ASM5, mv);
 		this.meta = meta;
 		this.className = meta.getClassName();
 		this.constructorDesc = constructorDesc;
+    this.deferredCode = new ConstructorDeferredCode(meta, mv);
 	}
 
-	@Override
-	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+  @Override
+  public void visitVarInsn(int opcode, int var) {
+    if (!deferredCode.deferVisitVarInsn(opcode, var)) {
+      super.visitVarInsn(opcode, var);
+    }
+  }
 
-    if (isCollectionInit(opcode, owner, name, desc)) {
-      // consume this init to see if the next call is a PUTFIELD to a persistent many property
-      // and if it is we consume both instructions (getters against collections are intercepted)
-      consumedInit = new ConsumedInit(opcode, owner, name, desc, itf);
-    } else {
+  @Override
+  public void visitTypeInsn(int opcode, String type) {
+    if (!deferredCode.deferVisitTypeInsn(opcode, type)) {
+      super.visitTypeInsn(opcode, type);
+    }
+  }
+
+  @Override
+  public void visitInsn(int opcode) {
+    if (!deferredCode.deferVisitInsn(opcode)) {
+      super.visitInsn(opcode);
+    }
+  }
+
+  @Override
+	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+    if (!deferredCode.deferVisitMethodInsn(opcode, owner, name, desc, itf)) {
       super.visitMethodInsn(opcode, owner, name, desc, itf);
       addInitialisationIfRequired(opcode, owner, name, desc);
     }
 	}
 
-  /**
-   * Return true if this is an init of a ArrayList, HashSet, LinkedHashSet.
-   * <p>
-   *   If so we hold this to see if the next instruction is a PUTFIELD on
-   *   a persistent many and if so we consume both instructions.
-   * </p>
-   */
-  private boolean isCollectionInit(int opcode, String owner, String name, String desc) {
-    if (opcode == INVOKESPECIAL && name.equals("<init>") && desc.equals("()V")) {
-      if ("java/util/ArrayList".equals(owner)
-          || "java/util/HashSet".equals(owner)
-          || "java/util/LinkedHashSet".equals(owner)) {
-        return true;
-      }
-      if (meta.isLog(4)) {
-        meta.log("... not consuming many owner:" + owner + " name:" + name + " desc:" + desc);
-      }
-    }
-    return false;
-  }
-
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 
-    if (opcode != Opcodes.PUTFIELD) {
+    if (deferredCode.consumeVisitFieldInsn(opcode, owner, name, desc)) {
+      // we have removed all the instructions initialising the many property
+      return;
+    }
+
+    FieldMeta fieldMeta = meta.getFieldPersistent(name);
+    if (fieldMeta == null || !fieldMeta.isPersistent()) {
+      // leave transient fields in constructor alone
       if (meta.isLog(3)) {
-        meta.log("... visitFieldInsn - " + opcode + " owner:" + owner + ":" + name + ":" + desc);
+        meta.log("... visitFieldInsn (in constructor but non-persistent)- " + opcode + " owner:" + owner + ":" + name + ":" + desc);
       }
       super.visitFieldInsn(opcode, owner, name, desc);
-      consumedInit = null;
 
     } else {
-      if (consumedInit != null) {
-        // check for a PUTFIELD on a persistent many
-        if (meta.isFieldPersistentMany(name)) {
-          // consuming both the init and the putfield as the getter on
-          // the many will initialise the many when needed
-          if (meta.isLog(2)) {
-            meta.log("... consumed collection init and PUTFIELD on persistent many:" + name + " from constructor, type:"+consumedInit.owner);
-          }
-          consumedInit = null;
-          return;
-
-        } else {
-          if (meta.isLog(2)) {
-            meta.log("... restore collection init on field "+name+" (non persistent field) " + consumedInit);
-          }
-          super.visitMethodInsn(consumedInit.opcode, consumedInit.owner, consumedInit.name, consumedInit.desc, consumedInit.itf);
-          consumedInit = null;
-        }
+      // intercept PUTFIELD that happened in the constructor
+      String methodName = "_ebean_set_" + name;
+      String methodDesc = "(" + desc + ")V";
+      if (meta.isLog(2)) {
+        meta.log("... Constructor PUTFIELD replaced with:" + methodName + methodDesc);
       }
-
-      FieldMeta fieldMeta = meta.getFieldPersistent(name);
-      if (fieldMeta == null || !fieldMeta.isPersistent()) {
-        // leave transient fields in constructor alone
-        if (meta.isLog(3)) {
-          meta.log("... visitFieldInsn (in constructor but non-persistent)- " + opcode + " owner:" + owner + ":" + name + ":" + desc);
-        }
-        super.visitFieldInsn(opcode, owner, name, desc);
-
-      } else {
-        // intercept PUTFIELD that happened in the constructor
-        String methodName = "_ebean_set_" + name;
-        String methodDesc = "(" + desc + ")V";
-        if (meta.isLog(2)) {
-          meta.log("... Constructor PUTFIELD replaced with:" + methodName + methodDesc);
-        }
-        super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
-      }
+      super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
     }
   }
 	
@@ -173,31 +149,154 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
 		}
 	}
 
-  /**
-   * Used to hold an init of an ArrayList or HashSet in case it
-   * is just set to a 'many' property in which case we can just
-   * consume it (as gets against the collection types are intercepted
-   * and collections always initialised to handle change detection).
-   */
-  static class ConsumedInit {
 
-    int opcode;
-    String owner;
-    String name;
-    String desc;
-    boolean itf;
-
-    public ConsumedInit(int opcode, String owner, String name, String desc, boolean itf) {
-      this.opcode = opcode;
-      this.owner = owner;
-      this.name = name;
-      this.desc = desc;
-      this.itf = itf;
-    }
-
-    public String toString() {
-      return owner + " name:"+name+" desc:"+desc;
-    }
+  @Override
+  public void visitParameter(String name, int access) {
+    deferredCode.flush();
+    super.visitParameter(name, access);
   }
 
+  @Override
+  public AnnotationVisitor visitAnnotationDefault() {
+    deferredCode.flush();
+    return super.visitAnnotationDefault();
+  }
+
+  @Override
+  public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+    deferredCode.flush();
+    return super.visitAnnotation(desc, visible);
+  }
+
+  @Override
+  public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
+    deferredCode.flush();
+    return super.visitTypeAnnotation(typeRef, typePath, desc, visible);
+  }
+
+  @Override
+  public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
+    deferredCode.flush();
+    return super.visitParameterAnnotation(parameter, desc, visible);
+  }
+
+  @Override
+  public void visitAttribute(Attribute attr) {
+    deferredCode.flush();
+    super.visitAttribute(attr);
+  }
+
+  @Override
+  public void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack) {
+    deferredCode.flush();
+    super.visitFrame(type, nLocal, local, nStack, stack);
+  }
+
+  @Override
+  public void visitIntInsn(int opcode, int operand) {
+    deferredCode.flush();
+    super.visitIntInsn(opcode, operand);
+  }
+
+  @Override
+  public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+    deferredCode.flush();
+    super.visitMethodInsn(opcode, owner, name, desc);
+  }
+
+  @Override
+  public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs) {
+    deferredCode.flush();
+    super.visitInvokeDynamicInsn(name, desc, bsm, bsmArgs);
+  }
+
+  @Override
+  public void visitJumpInsn(int opcode, Label label) {
+    deferredCode.flush();
+    super.visitJumpInsn(opcode, label);
+  }
+
+  @Override
+  public void visitLabel(Label label) {
+    deferredCode.flush();
+    super.visitLabel(label);
+  }
+
+  @Override
+  public void visitLdcInsn(Object cst) {
+    deferredCode.flush();
+    super.visitLdcInsn(cst);
+  }
+
+  @Override
+  public void visitIincInsn(int var, int increment) {
+    deferredCode.flush();
+    super.visitIincInsn(var, increment);
+  }
+
+  @Override
+  public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels) {
+    deferredCode.flush();
+    super.visitTableSwitchInsn(min, max, dflt, labels);
+  }
+
+  @Override
+  public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
+    deferredCode.flush();
+    super.visitLookupSwitchInsn(dflt, keys, labels);
+  }
+
+  @Override
+  public void visitMultiANewArrayInsn(String desc, int dims) {
+    deferredCode.flush();
+    super.visitMultiANewArrayInsn(desc, dims);
+  }
+
+  @Override
+  public AnnotationVisitor visitInsnAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
+    deferredCode.flush();
+    return super.visitInsnAnnotation(typeRef, typePath, desc, visible);
+  }
+
+  @Override
+  public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
+    deferredCode.flush();
+    super.visitTryCatchBlock(start, end, handler, type);
+  }
+
+  @Override
+  public AnnotationVisitor visitTryCatchAnnotation(int typeRef, TypePath typePath, String desc, boolean visible) {
+    deferredCode.flush();
+    return super.visitTryCatchAnnotation(typeRef, typePath, desc, visible);
+  }
+
+  @Override
+  public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
+    deferredCode.flush();
+    super.visitLocalVariable(name, desc, signature, start, end, index);
+  }
+
+  @Override
+  public AnnotationVisitor visitLocalVariableAnnotation(int typeRef, TypePath typePath, Label[] start, Label[] end, int[] index, String desc, boolean visible) {
+    deferredCode.flush();
+    return super.visitLocalVariableAnnotation(typeRef, typePath, start, end, index, desc, visible);
+  }
+
+  @Override
+  public void visitLineNumber(int line, Label start) {
+    deferredCode.flush();
+    super.visitLineNumber(line, start);
+  }
+
+  @Override
+  public void visitMaxs(int maxStack, int maxLocals) {
+    deferredCode.flush();
+    super.visitMaxs(maxStack, maxLocals);
+  }
+
+  @Override
+  public void visitEnd() {
+    deferredCode.flush();
+    super.visitEnd();
+  }
 }
