@@ -1,6 +1,10 @@
 package com.avaje.ebean.enhance.agent;
 
-import com.avaje.ebean.enhance.asm.*;
+import com.avaje.ebean.enhance.asm.ClassVisitor;
+import com.avaje.ebean.enhance.asm.Label;
+import com.avaje.ebean.enhance.asm.MethodVisitor;
+import com.avaje.ebean.enhance.asm.Opcodes;
+import com.avaje.ebean.enhance.asm.Type;
 
 import java.util.HashSet;
 
@@ -150,7 +154,8 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * Return true if this is a transient field.
    */
   public boolean isTransient() {
-    return annotations.contains("Ljavax/persistence/Transient;");
+    return annotations.contains("Ljavax/persistence/Transient;")
+        || annotations.contains("Lcom/avaje/ebean/annotation/Draft;");
   }
 
   /**
