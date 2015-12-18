@@ -47,16 +47,6 @@ public class Transformer implements ClassFileTransformer {
   private boolean transformEntityBeans;
   private final Map<String, List<Throwable>> unexpectedExceptionsMap = new HashMap<String, List<Throwable>>();
 
-  /**
-   * Return a map of exceptions keyed by className.
-   * <p>
-   * These exceptions were thrown/caught as part of the transformation process.
-   * </p>
-   */
-  public Map<String, List<Throwable>> getUnexpectedExceptions() {
-    return Collections.unmodifiableMap(unexpectedExceptionsMap);
-  }
-
   public Transformer(String extraClassPath, String agentArgs) {
     this(parseClassPaths(extraClassPath), agentArgs);
   }
@@ -70,6 +60,16 @@ public class Transformer implements ClassFileTransformer {
     this.performDetect = enhanceContext.getPropertyBoolean("detect", true);
     this.transformTransactional = enhanceContext.getPropertyBoolean("transactional", true);
     this.transformEntityBeans = enhanceContext.getPropertyBoolean("entity", true);
+  }
+
+  /**
+   * Return a map of exceptions keyed by className.
+   * <p>
+   * These exceptions were thrown/caught as part of the transformation process.
+   * </p>
+   */
+  public Map<String, List<Throwable>> getUnexpectedExceptions() {
+    return Collections.unmodifiableMap(unexpectedExceptionsMap);
   }
 
   /**
@@ -237,8 +237,7 @@ public class Transformer implements ClassFileTransformer {
       return new URL[0];
     }
 
-    String[] stringPaths = extraClassPath.split(";");
-    return UrlPathHelper.convertToUrl(stringPaths);
+    return UrlPathHelper.convertToUrl(extraClassPath.split(";"));
   }
 
   /**
