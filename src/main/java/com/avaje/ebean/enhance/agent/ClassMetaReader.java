@@ -50,21 +50,19 @@ public class ClassMetaReader {
 	private ClassMeta readFromResource(boolean readMethodAnnotations, String className, ClassLoader classLoader)
 			throws ClassNotFoundException {
 
-			
 		byte[] classBytes = enhanceContext.getClassBytes(className, classLoader);
 		if (classBytes == null){
-		  if (enhanceContext.isLog(1)) {
+		  if (enhanceContext.isLog(2)) {
 	      enhanceContext.log(null, "Could not read meta data for class ["+className+"].");		    
 		  }
 			return null;
 		} else {
-			if (enhanceContext.isLog(3)) {
+			if (enhanceContext.isLog(5)) {
 				enhanceContext.log(className, "read ClassMeta");
 			}
 		}
 		ClassReader cr = new ClassReader(classBytes);
 		ClassMetaReaderVisitor ca = new ClassMetaReaderVisitor(readMethodAnnotations, enhanceContext);
-
 		cr.accept(ca, 0);
 
 		return ca.getClassMeta();
