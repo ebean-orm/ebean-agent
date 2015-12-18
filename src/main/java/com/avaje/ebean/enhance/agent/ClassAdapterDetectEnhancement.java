@@ -116,7 +116,7 @@ public class ClassAdapterDetectEnhancement extends ClassVisitor {
 			}
 		}
 
-		if (isLog(2)){
+		if (isLog(4)){
 			log("interfaces:  entityInterface["+entityInterface+"] transactional["+enhancedTransactional+"]");					
 		}
 		
