@@ -133,11 +133,11 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 			// static field...
       if (isEbeanFieldMarker(name)) {
         classMeta.setAlreadyEnhanced(true);
-        if (isLog(2)) {
+        if (isLog(4)) {
           log("Found ebean marker field " + name + " " + value);
         }
       } else {
-        if (isLog(2)) {
+        if (isLog(4)) {
           log("Skip intercepting static field " + name);
         }
       }
@@ -155,7 +155,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 		}
 		
 		if ((access & Opcodes.ACC_TRANSIENT) != 0) {
-			if (isLog(2)){
+			if (isLog(3)){
 				log("Skip intercepting transient field "+name);					
 			}			
 			// no interception of transient fields
@@ -322,7 +322,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 
 		if ((access & Opcodes.ACC_STATIC) != 0) {
 			// no interception of static methods?
-			if (isLog(2)){
+			if (isLog(4)){
 				log("Skip intercepting static method "+name);					
 			}
 			return false;
