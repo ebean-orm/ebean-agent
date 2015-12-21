@@ -2,6 +2,9 @@ package com.avaje.ebean.enhance.agent;
 
 import org.junit.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -11,7 +14,7 @@ public class IgnoreClassHelperTest {
   @Test
   public void test() {
 
-    IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper("");
+    IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper(new HashSet<String>());
 
     assertTrue(ignoreClassHelper.isIgnoreClass("java/lang/Boolean"));
     assertTrue(ignoreClassHelper.isIgnoreClass("java/Something"));
@@ -48,7 +51,11 @@ public class IgnoreClassHelperTest {
   @Test
   public void testWithPackages() {
 
-    IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper("foo,bar/pixie");
+    Set<String> packages = new HashSet<String>();
+    packages.add("foo");
+    packages.add("bar/pixie");
+
+    IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper(packages);
 
     assertTrue(ignoreClassHelper.isIgnoreClass("java/lang/Boolean"));
     assertTrue(ignoreClassHelper.isIgnoreClass("org/joda/LocalDate"));

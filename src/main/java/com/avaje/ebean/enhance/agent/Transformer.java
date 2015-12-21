@@ -52,11 +52,14 @@ public class Transformer implements ClassFileTransformer {
   }
 
   public Transformer(URL[] extraClassPath, String agentArgs) {
-    this(new ClassPathClassBytesReader(extraClassPath), agentArgs);
+    this(new ClassPathClassBytesReader(extraClassPath), agentArgs, null, null);
   }
 
-  public Transformer(ClassBytesReader r, String agentArgs) {
-    this.enhanceContext = new EnhanceContext(r, agentArgs);
+  public Transformer(ClassBytesReader bytesReader, String agentArgs, ClassLoader manifestClassLoader, Set<String> initialPackages) {
+    if (manifestClassLoader == null) {
+      manifestClassLoader = getClass().getClassLoader();
+    }
+    this.enhanceContext = new EnhanceContext(bytesReader, agentArgs, manifestClassLoader, initialPackages);
     this.performDetect = enhanceContext.getPropertyBoolean("detect", true);
     this.transformTransactional = enhanceContext.getPropertyBoolean("transactional", true);
     this.transformEntityBeans = enhanceContext.getPropertyBoolean("entity", true);
@@ -75,7 +78,7 @@ public class Transformer implements ClassFileTransformer {
   /**
    * Change the logout to something other than system out.
    */
-  public void setLogout(PrintStream logout) {
+  public void setLogout(MessageOutput logout) {
     this.enhanceContext.setLogout(logout);
   }
 

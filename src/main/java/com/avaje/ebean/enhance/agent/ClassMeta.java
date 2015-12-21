@@ -1,8 +1,11 @@
 package com.avaje.ebean.enhance.agent;
 
-import com.avaje.ebean.enhance.asm.*;
+import com.avaje.ebean.enhance.asm.AnnotationVisitor;
+import com.avaje.ebean.enhance.asm.ClassVisitor;
+import com.avaje.ebean.enhance.asm.FieldVisitor;
+import com.avaje.ebean.enhance.asm.MethodVisitor;
+import com.avaje.ebean.enhance.asm.Opcodes;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -19,7 +22,7 @@ public class ClassMeta {
 
 	private static final String OBJECT_CLASS = Object.class.getName().replace('.', '/');
 	
-	private final PrintStream logout;
+	private final MessageOutput logout;
 
 	private final int logLevel;
 
@@ -66,7 +69,7 @@ public class ClassMeta {
 	
   private List<FieldMeta> allFields;
   
-	public ClassMeta(EnhanceContext enhanceContext, int logLevel, PrintStream logout) {
+	public ClassMeta(EnhanceContext enhanceContext, int logLevel, MessageOutput logout) {
 		this.enhanceContext = enhanceContext;
 		this.logLevel = logLevel;
 		this.logout = logout;

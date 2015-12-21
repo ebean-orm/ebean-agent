@@ -1,7 +1,9 @@
 package com.avaje.ebean.enhance.agent;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,21 +28,30 @@ public class EnhanceContext {
 
 	private final ClassBytesReader classBytesReader;
 
-	private PrintStream logout;
+	private MessageOutput logout;
 
 	private int logLevel;
 
 	private HashMap<String, ClassMeta> map = new HashMap<String, ClassMeta>();
 
-	/**
-	 * Construct a context for enhancement.
-	 */
-	public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs) {
+  /**
+   * Construct a context for enhancement.
+   *
+   * @param classBytesReader    used to read class meta data from raw bytes
+   * @param agentArgs           command line arguments for debug level etc
+   * @param manifestClassLoader classLoader used to read ebean.mf manifest
+   * @param initialPackages     initial set of packages entity beans are found in
+   */
+  public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, ClassLoader manifestClassLoader, Set<String> initialPackages) {
 
-		this.agentArgsMap = ArgParser.parse(agentArgs);
-    this.ignoreClassHelper = new IgnoreClassHelper(agentArgsMap.get("packages"));
+    this.agentArgsMap = ArgParser.parse(agentArgs);
 
-		this.logout = System.out;
+    AgentManifestReader reader = new AgentManifestReader(initialPackages);
+    reader.readManifests(manifestClassLoader);
+    reader.addRaw(agentArgsMap.get("packages"));
+    this.ignoreClassHelper = new IgnoreClassHelper(reader.getPackages());
+
+		this.logout = new SysoutMessageOutput(System.out);
 
 		this.classBytesReader = classBytesReader;
 		this.reader = new ClassMetaReader(this);
@@ -50,8 +61,7 @@ public class EnhanceContext {
 			try {
 				logLevel = Integer.parseInt(debugValue);
 			} catch (NumberFormatException e) {
-				String msg = "Agent debug argument [" + debugValue+ "] is not an int?";
-				logger.log(Level.WARNING, msg);
+				logger.log(Level.WARNING, "Agent debug argument [" + debugValue+ "] is not an int?");
 			}
 		}
 
@@ -92,7 +102,7 @@ public class EnhanceContext {
 	/**
 	 * Change the logout to something other than system out.
 	 */
-	public void setLogout(PrintStream logout) {
+	public void setLogout(MessageOutput logout) {
 		this.logout = logout;
 	}
 
@@ -169,12 +179,24 @@ public class EnhanceContext {
 		return logLevel >= level;
 	}
 
-	/**
-	 * Log an error.
-	 */
-	public void log(Throwable e) {
-		e.printStackTrace(logout);
-	}
+  /**
+   * Log an error.
+   */
+  public void log(Throwable e) {
+    e.printStackTrace(
+        new PrintStream(new ByteArrayOutputStream()) {
+          @Override
+          public void print(String message) {
+            logout.println(message);
+          }
+
+          @Override
+          public void println(String message) {
+            logout.println(message);
+          }
+        });
+  }
+
 
 	/**
 	 * Return the log level.

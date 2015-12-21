@@ -1,11 +1,14 @@
 package com.avaje.ebean.enhance.ant;
 
+import com.avaje.ebean.enhance.agent.InputStreamTransform;
+import com.avaje.ebean.enhance.agent.Transformer;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.instrument.IllegalClassFormatException;
-
-import com.avaje.ebean.enhance.agent.InputStreamTransform;
-import com.avaje.ebean.enhance.agent.Transformer;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Transforms class files when they are on the file system.
@@ -50,7 +53,24 @@ public class OfflineFileTransform {
 			return dir;
 		}
 	}
-	
+
+  /**
+   * Process the packageNames as comma delimited string.
+   */
+  public void process(String packageNames) {
+
+    if (packageNames == null) {
+      // just process all directories
+      processPackage("");
+      return;
+    }
+
+    Set<String> pkgNames = new LinkedHashSet<String>();
+    Collections.addAll(pkgNames, packageNames.split(","));
+
+    process(pkgNames);
+  }
+
 	/**
 	 * Process all the comma delimited list of packages.
 	 * <p>
@@ -58,44 +78,40 @@ public class OfflineFileTransform {
 	 * system, and the class files are found and processed.
 	 * </p>
 	 */
-	public void process(String packageNames) {
+	public void process(Set<String> packageNames) {
 
-		if (packageNames == null) {
-			processPackage("", true);
-			return;
-		}
+    if (packageNames == null || packageNames.isEmpty()) {
+      // just process all directories
+      inputStreamTransform.log(2, "processing all directories (as no explicit packages)");
+      processPackage("");
+      return;
+    }
 
-		String[] pkgs = packageNames.split(",");
-		for (int i = 0; i < pkgs.length; i++) {
+		for (String pkgName : packageNames) {
 
-			String pkg = pkgs[i].trim().replace('.', '/');
+			String pkg = pkgName.trim().replace('.', '/');
 
-			boolean recurse = false;
 			if (pkg.endsWith("**")) {
-				recurse = true;
 				pkg = pkg.substring(0, pkg.length() - 2);
 			} else if (pkg.endsWith("*")) {
-				recurse = true;
 				pkg = pkg.substring(0, pkg.length() - 1);
 			}
 			
 			pkg = trimSlash(pkg);
 
-			processPackage(pkg, recurse);
+			processPackage(pkg);
 		}
 	}
 
-	private void processPackage(String dir, boolean recurse) {
+	private void processPackage(String dir) {
 
-		inputStreamTransform.log(1, "transform> pkg: " + dir);
+		inputStreamTransform.log(3, "transform> pkg: " + dir);
 
-		String dirPath = inDir + "/" + dir;
-		File d = new File(dirPath);
-		if (!d.exists()) {
-      File currentDir = new File(".");
-			String m = "File not found " + dirPath+"  currentDir:"+currentDir.getAbsolutePath();
-			throw new RuntimeException(m);
-		}
+    String dirPath = inDir + "/" + dir;
+    File d = new File(dirPath);
+    if (!d.exists()) {
+      throw new RuntimeException("File not found " + dirPath + "  currentDir:" + new File(".").getAbsolutePath());
+    }
 
 		File[] files = d.listFiles();
 
@@ -105,10 +121,8 @@ public class OfflineFileTransform {
 			for (int i = 0; i < files.length; i++) {
 				file = files[i];
 				if (file.isDirectory()) {
-					if (recurse) {
-						String subdir = dir + "/" + file.getName();
-						processPackage(subdir, true);
-					}
+          String subDir = dir + "/" + file.getName();
+          processPackage(subDir);
 				} else {
 					String fileName = file.getName();
 					if (fileName.endsWith(".java")) {
@@ -123,8 +137,7 @@ public class OfflineFileTransform {
 
 		} catch (Exception e) {
 			String fileName = file == null ? "null" : file.getName();
-			String m = "Error transforming file " + fileName;
-			throw new RuntimeException(m, e);
+			throw new RuntimeException("Error transforming file " + fileName, e);
 		}
 
 	}
