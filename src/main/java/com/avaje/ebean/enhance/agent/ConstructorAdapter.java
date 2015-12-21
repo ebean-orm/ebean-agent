@@ -76,10 +76,18 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
       return;
     }
 
+    if (opcode != PUTFIELD) {
+      if (meta.isLog(4)) {
+        meta.log("... visitFieldInsn (in constructor but not PUTFIELD so ignore) - " + opcode + " owner:" + owner + ":" + name + ":" + desc);
+      }
+      super.visitFieldInsn(opcode, owner, name, desc);
+      return;
+    }
+
     FieldMeta fieldMeta = meta.getFieldPersistent(name);
     if (fieldMeta == null || !fieldMeta.isPersistent()) {
       // leave transient fields in constructor alone
-      if (meta.isLog(3)) {
+      if (meta.isLog(4)) {
         meta.log("... visitFieldInsn (in constructor but non-persistent)- " + opcode + " owner:" + owner + ":" + name + ":" + desc);
       }
       super.visitFieldInsn(opcode, owner, name, desc);
@@ -88,7 +96,7 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
       // intercept PUTFIELD that happened in the constructor
       String methodName = "_ebean_set_" + name;
       String methodDesc = "(" + desc + ")V";
-      if (meta.isLog(2)) {
+      if (meta.isLog(3)) {
         meta.log("... Constructor PUTFIELD replaced with:" + methodName + methodDesc);
       }
       super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
