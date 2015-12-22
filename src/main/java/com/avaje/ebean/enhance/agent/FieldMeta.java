@@ -252,23 +252,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   }
 
   /**
-   * Used to copy field values from the current instance to another.
-   */
-  public void addFieldCopy(MethodVisitor mv, ClassMeta classMeta) {
-
-    if (isLocalField(classMeta)) {
-      mv.visitFieldInsn(GETFIELD, fieldClass, fieldName, fieldDesc);
-      mv.visitFieldInsn(PUTFIELD, fieldClass, fieldName, fieldDesc);
-    } else {
-      if (classMeta.isLog(4)) {
-        classMeta.log(" ... addFieldCopy on non-local field [" + fieldName + "] type[" + fieldDesc + "]");
-      }
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc, false);
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc, false);
-    }
-  }
-
-  /**
    * As part of the switch statement to read the fields generate the get code.
    */
   public void appendSwitchGet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {

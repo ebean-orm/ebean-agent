@@ -103,7 +103,6 @@ public class IndexFieldWeaver implements Opcodes {
 			classMeta.log("fields size:" + fields.size()+" "+fields.toString());
 		}
 		
-		generateCreateCopy(cv, classMeta, fields);
 		generateGetField(cv, classMeta, fields, false);
 		generateGetField(cv, classMeta, fields, true);
 
@@ -303,61 +302,6 @@ public class IndexFieldWeaver implements Opcodes {
 		mv.visitLocalVariable("arg", "Ljava/lang/Object;", null, l0, l9, 3);
 		mv.visitLocalVariable("p", "L" + className + ";", null, l1, l9, 4);
 		mv.visitMaxs(5, 5);
-		mv.visitEnd();
-	}
-
-	/**
-	 * Generate the _ebean_createCopy() method.
-	 */
-	private static void generateCreateCopy(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields) {
-
-		String className = classMeta.getClassName();
-		
-		MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_createCopy", "()Ljava/lang/Object;", null, null);
-		mv.visitCode();
-		Label l0 = new Label();
-		mv.visitLabel(l0);
-		mv.visitLineNumber(1, l0);
-		mv.visitTypeInsn(NEW, className);
-		mv.visitInsn(DUP);
-		mv.visitMethodInsn(INVOKESPECIAL, className, "<init>", "()V", false);
-		mv.visitVarInsn(ASTORE, 1);
-
-		Label l1 = null;
-		for (int i = 0; i < fields.size(); i++) {
-
-			FieldMeta fieldMeta = fields.get(i);
-			if (fieldMeta.isPersistent()){
-				// only copy persistent fields
-				Label label = new Label();
-				if (i == 0) {
-					l1 = label;
-				}
-				mv.visitLabel(label);
-				mv.visitLineNumber(1, label);
-				mv.visitVarInsn(ALOAD, 1);
-				mv.visitVarInsn(ALOAD, 0);
-	
-				// get put the fields or if using subclassing
-				// then use the getter setter methods on the
-				// super object
-				fieldMeta.addFieldCopy(mv, classMeta);
-			}
-		}
-
-		Label l4 = new Label();
-		mv.visitLabel(l4);
-		mv.visitLineNumber(1, l4);
-		mv.visitVarInsn(ALOAD, 1);
-		mv.visitInsn(ARETURN);
-		Label l5 = new Label();
-		mv.visitLabel(l5);
-		if (l1 == null){
-			l1 = l4;
-		}
-		mv.visitLocalVariable("this", "L" + className + ";", null, l0, l5, 0);
-		mv.visitLocalVariable("p", "L" + className + ";", null, l1, l5, 1);
-		mv.visitMaxs(2, 2);
 		mv.visitEnd();
 	}
 
