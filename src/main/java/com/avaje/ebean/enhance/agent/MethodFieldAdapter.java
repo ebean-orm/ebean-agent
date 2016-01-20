@@ -73,8 +73,8 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 			return;
 		}
 		
-		if (!meta.isFieldPersistent(name)) {
-			if (meta.isLog(2)) {
+		if (isNonPersistentField(owner, name)) {
+			if (meta.isLog(3)) {
 				meta.log(" ... info: non-persistent field "+owner+" "+name+" in "+methodDescription);
 			}
 			super.visitFieldInsn(opcode, owner, name, desc);
@@ -108,4 +108,18 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 			super.visitFieldInsn(opcode, owner, name, desc);
 		}
 	}
+
+  /**
+   * Return true if the field is non-persistent and hence should not be intercepted.
+   */
+  private boolean isNonPersistentField(String owner, String name) {
+    return !isSameOwner(owner) || !meta.isFieldPersistent(name);
+  }
+
+  /**
+   * Return true if the owner type is the same as this class being enhanced.
+   */
+  private boolean isSameOwner(String owner) {
+    return className.equals(owner);
+  }
 }

@@ -13,7 +13,15 @@ public class Contact extends BaseEntity {
   String lastName;
   String email;
   String phone;
-  
+
+  public ContactDto asDto() {
+
+    ContactDto dto = new ContactDto();
+    dto.firstName = firstName;
+    dto.one = one;
+    return dto;
+  }
+
   public Customer getCustomer() {
     return customer;
   }
