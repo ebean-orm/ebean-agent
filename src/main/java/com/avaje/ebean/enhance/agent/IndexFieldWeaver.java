@@ -41,7 +41,9 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
     
     if (fields.isEmpty()) {
-      classMeta.log("Has no fields?");
+      if (classMeta.isLog(3)) {
+        classMeta.log("Has no fields?");
+      }
       
     } else {
       for (int i=0; i<fields.size(); i++) {
@@ -94,8 +96,7 @@ public class IndexFieldWeaver implements Opcodes {
 	public static void addMethods(ClassVisitor cv, ClassMeta classMeta) {
 
 		List<FieldMeta> fields = classMeta.getAllFields();
-		if (fields.size() == 0) {
-			classMeta.log("Has no fields?");
+		if (fields.isEmpty()) {
 			return;
 		}
 

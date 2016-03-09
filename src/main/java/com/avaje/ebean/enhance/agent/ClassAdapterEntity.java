@@ -176,11 +176,10 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		
 		if (firstMethod){
-			if (!classMeta.isEntityEnhancementRequired()) {
-				// skip the rest of the visiting etc
-				throw new NoEnhancementRequiredException();
-			}
-			
+      if (classMeta.isAlreadyEnhanced()) {
+        throw new NoEnhancementRequiredException();
+      }
+
 			if (classMeta.hasEntityBeanInterface()){
 				log("Enhancing when EntityBean interface already exists!");
 			}

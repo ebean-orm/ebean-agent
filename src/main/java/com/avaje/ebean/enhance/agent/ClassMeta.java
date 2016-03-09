@@ -350,7 +350,14 @@ public class ClassMeta {
     return !alreadyEnhanced && isEntity();
   }
 
-	/**
+  /**
+   * Return true if the bean is already enhanced.
+   */
+  public boolean isAlreadyEnhanced() {
+    return alreadyEnhanced;
+  }
+
+  /**
 	 * Return the className of this entity class.
 	 */
 	public String getClassName() {
