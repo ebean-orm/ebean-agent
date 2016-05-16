@@ -121,7 +121,15 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setServerName", "(Ljava/lang/String;)L"+C_TXSCOPE+";", false);
 		mv.visitInsn(POP);
 	}
-	
+
+  private void setGetGeneratedKeys(Object getGeneratedKeys){
+    boolean getKeys = (Boolean)getGeneratedKeys;
+    if (!getKeys) {
+      mv.visitVarInsn(ALOAD, posTxScope);
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setSkipGeneratedKeys", "()L"+C_TXSCOPE+";", false);
+    }
+  }
+
 	private void setReadOnly(Object readOnlyObj){
 
 		boolean readOnly = (Boolean)readOnlyObj;
@@ -212,6 +220,11 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
     if (batchSize != null){
       setBatchSize(batchSize);
     }
+
+		Object getGeneratedKeys = annotationInfo.getValue("getGeneratedKeys");
+		if (getGeneratedKeys != null){
+			setGetGeneratedKeys(getGeneratedKeys);
+		}
 
     Object readOnly = annotationInfo.getValue("readOnly");
 		if (readOnly != null){

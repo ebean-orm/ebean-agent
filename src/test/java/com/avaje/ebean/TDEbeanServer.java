@@ -7,23 +7,33 @@ import com.avaje.ebean.bean.ObjectGraphNode;
 import com.avaje.ebean.cache.ServerCacheManager;
 import com.avaje.ebean.config.ServerConfig;
 import com.avaje.ebean.config.dbplatform.DatabasePlatform;
+import com.avaje.ebean.event.readaudit.ReadAuditLogger;
+import com.avaje.ebean.event.readaudit.ReadAuditPrepare;
 import com.avaje.ebean.meta.MetaInfoManager;
+import com.avaje.ebean.plugin.SpiServer;
 import com.avaje.ebean.text.csv.CsvReader;
 import com.avaje.ebean.text.json.JsonContext;
-import com.avaje.ebeaninternal.api.*;
-import com.avaje.ebeaninternal.server.autofetch.AutoFetchManager;
-import com.avaje.ebeaninternal.server.core.PstmtBatch;
-import com.avaje.ebeaninternal.server.core.SpiOrmQueryRequest;
-import com.avaje.ebeaninternal.server.ddl.DdlGenerator;
+import com.avaje.ebeaninternal.api.LoadBeanRequest;
+import com.avaje.ebeaninternal.api.LoadManyRequest;
+import com.avaje.ebeaninternal.api.ScopeTrans;
+import com.avaje.ebeaninternal.api.SpiEbeanServer;
+import com.avaje.ebeaninternal.api.SpiQuery;
+import com.avaje.ebeaninternal.api.SpiTransaction;
+import com.avaje.ebeaninternal.api.SpiTransactionScopeManager;
+import com.avaje.ebeaninternal.api.TransactionEventTable;
+import com.avaje.ebeaninternal.server.core.timezone.DataTimeZone;
 import com.avaje.ebeaninternal.server.deploy.BeanDescriptor;
 import com.avaje.ebeaninternal.server.query.CQuery;
-import com.avaje.ebeaninternal.server.query.CQueryEngine;
 import com.avaje.ebeaninternal.server.transaction.RemoteTransactionEvent;
 
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Test double for EbeanServer.
@@ -35,13 +45,173 @@ public class TDEbeanServer implements SpiEbeanServer {
   public List savedBeans = new ArrayList();
 
   @Override
-  public void shutdown(boolean shutdownDataSource, boolean deregisterDriver) {
+  public AutoTune getAutoTune() {
+    return null;
+  }
+
+  @Override
+  public SpiServer getPluginApi() {
+    return null;
+  }
+
+  @Override
+  public Object setBeanId(Object o, Object o1) {
+    return null;
+  }
+
+  @Override
+  public Transaction beginTransaction(TxScope txScope) {
+    return null;
+  }
+
+  @Override
+  public <T> List<Version<T>> findVersions(Query<T> query, Transaction transaction) {
+    return null;
+  }
+
+  @Override
+  public <T> PagedList<T> findPagedList(Query<T> query, Transaction transaction) {
+    return null;
+  }
+
+  @Override
+  public <T> int delete(Query<T> query, Transaction transaction) {
+    return 0;
+  }
+
+  @Override
+  public void findEach(SqlQuery sqlQuery, QueryEachConsumer<SqlRow> queryEachConsumer, Transaction transaction) {
 
   }
 
   @Override
-  public AdminAutofetch getAdminAutofetch() {
+  public void findEachWhile(SqlQuery sqlQuery, QueryEachWhileConsumer<SqlRow> queryEachWhileConsumer, Transaction transaction) {
+
+  }
+
+  @Override
+  public boolean deletePermanent(Object o) throws OptimisticLockException {
+    return false;
+  }
+
+  @Override
+  public boolean deletePermanent(Object o, Transaction transaction) throws OptimisticLockException {
+    return false;
+  }
+
+  @Override
+  public int deleteAllPermanent(Collection<?> collection) throws OptimisticLockException {
+    return 0;
+  }
+
+  @Override
+  public int deleteAllPermanent(Collection<?> collection, Transaction transaction) throws OptimisticLockException {
+    return 0;
+  }
+
+  @Override
+  public int deletePermanent(Class<?> aClass, Object o) {
+    return 0;
+  }
+
+  @Override
+  public int deletePermanent(Class<?> aClass, Object o, Transaction transaction) {
+    return 0;
+  }
+
+  @Override
+  public int deleteAll(Collection<?> collection, Transaction transaction) throws OptimisticLockException {
+    return 0;
+  }
+
+  @Override
+  public int deleteAllPermanent(Class<?> aClass, Collection<?> collection) {
+    return 0;
+  }
+
+  @Override
+  public int deleteAllPermanent(Class<?> aClass, Collection<?> collection, Transaction transaction) {
+    return 0;
+  }
+
+  @Override
+  public DocumentStore docStore() {
     return null;
+  }
+
+  @Override
+  public <T> T publish(Class<T> aClass, Object o, Transaction transaction) {
+    return null;
+  }
+
+  @Override
+  public <T> T publish(Class<T> aClass, Object o) {
+    return null;
+  }
+
+  @Override
+  public <T> List<T> publish(Query<T> query, Transaction transaction) {
+    return null;
+  }
+
+  @Override
+  public <T> List<T> publish(Query<T> query) {
+    return null;
+  }
+
+  @Override
+  public <T> T draftRestore(Class<T> aClass, Object o, Transaction transaction) {
+    return null;
+  }
+
+  @Override
+  public <T> T draftRestore(Class<T> aClass, Object o) {
+    return null;
+  }
+
+  @Override
+  public <T> List<T> draftRestore(Query<T> query, Transaction transaction) {
+    return null;
+  }
+
+  @Override
+  public <T> List<T> draftRestore(Query<T> query) {
+    return null;
+  }
+
+  @Override
+  public <T> Set<String> validateQuery(Query<T> query) {
+    return null;
+  }
+
+  @Override
+  public DataTimeZone getDataTimeZone() {
+    return null;
+  }
+
+  @Override
+  public ReadAuditPrepare getReadAuditPrepare() {
+    return null;
+  }
+
+  @Override
+  public ReadAuditLogger getReadAuditLogger() {
+    return null;
+  }
+
+  @Override
+  public BeanDescriptor<?> getBeanDescriptorByQueueId(String s) {
+    return null;
+  }
+
+  @Override
+  public boolean isUpdateAllPropertiesInBatch() {
+    return false;
+  }
+
+  @Override
+  public void shutdown(boolean shutdownDataSource, boolean deregisterDriver) {
+
   }
 
   @Override
@@ -245,11 +415,6 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public <T> void findVisit(Query<T> query, QueryResultVisitor<T> visitor, Transaction transaction) {
-
-  }
-
-  @Override
   public <T> List<T> findList(Query<T> query, Transaction transaction) {
     return null;
   }
@@ -266,11 +431,6 @@ public class TDEbeanServer implements SpiEbeanServer {
 
   @Override
   public <T> FutureList<T> findFutureList(Query<T> query, Transaction transaction) {
-    return null;
-  }
-
-  @Override
-  public SqlFutureList findFutureList(SqlQuery query, Transaction transaction) {
     return null;
   }
 
@@ -300,16 +460,6 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public Set<SqlRow> findSet(SqlQuery query, Transaction transaction) {
-    return null;
-  }
-
-  @Override
-  public Map<?, SqlRow> findMap(SqlQuery query, Transaction transaction) {
-    return null;
-  }
-
-  @Override
   public SqlRow findUnique(SqlQuery query, Transaction transaction) {
     return null;
   }
@@ -320,35 +470,19 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public int save(Iterator<?> it) throws OptimisticLockException {
-
-    while (it.hasNext()) {
-      savedBeans.add(it.next());
-    }
-    return 0;
-  }
-
-  @Override
-  public int save(Collection<?> beans) throws OptimisticLockException {
+  public int saveAll(Collection<?> beans) throws OptimisticLockException {
     savedBeans.addAll(beans);
     return 0;
   }
 
   @Override
-  public void delete(Object bean) throws OptimisticLockException {
+  public boolean delete(Object bean) throws OptimisticLockException {
     deletedBeans.add(bean);
+    return true;
   }
 
   @Override
-  public int delete(Iterator<?> it) throws OptimisticLockException {
-    while (it.hasNext()) {
-      deletedBeans.add(it.next());
-    }
-    return 0;
-  }
-
-  @Override
-  public int delete(Collection<?> c) throws OptimisticLockException {
+  public int deleteAll(Collection<?> c) throws OptimisticLockException {
     deletedBeans.addAll(c);
     return 0;
   }
@@ -364,13 +498,13 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public void delete(Class<?> beanType, Collection<?> ids) {
-
+  public int deleteAll(Class<?> beanType, Collection<?> ids) {
+    return 0;
   }
 
   @Override
-  public void delete(Class<?> beanType, Collection<?> ids, Transaction transaction) {
-
+  public int deleteAll(Class<?> beanType, Collection<?> ids, Transaction transaction) {
+    return 0;
   }
 
   @Override
@@ -409,15 +543,7 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public int save(Iterator<?> it, Transaction transaction) throws OptimisticLockException {
-    while (it.hasNext()) {
-      savedBeans.add(it.next());
-    }
-    return 0;
-  }
-
-  @Override
-  public int save(Collection<?> beans, Transaction transaction) throws OptimisticLockException {
+  public int saveAll(Collection<?> beans, Transaction transaction) throws OptimisticLockException {
     savedBeans.addAll(beans);
     return 0;
   }
@@ -443,12 +569,12 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public void update(Collection<?> beans) throws OptimisticLockException {
+  public void updateAll(Collection<?> beans) throws OptimisticLockException {
 
   }
 
   @Override
-  public void update(Collection<?> beans, Transaction transaction) throws OptimisticLockException {
+  public void updateAll(Collection<?> beans, Transaction transaction) throws OptimisticLockException {
 
   }
 
@@ -463,12 +589,12 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public void insert(Collection<?> beans) {
+  public void insertAll(Collection<?> beans) {
 
   }
 
   @Override
-  public void insert(Collection<?> beans, Transaction t) {
+  public void insertAll(Collection<?> beans, Transaction t) {
 
   }
 
@@ -503,13 +629,8 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public void delete(Object bean, Transaction t) throws OptimisticLockException {
-
-  }
-
-  @Override
-  public int delete(Iterator<?> it, Transaction t) throws OptimisticLockException {
-    return 0;
+  public boolean delete(Object bean, Transaction t) throws OptimisticLockException {
+    return false;
   }
 
   @Override
@@ -553,21 +674,6 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public void runCacheWarming() {
-
-  }
-
-  @Override
-  public void runCacheWarming(Class<?> beanType) {
-
-  }
-
-  @Override
-  public JsonContext createJsonContext() {
-    return null;
-  }
-
-  @Override
   public JsonContext json() {
     return null;
   }
@@ -594,27 +700,12 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public PstmtBatch getPstmtBatch() {
-    return null;
-  }
-
-  @Override
   public CallStack createCallStack() {
     return null;
   }
 
   @Override
   public PersistenceContextScope getPersistenceContextScope(SpiQuery<?> query) {
-    return null;
-  }
-
-  @Override
-  public DdlGenerator getDdlGenerator() {
-    return null;
-  }
-
-  @Override
-  public AutoFetchManager getAutoFetchManager() {
     return null;
   }
 
@@ -658,17 +749,26 @@ public class TDEbeanServer implements SpiEbeanServer {
     return null;
   }
 
+  TDTransaction scopedTransaction;
+
+  protected TDTransaction testGetScopedTransaction() {
+    return scopedTransaction;
+  }
+
   @Override
   public ScopeTrans createScopeTrans(TxScope txScope) {
 
     boolean rollbackOnChecked = false;
     boolean created = true;
-    SpiTransaction transaction = new TDTransaction();
+    scopedTransaction = new TDTransaction();
     SpiTransaction suspendedTransaction = null;
     SpiTransactionScopeManager scopeMgr = null;
 
-    ScopeTrans scopeTrans = new ScopeTrans(rollbackOnChecked, created, transaction, txScope, suspendedTransaction, scopeMgr);
-    return scopeTrans;
+    if (txScope.isSkipGeneratedKeys()) {
+      txScope.setSkipGeneratedKeys();
+    }
+
+    return new ScopeTrans(rollbackOnChecked, created, scopedTransaction, txScope, suspendedTransaction, scopeMgr);
   }
 
   @Override
@@ -682,17 +782,7 @@ public class TDEbeanServer implements SpiEbeanServer {
   }
 
   @Override
-  public <T> SpiOrmQueryRequest<T> createQueryRequest(BeanDescriptor<T> desc, SpiQuery<T> q, Transaction t) {
-    return null;
-  }
-
-  @Override
   public <T> CQuery<T> compileQuery(Query<T> query, Transaction t) {
-    return null;
-  }
-
-  @Override
-  public CQueryEngine getQueryEngine() {
     return null;
   }
 

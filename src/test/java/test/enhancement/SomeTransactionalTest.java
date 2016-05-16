@@ -7,6 +7,8 @@ import test.model.SomeTransactionalService;
 import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 public class SomeTransactionalTest extends BaseTest {
 
@@ -17,6 +19,9 @@ public class SomeTransactionalTest extends BaseTest {
 
     System.out.println("--- calling someMethod() ... ");
     someService.someMethod("Jimmy");
+
+    assertNotNull(someService.getGeneratedKeys);
+    assertFalse(someService.getGeneratedKeys);
 
     Class<? extends SomeTransactionalService> aClass = someService.getClass();
     Method method = aClass.getMethod("someMethod", String.class);

@@ -1,7 +1,10 @@
 package com.avaje.ebean;
 
+import com.avaje.ebean.annotation.DocStoreMode;
 import com.avaje.ebean.bean.PersistenceContext;
 import com.avaje.ebean.config.PersistBatch;
+import com.avaje.ebean.event.changelog.BeanChange;
+import com.avaje.ebean.event.changelog.ChangeSet;
 import com.avaje.ebeaninternal.api.DerivedRelationshipData;
 import com.avaje.ebeaninternal.api.SpiTransaction;
 import com.avaje.ebeaninternal.api.TransactionEvent;
@@ -9,8 +12,9 @@ import com.avaje.ebeaninternal.server.core.PersistRequest;
 import com.avaje.ebeaninternal.server.core.PersistRequestBean;
 import com.avaje.ebeaninternal.server.persist.BatchControl;
 
-import javax.persistence.*;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
@@ -18,8 +22,50 @@ import java.util.List;
 
 public class TDTransaction implements SpiTransaction {
 
+  Boolean getGeneratedKeys;
+
   @Override
-  public void endQueryOnly() {
+  public Boolean isUpdateAllLoadedProperties() {
+    return null;
+  }
+
+  @Override
+  public DocStoreMode getDocStoreMode() {
+    return null;
+  }
+
+  @Override
+  public int getDocStoreBatchSize() {
+    return 0;
+  }
+
+  @Override
+  public Boolean getBatchGetGeneratedKeys() {
+    return getGeneratedKeys;
+  }
+
+  @Override
+  public void addBeanChange(BeanChange beanChange) {
+
+  }
+
+  @Override
+  public void sendChangeLog(ChangeSet changeSet) {
+
+  }
+
+  @Override
+  public void setDocStoreMode(DocStoreMode docStoreMode) {
+
+  }
+
+  @Override
+  public void setDocStoreBatchSize(int i) {
+
+  }
+
+  @Override
+  public void setUpdateAllLoadedProperties(boolean b) {
 
   }
 
@@ -170,7 +216,7 @@ public class TDTransaction implements SpiTransaction {
 
   @Override
   public void setBatchGetGeneratedKeys(boolean getGeneratedKeys) {
-
+    this.getGeneratedKeys = getGeneratedKeys;
   }
 
   @Override
@@ -214,8 +260,7 @@ public class TDTransaction implements SpiTransaction {
   }
 
   @Override
-  public int depth(int diff) {
-    return 0;
+  public void depth(int diff) {
   }
 
   @Override

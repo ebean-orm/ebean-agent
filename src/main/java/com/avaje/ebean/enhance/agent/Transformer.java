@@ -1,14 +1,20 @@
 package com.avaje.ebean.enhance.agent;
 
-import com.avaje.ebean.enhance.asm.*;
+import com.avaje.ebean.enhance.asm.ClassReader;
+import com.avaje.ebean.enhance.asm.ClassWriter;
 
-import java.io.PrintStream;
+import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.net.URL;
 import java.security.ProtectionDomain;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A Class file Transformer that enhances entity beans.
@@ -21,21 +27,16 @@ public class Transformer implements ClassFileTransformer {
 
   public static void premain(String agentArgs, Instrumentation inst) {
 
-    Transformer t = new Transformer("", agentArgs);
-    inst.addTransformer(t);
-
-    if (t.getLogLevel() > 0) {
+    Transformer transformer = new Transformer("", agentArgs);
+    inst.addTransformer(transformer);
+    if (transformer.getLogLevel() > 0) {
       System.out.println("premain loading Transformer with args:" + agentArgs);
     }
   }
 
   public static void agentmain(String agentArgs, Instrumentation inst) throws Exception {
-    Transformer t = new Transformer("", agentArgs);
-    inst.addTransformer(t);
 
-    if (t.getLogLevel() > 0) {
-      System.out.println("agentmain loading Transformer with args:" + agentArgs);
-    }
+    premain(agentArgs, inst);
   }
 
   private static final int CLASS_WRITER_COMPUTEFLAGS = ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS;
@@ -204,7 +205,7 @@ public class Transformer implements ClassFileTransformer {
 
     try {
 
-      cr.accept(ca, ClassReader.EXPAND_FRAMES);
+      cr.accept(ca, ClassReader.SKIP_FRAMES);
 
       if (ca.isLog(1)) {
         ca.log("enhanced");
