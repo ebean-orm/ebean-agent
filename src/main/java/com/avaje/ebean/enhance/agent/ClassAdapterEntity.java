@@ -215,10 +215,12 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       log("--- #### method name["+name+"] desc["+desc+"] sig["+signature+"]");
     }
     
-    if (isDefaultConstructor(name, desc)) {
-      // make sure the access is public
-      MethodVisitor mv = super.visitMethod(Opcodes.ACC_PUBLIC, name, desc, signature, exceptions);
-      // also create the entityBeanIntercept object
+    if (isConstructor(name, desc)) {
+			if (desc.equals("()V")) {
+				// ensure public access on the default constructor
+				access = Opcodes.ACC_PUBLIC;
+			}
+      MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
       return new ConstructorAdapter(mv, classMeta, desc);
     }
 
@@ -295,7 +297,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 		super.visitEnd();
 	}
 
-	private boolean isDefaultConstructor(String name, String desc){
+	private boolean isConstructor(String name, String desc){
 
 		if (name.equals("<init>")) {
 			if (desc.equals("()V")) {
@@ -303,7 +305,6 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 			}
 			return true;
 		}
-		
 		return false;
 	}
 	

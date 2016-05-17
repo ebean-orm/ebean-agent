@@ -6,7 +6,9 @@ import test.model.Contact;
 import test.model.WithInitialisedCollectionAndAtTransient;
 import test.model.WithInitialisedCollectionAndTransient;
 import test.model.WithInitialisedCollections;
+import test.model.WithInitialisedCollectionsAndConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -82,5 +84,16 @@ public class WithInitialisedCollectionsTests extends BaseTest {
     String[] props = eb._ebean_getPropertyNames();
 
     assertEquals(7, props.length);
+  }
+
+  @Test
+  public void test_withConstructor() {
+
+    List<Contact> contacts = new ArrayList<Contact>();
+    contacts.add(new Contact());
+
+    WithInitialisedCollectionsAndConstructor bean = new WithInitialisedCollectionsAndConstructor(contacts);
+
+    assertTrue(bean.getContacts().size() == 1);
   }
 }
