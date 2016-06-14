@@ -10,20 +10,31 @@ import java.util.TreeSet;
  */
 class DistillPackages {
 
-  /**
-   * Distill the packages into distinct top level packages.
-   */
-  static List<String> distill(Collection<String> packages) {
-    return new DistillPackages().add(packages).distill();
-  }
-
   private TreeSet<String> treeSet = new TreeSet<String>();
 
   /**
    * Add packages that we want to distill.
    */
   DistillPackages add(Collection<String> packages) {
-    treeSet.addAll(packages);
+    if (packages != null) {
+      treeSet.addAll(packages);
+    }
+    return this;
+  }
+
+  /**
+   * Add a raw entry splitting it into individual packages by delimiters.
+   */
+  DistillPackages addRaw(String packages) {
+    if (packages != null) {
+      String[] split = packages.split(",|;| ");
+      for (int i = 0; i < split.length; i++) {
+        String pkg = split[i].trim();
+        if (!pkg.isEmpty()) {
+          treeSet.add(pkg);
+        }
+      }
+    }
     return this;
   }
 

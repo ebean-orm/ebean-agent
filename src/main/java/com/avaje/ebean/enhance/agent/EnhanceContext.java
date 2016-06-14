@@ -3,6 +3,7 @@ package com.avaje.ebean.enhance.agent;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,20 +40,19 @@ public class EnhanceContext {
    *
    * @param classBytesReader    used to read class meta data from raw bytes
    * @param agentArgs           command line arguments for debug level etc
-   * @param manifestClassLoader classLoader used to read ebean.mf manifest
-   * @param initialPackages     initial set of packages entity beans are found in
+   * @param packages            limit enhancement to specified packages
    */
-  public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, ClassLoader manifestClassLoader, Set<String> initialPackages) {
+  public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, Set<String> packages) {
 
     this.agentArgsMap = ArgParser.parse(agentArgs);
 
-    AgentManifestReader reader = new AgentManifestReader(initialPackages);
-    reader.readManifests(manifestClassLoader);
-    reader.addRaw(agentArgsMap.get("packages"));
-    this.ignoreClassHelper = new IgnoreClassHelper(reader.getPackages());
+    List<String> distilledPackages = new DistillPackages()
+        .add(packages)
+        .addRaw(agentArgsMap.get("packages"))
+        .distill();
 
+    this.ignoreClassHelper = new IgnoreClassHelper(distilledPackages);
     this.logout = new SysoutMessageOutput(System.out);
-
     this.classBytesReader = classBytesReader;
     this.reader = new ClassMetaReader(this);
 

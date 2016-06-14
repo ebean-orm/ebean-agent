@@ -78,7 +78,7 @@ public class ClassMetaReaderTests {
 
 
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
-    EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9;packages=line.foo", null, initialPackages);
+    EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9;packages=line.foo", initialPackages);
 
     assertTrue(enhanceContext.isIgnoreClass("jim.Me"));
     assertFalse(enhanceContext.isIgnoreClass("jim.bob.Me"));
@@ -97,7 +97,7 @@ public class ClassMetaReaderTests {
   private ClassMetaReader createClassMetaReader() {
     
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
-    EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9", null, null);
+    EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9", null);
     return new ClassMetaReader(enhanceContext);
   }
 }

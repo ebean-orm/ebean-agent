@@ -53,15 +53,22 @@ public class Transformer implements ClassFileTransformer {
     this(parseClassPaths(extraClassPath), agentArgs);
   }
 
+  /**
+   * Create a transformer for entity bean enhancement and transactional method enhancement.
+   */
   public Transformer(URL[] extraClassPath, String agentArgs) {
-    this(new ClassPathClassBytesReader(extraClassPath), agentArgs, null, null);
+    this(new ClassPathClassBytesReader(extraClassPath), agentArgs, null);
   }
 
-  public Transformer(ClassBytesReader bytesReader, String agentArgs, ClassLoader manifestClassLoader, Set<String> initialPackages) {
-    if (manifestClassLoader == null) {
-      manifestClassLoader = getClass().getClassLoader();
-    }
-    this.enhanceContext = new EnhanceContext(bytesReader, agentArgs, manifestClassLoader, initialPackages);
+  /**
+   * Create a transformer for entity bean enhancement and transactional method enhancement.
+   *
+   * @param bytesReader reads resources from class path for related inheritance and interfaces
+   * @param agentArgs command line arguments for debug level etc
+   * @param packages limit enhancement to specified packages
+   */
+  public Transformer(ClassBytesReader bytesReader, String agentArgs, Set<String> packages) {
+    this.enhanceContext = new EnhanceContext(bytesReader, agentArgs, packages);
     this.performDetect = enhanceContext.getPropertyBoolean("detect", true);
     this.transformTransactional = enhanceContext.getPropertyBoolean("transactional", true);
     this.transformEntityBeans = enhanceContext.getPropertyBoolean("entity", true);
