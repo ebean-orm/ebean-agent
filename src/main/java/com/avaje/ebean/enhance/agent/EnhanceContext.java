@@ -12,27 +12,27 @@ import java.util.logging.Logger;
  */
 public class EnhanceContext {
 
-	private static final Logger logger = Logger.getLogger(EnhanceContext.class.getName());
+  private static final Logger logger = Logger.getLogger(EnhanceContext.class.getName());
 
-	private final IgnoreClassHelper ignoreClassHelper;
+  private final IgnoreClassHelper ignoreClassHelper;
 
-	private final HashMap<String, String> agentArgsMap;
+  private final HashMap<String, String> agentArgsMap;
 
-	private final boolean readOnly;
+  private final boolean readOnly;
 
-	private final boolean transientInternalFields;
+  private final boolean transientInternalFields;
 
   private final boolean checkNullManyFields;
 
-	private final ClassMetaReader reader;
+  private final ClassMetaReader reader;
 
-	private final ClassBytesReader classBytesReader;
+  private final ClassBytesReader classBytesReader;
 
-	private MessageOutput logout;
+  private MessageOutput logout;
 
-	private int logLevel;
+  private int logLevel;
 
-	private HashMap<String, ClassMeta> map = new HashMap<String, ClassMeta>();
+  private HashMap<String, ClassMeta> map = new HashMap<String, ClassMeta>();
 
   /**
    * Construct a context for enhancement.
@@ -51,133 +51,133 @@ public class EnhanceContext {
     reader.addRaw(agentArgsMap.get("packages"));
     this.ignoreClassHelper = new IgnoreClassHelper(reader.getPackages());
 
-		this.logout = new SysoutMessageOutput(System.out);
+    this.logout = new SysoutMessageOutput(System.out);
 
-		this.classBytesReader = classBytesReader;
-		this.reader = new ClassMetaReader(this);
+    this.classBytesReader = classBytesReader;
+    this.reader = new ClassMetaReader(this);
 
-		String debugValue = agentArgsMap.get("debug");
-		if (debugValue != null) {
-			try {
-				logLevel = Integer.parseInt(debugValue);
-			} catch (NumberFormatException e) {
-				logger.log(Level.WARNING, "Agent debug argument [" + debugValue+ "] is not an int?");
-			}
-		}
+    String debugValue = agentArgsMap.get("debug");
+    if (debugValue != null) {
+      try {
+        logLevel = Integer.parseInt(debugValue);
+      } catch (NumberFormatException e) {
+        logger.log(Level.WARNING, "Agent debug argument [" + debugValue + "] is not an int?");
+      }
+    }
 
     this.readOnly = getPropertyBoolean("readonly", false);
     this.transientInternalFields = getPropertyBoolean("transientInternalFields", false);
     this.checkNullManyFields = getPropertyBoolean("checkNullManyFields", true);
-	}
+  }
 
-	public byte[] getClassBytes(String className, ClassLoader classLoader){
-		return classBytesReader.getClassBytes(className, classLoader);
-	}
-	
-	/**
-	 * Return a value from the agent arguments using its key.
-	 */
-	public String getProperty(String key){
-		return agentArgsMap.get(key.toLowerCase());
-	}
+  public byte[] getClassBytes(String className, ClassLoader classLoader) {
+    return classBytesReader.getClassBytes(className, classLoader);
+  }
 
-	public boolean getPropertyBoolean(String key, boolean dflt){
-		String s = getProperty(key);
-		if (s == null){
-			return dflt;
-		} else {
-			return s.trim().equalsIgnoreCase("true");
-		}
-	}
+  /**
+   * Return a value from the agent arguments using its key.
+   */
+  public String getProperty(String key) {
+    return agentArgsMap.get(key.toLowerCase());
+  }
 
-	
-	/**
-	 * Return true if this class should be ignored. That is JDK classes and
-	 * known libraries JDBC drivers etc can be skipped.
-	 */
-	public boolean isIgnoreClass(String className) {
-		return ignoreClassHelper.isIgnoreClass(className);
-	}
+  public boolean getPropertyBoolean(String key, boolean dflt) {
+    String s = getProperty(key);
+    if (s == null) {
+      return dflt;
+    } else {
+      return s.trim().equalsIgnoreCase("true");
+    }
+  }
 
-	/**
-	 * Change the logout to something other than system out.
-	 */
-	public void setLogout(MessageOutput logout) {
-		this.logout = logout;
-	}
 
-	/**
-	 * Create a new meta object for enhancing a class.
-	 */
-	public ClassMeta createClassMeta() {
-		return new ClassMeta(this, logLevel, logout);
-	}
+  /**
+   * Return true if this class should be ignored. That is JDK classes and
+   * known libraries JDBC drivers etc can be skipped.
+   */
+  public boolean isIgnoreClass(String className) {
+    return ignoreClassHelper.isIgnoreClass(className);
+  }
 
-	/**
-	 * Read the class meta data for a super class.
-	 * <p>
-	 * Typically used to read meta data for inheritance hierarchy.
-	 * </p>
-	 */
-	public ClassMeta getSuperMeta(String superClassName, ClassLoader classLoader) {
+  /**
+   * Change the logout to something other than system out.
+   */
+  public void setLogout(MessageOutput logout) {
+    this.logout = logout;
+  }
 
-		try {
-			if (isIgnoreClass(superClassName)){
-				return null;
-			}
-			return reader.get(false, superClassName, classLoader);
-			
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
+  /**
+   * Create a new meta object for enhancing a class.
+   */
+  public ClassMeta createClassMeta() {
+    return new ClassMeta(this, logLevel, logout);
+  }
 
-	/**
-	 * Read the class meta data for an interface.
-	 * <p>
-	 * Typically used to check the interface to see if it is transactional.
-	 * </p>
-	 */
-	public ClassMeta getInterfaceMeta(String interfaceClassName, ClassLoader classLoader) {
+  /**
+   * Read the class meta data for a super class.
+   * <p>
+   * Typically used to read meta data for inheritance hierarchy.
+   * </p>
+   */
+  public ClassMeta getSuperMeta(String superClassName, ClassLoader classLoader) {
 
-		try {
-			if (isIgnoreClass(interfaceClassName)){
-				return null;
-			}
-			return reader.get(true, interfaceClassName, classLoader);
-			
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	public void addClassMeta(ClassMeta meta) {
-		map.put(meta.getClassName(), meta);
-	}
+    try {
+      if (isIgnoreClass(superClassName)) {
+        return null;
+      }
+      return reader.get(false, superClassName, classLoader);
 
-	public ClassMeta get(String className) {
-		return map.get(className);
-	}
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-	/**
-	 * Log some debug output.
-	 */
-	public void log(int level, String className, String msg) {
-		if (logLevel >= level) {
-		  log(className, msg);
-		}
-	}
-	
-	public void log(String className, String msg) {
-		if (className != null) {
-			msg = "cls: " + className + "  msg: " + msg;
-		}
-		logout.println("ebean-enhance> " + msg);
-	}
-	
-	public boolean isLog(int level){
-		return logLevel >= level;
-	}
+  /**
+   * Read the class meta data for an interface.
+   * <p>
+   * Typically used to check the interface to see if it is transactional.
+   * </p>
+   */
+  public ClassMeta getInterfaceMeta(String interfaceClassName, ClassLoader classLoader) {
+
+    try {
+      if (isIgnoreClass(interfaceClassName)) {
+        return null;
+      }
+      return reader.get(true, interfaceClassName, classLoader);
+
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void addClassMeta(ClassMeta meta) {
+    map.put(meta.getClassName(), meta);
+  }
+
+  public ClassMeta get(String className) {
+    return map.get(className);
+  }
+
+  /**
+   * Log some debug output.
+   */
+  public void log(int level, String className, String msg) {
+    if (logLevel >= level) {
+      log(className, msg);
+    }
+  }
+
+  public void log(String className, String msg) {
+    if (className != null) {
+      msg = "cls: " + className + "  msg: " + msg;
+    }
+    logout.println("ebean-enhance> " + msg);
+  }
+
+  public boolean isLog(int level) {
+    return logLevel >= level;
+  }
 
   /**
    * Log an error.
@@ -198,24 +198,24 @@ public class EnhanceContext {
   }
 
 
-	/**
-	 * Return the log level.
-	 */
-	public int getLogLevel() {
-		return logLevel;
-	}
+  /**
+   * Return the log level.
+   */
+  public int getLogLevel() {
+    return logLevel;
+  }
 
-	/**
-	 * Return true if this should go through the enhancement process but not
-	 * actually save the enhanced classes.
-	 * <p>
-	 * Set this to true to run through the enhancement process without actually
-	 * doing the enhancement for debugging etc.
-	 * </p>
-	 */
-	public boolean isReadOnly() {
-		return readOnly;
-	}
+  /**
+   * Return true if this should go through the enhancement process but not
+   * actually save the enhanced classes.
+   * <p>
+   * Set this to true to run through the enhancement process without actually
+   * doing the enhancement for debugging etc.
+   * </p>
+   */
+  public boolean isReadOnly() {
+    return readOnly;
+  }
 
   /**
    * Return true if internal ebean fields in entity classes should be transient.
