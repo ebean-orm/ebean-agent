@@ -1,255 +1,174 @@
 package com.avaje.ebean.enhance.agent;
 
-import com.avaje.ebean.enhance.asm.*;
-
-import java.util.ArrayList;
+import com.avaje.ebean.enhance.asm.AnnotationVisitor;
+import com.avaje.ebean.enhance.asm.ClassVisitor;
+import com.avaje.ebean.enhance.asm.MethodVisitor;
+import com.avaje.ebean.enhance.asm.Opcodes;
 
 /**
  * ClassAdapter used to detect if this class needs enhancement for entity or
  * transactional support.
  */
-public class ClassAdapterDetectEnhancement extends ClassVisitor {
+class ClassAdapterDetectEnhancement extends ClassVisitor {
 
-	private final ClassLoader classLoader;
-	
-	private final EnhanceContext enhanceContext;
+  private final ClassLoader classLoader;
 
-	private final ArrayList<DetectMethod> methods = new ArrayList<DetectMethod>();
+  private final EnhanceContext enhanceContext;
 
-	private String className;
+  private final DetectTransactionalMethod detectTransactionalMethod = new DetectTransactionalMethod();
 
-	private boolean entity;
+  private String className;
 
-	private boolean entityInterface;
+  private boolean entity;
 
-	private boolean entityField;
+  private boolean enhancedEntity;
 
-	private boolean transactional;
-	
-	private boolean enhancedTransactional;
+  private boolean transactional;
 
-	public ClassAdapterDetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
-		super(Opcodes.ASM5);
-		this.classLoader = classLoader;
-		this.enhanceContext = context;
-	}
+  private boolean enhancedTransactional;
 
-	public boolean isLog(int level) {
-		return enhanceContext.isLog(level);
-	}
+  ClassAdapterDetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
+    super(Opcodes.ASM5);
+    this.classLoader = classLoader;
+    this.enhanceContext = context;
+  }
 
-	public void log(String msg) {
-		enhanceContext.log(className, msg);
-	}
+  public boolean isLog(int level) {
+    return enhanceContext.isLog(level);
+  }
 
-	public void log(int level, String msg) {
-		if (isLog(level)){
-			log(msg);
-		}
-	}
+  public void log(String msg) {
+    enhanceContext.log(className, msg);
+  }
 
-	public boolean isEnhancedEntity() {
-		return entityField;
-	}
+  public void log(int level, String msg) {
+    if (isLog(level)) {
+      log(msg);
+    }
+  }
 
-	public boolean isEnhancedTransactional() {
-		return enhancedTransactional;
-	}
+  boolean isEnhancedEntity() {
+    return enhancedEntity;
+  }
 
-	/**
-	 * Return true if this is an entity bean or embeddable bean.
-	 */
-	public boolean isEntity() {
-		return entity;
-	}
+  boolean isEnhancedTransactional() {
+    return enhancedTransactional;
+  }
 
-	/**
-	 * Return true if ANY method has the transactional annotation.
-	 */
-	public boolean isTransactional() {
-		if (transactional){
-			// implements transactional interface or
-			// transactional at class level
-			return true;
-		}
-		
-		// check each method...
-		for (int i = 0; i < methods.size(); i++) {
-			DetectMethod m = methods.get(i);
-			if (m.isTransactional()) {
-				return true;
-			}
-		}
-		return false;
-	}
+  /**
+   * Return true if this is an entity bean or embeddable bean.
+   */
+  public boolean isEntity() {
+    return entity;
+  }
 
-	/**
-	 * Visit the class with interfaces.
-	 */
-	@Override
-	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+  /**
+   * Return true if ANY method has the transactional annotation.
+   */
+  public boolean isTransactional() {
+    return transactional;
+  }
 
-		if ((access & Opcodes.ACC_INTERFACE) != 0){
-			throw new NoEnhancementRequiredException(name+" is an Interface");
-		}
-		
-		className = name;
+  /**
+   * Visit the class with interfaces.
+   */
+  @Override
+  public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
-		for (int i = 0; i < interfaces.length; i++) {
+    if ((access & Opcodes.ACC_INTERFACE) != 0) {
+      throw new NoEnhancementRequiredException("Interface type");
+    }
 
-			if (interfaces[i].equals(EnhanceConstants.C_ENTITYBEAN)) {
-				entityInterface = true;
-				entity = true;
+    this.className = name;
 
-			} else if (interfaces[i].equals(EnhanceConstants.C_ENHANCEDTRANSACTIONAL)) {
-				enhancedTransactional = true;
-			
-			} else {
-				ClassMeta interfaceMeta = enhanceContext.getInterfaceMeta(interfaces[i], classLoader);
-				if (interfaceMeta != null && interfaceMeta.isTransactional()) {
-					// implements transactional interface 
-					transactional = true;
-					if (isLog(9)) {
-						log("detected implements transactional interface " + interfaceMeta);
-					}
-				}
-			}
-		}
+    for (int i = 0; i < interfaces.length; i++) {
 
-		if (isLog(4)){
-			log("interfaces:  entityInterface["+entityInterface+"] transactional["+enhancedTransactional+"]");					
-		}
-		
-		super.visit(version, access, name, signature, superName, interfaces);
-	}
+      if (interfaces[i].equals(EnhanceConstants.C_ENTITYBEAN)) {
+        enhancedEntity = true;
+        entity = true;
 
-	/**
-	 * Visit class level annotations.
-	 */
-	@Override
-	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		if (isLog(8)){
-			log("visitAnnotation "+desc);					
-		}
-		if (isEntityAnnotation(desc)){
-			// entity, embeddable or mappedSuperclass
-			if (isLog(5)){
-				log("found entity annotation "+desc);					
-			}	
-			entity = true;
-			
-		} else if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
-			// class level Transactional annotation
-			if (isLog(5)){
-				log("found transactional annotation "+desc);					
-			}	
-			transactional = true;
-		}
+      } else if (interfaces[i].equals(EnhanceConstants.C_ENHANCEDTRANSACTIONAL)) {
+        enhancedTransactional = true;
 
-		return super.visitAnnotation(desc, visible);
-	}
+      } else {
+        ClassMeta interfaceMeta = enhanceContext.getInterfaceMeta(interfaces[i], classLoader);
+        if (interfaceMeta != null && interfaceMeta.isTransactional()) {
+          transactional = true;
+          if (isLog(9)) {
+            log("detected implements transactional interface " + interfaceMeta);
+          }
+        }
+      }
+    }
 
-	/**
-	 * Return true if the annotation is for an Entity, Embeddable or MappedSuperclass.
-	 */
-	private boolean isEntityAnnotation(String desc) {
-		
-		if (desc.equals(EnhanceConstants.ENTITY_ANNOTATION)) {
-			return true;
-			
-		} else if (desc.equals(EnhanceConstants.EMBEDDABLE_ANNOTATION)) {
-			return true;
-	
-		} else if (desc.equals(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
-			return true;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Return true if this is the enhancement marker field.
-	 * <p>
-	 * The existence of this field is used to confirm that the class has been
-	 * enhanced (rather than solely relying on the EntityBean interface). 
-	 * <p>
-	 */
-	private boolean isEbeanFieldMarker(String name, String desc) {
-		
-		if (name.equals(MarkerField._EBEAN_MARKER)){
-			if (!desc.equals("Ljava/lang/String;")){
-				String m = "Error: _EBEAN_MARKER field of wrong type? "+desc;
-				log(m);
-			}
-			return true;
-		}
-		return false;
-	}
+    if (isLog(4)) {
+      log("interfaces:  enhancedEntity[" + enhancedEntity + "] transactional[" + enhancedTransactional + "]");
+    }
+  }
 
-	
-	public FieldVisitor visitField(int access, String name, String desc, String signature,
-			Object value) {
+  /**
+   * Visit class level annotations.
+   */
+  @Override
+  public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+    if (isEntityAnnotation(desc)) {
+      if (isLog(5)) {
+        log("found entity annotation " + desc);
+      }
+      entity = true;
 
-		if (isLog(8)){
-			log("visitField "+name+" "+value);					
-		}	
-		
-		if ((access & Opcodes.ACC_STATIC) != 0) {
-			// static field...
-			if (isEbeanFieldMarker(name, desc)){
-				entityField = true;
-				if (isLog(4)){
-					log("Found ebean marker field "+name+" "+value);					
-				}				
-			}
-		}
+    } else if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
+      if (isLog(5)) {
+        log("found transactional annotation " + desc);
+      }
+      transactional = true;
+    }
+    return null;
+  }
 
-		return super.visitField(access, name, desc, signature, value);
-	}
-	
-	/**
-	 * Visit the methods specifically looking for method level transactional
-	 * annotations.
-	 */
-	@Override
-	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+  /**
+   * Return true if the annotation is for an Entity, Embeddable or MappedSuperclass.
+   */
+  private boolean isEntityAnnotation(String desc) {
 
-		if (isLog(9)){
-			log("visitMethod "+name+" "+desc);					
-		}	
-		
-		MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-		DetectMethod dmv = new DetectMethod(mv);
+    if (!desc.startsWith(EnhanceConstants.JAVAX_PERSISTENCE)) {
+      return false;
+    }
+    if (desc.equals(EnhanceConstants.ENTITY_ANNOTATION)) {
+      return true;
+    } else if (desc.equals(EnhanceConstants.EMBEDDABLE_ANNOTATION)) {
+      return true;
+    } else if (desc.equals(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
+      return true;
+    }
+    return false;
+  }
 
-		methods.add(dmv);
-		return dmv;
-	}
+  /**
+   * Visit the methods specifically looking for method level transactional
+   * annotations.
+   */
+  @Override
+  public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+    return detectTransactionalMethod;
+  }
 
-	/**
-	 * Check methods for Transactional annotation.
-	 */
-	private static class DetectMethod extends MethodVisitor {
+  /**
+   * Check methods for Transactional annotation.
+   */
+  private class DetectTransactionalMethod extends MethodVisitor {
 
-		boolean transactional;
+    DetectTransactionalMethod() {
+      super(Opcodes.ASM5);
+    }
 
-		public DetectMethod(final MethodVisitor mv) {
-			super(Opcodes.ASM5, mv);
-		}
+    @Override
+    public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+      if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
+        transactional = true;
+      }
+      return null;
+    }
 
-		/**
-		 * Return true if this method has the transaction annotation supplied.
-		 */
-		public boolean isTransactional() {
-			return transactional;
-		}
-
-		@Override
-		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-			if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
-				transactional = true;
-			}
-			return super.visitAnnotation(desc, visible);
-		}
-
-	}
+  }
 }
