@@ -34,7 +34,6 @@ public class Transformer implements ClassFileTransformer {
   }
 
   public static void agentmain(String agentArgs, Instrumentation inst) throws Exception {
-
     premain(agentArgs, inst);
   }
 
@@ -43,8 +42,11 @@ public class Transformer implements ClassFileTransformer {
   private final EnhanceContext enhanceContext;
 
   private boolean performDetect;
+
   private boolean transformTransactional;
+
   private boolean transformEntityBeans;
+
   private final Map<String, List<Throwable>> unexpectedExceptionsMap = new HashMap<String, List<Throwable>>();
 
   public Transformer(String extraClassPath, String agentArgs) {
@@ -97,7 +99,6 @@ public class Transformer implements ClassFileTransformer {
   public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 
     try {
-
       // ignore JDK and JDBC classes etc
       if (enhanceContext.isIgnoreClass(className)) {
         log(9, className, "ignore class");
@@ -105,7 +106,6 @@ public class Transformer implements ClassFileTransformer {
       }
 
       ClassAdapterDetectEnhancement detect = null;
-
       if (performDetect) {
         log(5, className, "performing detection");
         detect = detect(loader, classfileBuffer);
@@ -118,10 +118,8 @@ public class Transformer implements ClassFileTransformer {
       }
 
       if (transformEntityBeans && detect.isEntity()) {
-
         if (detect.isEnhancedEntity()) {
-          detect.log(1, "already enhanced entity");
-
+          detect.log(3, "already enhanced entity");
         } else {
           detect.log(2, "performing entity transform");
           return entityEnhancement(loader, classfileBuffer);
@@ -130,8 +128,7 @@ public class Transformer implements ClassFileTransformer {
 
       if (transformTransactional && detect.isTransactional()) {
         if (detect.isEnhancedTransactional()) {
-          detect.log(1, "already enhanced transactional");
-
+          detect.log(3, "already enhanced transactional");
         } else {
           detect.log(2, "performing transactional transform");
           return transactionalEnhancement(loader, classfileBuffer);
@@ -251,10 +248,8 @@ public class Transformer implements ClassFileTransformer {
 
     ClassAdapterDetectEnhancement detect = new ClassAdapterDetectEnhancement(classLoader, enhanceContext);
 
-    // skip what we can...
     ClassReader cr = new ClassReader(classfileBuffer);
     cr.accept(detect, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG + ClassReader.SKIP_FRAMES);
-
     return detect;
   }
 }

@@ -67,6 +67,7 @@ public class IgnoreClassHelper {
     ignoreTwoLevel.add("org/objenesis");
     ignoreTwoLevel.add("org/objectweb");
     ignoreTwoLevel.add("org/jboss");
+    ignoreTwoLevel.add("org/testng");
     ignoreTwoLevel.add("com/intellij");
     ignoreTwoLevel.add("com/google");
     ignoreTwoLevel.add("com/squareup");

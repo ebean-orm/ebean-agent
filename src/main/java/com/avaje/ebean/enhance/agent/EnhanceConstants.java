@@ -7,6 +7,8 @@ public interface EnhanceConstants {
 
   String AVAJE_TRANSACTIONAL_ANNOTATION = "Lcom/avaje/ebean/annotation/Transactional;";
 
+  String JAVAX_PERSISTENCE = "Ljavax/persistence/";
+
   String ENTITY_ANNOTATION = "Ljavax/persistence/Entity;";
 
   String EMBEDDABLE_ANNOTATION = "Ljavax/persistence/Embeddable;";
