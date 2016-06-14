@@ -1,6 +1,7 @@
 package com.avaje.ebean.enhance.agent;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +79,7 @@ public class IgnoreClassHelper {
 
   private final String[] processPackages;
 
-  public IgnoreClassHelper(Set<String> packages) {
+  public IgnoreClassHelper(Collection<String> packages) {
     List<String> packageList = new ArrayList<String>();
     if (packages != null) {
       for (String aPackage : packages) {

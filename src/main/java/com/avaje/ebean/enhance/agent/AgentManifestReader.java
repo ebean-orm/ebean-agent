@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -85,8 +86,8 @@ public class AgentManifestReader {
   /**
    * Return the parsed set of packages that type query beans are in.
    */
-  public Set<String> getPackages() {
-    return packageSet;
+  public List<String> getPackages() {
+    return DistillPackages.distill(packageSet);
   }
 
   /**
