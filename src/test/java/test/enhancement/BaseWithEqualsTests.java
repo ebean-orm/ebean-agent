@@ -1,7 +1,7 @@
 package test.enhancement;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import test.model.AExtends;
 import test.model.BExtends;

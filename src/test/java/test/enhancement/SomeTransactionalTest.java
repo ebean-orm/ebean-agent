@@ -1,14 +1,14 @@
 package test.enhancement;
 
 import com.avaje.ebean.annotation.SomePath;
-import org.junit.Test;
+import org.testng.annotations.Test;
 import test.model.SomeTransactionalService;
 
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 
 public class SomeTransactionalTest extends BaseTest {
 

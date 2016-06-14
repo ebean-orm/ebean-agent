@@ -2,8 +2,8 @@ package test.enhancement;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import test.model.Contact;
 import test.model.Customer;

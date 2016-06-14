@@ -1,8 +1,8 @@
 package test.enhancement;
 
 import com.avaje.ebean.bean.EntityBean;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import test.model.SomeAbstractClass;
 import test.model.SomeBeanWithInterface;
 import test.model.SomeExtendsAbstract;

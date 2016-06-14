@@ -4,16 +4,16 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import com.avaje.ebean.enhance.agent.ClassMeta;
 import com.avaje.ebean.enhance.agent.ClassMetaReader;
 import com.avaje.ebean.enhance.agent.ClassPathClassBytesReader;
 import com.avaje.ebean.enhance.agent.EnhanceContext;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 public class ClassMetaReaderTests {
 

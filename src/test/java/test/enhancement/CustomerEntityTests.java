@@ -2,8 +2,8 @@ package test.enhancement;
 
 import com.avaje.ebean.bean.EntityBean;
 import com.avaje.ebean.bean.EntityBeanIntercept;
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import test.model.BaseEntity;
 import test.model.Customer;
 

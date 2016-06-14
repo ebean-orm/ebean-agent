@@ -1,12 +1,12 @@
 package com.avaje.ebean.enhance.agent;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 
 public class IgnoreClassHelperTest {
