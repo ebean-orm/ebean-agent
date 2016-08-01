@@ -10,6 +10,9 @@ import test.model.Customer;
 import java.lang.reflect.Field;
 import java.util.Date;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
 public class CustomerEntityTests extends BaseTest {
 
   private static final int PROPERTY_COUNT = 6;
@@ -23,11 +26,11 @@ public class CustomerEntityTests extends BaseTest {
       field = BaseEntity.class.getField("_ebean_props");
       String[] names = (String[]) field.get(null);
 
-      Assert.assertNotNull(names);
-      Assert.assertEquals(3, names.length);
-      Assert.assertEquals("id", names[0]);
-      Assert.assertEquals("version", names[1]);
-      Assert.assertEquals("one", names[2]);
+      assertNotNull(names);
+      assertEquals(3, names.length);
+      assertEquals("id", names[0]);
+      assertEquals("version", names[1]);
+      assertEquals("one", names[2]);
 
     } catch (Exception e) {
       Assert.fail();
@@ -41,21 +44,21 @@ public class CustomerEntityTests extends BaseTest {
 
     String[] custFieldNames = custEb._ebean_getPropertyNames();
 
-    Assert.assertEquals(PROPERTY_COUNT, custFieldNames.length);
+    assertEquals(PROPERTY_COUNT, custFieldNames.length);
 
-    Assert.assertEquals("id", custFieldNames[0]);
-    Assert.assertEquals("version", custFieldNames[1]);
-    Assert.assertEquals("one", custFieldNames[2]);
-    Assert.assertEquals("name", custFieldNames[3]);
-    Assert.assertEquals("whenStart", custFieldNames[4]);
-    Assert.assertEquals("contacts", custFieldNames[5]);
+    assertEquals("id", custFieldNames[0]);
+    assertEquals("version", custFieldNames[1]);
+    assertEquals("one", custFieldNames[2]);
+    assertEquals("name", custFieldNames[3]);
+    assertEquals("whenStart", custFieldNames[4]);
+    assertEquals("contacts", custFieldNames[5]);
 
-    Assert.assertEquals("id", custEb._ebean_getPropertyName(0));
-    Assert.assertEquals("version", custEb._ebean_getPropertyName(1));
-    Assert.assertEquals("one", custEb._ebean_getPropertyName(2));
-    Assert.assertEquals("name", custEb._ebean_getPropertyName(3));
-    Assert.assertEquals("whenStart", custEb._ebean_getPropertyName(4));
-    Assert.assertEquals("contacts", custEb._ebean_getPropertyName(5));
+    assertEquals("id", custEb._ebean_getPropertyName(0));
+    assertEquals("version", custEb._ebean_getPropertyName(1));
+    assertEquals("one", custEb._ebean_getPropertyName(2));
+    assertEquals("name", custEb._ebean_getPropertyName(3));
+    assertEquals("whenStart", custEb._ebean_getPropertyName(4));
+    assertEquals("contacts", custEb._ebean_getPropertyName(5));
 
     EntityBeanIntercept customerIntercept = custEb._ebean_getIntercept();
 
@@ -64,10 +67,10 @@ public class CustomerEntityTests extends BaseTest {
     // this is null as the bean has not been marked as loaded yet
     Assert.assertNull(customerIntercept.getChanged());
     boolean[] loaded = customerIntercept.getLoaded();
-    Assert.assertNotNull(loaded);
-    Assert.assertEquals(PROPERTY_COUNT, loaded.length);
-    Assert.assertEquals(true, loaded[0]);
-    Assert.assertEquals(false, loaded[1]);
+    assertNotNull(loaded);
+    assertEquals(PROPERTY_COUNT, loaded.length);
+    assertEquals(true, loaded[0]);
+    assertEquals(false, loaded[1]);
     assertLoaded(customerIntercept, 0);
     assertNotLoaded(customerIntercept, 1,2,3,4);
 
@@ -96,7 +99,7 @@ public class CustomerEntityTests extends BaseTest {
     customer.setName("nameModified");
     Assert.assertTrue(customerIntercept.isDirty());
     Assert.assertTrue(customerIntercept.isNewOrDirty());
-    Assert.assertNotNull(customerIntercept.getChanged());
+    assertNotNull(customerIntercept.getChanged());
     assertChanged(customerIntercept, 3);
     assertNotChanged(customerIntercept, 0,1,2,4);
 
@@ -115,14 +118,14 @@ public class CustomerEntityTests extends BaseTest {
     c2Entity._ebean_setField(1, 34L);
     c2.setName("c2name");
     c2.setWhenStart(now);
-    Assert.assertEquals(Long.valueOf(12), c2.getId());
-    Assert.assertEquals(Long.valueOf(12), c2Entity._ebean_getField(0));
-    Assert.assertEquals(Long.valueOf(34), c2.getVersion());
-    Assert.assertEquals(Long.valueOf(34), c2Entity._ebean_getField(1));
-    Assert.assertEquals("c2name", c2.getName());
-    Assert.assertEquals("c2name", c2Entity._ebean_getField(3));
-    Assert.assertEquals(now, c2.getWhenStart());
-    Assert.assertEquals(now, c2Entity._ebean_getField(4));
+    assertEquals(Long.valueOf(12), c2.getId());
+    assertEquals(Long.valueOf(12), c2Entity._ebean_getField(0));
+    assertEquals(Long.valueOf(34), c2.getVersion());
+    assertEquals(Long.valueOf(34), c2Entity._ebean_getField(1));
+    assertEquals("c2name", c2.getName());
+    assertEquals("c2name", c2Entity._ebean_getField(3));
+    assertEquals(now, c2.getWhenStart());
+    assertEquals(now, c2Entity._ebean_getField(4));
 
     // AFTER LOADED ... then changes are tracked
     c2Intercept.setLoaded();
@@ -130,8 +133,8 @@ public class CustomerEntityTests extends BaseTest {
 
 
     c2.setName("c2NameChanged");
-    Assert.assertNotNull(c2Intercept.getChanged());
-    Assert.assertEquals(PROPERTY_COUNT, c2Intercept.getChanged().length);
+    assertNotNull(c2Intercept.getChanged());
+    assertEquals(PROPERTY_COUNT, c2Intercept.getChanged().length);
     assertChanged(c2Intercept, 3);
     assertNotChanged(c2Intercept, 0,1,2,4);
 
@@ -160,17 +163,17 @@ public class CustomerEntityTests extends BaseTest {
 
   private void assertThatLoaded(EntityBeanIntercept intercept, boolean propertyLoaded, int... idx) {
     boolean[] loaded = intercept.getLoaded();
-    Assert.assertNotNull(loaded);
+    assertNotNull(loaded);
     for (int pos : idx) {
-      Assert.assertEquals(propertyLoaded, loaded[pos]);
+      assertEquals(propertyLoaded, loaded[pos]);
     }
   }
 
   private void assertThatChanged(EntityBeanIntercept intercept, boolean propertyLoaded, int... idx) {
     boolean[] changedFlags = intercept.getChanged();
-    Assert.assertNotNull(changedFlags);
+    assertNotNull(changedFlags);
     for (int pos : idx) {
-      Assert.assertEquals(propertyLoaded, changedFlags[pos]);
+      assertEquals(propertyLoaded, changedFlags[pos]);
     }
   }
   

@@ -1,12 +1,14 @@
 package test.enhancement;
 
 import com.avaje.ebean.bean.EntityBean;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 import test.model.SomeAbstractClass;
-import test.model.SomeBeanWithInterface;
 import test.model.SomeExtendsAbstract;
 import test.model.SomeInterface;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 public class SomeAbstractClassTests extends BaseTest {
 
@@ -16,16 +18,16 @@ public class SomeAbstractClassTests extends BaseTest {
 
     // make sure we can construct it
     SomeExtendsAbstract bean = new SomeExtendsAbstract();
-    Assert.assertNotNull(bean);
+    assertNotNull(bean);
 
-    Assert.assertTrue(bean instanceof EntityBean);
-    Assert.assertTrue(bean instanceof SomeInterface);
-    Assert.assertTrue(bean instanceof SomeAbstractClass);
+    assertTrue(bean instanceof EntityBean);
+    assertTrue(bean instanceof SomeInterface);
+    assertTrue(bean instanceof SomeAbstractClass);
 
     EntityBean eb = (EntityBean)bean;
     String[] props = eb._ebean_getPropertyNames();
-    Assert.assertEquals(2, props.length);
-    Assert.assertEquals("id", props[0]);
-    Assert.assertEquals("name", props[1]);
+    assertEquals(2, props.length);
+    assertEquals("id", props[0]);
+    assertEquals("name", props[1]);
   }
 }

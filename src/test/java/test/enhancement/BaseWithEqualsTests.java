@@ -1,10 +1,11 @@
 package test.enhancement;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import test.model.AExtends;
 import test.model.BExtends;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class BaseWithEqualsTests {
 
@@ -14,8 +15,8 @@ public class BaseWithEqualsTests {
     AExtends aExtends = new AExtends();
     boolean isEqual = aExtends.equals(new Object());
     
-    Assert.assertTrue(isEqual);
-    Assert.assertEquals("1", aExtends.toString());
+    assertTrue(isEqual);
+    assertEquals("1", aExtends.toString());
     
   }
   
@@ -26,8 +27,8 @@ public class BaseWithEqualsTests {
     BExtends bExtends = new BExtends();
     boolean isEqual = bExtends.equals(new Object());
     
-    Assert.assertTrue(isEqual);
-    Assert.assertEquals("1", bExtends.toString());
+    assertTrue(isEqual);
+    assertEquals("1", bExtends.toString());
     
   }
 }

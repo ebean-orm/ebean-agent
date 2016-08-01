@@ -1,9 +1,9 @@
 package test.enhancement;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
-import test.enhancement.BaseTest;
 import test.model.SomeXtendsBaseWithEquals;
+
+import static org.testng.Assert.assertEquals;
 
 /**
  */
@@ -16,6 +16,6 @@ public class SomeXtendsBaseWithEqualsTests extends BaseTest {
     SomeXtendsBaseWithEquals bean = new SomeXtendsBaseWithEquals();
     bean.equals(new SomeXtendsBaseWithEquals());
 
-    Assert.assertEquals(1, bean.equalsCount);
+    assertEquals(1, bean.equalsCount);
   }
 }
