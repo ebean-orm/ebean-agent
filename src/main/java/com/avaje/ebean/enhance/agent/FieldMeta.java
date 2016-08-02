@@ -376,11 +376,20 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     Label labelEnd = new Label();
     Label labelStart = null;
 
-    if (isInterceptGet()) {
+    int maxVars = 1;
+    if (isId()) {
+      labelStart = new Label();
+      mv.visitLabel(labelStart);
+      mv.visitLineNumber(5, labelStart);
+      mv.visitVarInsn(ALOAD, 0);
+      mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetId", "()V", false);
+
+    } else if (isInterceptGet()) {
+      maxVars = 2;
       labelStart = new Label();
       mv.visitLabel(labelStart);
       mv.visitLineNumber(6, labelStart);
-      mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
       IndexFieldWeaver.visitIntInsn(mv, indexPosition);
@@ -391,14 +400,13 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     }
     mv.visitLabel(labelEnd);
     mv.visitLineNumber(7, labelEnd);
-    mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, className, fieldName, fieldDesc);
     mv.visitInsn(iReturnOpcode);// ARETURN or IRETURN
     Label labelEnd1 = new Label();
     mv.visitLabel(labelEnd1);
     mv.visitLocalVariable("this", "L" + className + ";", null, labelStart, labelEnd1, 0);
-    mv.visitMaxs(2, 1);
+    mv.visitMaxs(maxVars, 1);
     mv.visitEnd();
   }
 
@@ -510,7 +518,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * 
    * <pre>
    * public void _ebean_set_propname(String newValue) {
-   *   PropertyChangeEvent evt = ebi.preSetter(true, &quot;propname&quot;, _ebean_get_propname(), newValue);
+   *   PropertyChangeEvent evt = ebi.preSetter(true, propertyIndex, _ebean_get_propname(), newValue);
    *   this.propname = newValue;
    *   ebi.postSetter(evt);
    * }
@@ -551,7 +559,12 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     }
     IndexFieldWeaver.visitIntInsn(mv, indexPosition);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKEVIRTUAL, fieldClass, getMethodName, getMethodDesc, false);
+    if (isId()) {
+      // skip getter on Id as we now intercept that via preGetId() for automatic jdbc batch flushing
+      mv.visitFieldInsn(GETFIELD, fieldClass, fieldName, fieldDesc);
+    } else {
+      mv.visitMethodInsn(INVOKEVIRTUAL, fieldClass, getMethodName, getMethodDesc, false);
+    }
     mv.visitVarInsn(iLoadOpcode, 1);
     String preSetterMethod = "preSetter";
     if (isMany()) {

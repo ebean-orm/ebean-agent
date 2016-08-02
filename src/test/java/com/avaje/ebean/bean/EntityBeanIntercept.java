@@ -88,6 +88,8 @@ public final class EntityBeanIntercept implements Serializable {
 
   private int lazyLoadProperty = -1;
 
+  protected boolean calledGetId;
+
   /**
    * Create a intercept with a given entity.
    * <p>
@@ -741,7 +743,15 @@ public final class EntityBeanIntercept implements Serializable {
   public void initialisedMany(int propertyIndex) {
     loadedProps[propertyIndex] = true;
   }
-  
+
+  public boolean isCalledGetId() {
+    return calledGetId;
+  }
+
+  public void preGetId() {
+    calledGetId = true;
+  }
+
   /**
    * Method that is called prior to a getter method on the actual entity.
    */
