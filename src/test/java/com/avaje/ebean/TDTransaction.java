@@ -65,6 +65,21 @@ public class TDTransaction implements SpiTransaction {
   }
 
   @Override
+  public void setRollbackOnly() {
+
+  }
+
+  @Override
+  public void setSkipCache(boolean skipCache) {
+
+  }
+
+  @Override
+  public boolean isSkipCache() {
+    return false;
+  }
+
+  @Override
   public void setUpdateAllLoadedProperties(boolean b) {
 
   }
