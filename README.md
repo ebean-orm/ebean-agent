@@ -14,7 +14,6 @@ Enhancer Agent for Ebean ORM
 
 Note that this previously was in a different maven groupId.
 
-
 ```xml
     <dependency>
       <groupId>org.avaje.ebeanorm</groupId>
