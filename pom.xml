@@ -36,7 +36,7 @@
   </developers>
 
   <scm>
-    <developerConnection>scm:git:https://github.com/ebean-orm/ebean-agent.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:ebean-orm/ebean-agent.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
