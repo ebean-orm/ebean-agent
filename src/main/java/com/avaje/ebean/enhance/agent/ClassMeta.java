@@ -309,11 +309,8 @@ public class ClassMeta {
 	 * Return true if the class has an Entity, Embeddable, MappedSuperclass (with persistent fields).
 	 */
 	public boolean isEntity() {
-		if (classAnnotation.contains(EnhanceConstants.ENTITY_ANNOTATION)) {
-			return true;
-		}
-		if (classAnnotation.contains(EnhanceConstants.EMBEDDABLE_ANNOTATION)) {
-			return true;
+		if (!EntityCheck.hasEntityAnnotation(classAnnotation)) {
+			return false;
 		}
 		if (classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
 		  // only 'interesting' if it has persistent fields or equals/hashCode.
@@ -324,23 +321,14 @@ public class ClassMeta {
 		  }
 		  return shouldEnhance;
 		}
-		return false;
+		return true;
 	}
 
   /**
    * Return true if the class has an Entity, Embeddable, or MappedSuperclass.
    */
   private boolean isCheckEntity() {
-    if (classAnnotation.contains(EnhanceConstants.ENTITY_ANNOTATION)) {
-      return true;
-    }
-    if (classAnnotation.contains(EnhanceConstants.EMBEDDABLE_ANNOTATION)) {
-      return true;
-    }
-    if (classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
-      return true;
-    }
-    return false;
+		return EntityCheck.hasEntityAnnotation(classAnnotation);
   }
 
 	/**

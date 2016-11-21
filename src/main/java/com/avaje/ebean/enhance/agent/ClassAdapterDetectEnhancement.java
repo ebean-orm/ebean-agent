@@ -130,18 +130,7 @@ class ClassAdapterDetectEnhancement extends ClassVisitor {
    * Return true if the annotation is for an Entity, Embeddable or MappedSuperclass.
    */
   private boolean isEntityAnnotation(String desc) {
-
-    if (!desc.startsWith(EnhanceConstants.JAVAX_PERSISTENCE)) {
-      return false;
-    }
-    if (desc.equals(EnhanceConstants.ENTITY_ANNOTATION)) {
-      return true;
-    } else if (desc.equals(EnhanceConstants.EMBEDDABLE_ANNOTATION)) {
-      return true;
-    } else if (desc.equals(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
-      return true;
-    }
-    return false;
+    return EntityCheck.isEntityAnnotation(desc);
   }
 
   /**

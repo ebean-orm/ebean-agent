@@ -11,6 +11,8 @@ public interface EnhanceConstants {
 
   String ENTITY_ANNOTATION = "Ljavax/persistence/Entity;";
 
+  String DOCSTORE_ANNOTATION = "Lcom/avaje/ebean/annotation/DocStore;";
+
   String EMBEDDABLE_ANNOTATION = "Ljavax/persistence/Embeddable;";
 
   String MAPPEDSUPERCLASS_ANNOTATION = "Ljavax/persistence/MappedSuperclass;";
