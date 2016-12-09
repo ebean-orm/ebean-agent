@@ -5,13 +5,13 @@ package com.avaje.ebean.enhance.agent;
  */
 public interface EnhanceConstants {
 
-  String AVAJE_TRANSACTIONAL_ANNOTATION = "Lcom/avaje/ebean/annotation/Transactional;";
+  String AVAJE_TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
 
   String JAVAX_PERSISTENCE = "Ljavax/persistence/";
 
   String ENTITY_ANNOTATION = "Ljavax/persistence/Entity;";
 
-  String DOCSTORE_ANNOTATION = "Lcom/avaje/ebean/annotation/DocStore;";
+  String DOCSTORE_ANNOTATION = "Lio/ebean/annotation/DocStore;";
 
   String EMBEDDABLE_ANNOTATION = "Ljavax/persistence/Embeddable;";
 
@@ -21,36 +21,42 @@ public interface EnhanceConstants {
 
   String INTERCEPT_FIELD = "_ebean_intercept";
 
-  String C_ENHANCEDTRANSACTIONAL = "com/avaje/ebean/bean/EnhancedTransactional";
+  String C_ENHANCEDTRANSACTIONAL = "io/ebean/bean/EnhancedTransactional";
 
-  String C_ENTITYBEAN = "com/avaje/ebean/bean/EntityBean";
+  String C_ENTITYBEAN = "io/ebean/bean/EntityBean";
 
   String C_SCALAOBJECT = "scala/ScalaObject";
 
   String C_GROOVYOBJECT = "groovy/lang/GroovyObject";
 
-  String C_INTERCEPT = "com/avaje/ebean/bean/EntityBeanIntercept";
+  String C_INTERCEPT = "io/ebean/bean/EntityBeanIntercept";
 
-  String C_BEANCOLLECTION = "com/avaje/ebean/bean/BeanCollection";
+  String C_BEANCOLLECTION = "io/ebean/bean/BeanCollection";
 
-  String L_INTERCEPT = "Lcom/avaje/ebean/bean/EntityBeanIntercept;";
+  String L_INTERCEPT = "Lio/ebean/bean/EntityBeanIntercept;";
 
-  String L_EMBEDDEDCOLUMNS = "Lcom/avaje/ebean/annotation/EmbeddedColumns;";
+  //String L_EMBEDDEDCOLUMNS = "Lio/ebean/annotation/EmbeddedColumns;";
 
-  String L_SCOPETRANS = "Lcom/avaje/ebeaninternal/api/ScopeTrans;";
+  String L_SCOPETRANS = "Lio/ebean/internal/api/ScopeTrans;";
 
-  String L_HELPSCOPETRANS = "Lcom/avaje/ebeaninternal/api/HelpScopeTrans;";
+  String L_HELPSCOPETRANS = "Lio/ebean/internal/api/HelpScopeTrans;";
 
-  String C_TXTYPE = "com/avaje/ebean/TxType";
+  String L_DRAFT = "Lio/ebean/annotation/Draft;";
 
-  String C_TXSCOPE = "com/avaje/ebean/TxScope";
+  String C_TXTYPE = "io/ebean/TxType";
 
-  String C_TXISOLATION = "com/avaje/ebean/TxIsolation";
+  String C_TXSCOPE = "io/ebean/TxScope";
 
-  String C_PERSISTBATCH = "com/avaje/ebean/config/PersistBatch";
+  String C_TXISOLATION = "io/ebean/TxIsolation";
 
-  String EBEAN_MODEL = "com/avaje/ebean/Model";
+  String C_PERSISTBATCH = "io/ebean/PersistBatch";
 
-  String EBEAN_PREFIX = "com/avaje/ebean";
+  String EBEAN_MODEL = "io/ebean/Model";
+
+  String BEANLIST = "io/ebean/common/BeanList";
+
+  String BEANSET = "io/ebean/common/BeanSet";
+
+  String BEANMAP = "io/ebean/common/BeanMap";
 
 }

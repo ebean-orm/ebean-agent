@@ -72,10 +72,7 @@ public class IgnoreClassHelper {
     ignoreTwoLevel.add("com/google");
     ignoreTwoLevel.add("com/squareup");
     ignoreTwoLevel.add("com/microsoft");
-
-    ignoreThreeLevel.add("com/avaje/ebeaninternal");
-    ignoreThreeLevel.add("com/avaje/ebean");
-    ignoreThreeLevel.add("org/avaje/ebean");
+    ignoreTwoLevel.add("io/ebean");
   }
 
   private final String[] processPackages;

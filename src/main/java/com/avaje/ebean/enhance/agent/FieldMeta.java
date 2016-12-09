@@ -155,7 +155,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    */
   public boolean isTransient() {
     return annotations.contains("Ljavax/persistence/Transient;")
-        || annotations.contains("Lcom/avaje/ebean/annotation/Draft;");
+        || annotations.contains(L_DRAFT);
   }
 
   /**
@@ -185,8 +185,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * Return true if this is an Embedded field.
    */
   public boolean isEmbedded() {
-    return annotations.contains("Ljavax/persistence/Embedded;")
-        || annotations.contains(L_EMBEDDEDCOLUMNS);
+    return annotations.contains("Ljavax/persistence/Embedded;");
   }
 
   /**
@@ -323,13 +322,13 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
   private String getEbeanCollectionClass() {
     if (fieldDesc.equals("Ljava/util/List;")) {
-      return "com/avaje/ebean/common/BeanList";
+      return BEANLIST;
     }
     if (fieldDesc.equals("Ljava/util/Set;")) {
-      return "com/avaje/ebean/common/BeanSet";
+      return BEANSET;
     }
     if (fieldDesc.equals("Ljava/util/Map;")) {
-      return "com/avaje/ebean/common/BeanMap";
+      return BEANMAP;
     }
     return null;
   }
