@@ -1,6 +1,6 @@
 package test.model;
 
-import com.avaje.ebean.bean.EntityBean;
+import io.ebean.bean.EntityBean;
 import org.testng.annotations.Test;
 import test.enhancement.BaseTest;
 

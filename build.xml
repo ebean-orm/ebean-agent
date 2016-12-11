@@ -10,7 +10,7 @@
 	<!-- the entity classes we want to enhance are in here -->	
 	<property name="bin.dir" value="target/test-classes"/>
 
-	<taskdef name="ebeanEnhance" classname="com.avaje.ebean.enhance.ant.AntEnhanceTask">
+	<taskdef name="ebeanEnhance" classname="io.ebean.enhance.ant.AntEnhanceTask">
 		<classpath>
 			<dirset dir="${task.bin.dir}"></dirset>
 		</classpath>

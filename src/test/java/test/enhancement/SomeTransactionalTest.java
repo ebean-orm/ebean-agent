@@ -1,6 +1,6 @@
 package test.enhancement;
 
-import com.avaje.ebean.annotation.SomePath;
+import io.ebean.annotation.SomePath;
 import org.testng.annotations.Test;
 import test.model.SomeTransactionalService;
 

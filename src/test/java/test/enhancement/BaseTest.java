@@ -1,6 +1,6 @@
 package test.enhancement;
 
-import com.avaje.ebean.enhance.ant.MainTransform;
+import io.ebean.enhance.ant.MainTransform;
 
 public abstract class BaseTest {
 

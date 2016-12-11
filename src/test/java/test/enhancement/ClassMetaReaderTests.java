@@ -6,10 +6,10 @@ import java.util.Set;
 
 import org.testng.annotations.Test;
 
-import com.avaje.ebean.enhance.agent.ClassMeta;
-import com.avaje.ebean.enhance.agent.ClassMetaReader;
-import com.avaje.ebean.enhance.agent.ClassPathClassBytesReader;
-import com.avaje.ebean.enhance.agent.EnhanceContext;
+import io.ebean.enhance.agent.ClassMeta;
+import io.ebean.enhance.agent.ClassMetaReader;
+import io.ebean.enhance.agent.ClassPathClassBytesReader;
+import io.ebean.enhance.agent.EnhanceContext;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;

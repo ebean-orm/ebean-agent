@@ -1,7 +1,7 @@
 package test.enhancement;
 
-import com.avaje.ebean.bean.EntityBean;
-import com.avaje.ebean.bean.EntityBeanIntercept;
+import io.ebean.bean.EntityBean;
+import io.ebean.bean.EntityBeanIntercept;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import test.model.BaseEntity;

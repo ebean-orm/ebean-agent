@@ -1,9 +1,9 @@
 package test.model;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.TDTransaction;
-import com.avaje.ebean.annotation.SomePath;
-import com.avaje.ebean.annotation.Transactional;
+import io.ebean.Ebean;
+import io.ebean.TDTransaction;
+import io.ebean.annotation.SomePath;
+import io.ebean.annotation.Transactional;
 
 public class SomeTransactionalService {
 
