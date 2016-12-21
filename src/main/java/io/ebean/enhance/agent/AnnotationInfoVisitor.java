@@ -37,14 +37,17 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
 	}
 	
 	public void visitEnd() {
-		av.visitEnd();
+		if (av != null) {
+			av.visitEnd();
+		}
 	}
 
 	public void visitEnum(String name, String desc, String value) {
 		
 		info.addEnum(prefix, name, desc, value);
-		av.visitEnum(name, desc, value);
+		if (av != null) {
+			av.visitEnum(name, desc, value);
+		}
 	}
-
 	
 }
