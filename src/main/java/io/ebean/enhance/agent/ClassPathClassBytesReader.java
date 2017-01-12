@@ -1,5 +1,6 @@
 package io.ebean.enhance.agent;
 
+import io.ebean.enhance.common.ClassBytesReader;
 import io.ebean.enhance.help.InputStreamTransform;
 
 import java.io.IOException;

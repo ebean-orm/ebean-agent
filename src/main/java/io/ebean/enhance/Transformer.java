@@ -4,7 +4,7 @@ import io.ebean.enhance.common.AlreadyEnhancedException;
 import io.ebean.enhance.common.ClassAdapterDetectEnhancement;
 import io.ebean.enhance.agent.ClassAdapterEntity;
 import io.ebean.enhance.transactional.ClassAdapterTransactional;
-import io.ebean.enhance.agent.ClassBytesReader;
+import io.ebean.enhance.common.ClassBytesReader;
 import io.ebean.enhance.agent.ClassPathClassBytesReader;
 import io.ebean.enhance.common.EnhanceContext;
 import io.ebean.enhance.agent.MessageOutput;

@@ -1,4 +1,6 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
+
+import io.ebean.enhance.agent.MessageOutput;
 
 import java.io.PrintStream;
 

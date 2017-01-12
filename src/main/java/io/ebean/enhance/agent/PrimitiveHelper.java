@@ -5,7 +5,7 @@ import io.ebean.enhance.asm.Type;
 /**
  * Maps primitive types to their Object types.
  */
-public class PrimitiveHelper {
+class PrimitiveHelper {
 
 	private static Type INTEGER_OBJECT = Type.getType(Integer.class);
 	private static Type SHORT_OBJECT = Type.getType(Short.class);
@@ -16,9 +16,9 @@ public class PrimitiveHelper {
 	private static Type BYTE_OBJECT = Type.getType(Byte.class);
 	private static Type BOOLEAN_OBJECT = Type.getType(Boolean.class);
 	
-	public static Type getObjectWrapper(Type primativeAsmType){
+	static Type getObjectWrapper(Type primitiveAsmType){
 		
-		int sort = primativeAsmType.getSort();
+		int sort = primitiveAsmType.getSort();
 		switch (sort) {
 		case Type.INT: return INTEGER_OBJECT;
 		case Type.SHORT: return SHORT_OBJECT;
@@ -30,7 +30,7 @@ public class PrimitiveHelper {
 		case Type.BOOLEAN: return BOOLEAN_OBJECT;
 			
 		default:
-			throw new RuntimeException("Expected primative? "+primativeAsmType);
+			throw new RuntimeException("Expected primative? "+primitiveAsmType);
 		}
 	}
 

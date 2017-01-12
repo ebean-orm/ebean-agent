@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.ebean.enhance.agent.AnnotationInfo;
+import io.ebean.enhance.common.AnnotationInfo;
 import org.testng.annotations.Test;
 
 import io.ebean.enhance.agent.ClassMeta;

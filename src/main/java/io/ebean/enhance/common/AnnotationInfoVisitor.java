@@ -1,4 +1,4 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Opcodes;

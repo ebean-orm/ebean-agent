@@ -1,7 +1,7 @@
 package io.ebean.enhance.transactional;
 
-import io.ebean.enhance.agent.AnnotationInfo;
-import io.ebean.enhance.agent.AnnotationInfoVisitor;
+import io.ebean.enhance.common.AnnotationInfo;
+import io.ebean.enhance.common.AnnotationInfoVisitor;
 import io.ebean.enhance.agent.ClassMeta;
 import io.ebean.enhance.agent.EnhanceConstants;
 import io.ebean.enhance.asm.AnnotationVisitor;

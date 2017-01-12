@@ -1,5 +1,7 @@
 package io.ebean.enhance.agent;
 
+import io.ebean.enhance.common.AnnotationInfo;
+
 public class MethodMeta {
 
   private final String name;
