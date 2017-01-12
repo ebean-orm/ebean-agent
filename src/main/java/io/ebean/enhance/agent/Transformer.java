@@ -105,12 +105,18 @@ public class Transformer implements ClassFileTransformer {
 
       ClassAdapterDetectEnhancement detect = detect(loader, classfileBuffer);
 
+      TransformRequest request = new TransformRequest(classfileBuffer);
+
       if (detect.isEntity()) {
         if (detect.isEnhancedEntity()) {
           detect.log(3, "already enhanced entity");
         } else {
-          detect.log(2, "performing entity transform");
-          return entityEnhancement(loader, classfileBuffer);
+          entityEnhancement(loader, request);
+          if (request.isEnhancedEntity()) {
+            // we don't need perform subsequent transactional
+            // or query bean enhancement so return early
+            return request.getBytes();
+          }
         }
       }
 
@@ -118,10 +124,14 @@ public class Transformer implements ClassFileTransformer {
         if (detect.isEnhancedTransactional()) {
           detect.log(3, "already enhanced transactional");
         } else {
-          detect.log(2, "performing transactional transform");
-          return transactionalEnhancement(loader, classfileBuffer);
+          transactionalEnhancement(loader, request);
         }
       }
+
+      if (request.isEnhanced()) {
+        return request.getBytes();
+      }
+
       log(9, className, "no enhancement on class");
       return null;
 
@@ -144,9 +154,9 @@ public class Transformer implements ClassFileTransformer {
   /**
    * Perform entity bean enhancement.
    */
-  private byte[] entityEnhancement(ClassLoader loader, byte[] classfileBuffer) {
+  private void entityEnhancement(ClassLoader loader, TransformRequest request) {
 
-    ClassReader cr = new ClassReader(classfileBuffer);
+    ClassReader cr = new ClassReader(request.getBytes());
     ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);
     ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
     try {
@@ -157,52 +167,48 @@ public class Transformer implements ClassFileTransformer {
         ca.logEnhanced();
       }
 
-      return cw.toByteArray();
+      request.enhancedEntity(cw.toByteArray());
 
     } catch (AlreadyEnhancedException e) {
       if (ca.isLog(1)) {
         ca.log("already enhanced entity");
       }
-      return null;
+      request.enhancedEntity(null);
 
     } catch (NoEnhancementRequiredException e) {
       if (ca.isLog(2)) {
         ca.log("skipping... no enhancement required");
       }
-      return null;
     }
   }
 
   /**
    * Perform transactional enhancement.
    */
-  private byte[] transactionalEnhancement(ClassLoader loader, byte[] classfileBuffer) {
+  private void transactionalEnhancement(ClassLoader loader, TransformRequest request) {
 
-    ClassReader cr = new ClassReader(classfileBuffer);
+    ClassReader cr = new ClassReader(request.getBytes());
     ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
 
     try {
-
       cr.accept(ca, ClassReader.SKIP_FRAMES);
 
       if (ca.isLog(1)) {
-        ca.log("enhanced");
+        ca.log("enhanced transactional");
       }
 
-      return cw.toByteArray();
+      request.enhancedTransactional(cw.toByteArray());
 
     } catch (AlreadyEnhancedException e) {
       if (ca.isLog(1)) {
         ca.log("already enhanced");
       }
-      return null;
 
     } catch (NoEnhancementRequiredException e) {
       if (ca.isLog(0)) {
         ca.log("skipping... no enhancement required");
       }
-      return null;
     }
   }
 
