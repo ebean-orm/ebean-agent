@@ -1,12 +1,17 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.transactional;
 
-import java.util.ArrayList;
-
+import io.ebean.enhance.agent.AnnotationInfo;
+import io.ebean.enhance.agent.AnnotationInfoVisitor;
+import io.ebean.enhance.agent.EnhanceConstants;
+import io.ebean.enhance.agent.IndexFieldWeaver;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.commons.FinallyAdapter;
+import io.ebean.enhance.common.VisitUtil;
+
+import java.util.ArrayList;
 
 /**
  * Adapts a method to support Transactional.
@@ -109,7 +114,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
   private void setBatchSize(Object batchSize){
 
     mv.visitVarInsn(ALOAD, posTxScope);
-    IndexFieldWeaver.visitIntInsn(mv, Integer.parseInt(batchSize.toString()));
+    VisitUtil.visitIntInsn(mv, Integer.parseInt(batchSize.toString()));
     mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchSize", "(I)L"+C_TXSCOPE+";", false);
     mv.visitInsn(POP);
   }

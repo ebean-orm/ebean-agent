@@ -1,5 +1,7 @@
 package io.ebean.enhance.agent;
 
+import io.ebean.enhance.help.InputStreamTransform;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -12,7 +14,7 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
 	
 
 	private final URL[] urls;
-	
+
 	public ClassPathClassBytesReader(URL[] urls) {
 		this.urls = urls == null ? new URL[0]: urls;
 	}

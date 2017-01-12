@@ -5,6 +5,7 @@ import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.VisitUtil;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class IndexFieldWeaver implements Opcodes {
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
-    visitIntInsn(mv, fields.size());
+    VisitUtil.visitIntInsn(mv, fields.size());
     mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
     
     if (fields.isEmpty()) {
@@ -53,7 +54,7 @@ public class IndexFieldWeaver implements Opcodes {
       for (int i=0; i<fields.size(); i++) {
         FieldMeta field = fields.get(i);
         mv.visitInsn(DUP);
-        visitIntInsn(mv, i);
+				VisitUtil.visitIntInsn(mv, i);
         mv.visitLdcInsn(field.getName());
         mv.visitInsn(AASTORE);        
       }  
@@ -312,39 +313,4 @@ public class IndexFieldWeaver implements Opcodes {
 		mv.visitEnd();
 	}
 
-	/**
-	 * Helper method for visiting an int value.
-	 * <p>
-	 * This can use special constant values for int values from 0 to 5.
-	 * </p>
-	 */
-	public static void visitIntInsn(MethodVisitor mv, int value) {
-
-		switch (value) {
-		case 0:
-			mv.visitInsn(ICONST_0);
-			break;
-		case 1:
-			mv.visitInsn(ICONST_1);
-			break;
-		case 2:
-			mv.visitInsn(ICONST_2);
-			break;
-		case 3:
-			mv.visitInsn(ICONST_3);
-			break;
-		case 4:
-			mv.visitInsn(ICONST_4);
-			break;
-		case 5: 
-			mv.visitInsn(ICONST_5);
-			break;
-		default:
-			if (value <= Byte.MAX_VALUE){
-				mv.visitIntInsn(BIPUSH, value);
-			} else {
-				mv.visitIntInsn(SIPUSH, value);	
-			}
-		}
-	}
 }

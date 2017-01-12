@@ -5,6 +5,7 @@ import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
+import io.ebean.enhance.common.VisitUtil;
 
 import java.util.HashSet;
 
@@ -391,7 +392,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitLineNumber(6, labelStart);
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
-      IndexFieldWeaver.visitIntInsn(mv, indexPosition);
+      VisitUtil.visitIntInsn(mv, indexPosition);
       mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V", false);
     }
     if (labelStart == null) {
@@ -419,7 +420,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitLineNumber(1, l0);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
-    IndexFieldWeaver.visitIntInsn(mv, indexPosition);
+    VisitUtil.visitIntInsn(mv, indexPosition);
     mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V", false);
 
     Label l4 = new Label();
@@ -447,7 +448,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
-      IndexFieldWeaver.visitIntInsn(mv, indexPosition);
+      VisitUtil.visitIntInsn(mv, indexPosition);
       mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "initialisedMany", "(I)V", false);
 
       if (isManyToMany()) {
@@ -556,7 +557,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       // id or OneToMany field etc
       mv.visitInsn(ICONST_0);
     }
-    IndexFieldWeaver.visitIntInsn(mv, indexPosition);
+    VisitUtil.visitIntInsn(mv, indexPosition);
     mv.visitVarInsn(ALOAD, 0);
     if (isId()) {
       // skip getter on Id as we now intercept that via preGetId() for automatic jdbc batch flushing
@@ -632,7 +633,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitLineNumber(2, l1);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, fieldClass, INTERCEPT_FIELD, L_INTERCEPT);
-    IndexFieldWeaver.visitIntInsn(mv, indexPosition);
+    VisitUtil.visitIntInsn(mv, indexPosition);
     mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "setLoadedProperty", "(I)V", false);
     
     Label l2 = new Label();

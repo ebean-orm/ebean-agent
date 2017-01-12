@@ -5,6 +5,7 @@ import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.VisitUtil;
 
 /**
  * Generate the equals hashCode method using the identity.
@@ -239,7 +240,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
 		mv.visitLabel(l3);
 		mv.visitLineNumber(1, l3);
 		mv.visitVarInsn(ALOAD, 0);
-		IndexFieldWeaver.visitIntInsn(mv, idFieldIndex);
+		VisitUtil.visitIntInsn(mv, idFieldIndex);
 		mv.visitMethodInsn(INVOKESPECIAL, className, "_ebean_getField", "(I)Ljava/lang/Object;", false);
 		mv.visitVarInsn(ASTORE, 2);
 		
