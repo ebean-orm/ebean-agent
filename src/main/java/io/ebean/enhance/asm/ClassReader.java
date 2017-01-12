@@ -105,8 +105,23 @@ public class ClassReader {
     public static final int EXPAND_FRAMES = 8;
 
     /**
+     * Flag to expand the ASM pseudo instructions into an equivalent sequence of
+     * standard bytecode instructions. When resolving a forward jump it may
+     * happen that the signed 2 bytes offset reserved for it is not sufficient
+     * to store the bytecode offset. In this case the jump instruction is
+     * replaced with a temporary ASM pseudo instruction using an unsigned 2
+     * bytes offset (see Label#resolve). This internal flag is used to re-read
+     * classes containing such instructions, in order to replace them with
+     * standard instructions. In addition, when this flag is used, GOTO_W and
+     * JSR_W are <i>not</i> converted into GOTO and JSR, to make sure that
+     * infinite loops where a GOTO_W is replaced with a GOTO in ClassReader and
+     * converted back to a GOTO_W in ClassWriter cannot occur.
+     */
+    static final int EXPAND_ASM_INSNS = 256;
+
+    /**
      * The class to be parsed. <i>The content of this array must not be
-     * modified. This field is intended for {@link org.objectweb.asm.Attribute} sub classes, and
+     * modified. This field is intended for {@link Attribute} sub classes, and
      * is normally not needed by class generators or adapters.</i>
      */
     public final byte[] b;
@@ -144,7 +159,7 @@ public class ClassReader {
     // ------------------------------------------------------------------------
 
     /**
-     * Constructs a new {@link org.objectweb.asm.ClassReader} object.
+     * Constructs a new {@link ClassReader} object.
      * 
      * @param b
      *            the bytecode of the class to be read.
@@ -154,7 +169,7 @@ public class ClassReader {
     }
 
     /**
-     * Constructs a new {@link org.objectweb.asm.ClassReader} object.
+     * Constructs a new {@link ClassReader} object.
      * 
      * @param b
      *            the bytecode of the class to be read.
@@ -374,7 +389,7 @@ public class ClassReader {
      *            the {@link ClassWriter} to copy bootstrap methods into.
      */
     private void copyBootstrapMethods(final ClassWriter classWriter,
-            final Item[] items, final char[] c) {
+                                      final Item[] items, final char[] c) {
         // finds the "BootstrapMethods" attribute
         int u = getAttributes();
         boolean found = false;
@@ -413,11 +428,11 @@ public class ClassReader {
     }
 
     /**
-     * Constructs a new {@link org.objectweb.asm.ClassReader} object.
+     * Constructs a new {@link ClassReader} object.
      * 
      * @param is
      *            an input stream from which to read the class.
-     * @throws java.io.IOException
+     * @throws IOException
      *             if a problem occurs during reading.
      */
     public ClassReader(final InputStream is) throws IOException {
@@ -425,11 +440,11 @@ public class ClassReader {
     }
 
     /**
-     * Constructs a new {@link org.objectweb.asm.ClassReader} object.
+     * Constructs a new {@link ClassReader} object.
      * 
      * @param name
      *            the binary qualified name of the class to be read.
-     * @throws java.io.IOException
+     * @throws IOException
      *             if an exception occurs during reading.
      */
     public ClassReader(final String name) throws IOException {
@@ -446,7 +461,7 @@ public class ClassReader {
      * @param close
      *            true to close the input stream after reading.
      * @return the bytecode read from the given input stream.
-     * @throws java.io.IOException
+     * @throws IOException
      *             if a problem occurs during reading.
      */
     private static byte[] readClass(final InputStream is, boolean close)
@@ -491,7 +506,7 @@ public class ClassReader {
     // ------------------------------------------------------------------------
 
     /**
-     * Makes the given visitor visit the Java class of this {@link org.objectweb.asm.ClassReader}
+     * Makes the given visitor visit the Java class of this {@link ClassReader}
      * . This class is the one specified in the constructor (see
      * {@link #ClassReader(byte[]) ClassReader}).
      * 
@@ -507,7 +522,7 @@ public class ClassReader {
     }
 
     /**
-     * Makes the given visitor visit the Java class of this {@link org.objectweb.asm.ClassReader}.
+     * Makes the given visitor visit the Java class of this {@link ClassReader}.
      * This class is the one specified in the constructor (see
      * {@link #ClassReader(byte[]) ClassReader}).
      * 
@@ -528,7 +543,7 @@ public class ClassReader {
      *            , {@link #SKIP_FRAMES}, {@link #SKIP_CODE}.
      */
     public void accept(final ClassVisitor classVisitor,
-            final Attribute[] attrs, final int flags) {
+                       final Attribute[] attrs, final int flags) {
         int u = header; // current offset in the class file
         char[] c = new char[maxStringLength]; // buffer used to read strings
 
@@ -709,7 +724,7 @@ public class ClassReader {
      * @return the offset of the first byte following the field in the class.
      */
     private int readField(final ClassVisitor classVisitor,
-            final Context context, int u) {
+                          final Context context, int u) {
         // reads the field declaration
         char[] c = context.buffer;
         int access = readUnsignedShort(u);
@@ -827,7 +842,7 @@ public class ClassReader {
      * @return the offset of the first byte following the method in the class.
      */
     private int readMethod(final ClassVisitor classVisitor,
-            final Context context, int u) {
+                           final Context context, int u) {
         // reads the method declaration
         char[] c = context.buffer;
         context.access = readUnsignedShort(u);
@@ -1059,6 +1074,10 @@ public class ClassReader {
                 readLabel(offset + readShort(u + 1), labels);
                 u += 3;
                 break;
+            case ClassWriter.ASM_LABEL_INSN:
+                readLabel(offset + readUnsignedShort(u + 1), labels);
+                u += 3;
+                break;
             case ClassWriter.LABELW_INSN:
                 readLabel(offset + readInt(u + 1), labels);
                 u += 5;
@@ -1170,7 +1189,14 @@ public class ClassReader {
                         if (labels[label] == null) {
                             readLabel(label, labels).status |= Label.DEBUG;
                         }
-                        labels[label].line = readUnsignedShort(v + 12);
+                        Label l = labels[label];
+                        while (l.line > 0) {
+                            if (l.next == null) {
+                                l.next = new Label();
+                            }
+                            l = l.next;
+                        }
+                        l.line = readUnsignedShort(v + 12);
                         v += 4;
                     }
                 }
@@ -1276,8 +1302,23 @@ public class ClassReader {
                 }
             }
         }
+        if ((context.flags & EXPAND_ASM_INSNS) != 0) {
+            // Expanding the ASM pseudo instructions can introduce F_INSERT
+            // frames, even if the method does not currently have any frame.
+            // Also these inserted frames must be computed by simulating the
+            // effect of the bytecode instructions one by one, starting from the
+            // first one and the last existing frame (or the implicit first
+            // one). Finally, due to the way MethodWriter computes this (with
+            // the compute = INSERTED_FRAMES option), MethodWriter needs to know
+            // maxLocals before the first instruction is visited. For all these
+            // reasons we always visit the implicit first frame in this case
+            // (passing only maxLocals - the rest can be and is computed in
+            // MethodWriter).
+            mv.visitFrame(Opcodes.F_NEW, maxLocals, null, 0, null);
+        }
 
         // visits the instructions
+        int opcodeDelta = (context.flags & EXPAND_ASM_INSNS) == 0 ? -33 : 0;
         u = codeStart;
         while (u < codeEnd) {
             int offset = u - codeStart;
@@ -1285,9 +1326,15 @@ public class ClassReader {
             // visits the label and line number for this offset, if any
             Label l = labels[offset];
             if (l != null) {
+                Label next = l.next;
+                l.next = null;
                 mv.visitLabel(l);
                 if ((context.flags & SKIP_DEBUG) == 0 && l.line > 0) {
                     mv.visitLineNumber(l.line, l);
+                    while (next != null) {
+                        mv.visitLineNumber(next.line, l);
+                        next = next.next;
+                    }
                 }
             }
 
@@ -1336,9 +1383,42 @@ public class ClassReader {
                 u += 3;
                 break;
             case ClassWriter.LABELW_INSN:
-                mv.visitJumpInsn(opcode - 33, labels[offset + readInt(u + 1)]);
+                mv.visitJumpInsn(opcode + opcodeDelta, labels[offset
+                        + readInt(u + 1)]);
                 u += 5;
                 break;
+            case ClassWriter.ASM_LABEL_INSN: {
+                // changes temporary opcodes 202 to 217 (inclusive), 218
+                // and 219 to IFEQ ... JSR (inclusive), IFNULL and
+                // IFNONNULL
+                opcode = opcode < 218 ? opcode - 49 : opcode - 20;
+                Label target = labels[offset + readUnsignedShort(u + 1)];
+                // replaces GOTO with GOTO_W, JSR with JSR_W and IFxxx
+                // <l> with IFNOTxxx <l'> GOTO_W <l>, where IFNOTxxx is
+                // the "opposite" opcode of IFxxx (i.e., IFNE for IFEQ)
+                // and where <l'> designates the instruction just after
+                // the GOTO_W.
+                if (opcode == Opcodes.GOTO || opcode == Opcodes.JSR) {
+                    mv.visitJumpInsn(opcode + 33, target);
+                } else {
+                    opcode = opcode <= 166 ? ((opcode + 1) ^ 1) - 1
+                            : opcode ^ 1;
+                    Label endif = new Label();
+                    mv.visitJumpInsn(opcode, endif);
+                    mv.visitJumpInsn(200, target); // GOTO_W
+                    mv.visitLabel(endif);
+                    // since we introduced an unconditional jump instruction we
+                    // also need to insert a stack map frame here, unless there
+                    // is already one. The actual frame content will be computed
+                    // in MethodWriter.
+                    if (FRAMES && stackMap != 0
+                            && (frame == null || frame.offset != offset + 3)) {
+                        mv.visitFrame(ClassWriter.F_INSERT, 0, null, 0, null);
+                    }
+                }
+                u += 3;
+                break;
+            }
             case ClassWriter.WIDE_INSN:
                 opcode = b[u + 1] & 0xFF;
                 if (opcode == Opcodes.IINC) {
@@ -1571,7 +1651,7 @@ public class ClassReader {
      * @return the start offset of each type annotation in the parsed table.
      */
     private int[] readTypeAnnotations(final MethodVisitor mv,
-            final Context context, int u, boolean visible) {
+                                      final Context context, int u, boolean visible) {
         char[] c = context.buffer;
         int[] offsets = new int[readUnsignedShort(u)];
         u += 2;
@@ -1723,7 +1803,7 @@ public class ClassReader {
      *            runtime.
      */
     private void readParameterAnnotations(final MethodVisitor mv,
-            final Context context, int v, final boolean visible) {
+                                          final Context context, int v, final boolean visible) {
         int i;
         int n = b[v++] & 0xFF;
         // workaround for a bug in javac (javac compiler generates a parameter
@@ -1828,8 +1908,7 @@ public class ClassReader {
             v += 2;
             break;
         case 'B': // pointer to CONSTANT_Byte
-            av.visit(name,
-                    new Byte((byte) readInt(items[readUnsignedShort(v)])));
+            av.visit(name, (byte) readInt(items[readUnsignedShort(v)]));
             v += 2;
             break;
         case 'Z': // pointer to CONSTANT_Boolean
@@ -1839,13 +1918,11 @@ public class ClassReader {
             v += 2;
             break;
         case 'S': // pointer to CONSTANT_Short
-            av.visit(name, new Short(
-                    (short) readInt(items[readUnsignedShort(v)])));
+            av.visit(name, (short) readInt(items[readUnsignedShort(v)]));
             v += 2;
             break;
         case 'C': // pointer to CONSTANT_Char
-            av.visit(name, new Character(
-                    (char) readInt(items[readUnsignedShort(v)])));
+            av.visit(name, (char) readInt(items[readUnsignedShort(v)]));
             v += 2;
             break;
         case 's': // pointer to CONSTANT_Utf8
@@ -2210,7 +2287,7 @@ public class ClassReader {
      *            prototypes of the attributes that must be parsed during the
      *            visit of the class. Any attribute whose type is not equal to
      *            the type of one the prototypes is ignored (i.e. an empty
-     *            {@link org.objectweb.asm.Attribute} instance is returned).
+     *            {@link Attribute} instance is returned).
      * @param type
      *            the type of the attribute.
      * @param off
@@ -2237,8 +2314,8 @@ public class ClassReader {
      *         attribute.
      */
     private Attribute readAttribute(final Attribute[] attrs, final String type,
-            final int off, final int len, final char[] buf, final int codeOff,
-            final Label[] labels) {
+                                    final int off, final int len, final char[] buf, final int codeOff,
+                                    final Label[] labels) {
         for (int i = 0; i < attrs.length; ++i) {
             if (attrs[i].type.equals(type)) {
                 return attrs[i].read(this, off, len, buf, codeOff, labels);
@@ -2262,7 +2339,7 @@ public class ClassReader {
 
     /**
      * Returns the start index of the constant pool item in {@link #b b}, plus
-     * one. <i>This method is intended for {@link org.objectweb.asm.Attribute} sub classes, and is
+     * one. <i>This method is intended for {@link Attribute} sub classes, and is
      * normally not needed by class generators or adapters.</i>
      * 
      * @param item
@@ -2287,7 +2364,7 @@ public class ClassReader {
 
     /**
      * Reads a byte value in {@link #b b}. <i>This method is intended for
-     * {@link org.objectweb.asm.Attribute} sub classes, and is normally not needed by class
+     * {@link Attribute} sub classes, and is normally not needed by class
      * generators or adapters.</i>
      * 
      * @param index
@@ -2300,7 +2377,7 @@ public class ClassReader {
 
     /**
      * Reads an unsigned short value in {@link #b b}. <i>This method is intended
-     * for {@link org.objectweb.asm.Attribute} sub classes, and is normally not needed by class
+     * for {@link Attribute} sub classes, and is normally not needed by class
      * generators or adapters.</i>
      * 
      * @param index
@@ -2314,7 +2391,7 @@ public class ClassReader {
 
     /**
      * Reads a signed short value in {@link #b b}. <i>This method is intended
-     * for {@link org.objectweb.asm.Attribute} sub classes, and is normally not needed by class
+     * for {@link Attribute} sub classes, and is normally not needed by class
      * generators or adapters.</i>
      * 
      * @param index
@@ -2328,7 +2405,7 @@ public class ClassReader {
 
     /**
      * Reads a signed int value in {@link #b b}. <i>This method is intended for
-     * {@link org.objectweb.asm.Attribute} sub classes, and is normally not needed by class
+     * {@link Attribute} sub classes, and is normally not needed by class
      * generators or adapters.</i>
      * 
      * @param index
@@ -2343,7 +2420,7 @@ public class ClassReader {
 
     /**
      * Reads a signed long value in {@link #b b}. <i>This method is intended for
-     * {@link org.objectweb.asm.Attribute} sub classes, and is normally not needed by class
+     * {@link Attribute} sub classes, and is normally not needed by class
      * generators or adapters.</i>
      * 
      * @param index
@@ -2358,7 +2435,7 @@ public class ClassReader {
 
     /**
      * Reads an UTF8 string constant pool item in {@link #b b}. <i>This method
-     * is intended for {@link org.objectweb.asm.Attribute} sub classes, and is normally not needed
+     * is intended for {@link Attribute} sub classes, and is normally not needed
      * by class generators or adapters.</i>
      * 
      * @param index
@@ -2433,7 +2510,7 @@ public class ClassReader {
 
     /**
      * Reads a class constant pool item in {@link #b b}. <i>This method is
-     * intended for {@link org.objectweb.asm.Attribute} sub classes, and is normally not needed by
+     * intended for {@link Attribute} sub classes, and is normally not needed by
      * class generators or adapters.</i>
      * 
      * @param index
@@ -2453,7 +2530,7 @@ public class ClassReader {
 
     /**
      * Reads a numeric or string constant pool item in {@link #b b}. <i>This
-     * method is intended for {@link org.objectweb.asm.Attribute} sub classes, and is normally not
+     * method is intended for {@link Attribute} sub classes, and is normally not
      * needed by class generators or adapters.</i>
      * 
      * @param item
@@ -2469,13 +2546,13 @@ public class ClassReader {
         int index = items[item];
         switch (b[index - 1]) {
         case ClassWriter.INT:
-            return new Integer(readInt(index));
+            return readInt(index);
         case ClassWriter.FLOAT:
-            return new Float(Float.intBitsToFloat(readInt(index)));
+            return Float.intBitsToFloat(readInt(index));
         case ClassWriter.LONG:
-            return new Long(readLong(index));
+            return readLong(index);
         case ClassWriter.DOUBLE:
-            return new Double(Double.longBitsToDouble(readLong(index)));
+            return Double.longBitsToDouble(readLong(index));
         case ClassWriter.CLASS:
             return Type.getObjectType(readUTF8(index, buf));
         case ClassWriter.STR:
@@ -2486,11 +2563,12 @@ public class ClassReader {
             int tag = readByte(index);
             int[] items = this.items;
             int cpIndex = items[readUnsignedShort(index + 1)];
+            boolean itf = b[cpIndex - 1] == ClassWriter.IMETH;
             String owner = readClass(cpIndex, buf);
             cpIndex = items[readUnsignedShort(cpIndex + 2)];
             String name = readUTF8(cpIndex, buf);
             String desc = readUTF8(cpIndex + 2, buf);
-            return new Handle(tag, owner, name, desc);
+            return new Handle(tag, owner, name, desc, itf);
         }
     }
 }

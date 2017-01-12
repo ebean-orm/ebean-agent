@@ -106,13 +106,13 @@ final class Item {
     Item next;
 
     /**
-     * Constructs an uninitialized {@link org.objectweb.asm.Item}.
+     * Constructs an uninitialized {@link Item}.
      */
     Item() {
     }
 
     /**
-     * Constructs an uninitialized {@link org.objectweb.asm.Item} for constant pool element at
+     * Constructs an uninitialized {@link Item} for constant pool element at
      * given position.
      * 
      * @param index
@@ -201,6 +201,7 @@ final class Item {
      * @param strVal3
      *            third part of the value of this item.
      */
+    @SuppressWarnings("fallthrough")
     void set(final int type, final String strVal1, final String strVal2,
             final String strVal3) {
         this.type = type;

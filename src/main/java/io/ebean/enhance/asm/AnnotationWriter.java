@@ -88,7 +88,7 @@ final class AnnotationWriter extends AnnotationVisitor {
     // ------------------------------------------------------------------------
 
     /**
-     * Constructs a new {@link org.objectweb.asm.AnnotationWriter}.
+     * Constructs a new {@link AnnotationWriter}.
      * 
      * @param cw
      *            the class writer to which this annotation must be added.
@@ -103,7 +103,7 @@ final class AnnotationWriter extends AnnotationVisitor {
      *            be stored.
      */
     AnnotationWriter(final ClassWriter cw, final boolean named,
-            final ByteVector bv, final ByteVector parent, final int offset) {
+                     final ByteVector bv, final ByteVector parent, final int offset) {
         super(Opcodes.ASM5);
         this.cw = cw;
         this.named = named;
@@ -201,7 +201,7 @@ final class AnnotationWriter extends AnnotationVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(final String name,
-            final String desc) {
+                                             final String desc) {
         ++size;
         if (named) {
             bv.putShort(cw.newUTF8(name));
@@ -290,7 +290,7 @@ final class AnnotationWriter extends AnnotationVisitor {
      *            where the annotations must be put.
      */
     static void put(final AnnotationWriter[] panns, final int off,
-            final ByteVector out) {
+                    final ByteVector out) {
         int size = 1 + 2 * (panns.length - off);
         for (int i = off; i < panns.length; ++i) {
             size += panns[i] == null ? 0 : panns[i].getSize();

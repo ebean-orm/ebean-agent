@@ -29,6 +29,8 @@
  */
 package io.ebean.enhance.asm;
 
+import io.ebean.enhance.asm.tree.MethodNode;
+
 /**
  * A label represents a position in the bytecode of a method. Labels are used
  * for jump, goto, and switch instructions, and for try catch blocks. A label
@@ -111,7 +113,7 @@ public class Label {
      * Field used to associate user information to a label. Warning: this field
      * is used by the ASM tree package. In order to use it with the ASM tree
      * package you must override the
-     * {@link org.objectweb.asm.tree.MethodNode#getLabelNode} method.
+     * {@link MethodNode#getLabelNode} method.
      */
     public Object info;
 
@@ -131,7 +133,11 @@ public class Label {
     int status;
 
     /**
-     * The line number corresponding to this label, if known.
+     * The line number corresponding to this label, if known. If there are
+     * several lines, each line is stored in a separate label, all linked via
+     * their next field (these links are created in ClassReader and removed just
+     * before visitLabel is called, so that this does not impact the rest of the
+     * code).
      */
     int line;
 
@@ -230,8 +236,8 @@ public class Label {
 
     /**
      * The successors of this node in the control flow graph. These successors
-     * are stored in a linked list of {@link org.objectweb.asm.Edge Edge} objects, linked to each
-     * other by their {@link org.objectweb.asm.Edge#next} field.
+     * are stored in a linked list of {@link Edge Edge} objects, linked to each
+     * other by their {@link Edge#next} field.
      */
     Edge successors;
 
@@ -239,7 +245,8 @@ public class Label {
      * The next basic block in the basic block stack. This stack is used in the
      * main loop of the fix point algorithm used in the second step of the
      * control flow analysis algorithms. It is also used in
-     * {@link #visitSubroutine} to avoid using a recursive method.
+     * {@link #visitSubroutine} to avoid using a recursive method, and in
+     * ClassReader to temporarily store multiple source lines for a label.
      * 
      * @see MethodWriter#visitMaxs
      */
@@ -297,7 +304,7 @@ public class Label {
      *             if this label has not been created by the given code writer.
      */
     void put(final MethodWriter owner, final ByteVector out, final int source,
-            final boolean wideOffset) {
+             final boolean wideOffset) {
         if ((status & RESOLVED) == 0) {
             if (wideOffset) {
                 addReference(-1 - source, out.length);
@@ -359,15 +366,14 @@ public class Label {
      *         small to store the offset. In such a case the corresponding jump
      *         instruction is replaced with a pseudo instruction (using unused
      *         opcodes) using an unsigned two bytes offset. These pseudo
-     *         instructions will need to be replaced with true instructions with
-     *         wider offsets (4 bytes instead of 2). This is done in
-     *         {@link MethodWriter#resizeInstructions}.
+     *         instructions will be replaced with standard bytecode instructions
+     *         with wider offsets (4 bytes instead of 2), in ClassReader.
      * @throws IllegalArgumentException
      *             if this label has already been resolved, or if it has not
      *             been created by the given code writer.
      */
     boolean resolve(final MethodWriter owner, final int position,
-            final byte[] data) {
+                    final byte[] data) {
         boolean needUpdate = false;
         this.status |= RESOLVED;
         this.position = position;

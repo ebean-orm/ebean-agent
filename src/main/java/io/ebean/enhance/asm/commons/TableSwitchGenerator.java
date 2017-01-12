@@ -29,7 +29,6 @@
  */
 package io.ebean.enhance.asm.commons;
 
-
 import io.ebean.enhance.asm.Label;
 
 /**

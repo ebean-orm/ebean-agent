@@ -51,7 +51,7 @@ public abstract class FieldVisitor {
     protected FieldVisitor fv;
 
     /**
-     * Constructs a new {@link org.objectweb.asm.FieldVisitor}.
+     * Constructs a new {@link FieldVisitor}.
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
@@ -62,7 +62,7 @@ public abstract class FieldVisitor {
     }
 
     /**
-     * Constructs a new {@link org.objectweb.asm.FieldVisitor}.
+     * Constructs a new {@link FieldVisitor}.
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
@@ -115,7 +115,7 @@ public abstract class FieldVisitor {
      *         this visitor is not interested in visiting this annotation.
      */
     public AnnotationVisitor visitTypeAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
+                                                 TypePath typePath, String desc, boolean visible) {
         if (api < Opcodes.ASM5) {
             throw new RuntimeException();
         }

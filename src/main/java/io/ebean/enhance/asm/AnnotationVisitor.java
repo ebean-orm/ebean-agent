@@ -52,7 +52,7 @@ public abstract class AnnotationVisitor {
     protected AnnotationVisitor av;
 
     /**
-     * Constructs a new {@link org.objectweb.asm.AnnotationVisitor}.
+     * Constructs a new {@link AnnotationVisitor}.
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
@@ -63,7 +63,7 @@ public abstract class AnnotationVisitor {
     }
 
     /**
-     * Constructs a new {@link org.objectweb.asm.AnnotationVisitor}.
+     * Constructs a new {@link AnnotationVisitor}.
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
@@ -89,7 +89,7 @@ public abstract class AnnotationVisitor {
      *            the actual value, whose type must be {@link Byte},
      *            {@link Boolean}, {@link Character}, {@link Short},
      *            {@link Integer} , {@link Long}, {@link Float}, {@link Double},
-     *            {@link String} or {@link Type} or OBJECT or ARRAY sort. This
+     *            {@link String} or {@link Type} of OBJECT or ARRAY sort. This
      *            value can also be an array of byte, boolean, short, char, int,
      *            long, float or double values (this is equivalent to using
      *            {@link #visitArray visitArray} and visiting each array element
