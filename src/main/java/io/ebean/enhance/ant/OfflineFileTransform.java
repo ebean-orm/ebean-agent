@@ -1,6 +1,6 @@
 package io.ebean.enhance.ant;
 
-import io.ebean.enhance.help.InputStreamTransform;
+import io.ebean.enhance.common.InputStreamTransform;
 import io.ebean.enhance.Transformer;
 
 import java.io.File;

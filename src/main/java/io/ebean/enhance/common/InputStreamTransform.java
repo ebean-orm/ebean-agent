@@ -1,4 +1,4 @@
-package io.ebean.enhance.help;
+package io.ebean.enhance.common;
 
 import io.ebean.enhance.Transformer;
 

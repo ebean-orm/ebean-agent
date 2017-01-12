@@ -9,7 +9,7 @@ import io.ebean.enhance.asm.Opcodes;
  * ClassAdapter used to detect if this class needs enhancement for entity or
  * transactional support.
  */
-public class ClassAdapterDetectEnhancement extends ClassVisitor {
+public class DetectEnhancement extends ClassVisitor {
 
   private final ClassLoader classLoader;
 
@@ -27,7 +27,7 @@ public class ClassAdapterDetectEnhancement extends ClassVisitor {
 
   private boolean enhancedTransactional;
 
-  public ClassAdapterDetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
+  public DetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
     super(Opcodes.ASM5);
     this.classLoader = classLoader;
     this.enhanceContext = context;

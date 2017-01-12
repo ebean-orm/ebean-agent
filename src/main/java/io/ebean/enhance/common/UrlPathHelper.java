@@ -1,4 +1,4 @@
-package io.ebean.enhance.help;
+package io.ebean.enhance.common;
 
 import java.io.File;
 import java.net.MalformedURLException;

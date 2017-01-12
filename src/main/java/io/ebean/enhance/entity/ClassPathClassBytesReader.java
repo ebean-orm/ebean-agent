@@ -1,7 +1,7 @@
 package io.ebean.enhance.entity;
 
 import io.ebean.enhance.common.ClassBytesReader;
-import io.ebean.enhance.help.InputStreamTransform;
+import io.ebean.enhance.common.InputStreamTransform;
 
 import java.io.IOException;
 import java.io.InputStream;

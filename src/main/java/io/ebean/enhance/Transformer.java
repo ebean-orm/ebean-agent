@@ -1,7 +1,7 @@
 package io.ebean.enhance;
 
 import io.ebean.enhance.common.AlreadyEnhancedException;
-import io.ebean.enhance.common.ClassAdapterDetectEnhancement;
+import io.ebean.enhance.common.DetectEnhancement;
 import io.ebean.enhance.entity.ClassAdapterEntity;
 import io.ebean.enhance.transactional.ClassAdapterTransactional;
 import io.ebean.enhance.common.ClassBytesReader;
@@ -12,7 +12,7 @@ import io.ebean.enhance.common.NoEnhancementRequiredException;
 import io.ebean.enhance.common.TransformRequest;
 import io.ebean.enhance.asm.ClassReader;
 import io.ebean.enhance.asm.ClassWriter;
-import io.ebean.enhance.help.UrlPathHelper;
+import io.ebean.enhance.common.UrlPathHelper;
 import io.ebean.enhance.querybean.TypeQueryClassAdapter;
 
 import java.lang.instrument.ClassFileTransformer;
@@ -116,7 +116,7 @@ public class Transformer implements ClassFileTransformer {
         return null;
       }
 
-      ClassAdapterDetectEnhancement detect = detect(loader, classfileBuffer);
+      DetectEnhancement detect = detect(loader, classfileBuffer);
 
       TransformRequest request = new TransformRequest(classfileBuffer);
 
@@ -273,9 +273,9 @@ public class Transformer implements ClassFileTransformer {
    * Read the bytes quickly trying to detect if it needs entity or transactional
    * enhancement.
    */
-  private ClassAdapterDetectEnhancement detect(ClassLoader classLoader, byte[] classfileBuffer) {
+  private DetectEnhancement detect(ClassLoader classLoader, byte[] classfileBuffer) {
 
-    ClassAdapterDetectEnhancement detect = new ClassAdapterDetectEnhancement(classLoader, enhanceContext);
+    DetectEnhancement detect = new DetectEnhancement(classLoader, enhanceContext);
 
     ClassReader cr = new ClassReader(classfileBuffer);
     cr.accept(detect, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG + ClassReader.SKIP_FRAMES);
