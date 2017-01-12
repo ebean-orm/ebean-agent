@@ -205,6 +205,7 @@ public class IndexFieldWeaver implements Opcodes {
 
 		mv.visitLabel(labelException);
 		mv.visitLineNumber(1, labelException);
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
 		mv.visitInsn(DUP);
 		mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
@@ -288,6 +289,7 @@ public class IndexFieldWeaver implements Opcodes {
 
 		mv.visitLabel(labelException);
 		mv.visitLineNumber(1, labelException);
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
 		mv.visitInsn(DUP);
 		mv.visitTypeInsn(NEW, "java/lang/StringBuilder");

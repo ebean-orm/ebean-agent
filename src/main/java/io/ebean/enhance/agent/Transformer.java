@@ -41,12 +41,6 @@ public class Transformer implements ClassFileTransformer {
 
   private final EnhanceContext enhanceContext;
 
-  private boolean performDetect;
-
-  private boolean transformTransactional;
-
-  private boolean transformEntityBeans;
-
   private final Map<String, List<Throwable>> unexpectedExceptionsMap = new HashMap<String, List<Throwable>>();
 
   public Transformer(String extraClassPath, String agentArgs) {
@@ -69,9 +63,6 @@ public class Transformer implements ClassFileTransformer {
    */
   public Transformer(ClassBytesReader bytesReader, String agentArgs, Set<String> packages) {
     this.enhanceContext = new EnhanceContext(bytesReader, agentArgs, packages);
-    this.performDetect = enhanceContext.getPropertyBoolean("detect", true);
-    this.transformTransactional = enhanceContext.getPropertyBoolean("transactional", true);
-    this.transformEntityBeans = enhanceContext.getPropertyBoolean("entity", true);
   }
 
   /**
@@ -112,19 +103,9 @@ public class Transformer implements ClassFileTransformer {
         return null;
       }
 
-      ClassAdapterDetectEnhancement detect = null;
-      if (performDetect) {
-        log(5, className, "performing detection");
-        detect = detect(loader, classfileBuffer);
-      }
+      ClassAdapterDetectEnhancement detect = detect(loader, classfileBuffer);
 
-      if (detect == null) {
-        // default only looks entity beans to enhance
-        log(1, className, "no detection so enhancing entity");
-        return entityEnhancement(loader, classfileBuffer);
-      }
-
-      if (transformEntityBeans && detect.isEntity()) {
+      if (detect.isEntity()) {
         if (detect.isEnhancedEntity()) {
           detect.log(3, "already enhanced entity");
         } else {
@@ -133,7 +114,7 @@ public class Transformer implements ClassFileTransformer {
         }
       }
 
-      if (transformTransactional && detect.isTransactional()) {
+      if (detect.isTransactional()) {
         if (detect.isEnhancedTransactional()) {
           detect.log(3, "already enhanced transactional");
         } else {
@@ -166,7 +147,7 @@ public class Transformer implements ClassFileTransformer {
   private byte[] entityEnhancement(ClassLoader loader, byte[] classfileBuffer) {
 
     ClassReader cr = new ClassReader(classfileBuffer);
-    ClassWriter cw = new CLAwareClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
+    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);
     ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
     try {
 
@@ -176,12 +157,7 @@ public class Transformer implements ClassFileTransformer {
         ca.logEnhanced();
       }
 
-      if (enhanceContext.isReadOnly()) {
-        return null;
-
-      } else {
-        return cw.toByteArray();
-      }
+      return cw.toByteArray();
 
     } catch (AlreadyEnhancedException e) {
       if (ca.isLog(1)) {
@@ -203,7 +179,7 @@ public class Transformer implements ClassFileTransformer {
   private byte[] transactionalEnhancement(ClassLoader loader, byte[] classfileBuffer) {
 
     ClassReader cr = new ClassReader(classfileBuffer);
-    ClassWriter cw = new CLAwareClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
+    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
 
     try {
@@ -214,12 +190,7 @@ public class Transformer implements ClassFileTransformer {
         ca.log("enhanced");
       }
 
-      if (enhanceContext.isReadOnly()) {
-        return null;
-
-      } else {
-        return cw.toByteArray();
-      }
+      return cw.toByteArray();
 
     } catch (AlreadyEnhancedException e) {
       if (ca.isLog(1)) {

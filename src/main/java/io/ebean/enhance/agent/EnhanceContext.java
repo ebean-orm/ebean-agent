@@ -19,8 +19,6 @@ public class EnhanceContext {
 
   private final HashMap<String, String> agentArgsMap;
 
-  private final boolean readOnly;
-
   private final boolean transientInternalFields;
 
   private final boolean checkNullManyFields;
@@ -65,7 +63,6 @@ public class EnhanceContext {
       }
     }
 
-    this.readOnly = getPropertyBoolean("readonly", false);
     this.transientInternalFields = getPropertyBoolean("transientInternalFields", false);
     this.checkNullManyFields = getPropertyBoolean("checkNullManyFields", true);
   }
@@ -203,18 +200,6 @@ public class EnhanceContext {
    */
   public int getLogLevel() {
     return logLevel;
-  }
-
-  /**
-   * Return true if this should go through the enhancement process but not
-   * actually save the enhanced classes.
-   * <p>
-   * Set this to true to run through the enhancement process without actually
-   * doing the enhancement for debugging etc.
-   * </p>
-   */
-  public boolean isReadOnly() {
-    return readOnly;
   }
 
   /**
