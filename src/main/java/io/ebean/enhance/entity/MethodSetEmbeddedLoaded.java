@@ -1,9 +1,11 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.entity;
 
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.ClassMeta;
+import io.ebean.enhance.common.EnhanceConstants;
 
 import java.util.List;
 

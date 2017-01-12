@@ -1,7 +1,7 @@
 package io.ebean.enhance.querybean;
 
 /**
- * Set of most interesting constants used by the agent.
+ * Set of most interesting constants used by the entity.
  */
 public interface Constants {
 

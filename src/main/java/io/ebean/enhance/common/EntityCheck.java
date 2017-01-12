@@ -1,7 +1,5 @@
 package io.ebean.enhance.common;
 
-import io.ebean.enhance.agent.EnhanceConstants;
-
 import java.util.Set;
 
 /**

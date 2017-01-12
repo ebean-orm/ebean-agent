@@ -1,4 +1,4 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.entity;
 
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Attribute;
@@ -13,7 +13,7 @@ public class LocalFieldVisitor extends FieldVisitor {
 	private final FieldMeta fieldMeta;
 	
 	/**
-	 * Constructor used for agent class enhancement.
+	 * Constructor used for entity class enhancement.
    *
 	 * @param fv the fieldVisitor used to write
 	 * @param fieldMeta the fieldMeta data

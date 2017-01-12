@@ -1,7 +1,7 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.entity;
 
 /**
- * Debug message output logging by the agent.
+ * Debug message output logging by the entity.
  */
 public interface MessageOutput {
 

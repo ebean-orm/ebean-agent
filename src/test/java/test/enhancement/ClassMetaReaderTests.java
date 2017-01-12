@@ -7,9 +7,9 @@ import java.util.Set;
 import io.ebean.enhance.common.AnnotationInfo;
 import org.testng.annotations.Test;
 
-import io.ebean.enhance.agent.ClassMeta;
-import io.ebean.enhance.agent.ClassMetaReader;
-import io.ebean.enhance.agent.ClassPathClassBytesReader;
+import io.ebean.enhance.common.ClassMeta;
+import io.ebean.enhance.common.ClassMetaReader;
+import io.ebean.enhance.entity.ClassPathClassBytesReader;
 import io.ebean.enhance.common.EnhanceContext;
 
 import static org.testng.Assert.*;

@@ -1,14 +1,14 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.common.AnnotationInfo;
-import io.ebean.enhance.common.AnnotationInfoVisitor;
-import io.ebean.enhance.common.EnhanceContext;
-import io.ebean.enhance.common.EntityCheck;
+import io.ebean.enhance.entity.FieldMeta;
+import io.ebean.enhance.entity.LocalFieldVisitor;
+import io.ebean.enhance.entity.MessageOutput;
+import io.ebean.enhance.entity.MethodMeta;
 
 import java.util.ArrayList;
 import java.util.HashSet;

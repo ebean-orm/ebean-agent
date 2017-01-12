@@ -1,7 +1,8 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.entity;
 
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.ClassMeta;
 
 import java.util.ArrayList;
 import java.util.List;

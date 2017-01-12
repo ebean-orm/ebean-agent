@@ -1,7 +1,6 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
 import io.ebean.enhance.asm.ClassReader;
-import io.ebean.enhance.common.EnhanceContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.Map;
  */
 public class ClassMetaReader {
 
-	private final Map<String, ClassMeta> cache = new HashMap<String, ClassMeta>();
+	private final Map<String, ClassMeta> cache = new HashMap<>();
 
 	private final EnhanceContext enhanceContext;
 

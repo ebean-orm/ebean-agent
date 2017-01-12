@@ -1,8 +1,6 @@
 package io.ebean.enhance.common;
 
-import io.ebean.enhance.agent.ClassMeta;
-import io.ebean.enhance.agent.ClassMetaReader;
-import io.ebean.enhance.agent.MessageOutput;
+import io.ebean.enhance.entity.MessageOutput;
 import io.ebean.enhance.querybean.AgentManifestReader;
 import io.ebean.enhance.querybean.DetectQueryBean;
 import io.ebean.enhance.querybean.Distill;
@@ -99,7 +97,7 @@ public class EnhanceContext {
   }
 
   /**
-   * Return a value from the agent arguments using its key.
+   * Return a value from the entity arguments using its key.
    */
   public String getProperty(String key) {
     return agentArgsMap.get(key.toLowerCase());

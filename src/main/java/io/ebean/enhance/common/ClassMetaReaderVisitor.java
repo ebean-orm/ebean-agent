@@ -1,12 +1,10 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.common.AnnotationInfoVisitor;
-import io.ebean.enhance.common.EnhanceContext;
 
 /**
  * Used by ClassMetaReader to read information about a class.

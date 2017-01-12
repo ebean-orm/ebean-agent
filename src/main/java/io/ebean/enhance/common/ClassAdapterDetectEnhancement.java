@@ -1,7 +1,5 @@
 package io.ebean.enhance.common;
 
-import io.ebean.enhance.agent.ClassMeta;
-import io.ebean.enhance.agent.EnhanceConstants;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.MethodVisitor;

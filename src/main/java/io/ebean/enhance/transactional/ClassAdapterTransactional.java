@@ -2,8 +2,8 @@ package io.ebean.enhance.transactional;
 
 import io.ebean.enhance.common.AnnotationInfo;
 import io.ebean.enhance.common.AnnotationInfoVisitor;
-import io.ebean.enhance.agent.ClassMeta;
-import io.ebean.enhance.agent.EnhanceConstants;
+import io.ebean.enhance.common.ClassMeta;
+import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
@@ -22,13 +22,13 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
 	private static final Logger logger = Logger.getLogger(ClassAdapterTransactional.class.getName());
 
-	private final ArrayList<String> transactionalMethods = new ArrayList<String>();
+	private final ArrayList<String> transactionalMethods = new ArrayList<>();
 
 	private final EnhanceContext enhanceContext;
 
 	private final ClassLoader classLoader;
 
-	private ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<ClassMeta>();
+	private ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<>();
 
 	/**
 	 * Class level annotation information.

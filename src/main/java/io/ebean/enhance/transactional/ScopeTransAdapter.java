@@ -2,7 +2,7 @@ package io.ebean.enhance.transactional;
 
 import io.ebean.enhance.common.AnnotationInfo;
 import io.ebean.enhance.common.AnnotationInfoVisitor;
-import io.ebean.enhance.agent.EnhanceConstants;
+import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;

@@ -93,7 +93,7 @@ public final class EntityBeanIntercept implements Serializable {
   /**
    * Create a intercept with a given entity.
    * <p>
-   * Refer to agent ProxyConstructor.
+   * Refer to entity ProxyConstructor.
    * </p>
    */
   public EntityBeanIntercept(Object ownerBean) {

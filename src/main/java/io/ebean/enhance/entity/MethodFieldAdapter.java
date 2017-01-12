@@ -1,9 +1,10 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.entity;
 
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.ClassMeta;
 
 /**
  * Changes the method code from using PUTFIELD and GETFIELD to calling our
