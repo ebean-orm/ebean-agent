@@ -64,7 +64,7 @@ public class AntEnhanceTask extends Task {
 			}
 			extraClassPath.append(classpath);
 		}
-		Transformer t = new Transformer(extraClassPath.toString(), transformArgs);
+		Transformer t = new Transformer(null, transformArgs);//extraClassPath.toString(),
 	
 		ClassLoader cl = AntEnhanceTask.class.getClassLoader();
 		OfflineFileTransform ft = new OfflineFileTransform(t, cl, classSource);

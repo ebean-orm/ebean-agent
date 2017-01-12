@@ -2,6 +2,7 @@ package io.ebean.enhance.agent;
 
 import io.ebean.enhance.asm.ClassReader;
 import io.ebean.enhance.asm.ClassWriter;
+import io.ebean.enhance.querybean.TypeQueryClassAdapter;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -26,11 +27,8 @@ public class Transformer implements ClassFileTransformer {
 
   public static void premain(String agentArgs, Instrumentation inst) {
 
-    Transformer transformer = new Transformer("", agentArgs);
+    Transformer transformer = new Transformer(null, agentArgs);
     inst.addTransformer(transformer);
-    if (transformer.getLogLevel() > 0) {
-      System.out.println("premain loading Transformer with args:" + agentArgs);
-    }
   }
 
   public static void agentmain(String agentArgs, Instrumentation inst) throws Exception {
@@ -43,16 +41,20 @@ public class Transformer implements ClassFileTransformer {
 
   private final Map<String, List<Throwable>> unexpectedExceptionsMap = new HashMap<String, List<Throwable>>();
 
-  public Transformer(String extraClassPath, String agentArgs) {
-    this(parseClassPaths(extraClassPath), agentArgs);
+  public Transformer(ClassLoader classLoader, String agentArgs) {
+    if (classLoader == null) {
+      classLoader = getClass().getClassLoader();
+    }
+    ClassBytesReader reader = new ClassPathClassBytesReader(null);
+    this.enhanceContext = new EnhanceContext(reader, classLoader, agentArgs, null);
   }
 
-  /**
-   * Create a transformer for entity bean enhancement and transactional method enhancement.
-   */
-  public Transformer(URL[] extraClassPath, String agentArgs) {
-    this(new ClassPathClassBytesReader(extraClassPath), agentArgs, null);
-  }
+//  /**
+//   * Create a transformer for entity bean enhancement and transactional method enhancement.
+//   */
+//  public Transformer(URL[] extraClassPath, String agentArgs) {
+//    this(new ClassPathClassBytesReader(extraClassPath), agentArgs, null);
+//  }
 
   /**
    * Create a transformer for entity bean enhancement and transactional method enhancement.
@@ -61,8 +63,8 @@ public class Transformer implements ClassFileTransformer {
    * @param agentArgs command line arguments for debug level etc
    * @param packages limit enhancement to specified packages
    */
-  public Transformer(ClassBytesReader bytesReader, String agentArgs, Set<String> packages) {
-    this.enhanceContext = new EnhanceContext(bytesReader, agentArgs, packages);
+  public Transformer(ClassBytesReader bytesReader, ClassLoader classLoader, String agentArgs, Set<String> packages) {
+    this.enhanceContext = new EnhanceContext(bytesReader, classLoader, agentArgs, packages);
   }
 
   /**
@@ -127,6 +129,8 @@ public class Transformer implements ClassFileTransformer {
           transactionalEnhancement(loader, request);
         }
       }
+
+      enhanceQueryBean(request);
 
       if (request.isEnhanced()) {
         return request.getBytes();
@@ -208,6 +212,36 @@ public class Transformer implements ClassFileTransformer {
     } catch (NoEnhancementRequiredException e) {
       if (ca.isLog(0)) {
         ca.log("skipping... no enhancement required");
+      }
+    }
+  }
+
+
+  /**
+   * Perform enhancement.
+   */
+  private void enhanceQueryBean( TransformRequest request) {
+
+    ClassReader cr = new ClassReader(request.getBytes());
+    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);//, classLoader);
+    TypeQueryClassAdapter ca = new TypeQueryClassAdapter(cw, enhanceContext);
+
+    try {
+
+      cr.accept(ca, ClassReader.EXPAND_FRAMES);
+      if (ca.isLog(9)) {
+        ca.log("... completed");
+      }
+      request.enhancedQueryBean(cw.toByteArray());
+
+    } catch (io.ebean.enhance.querybean.AlreadyEnhancedException e) {
+      if (ca.isLog(1)) {
+        ca.log("already enhanced");
+      }
+
+    } catch (io.ebean.enhance.querybean.NoEnhancementRequiredException e) {
+      if (ca.isLog(9)) {
+        ca.log("... skipping, no enhancement required");
       }
     }
   }

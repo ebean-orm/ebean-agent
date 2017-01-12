@@ -1,5 +1,9 @@
 package io.ebean.enhance.agent;
 
+import io.ebean.enhance.querybean.AgentManifestReader;
+import io.ebean.enhance.querybean.DetectQueryBean;
+import io.ebean.enhance.querybean.Distill;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -33,6 +37,8 @@ public class EnhanceContext {
 
   private HashMap<String, ClassMeta> map = new HashMap<String, ClassMeta>();
 
+  private final DetectQueryBean detectQueryBean;
+
   /**
    * Construct a context for enhancement.
    *
@@ -40,9 +46,16 @@ public class EnhanceContext {
    * @param agentArgs           command line arguments for debug level etc
    * @param packages            limit enhancement to specified packages
    */
-  public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, Set<String> packages) {
+  public EnhanceContext(ClassBytesReader classBytesReader, ClassLoader classLoader, String agentArgs, Set<String> packages) {
 
     this.agentArgsMap = ArgParser.parse(agentArgs);
+
+    this.detectQueryBean = Distill.convert(AgentManifestReader.read(classLoader, packages));
+    if (detectQueryBean.isEmpty()) {
+      System.err.println("---------------------------------------------------------------------------------------------");
+      System.err.println("QueryBean Agent: No packages containing query beans - Missing ebean.mf files? this won't work.");
+      System.err.println("---------------------------------------------------------------------------------------------");
+    }
 
     List<String> distilledPackages = new DistillPackages()
         .add(packages)
@@ -69,6 +82,17 @@ public class EnhanceContext {
 
   public byte[] getClassBytes(String className, ClassLoader classLoader) {
     return classBytesReader.getClassBytes(className, classLoader);
+  }
+
+  /**
+   * Return true if the owner class is a type query bean.
+   * <p>
+   * If true typically means the caller needs to change GETFIELD calls to instead invoke the generated
+   * 'property access' methods.
+   * </p>
+   */
+  public boolean isQueryBean(String owner) {
+    return detectQueryBean.isQueryBean(owner);
   }
 
   /**

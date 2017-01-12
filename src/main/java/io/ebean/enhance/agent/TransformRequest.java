@@ -4,6 +4,7 @@ public class TransformRequest {
 
   boolean enhancedEntity;
   boolean enhancedTransactional;
+  boolean enhancedQueryBean;
 
   byte[] bytes;
 
@@ -30,6 +31,11 @@ public class TransformRequest {
   }
 
   public boolean isEnhanced() {
-    return enhancedTransactional;
+    return enhancedTransactional || enhancedQueryBean;
+  }
+
+  public void enhancedQueryBean(byte[] bytes) {
+    this.enhancedQueryBean = true;
+    this.bytes = bytes;
   }
 }
