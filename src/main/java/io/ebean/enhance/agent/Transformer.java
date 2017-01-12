@@ -234,12 +234,12 @@ public class Transformer implements ClassFileTransformer {
       }
       request.enhancedQueryBean(cw.toByteArray());
 
-    } catch (io.ebean.enhance.querybean.AlreadyEnhancedException e) {
+    } catch (AlreadyEnhancedException e) {
       if (ca.isLog(1)) {
         ca.log("already enhanced");
       }
 
-    } catch (io.ebean.enhance.querybean.NoEnhancementRequiredException e) {
+    } catch (NoEnhancementRequiredException e) {
       if (ca.isLog(9)) {
         ca.log("... skipping, no enhancement required");
       }
