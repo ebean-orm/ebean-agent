@@ -2,12 +2,12 @@ package io.ebean.enhance;
 
 import io.ebean.enhance.common.AlreadyEnhancedException;
 import io.ebean.enhance.common.ClassAdapterDetectEnhancement;
-import io.ebean.enhance.agent.ClassAdapterEntity;
+import io.ebean.enhance.entity.ClassAdapterEntity;
 import io.ebean.enhance.transactional.ClassAdapterTransactional;
 import io.ebean.enhance.common.ClassBytesReader;
-import io.ebean.enhance.agent.ClassPathClassBytesReader;
+import io.ebean.enhance.entity.ClassPathClassBytesReader;
 import io.ebean.enhance.common.EnhanceContext;
-import io.ebean.enhance.agent.MessageOutput;
+import io.ebean.enhance.entity.MessageOutput;
 import io.ebean.enhance.common.NoEnhancementRequiredException;
 import io.ebean.enhance.common.TransformRequest;
 import io.ebean.enhance.asm.ClassReader;
