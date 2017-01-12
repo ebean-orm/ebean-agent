@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Premain-Class: io.ebean.enhance.agent.Transformer
-Agent-Class: io.ebean.enhance.agent.Transformer
+Premain-Class: io.ebean.enhance.Transformer
+Agent-Class: io.ebean.enhance.Transformer
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true

@@ -1,6 +1,6 @@
 package io.ebean.enhance.ant;
 
-import io.ebean.enhance.agent.Transformer;
+import io.ebean.enhance.Transformer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 

@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import io.ebean.enhance.agent.ClassMeta;
 import io.ebean.enhance.agent.ClassMetaReader;
 import io.ebean.enhance.agent.ClassPathClassBytesReader;
-import io.ebean.enhance.agent.EnhanceContext;
+import io.ebean.enhance.common.EnhanceContext;
 
 import static org.testng.Assert.*;
 

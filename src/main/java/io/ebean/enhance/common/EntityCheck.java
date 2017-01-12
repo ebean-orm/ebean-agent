@@ -1,11 +1,13 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
+
+import io.ebean.enhance.agent.EnhanceConstants;
 
 import java.util.Set;
 
 /**
  * Helper to check for entity annotations on a class.
  */
-class EntityCheck {
+public class EntityCheck {
 
   /**
    * A class with one of these annotations is enhanced as an "entity".
@@ -20,7 +22,7 @@ class EntityCheck {
   /**
    * Return true if the annotation is for an Entity, Embeddable, MappedSuperclass or DocStore.
    */
-  static boolean isEntityAnnotation(String desc) {
+  public static boolean isEntityAnnotation(String desc) {
 
     if (!desc.startsWith(EnhanceConstants.JAVAX_PERSISTENCE)) {
       return desc.equals(EnhanceConstants.DOCSTORE_ANNOTATION);
@@ -38,7 +40,7 @@ class EntityCheck {
   /**
    * Return true if the class annotations contains one of the entity annotations.
    */
-  static boolean hasEntityAnnotation(Set<String> classAnnotations) {
+  public static boolean hasEntityAnnotation(Set<String> classAnnotations) {
 
     for (String entityAnnotation : entityAnnotations) {
       if (classAnnotations.contains(entityAnnotation)) {

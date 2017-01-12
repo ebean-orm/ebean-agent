@@ -1,4 +1,4 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
 public class TransformRequest {
 
@@ -8,7 +8,7 @@ public class TransformRequest {
 
   byte[] bytes;
 
-  TransformRequest(byte[] bytes) {
+  public TransformRequest(byte[] bytes) {
     this.bytes = bytes;
   }
 

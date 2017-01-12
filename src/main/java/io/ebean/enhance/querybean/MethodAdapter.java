@@ -1,6 +1,6 @@
 package io.ebean.enhance.querybean;
 
-import io.ebean.enhance.agent.EnhanceContext;
+import io.ebean.enhance.common.EnhanceContext;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 

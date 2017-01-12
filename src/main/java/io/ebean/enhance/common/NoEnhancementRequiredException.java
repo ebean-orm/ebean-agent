@@ -1,4 +1,4 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
 /**
  * Thrown when a Class does not require entity or transaction enhancement.

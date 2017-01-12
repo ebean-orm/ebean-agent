@@ -1,4 +1,4 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
 /**
  * Exception thrown during enhancement when it is detected that the enhancement has already taken place.

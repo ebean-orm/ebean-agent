@@ -1,8 +1,8 @@
 package io.ebean.enhance.querybean;
 
-import io.ebean.enhance.agent.AlreadyEnhancedException;
-import io.ebean.enhance.agent.EnhanceContext;
-import io.ebean.enhance.agent.NoEnhancementRequiredException;
+import io.ebean.enhance.common.AlreadyEnhancedException;
+import io.ebean.enhance.common.EnhanceContext;
+import io.ebean.enhance.common.NoEnhancementRequiredException;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.ClassWriter;

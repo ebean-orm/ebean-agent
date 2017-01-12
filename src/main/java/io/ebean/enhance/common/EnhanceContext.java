@@ -1,5 +1,10 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
+import io.ebean.enhance.agent.ClassBytesReader;
+import io.ebean.enhance.agent.ClassMeta;
+import io.ebean.enhance.agent.ClassMetaReader;
+import io.ebean.enhance.agent.MessageOutput;
+import io.ebean.enhance.agent.SysoutMessageOutput;
 import io.ebean.enhance.querybean.AgentManifestReader;
 import io.ebean.enhance.querybean.DetectQueryBean;
 import io.ebean.enhance.querybean.Distill;

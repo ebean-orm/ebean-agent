@@ -1,5 +1,7 @@
 package io.ebean.enhance.agent;
 
+import io.ebean.enhance.Transformer;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;

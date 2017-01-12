@@ -4,6 +4,8 @@ import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.AlreadyEnhancedException;
+import io.ebean.enhance.common.EnhanceContext;
 
 import java.util.ArrayList;
 import java.util.logging.Level;

@@ -1,7 +1,7 @@
 package io.ebean.enhance.ant;
 
 import io.ebean.enhance.agent.InputStreamTransform;
-import io.ebean.enhance.agent.Transformer;
+import io.ebean.enhance.Transformer;
 
 import java.io.File;
 import java.io.IOException;

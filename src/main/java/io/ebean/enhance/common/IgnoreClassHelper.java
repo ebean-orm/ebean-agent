@@ -1,4 +1,6 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
+
+import io.ebean.enhance.agent.EnhanceConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,5 +1,6 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
+import io.ebean.enhance.common.IgnoreClassHelper;
 import org.testng.annotations.Test;
 
 import java.util.HashSet;

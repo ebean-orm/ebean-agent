@@ -1,6 +1,7 @@
 package io.ebean.enhance.agent;
 
 import io.ebean.enhance.asm.ClassReader;
+import io.ebean.enhance.common.EnhanceContext;
 
 import java.util.HashMap;
 import java.util.Map;

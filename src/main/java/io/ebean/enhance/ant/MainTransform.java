@@ -1,6 +1,6 @@
 package io.ebean.enhance.ant;
 
-import io.ebean.enhance.agent.Transformer;
+import io.ebean.enhance.Transformer;
 
 /**
  * A utility object to run transformation from a main method.

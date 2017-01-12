@@ -1,5 +1,7 @@
-package io.ebean.enhance.agent;
+package io.ebean.enhance.common;
 
+import io.ebean.enhance.agent.ClassMeta;
+import io.ebean.enhance.agent.EnhanceConstants;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
@@ -9,7 +11,7 @@ import io.ebean.enhance.asm.Opcodes;
  * ClassAdapter used to detect if this class needs enhancement for entity or
  * transactional support.
  */
-class ClassAdapterDetectEnhancement extends ClassVisitor {
+public class ClassAdapterDetectEnhancement extends ClassVisitor {
 
   private final ClassLoader classLoader;
 
@@ -27,7 +29,7 @@ class ClassAdapterDetectEnhancement extends ClassVisitor {
 
   private boolean enhancedTransactional;
 
-  ClassAdapterDetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
+  public ClassAdapterDetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
     super(Opcodes.ASM5);
     this.classLoader = classLoader;
     this.enhanceContext = context;
@@ -47,11 +49,11 @@ class ClassAdapterDetectEnhancement extends ClassVisitor {
     }
   }
 
-  boolean isEnhancedEntity() {
+  public boolean isEnhancedEntity() {
     return enhancedEntity;
   }
 
-  boolean isEnhancedTransactional() {
+  public boolean isEnhancedTransactional() {
     return enhancedTransactional;
   }
 
