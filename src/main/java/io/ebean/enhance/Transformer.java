@@ -1,19 +1,20 @@
 package io.ebean.enhance;
 
-import io.ebean.enhance.common.AlreadyEnhancedException;
-import io.ebean.enhance.common.DetectEnhancement;
-import io.ebean.enhance.entity.ClassAdapterEntity;
-import io.ebean.enhance.transactional.ClassAdapterTransactional;
-import io.ebean.enhance.common.ClassBytesReader;
-import io.ebean.enhance.entity.ClassPathClassBytesReader;
-import io.ebean.enhance.common.EnhanceContext;
-import io.ebean.enhance.entity.MessageOutput;
-import io.ebean.enhance.common.NoEnhancementRequiredException;
-import io.ebean.enhance.common.TransformRequest;
 import io.ebean.enhance.asm.ClassReader;
 import io.ebean.enhance.asm.ClassWriter;
+import io.ebean.enhance.common.AlreadyEnhancedException;
+import io.ebean.enhance.common.ClassBytesReader;
+import io.ebean.enhance.common.CommonSuperUnresolved;
+import io.ebean.enhance.common.DetectEnhancement;
+import io.ebean.enhance.common.EnhanceContext;
+import io.ebean.enhance.common.NoEnhancementRequiredException;
+import io.ebean.enhance.common.TransformRequest;
 import io.ebean.enhance.common.UrlPathHelper;
+import io.ebean.enhance.entity.ClassAdapterEntity;
+import io.ebean.enhance.entity.ClassPathClassBytesReader;
+import io.ebean.enhance.entity.MessageOutput;
 import io.ebean.enhance.querybean.TypeQueryClassAdapter;
+import io.ebean.enhance.transactional.ClassAdapterTransactional;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -21,10 +22,7 @@ import java.lang.instrument.Instrumentation;
 import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -50,7 +48,9 @@ public class Transformer implements ClassFileTransformer {
 
   private final EnhanceContext enhanceContext;
 
-  private final Map<String, List<Throwable>> unexpectedExceptionsMap = new HashMap<String, List<Throwable>>();
+  private final List<CommonSuperUnresolved> unresolved = new ArrayList<>();
+
+  private boolean keepUnresolved;
 
   public Transformer(ClassLoader classLoader, String agentArgs) {
     if (classLoader == null) {
@@ -59,13 +59,6 @@ public class Transformer implements ClassFileTransformer {
     ClassBytesReader reader = new ClassPathClassBytesReader(null);
     this.enhanceContext = new EnhanceContext(reader, classLoader, agentArgs, null);
   }
-
-//  /**
-//   * Create a transformer for entity bean enhancement and transactional method enhancement.
-//   */
-//  public Transformer(URL[] extraClassPath, String agentArgs) {
-//    this(new ClassPathClassBytesReader(extraClassPath), agentArgs, null);
-//  }
 
   /**
    * Create a transformer for entity bean enhancement and transactional method enhancement.
@@ -79,13 +72,10 @@ public class Transformer implements ClassFileTransformer {
   }
 
   /**
-   * Return a map of exceptions keyed by className.
-   * <p>
-   * These exceptions were thrown/caught as part of the transformation process.
-   * </p>
+   * Set this to keep and report unresolved explicitly.
    */
-  public Map<String, List<Throwable>> getUnexpectedExceptions() {
-    return Collections.unmodifiableMap(unexpectedExceptionsMap);
+  public void setKeepUnresolved() {
+    this.keepUnresolved = true;
   }
 
   /**
@@ -141,7 +131,7 @@ public class Transformer implements ClassFileTransformer {
         }
       }
 
-      enhanceQueryBean(request);
+      enhanceQueryBean(loader, request);
 
       if (request.isEnhanced()) {
         return request.getBytes();
@@ -157,13 +147,30 @@ public class Transformer implements ClassFileTransformer {
 
     } catch (Exception e) {
       enhanceContext.log(e);
-      // collect any unexpected errors in the transformation
-      if (!unexpectedExceptionsMap.containsKey(className)) {
-        unexpectedExceptionsMap.put(className, new ArrayList<Throwable>());
-      }
-      unexpectedExceptionsMap.get(className).add(e);
       return null;
+    } finally {
+      logUnresolvedCommonSuper(className);
     }
+  }
+
+  /**
+   * Log and common superclass classpath issues that defaulted to Object.
+   */
+  private void logUnresolvedCommonSuper(String className) {
+    if (!keepUnresolved && !unresolved.isEmpty()) {
+      for (CommonSuperUnresolved commonUnresolved : unresolved) {
+        log(0, className, commonUnresolved.getMessage());
+      }
+      unresolved.clear();
+    }
+  }
+
+  /**
+   * Return the list of unresolved common superclass issues. This should be cleared
+   * after each use and can only be used with {@link #setKeepUnresolved()}.
+   */
+  public List<CommonSuperUnresolved> getUnresolved() {
+    return unresolved;
   }
 
   /**
@@ -172,7 +179,7 @@ public class Transformer implements ClassFileTransformer {
   private void entityEnhancement(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);
+    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
     ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
     try {
 
@@ -194,6 +201,8 @@ public class Transformer implements ClassFileTransformer {
       if (ca.isLog(2)) {
         ca.log("skipping... no enhancement required");
       }
+    } finally {
+      unresolved.addAll(cw.getUnresolved());
     }
   }
 
@@ -203,7 +212,7 @@ public class Transformer implements ClassFileTransformer {
   private void transactionalEnhancement(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);
+    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
 
     try {
@@ -224,6 +233,8 @@ public class Transformer implements ClassFileTransformer {
       if (ca.isLog(0)) {
         ca.log("skipping... no enhancement required");
       }
+    } finally {
+      unresolved.addAll(cw.getUnresolved());
     }
   }
 
@@ -231,10 +242,10 @@ public class Transformer implements ClassFileTransformer {
   /**
    * Perform enhancement.
    */
-  private void enhanceQueryBean( TransformRequest request) {
+  private void enhanceQueryBean(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS);//, classLoader);
+    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
     TypeQueryClassAdapter ca = new TypeQueryClassAdapter(cw, enhanceContext);
 
     try {
@@ -254,6 +265,8 @@ public class Transformer implements ClassFileTransformer {
       if (ca.isLog(9)) {
         ca.log("... skipping, no enhancement required");
       }
+    } finally {
+      unresolved.addAll(cw.getUnresolved());
     }
   }
 

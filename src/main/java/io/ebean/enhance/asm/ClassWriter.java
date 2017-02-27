@@ -29,6 +29,11 @@
  */
 package io.ebean.enhance.asm;
 
+import io.ebean.enhance.common.CommonSuperUnresolved;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A {@link ClassVisitor} that generates classes in bytecode form. More
  * precisely this visitor generates a byte array conforming to the Java class
@@ -48,7 +53,6 @@ public class ClassWriter extends ClassVisitor {
      * method will be ignored, and computed automatically from the signature and
      * the bytecode of each method.
      * 
-     * @see #ClassWriter(int)
      */
     public static final int COMPUTE_MAXS = 1;
 
@@ -61,7 +65,6 @@ public class ClassWriter extends ClassVisitor {
      * recomputed from the bytecode. In other words, COMPUTE_FRAMES implies
      * COMPUTE_MAXS.
      * 
-     * @see #ClassWriter(int)
      */
     public static final int COMPUTE_FRAMES = 2;
 
@@ -514,6 +517,10 @@ public class ClassWriter extends ClassVisitor {
      */
     boolean hasAsmInsns;
 
+    private List<CommonSuperUnresolved> unresolved = new ArrayList<>();
+
+    private final ClassLoader classLoader;
+
     // ------------------------------------------------------------------------
     // Static initializer
     // ------------------------------------------------------------------------
@@ -614,8 +621,9 @@ public class ClassWriter extends ClassVisitor {
      *            of this class. See {@link #COMPUTE_MAXS},
      *            {@link #COMPUTE_FRAMES}.
      */
-    public ClassWriter(final int flags) {
+    public ClassWriter(final int flags, ClassLoader classLoader) {
         super(Opcodes.ASM5);
+        this.classLoader = classLoader;
         index = 1;
         pool = new ByteVector();
         items = new Item[256];
@@ -661,8 +669,8 @@ public class ClassWriter extends ClassVisitor {
      *            computed for these methods</i>. See {@link #COMPUTE_MAXS},
      *            {@link #COMPUTE_FRAMES}.
      */
-    public ClassWriter(final ClassReader classReader, final int flags) {
-        this(flags);
+    public ClassWriter(final ClassReader classReader, final int flags, ClassLoader classLoader) {
+        this(flags, classLoader);
         classReader.copyPool(this);
         this.cr = classReader;
     }
@@ -670,6 +678,13 @@ public class ClassWriter extends ClassVisitor {
     // ------------------------------------------------------------------------
     // Implementation of the ClassVisitor abstract class
     // ------------------------------------------------------------------------
+
+    /**
+     * Return the list of common superclasses.
+     */
+    public List<CommonSuperUnresolved> getUnresolved() {
+        return unresolved;
+    }
 
     @Override
     public final void visit(final int version, final int access,
@@ -1703,6 +1718,13 @@ public class ClassWriter extends ClassVisitor {
     }
 
     /**
+     * Use the provided classLoader to resolve the class.
+     */
+    protected Class<?> classForName(String type) throws ClassNotFoundException {
+        return Class.forName(type.replace('/', '.'), false, classLoader);
+    }
+
+    /**
      * Returns the common super type of the two given types. The default
      * implementation of this method <i>loads</i> the two given classes and uses
      * the java.lang.Class methods to find the common super class. It can be
@@ -1720,18 +1742,13 @@ public class ClassWriter extends ClassVisitor {
      */
     protected String getCommonSuperClass(final String type1, final String type2) {
 
-        System.out.println("getCommonSuperClass "+type1+" :"+type2);
-
         Class<?> c, d;
-        ClassLoader classLoader = getClass().getClassLoader();
         try {
-            c = Class.forName(type1.replace('/', '.'), false, classLoader);
-            d = Class.forName(type2.replace('/', '.'), false, classLoader);
+            c = classForName(type1.replace('/', '.'));
+            d = classForName(type2.replace('/', '.'));
         } catch (Exception e) {
-            //throw new RuntimeException(e.toString());
-            System.out.println("getCommonSuperClass err: "+e.toString());
+            unresolved.add(new CommonSuperUnresolved(type1, type2, e.toString()));
             return "java/lang/Object";
-
         }
         if (c.isAssignableFrom(d)) {
             return type1;
