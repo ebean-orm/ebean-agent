@@ -5,9 +5,9 @@ Enhancer Agent for Ebean ORM
 
 ```xml
     <dependency>
-      <groupId>org.avaje.ebean</groupId>
+      <groupId>io.ebean</groupId>
       <artifactId>ebean-agent</artifactId>
-      <version>8.1.1</version>
+      <version>10.1.6</version>
     </dependency>
 ```
 
