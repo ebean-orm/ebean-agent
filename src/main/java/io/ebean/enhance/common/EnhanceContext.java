@@ -36,7 +36,7 @@ public class EnhanceContext {
 
   private int logLevel;
 
-  private HashMap<String, ClassMeta> map = new HashMap<String, ClassMeta>();
+  private HashMap<String, ClassMeta> map = new HashMap<>();
 
   private final DetectQueryBean detectQueryBean;
 
@@ -53,9 +53,7 @@ public class EnhanceContext {
 
     this.detectQueryBean = Distill.convert(AgentManifestReader.read(classLoader, packages));
     if (detectQueryBean.isEmpty()) {
-      System.err.println("---------------------------------------------------------------------------------------------");
-      System.err.println("QueryBean Agent: No packages containing query beans - Missing ebean.mf files? this won't work.");
-      System.err.println("---------------------------------------------------------------------------------------------");
+      logger.log(Level.FINE, "No ebean.mf detected");
     }
 
     List<String> distilledPackages = new DistillPackages()
