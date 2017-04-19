@@ -27,9 +27,9 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
 			InputStream is = null;
 			try {
 
-				// read the class bytes, and define the class
 				String resource = className.replace('.', '/') + ".class";
-
+				
+				// read the class bytes, and define the class
 				URL url = cl.getResource(resource);
 				if (url == null) {
 					return null;
