@@ -57,4 +57,7 @@ public interface EnhanceConstants {
 
   String BEANMAP = "io/ebean/common/BeanMap";
 
+  String L_JETBRAINS_NOTNULL = "Lorg/jetbrains/annotations/NotNull;";
+
+  String L_EBEAN_NOTNULL = "Lio/ebean/annotation/NotNull;";
 }

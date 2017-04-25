@@ -4,11 +4,12 @@ import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Attribute;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.EnhanceConstants;
 
 /**
  * Used to collect information about a field (specifically from field annotations).
  */
-public class LocalFieldVisitor extends FieldVisitor {
+public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants {
 
 	private final FieldMeta fieldMeta;
 	
@@ -33,7 +34,10 @@ public class LocalFieldVisitor extends FieldVisitor {
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 		fieldMeta.addAnnotationDesc(desc);
 		if (fv != null){
-			return fv.visitAnnotation(desc, visible);			
+			if (!visible && desc.equals(L_JETBRAINS_NOTNULL)) {
+				fv.visitAnnotation(L_EBEAN_NOTNULL, true);
+			}
+			return fv.visitAnnotation(desc, visible);
 		} else {
 			return null;
 		}
