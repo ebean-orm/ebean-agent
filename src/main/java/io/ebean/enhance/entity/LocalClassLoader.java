@@ -41,20 +41,18 @@ public class LocalClassLoader extends URLClassLoader {
 			File f = new File("build/bin/"+resource);
 			System.out.println("FileLen:"+f.length()+"  "+f.getName());
 			
-			InputStream is = url.openStream();
-			try {
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				byte[] b = new byte[2048];
-				int count;
-				while ((count = is.read(b, 0, 2048)) != -1) {
-					os.write(b, 0, count);
-				}
-				byte[] bytes = os.toByteArray();
-				System.err.println("bytes: "+bytes.length+" "+resource);
-				return defineClass(name, bytes, 0, bytes.length);
-			} finally {
-				if (is != null) {
-					is.close();
+			try (InputStream is = url.openStream()) {
+				try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+					byte[] b = new byte[2048];
+
+					int count;
+					while ((count = is.read(b, 0, 2048)) != -1) {
+						os.write(b, 0, count);
+					}
+					byte[] bytes = os.toByteArray();
+
+					System.err.println("bytes: "+bytes.length+" "+resource);
+					return defineClass(name, bytes, 0, bytes.length);
 				}
 			}
 		} catch (SecurityException e) {

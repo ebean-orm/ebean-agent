@@ -84,7 +84,7 @@ public class TryCatchBlockSorter extends MethodNode {
                 return endidx - startidx;
             }
         };
-        Collections.sort(tryCatchBlocks, comp);
+        tryCatchBlocks.sort(comp);
         // Updates the 'target' of each try catch block annotation.
         for (int i = 0; i < tryCatchBlocks.size(); ++i) {
             tryCatchBlocks.get(i).updateIndex(i);

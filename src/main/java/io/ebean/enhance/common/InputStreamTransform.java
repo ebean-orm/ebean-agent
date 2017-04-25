@@ -75,38 +75,32 @@ public class InputStreamTransform {
 	 */
 	public static void writeBytes(byte[] bytes, OutputStream os) throws IOException {
 		
-		BufferedOutputStream bos = new BufferedOutputStream(os);
-		
-		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-		
-		byte[] buf = new byte[1028];
-		
-		int len = 0;
-		while ((len = bis.read(buf, 0, buf.length)) > -1){
-			bos.write(buf, 0, len);
+		try (BufferedOutputStream bos = new BufferedOutputStream(os)) {
+			try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
+				byte[] buf = new byte[1028];
+
+				int len = 0;
+				while ((len = bis.read(buf, 0, buf.length)) > -1){
+					bos.write(buf, 0, len);
+				}
+			}
 		}
-		
-		bos.flush();
-		bos.close();
-		
-		bis.close();
 	}
 	
 	
 	public static byte[] readBytes(InputStream is) throws IOException {
-		
-		BufferedInputStream bis = new BufferedInputStream(is);
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
+		try (BufferedInputStream bis = new BufferedInputStream(is)) {
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream(4096)) {
+				byte[] buf = new byte[1028];
 
-		byte[] buf = new byte[1028];
-		
-		int len = 0;
-		while ((len = bis.read(buf, 0, buf.length)) > -1){
-			baos.write(buf, 0, len);
+				int len = 0;
+				while ((len = bis.read(buf, 0, buf.length)) > -1){
+					baos.write(buf, 0, len);
+				}
+
+				return baos.toByteArray();
+			}
 		}
-		baos.flush();
-		baos.close();
-		return baos.toByteArray();
 	}
 }
