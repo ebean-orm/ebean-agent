@@ -19,4 +19,18 @@ public class SomeTransactionalService {
     getGeneratedKeys = tdTransaction.getBatchGetGeneratedKeys();
   }
 
+  @Transactional
+  public int someInt() {
+    return 42;
+  }
+
+  @Transactional
+  public double someDouble() {
+    return 42.0;
+  }
+
+  @Transactional
+  public Object someObject() {
+    return "Foo" + "Bar";
+  }
 }

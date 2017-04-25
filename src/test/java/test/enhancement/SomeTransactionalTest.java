@@ -29,5 +29,10 @@ public class SomeTransactionalTest extends BaseTest {
     SomePath pathAnnotation = method.getAnnotation(SomePath.class);
 
     assertEquals("HelloWorld", pathAnnotation.name());
+
+    assertEquals(42, someService.someInt());
+    assertEquals(42.0, someService.someDouble());
+    assertEquals("FooBar", someService.someObject());
+
   }
 }

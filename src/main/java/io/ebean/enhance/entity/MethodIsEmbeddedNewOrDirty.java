@@ -58,6 +58,9 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 				
 				mv.visitLabel(l0);
 				mv.visitLineNumber(0, l0);
+				if (i > 0) {
+					mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+				}
 				mv.visitVarInsn(ALOAD, 0);
 				mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
 				mv.visitVarInsn(ALOAD, 0);
@@ -80,6 +83,7 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 		}	
 		mv.visitLabel(labelNext);
 		mv.visitLineNumber(1, labelNext);
+		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 		mv.visitInsn(ICONST_0);
 		mv.visitInsn(IRETURN);
 		
@@ -88,6 +92,6 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 		mv.visitLocalVariable("this", "L"+className+";", null, labelBegin, l3, 0);
 		mv.visitMaxs(2, 1);
 		mv.visitEnd();
-		
+
 	}
 }

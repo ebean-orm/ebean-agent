@@ -43,6 +43,10 @@ public class ClassAdapterTransactional extends ClassVisitor {
 		this.enhanceContext = context;
 	}
 
+	public String className() {
+		return className;
+	}
+
 	public boolean isLog(int level) {
 		return enhanceContext.isLog(level);
 	}

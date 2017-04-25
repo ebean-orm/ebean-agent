@@ -2,20 +2,24 @@ package test.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 @Entity
-public class SomeXtendsBaseWithEquals extends BaseWithEquals {
+public class SomePrimLongIdBean {
 
   @Id
-  Long id;
+  long id;
 
   String name;
 
-  public Long getId() {
+  @Version
+  long version;
+
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

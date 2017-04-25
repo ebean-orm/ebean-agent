@@ -44,8 +44,6 @@ public class Transformer implements ClassFileTransformer {
     premain(agentArgs, inst);
   }
 
-  private static final int CLASS_WRITER_COMPUTEFLAGS = ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS;
-
   private final EnhanceContext enhanceContext;
 
   private final List<CommonSuperUnresolved> unresolved = new ArrayList<>();
@@ -179,7 +177,7 @@ public class Transformer implements ClassFileTransformer {
   private void entityEnhancement(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
+    ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS, loader);
     ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
     try {
 
@@ -212,11 +210,11 @@ public class Transformer implements ClassFileTransformer {
   private void transactionalEnhancement(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
+    ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES, loader);
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
 
     try {
-      cr.accept(ca, ClassReader.SKIP_FRAMES);
+      cr.accept(ca, 0);
 
       if (ca.isLog(1)) {
         ca.log("enhanced transactional");
@@ -245,12 +243,12 @@ public class Transformer implements ClassFileTransformer {
   private void enhanceQueryBean(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriter(CLASS_WRITER_COMPUTEFLAGS, loader);
+    ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES, loader);
     TypeQueryClassAdapter ca = new TypeQueryClassAdapter(cw, enhanceContext);
 
     try {
 
-      cr.accept(ca, ClassReader.EXPAND_FRAMES);
+      cr.accept(ca, 0);
       if (ca.isLog(9)) {
         ca.log("... completed");
       }

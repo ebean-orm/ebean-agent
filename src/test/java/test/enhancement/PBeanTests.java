@@ -4,13 +4,11 @@ import io.ebean.bean.EntityBean;
 import org.testng.annotations.Test;
 import test.model.PBean;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 /**
  */
 public class PBeanTests extends BaseTest {
-
 
   @Test
   public void testBasic() {
@@ -24,6 +22,31 @@ public class PBeanTests extends BaseTest {
     assertEquals(2, props.length);
     assertEquals("id", props[0]);
     assertEquals("name", props[1]);
-
   }
+
+  @Test
+  public void testEquals_whenNotSet() {
+
+    PBean b0 = new PBean();
+    PBean b1 = new PBean();
+
+    assertFalse(b0.equals(b1));
+
+    b0.setId(42L);
+    b1.setId(42L);
+    // still false, hashCode/equals consistent
+    assertFalse(b0.equals(b1));
+  }
+
+  @Test
+  public void testEquals_whenSet() {
+
+    PBean b0 = new PBean();
+    PBean b1 = new PBean();
+    b0.setId(42L);
+    b1.setId(42L);
+
+    assertTrue(b0.equals(b1));
+  }
+
 }

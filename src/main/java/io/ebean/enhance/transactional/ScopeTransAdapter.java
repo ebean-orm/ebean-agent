@@ -259,10 +259,6 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
 	@Override
   protected void onFinally(int opcode) {
-	  onExit(opcode);
-  }
-
-  protected void onExit(int opcode) {
 
 		if (!transactional) {
 			return;

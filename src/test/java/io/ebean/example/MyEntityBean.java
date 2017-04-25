@@ -2,6 +2,7 @@ package io.ebean.example;
 
 import io.ebean.bean.EntityBean;
 import io.ebean.bean.EntityBeanIntercept;
+import test.model.MyEmbeddedBean;
 
 import javax.persistence.Id;
 import java.beans.PropertyChangeEvent;
@@ -16,6 +17,13 @@ public class MyEntityBean implements EntityBean {
 
   @Id
   Long id;
+
+  MyEmbeddedBean foo;
+  MyEmbeddedBean bar;
+
+  Long getId() {
+    return id;
+  }
 
   public Long _ebean_get_id() {
     intercept.preGetId();
@@ -65,8 +73,12 @@ public class MyEntityBean implements EntityBean {
 
   @Override
   public boolean _ebean_isEmbeddedNewOrDirty() {
+    // for each embedded bean field...
+    if (intercept.isEmbeddedNewOrDirty(foo)) return true;
+    if (intercept.isEmbeddedNewOrDirty(bar)) return true;
+
     return false;
-  }
+ }
 
   @Override
   public EntityBeanIntercept _ebean_getIntercept() {
@@ -81,6 +93,56 @@ public class MyEntityBean implements EntityBean {
   @Override
   public void _ebean_setField(int fieldIndex, Object value) {
 
+    switch (fieldIndex) {
+      case 0:
+        _ebean_set_id((Long)value);
+        break;
+      case 1:
+        _ebean_set_id((Long)value);
+      default:
+        throw new RuntimeException("asd");
+    }
+  }
+
+  Object _ebean_identity;
+
+  public Object _ebean_getIdentity() {
+    synchronized (this) {
+      if (_ebean_identity != null) {
+        return _ebean_identity;
+      }
+
+      Object id = getId();
+      if (id != null) {
+        _ebean_identity = id;
+      } else {
+        _ebean_identity = new Object();
+      }
+
+      return _ebean_identity;
+    }
+  }
+
+  long intId;
+
+  public long getIntId() {
+    return intId;
+  }
+
+  public Object _ebean_getIdentity_primative() {
+    synchronized (this) {
+      if (_ebean_identity != null) {
+        return _ebean_identity;
+      }
+
+      if (getIntId() != 0) {
+        _ebean_identity = Long.valueOf(getIntId());
+      } else {
+        _ebean_identity = new Object();
+      }
+
+      return _ebean_identity;
+    }
   }
 
   @Override
