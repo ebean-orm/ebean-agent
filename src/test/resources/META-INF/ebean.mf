@@ -1,0 +1,3 @@
+entity-packages: test
+transactional-packages: test.model
+

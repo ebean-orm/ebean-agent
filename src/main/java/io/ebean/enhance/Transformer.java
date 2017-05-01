@@ -2,10 +2,12 @@ package io.ebean.enhance;
 
 import io.ebean.enhance.asm.ClassReader;
 import io.ebean.enhance.asm.ClassWriter;
+import io.ebean.enhance.common.AgentManifest;
 import io.ebean.enhance.common.AlreadyEnhancedException;
 import io.ebean.enhance.common.ClassBytesReader;
 import io.ebean.enhance.common.CommonSuperUnresolved;
 import io.ebean.enhance.common.DetectEnhancement;
+import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.EnhanceContext;
 import io.ebean.enhance.common.NoEnhancementRequiredException;
 import io.ebean.enhance.common.TransformRequest;
@@ -23,13 +25,12 @@ import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
- * A Class file Transformer that enhances entity beans.
+ * A Class file Transformer that performs Ebean enhancement of entity beans,
+ * transactional methods and query bean enhancement.
  * <p>
- * This is used as both a javaagent or via an ANT task (or other off line
- * approach).
+ * This is used as both a java agent or via Maven and Gradle plugins etc.
  * </p>
  */
 public class Transformer implements ClassFileTransformer {
@@ -55,7 +56,8 @@ public class Transformer implements ClassFileTransformer {
       classLoader = getClass().getClassLoader();
     }
     ClassBytesReader reader = new ClassPathClassBytesReader(null);
-    this.enhanceContext = new EnhanceContext(reader, classLoader, agentArgs, null);
+    AgentManifest manifest = AgentManifest.read(classLoader, null);
+    this.enhanceContext = new EnhanceContext(reader, agentArgs, manifest);
   }
 
   /**
@@ -63,10 +65,9 @@ public class Transformer implements ClassFileTransformer {
    *
    * @param bytesReader reads resources from class path for related inheritance and interfaces
    * @param agentArgs command line arguments for debug level etc
-   * @param packages limit enhancement to specified packages
    */
-  public Transformer(ClassBytesReader bytesReader, ClassLoader classLoader, String agentArgs, Set<String> packages) {
-    this.enhanceContext = new EnhanceContext(bytesReader, classLoader, agentArgs, packages);
+  public Transformer(ClassBytesReader bytesReader, String agentArgs, AgentManifest manifest) {
+    this.enhanceContext = new EnhanceContext(bytesReader, agentArgs, manifest);
   }
 
   /**
@@ -103,33 +104,38 @@ public class Transformer implements ClassFileTransformer {
         log(9, className, "ignore class");
         return null;
       }
-
-      DetectEnhancement detect = detect(loader, classfileBuffer);
-
       TransformRequest request = new TransformRequest(classfileBuffer);
 
-      if (detect.isEntity()) {
-        if (detect.isEnhancedEntity()) {
-          detect.log(3, "already enhanced entity");
-        } else {
-          entityEnhancement(loader, request);
-          if (request.isEnhancedEntity()) {
-            // we don't need perform subsequent transactional
-            // or query bean enhancement so return early
-            return request.getBytes();
+      boolean isEbeanModel = className.equals(EnhanceConstants.EBEAN_MODEL);
+      if (isEbeanModel || enhanceContext.detectEntityTransactionalEnhancement(className)) {
+
+        DetectEnhancement detect = detect(loader, classfileBuffer);
+
+        if (detect.isEntity()) {
+          if (detect.isEnhancedEntity()) {
+            detect.log(3, "already enhanced entity");
+          } else {
+            entityEnhancement(loader, request);
+            if (request.isEnhancedEntity()) {
+              // we don't need perform subsequent transactional
+              // or query bean enhancement so return early
+              return request.getBytes();
+            }
+          }
+        }
+
+        if (detect.isTransactional()) {
+          if (detect.isEnhancedTransactional()) {
+            detect.log(3, "already enhanced transactional");
+          } else {
+            transactionalEnhancement(loader, request);
           }
         }
       }
 
-      if (detect.isTransactional()) {
-        if (detect.isEnhancedTransactional()) {
-          detect.log(3, "already enhanced transactional");
-        } else {
-          transactionalEnhancement(loader, request);
-        }
+      if (enhanceContext.detectQueryBeanEnhancement(className)) {
+        enhanceQueryBean(loader, request);
       }
-
-      enhanceQueryBean(loader, request);
 
       if (request.isEnhanced()) {
         return request.getBytes();
@@ -214,7 +220,7 @@ public class Transformer implements ClassFileTransformer {
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
 
     try {
-      cr.accept(ca, 0);
+      cr.accept(ca, ClassReader.EXPAND_FRAMES);
 
       if (ca.isLog(1)) {
         ca.log("enhanced transactional");
@@ -247,8 +253,7 @@ public class Transformer implements ClassFileTransformer {
     TypeQueryClassAdapter ca = new TypeQueryClassAdapter(cw, enhanceContext);
 
     try {
-
-      cr.accept(ca, 0);
+      cr.accept(ca, ClassReader.EXPAND_FRAMES);
       if (ca.isLog(9)) {
         ca.log("... completed");
       }

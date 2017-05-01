@@ -11,29 +11,29 @@ import java.util.Arrays;
  */
 public class DetectQueryBean {
 
-  private final String[] packages;
+  private final String[] entityPackages;
 
-  DetectQueryBean(String[] packages) {
-    this.packages = packages;
+  DetectQueryBean(String[] entityPackages) {
+    this.entityPackages = entityPackages;
   }
 
   public String toString() {
-    return Arrays.toString(packages);
+    return Arrays.toString(entityPackages);
   }
 
   /**
    * Return true if there are no known packages.
    */
   public boolean isEmpty() {
-    return packages.length == 0;
+    return entityPackages.length == 0;
   }
 
   /**
    * Return the packages that entity beans are expected.
    * Query beans are expected to be in a query sub-package.
    */
-  String[] getPackages() {
-    return packages;
+  String[] getEntityPackages() {
+    return entityPackages;
   }
 
   /**
@@ -56,8 +56,8 @@ public class DetectQueryBean {
    * Check that the class is in an expected package (sub package of a package containing entity beans).
    */
   private boolean isQueryBeanPackage(String domainPackage) {
-    for (int i = 0; i < packages.length; i++) {
-      if (domainPackage.startsWith(packages[i])) {
+    for (String aPackage : entityPackages) {
+      if (domainPackage.startsWith(aPackage)) {
         return true;
       }
     }

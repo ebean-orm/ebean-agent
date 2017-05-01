@@ -1,0 +1,6 @@
+entity-packages: aone.domain,
+  btwo.domain,
+  cthree.other
+transactional-packages: none
+querybean-packages: none
+

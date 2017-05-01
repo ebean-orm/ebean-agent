@@ -10,7 +10,7 @@ import java.util.TreeSet;
  */
 class DistillPackages {
 
-  private TreeSet<String> treeSet = new TreeSet<String>();
+  private TreeSet<String> treeSet = new TreeSet<>();
 
   /**
    * Add packages that we want to distill.
@@ -39,11 +39,18 @@ class DistillPackages {
   }
 
   /**
+   * Return the top level packages (with trailing slash) as an Array.
+   */
+  String[] distill() {
+    return convertToArray(deriveTopLevel());
+  }
+
+  /**
    * Distill the list of packages into distinct top level packages.
    */
-  List<String> distill() {
+  private List<String> deriveTopLevel() {
 
-    List<String> distilled = new ArrayList<String>();
+    List<String> distilled = new ArrayList<>();
 
     // build the distilled list
     for (String pack : treeSet) {
@@ -56,12 +63,39 @@ class DistillPackages {
   }
 
   /**
+   * Convert the dot notation entity bean packages to slash notation.
+   *
+   * @param packages entity bean packages
+   */
+  private String[] convertToArray(Collection<String> packages) {
+
+    String[] asArray = packages.toArray(new String[packages.size()]);
+    for (int i = 0; i < asArray.length; i++) {
+      asArray[i] = convert(asArray[i]);
+    }
+    return asArray;
+  }
+
+  /**
+   * Convert package to slash notation taking into account trailing wildcard.
+   */
+  private String convert(String pkg) {
+
+    pkg = pkg.trim();
+    if (pkg.endsWith("*")) {
+      pkg = pkg.substring(0, pkg.length() - 1);
+    }
+    pkg = pkg.replace('.', '/');
+    return pkg.endsWith("/") ? pkg : pkg + "/";
+  }
+
+  /**
    * Return true if the package is not already contained in the distilled list.
    */
   private boolean notAlreadyContained(List<String> distilled, String pack) {
 
-    for (int i = 0; i < distilled.size(); i++) {
-      if (pack.startsWith(distilled.get(i))) {
+    for (String aDistilled : distilled) {
+      if (pack.startsWith(aDistilled)) {
         return false;
       }
     }

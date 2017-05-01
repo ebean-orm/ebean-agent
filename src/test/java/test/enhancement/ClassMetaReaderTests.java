@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.ebean.enhance.common.AgentManifest;
 import io.ebean.enhance.common.AnnotationInfo;
 import org.testng.annotations.Test;
 
@@ -91,7 +92,8 @@ public class ClassMetaReaderTests {
 
 
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
-    EnhanceContext enhanceContext = new EnhanceContext(reader,getClass().getClassLoader(), "debug=9;packages=line.foo", initialPackages);
+    AgentManifest manifest = AgentManifest.read(getClass().getClassLoader(), initialPackages);
+    EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9;packages=line.foo", manifest);
 
     assertTrue(enhanceContext.isIgnoreClass("jim.Me"));
     assertFalse(enhanceContext.isIgnoreClass("jim.bob.Me"));
@@ -110,7 +112,9 @@ public class ClassMetaReaderTests {
   private ClassMetaReader createClassMetaReader() {
     
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
-    EnhanceContext enhanceContext = new EnhanceContext(reader, getClass().getClassLoader(), "debug=9", null);
+    AgentManifest manifest = AgentManifest.read(getClass().getClassLoader(), null);
+
+    EnhanceContext enhanceContext = new EnhanceContext(reader, "debug=9", manifest);
     return new ClassMetaReader(enhanceContext);
   }
 }

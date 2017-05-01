@@ -8,32 +8,6 @@ import java.util.Collection;
 public class Distill {
 
   /**
-   * Split using delimiter and convert to slash notation.
-   */
-  static String[] parsePackages(String packages) {
-
-    if (packages == null || packages.trim().length() == 0) {
-      return new String[0];
-    }
-    String[] commaSplit = packages.split(",");
-    String[] processPackages = new String[commaSplit.length];
-    for (int i = 0; i < commaSplit.length; i++) {
-      processPackages[i] = convert(commaSplit[i]);
-    }
-    return processPackages;
-  }
-
-  /**
-   * Merge the packages to include in the enhancement (all other packages will now be ignored).
-   */
-  static String[] mergePackages(String[] packages1, String[] packages2) {
-    String[] all = new String[packages1.length + packages2.length];
-    System.arraycopy(packages1, 0, all, 0, packages1.length);
-    System.arraycopy(packages2, 0, all, packages1.length, packages2.length);
-    return all;
-  }
-
-  /**
    * Convert the dot notation entity bean packages to slash notation.
    *
    * @param packages entity bean packages
@@ -48,7 +22,7 @@ public class Distill {
   }
 
   /**
-   * Concert package to slash notation taking into account trailing wildcard.
+   * Convert package to slash notation taking into account trailing wildcard.
    */
   private static String convert(String pkg) {
 

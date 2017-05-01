@@ -1,0 +1,3 @@
+packages: aone.domain,
+  btwo.domain,
+  cthree.other

@@ -1,0 +1,3 @@
+entity-packages: aone.domain, btwo.domain
+transactional-packages: aone btwo.services, cthree.other
+

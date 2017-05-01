@@ -63,7 +63,7 @@ public class ClassMetaReader {
 		}
 		ClassReader cr = new ClassReader(classBytes);
 		ClassMetaReaderVisitor ca = new ClassMetaReaderVisitor(readMethodAnnotations, enhanceContext);
-		cr.accept(ca, 0);
+		cr.accept(ca, ClassReader.SKIP_FRAMES + ClassReader.SKIP_DEBUG);
 
 		return ca.getClassMeta();
 	}

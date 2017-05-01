@@ -1,10 +1,6 @@
 package io.ebean.enhance.common;
 
-import io.ebean.enhance.common.IgnoreClassHelper;
 import org.testng.annotations.Test;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -15,7 +11,7 @@ public class IgnoreClassHelperTest {
   @Test
   public void test() {
 
-    IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper(new HashSet<String>());
+    IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper();
 
     assertTrue(ignoreClassHelper.isIgnoreClass("java/lang/Boolean"));
     assertTrue(ignoreClassHelper.isIgnoreClass("java/Something"));
@@ -49,21 +45,4 @@ public class IgnoreClassHelperTest {
     assertFalse(ignoreClassHelper.isIgnoreClass("bar/poo/Foo"));
   }
 
-  @Test
-  public void testWithPackages() {
-
-    Set<String> packages = new HashSet<String>();
-    packages.add("foo");
-    packages.add("bar/pixie");
-
-    IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper(packages);
-
-    assertTrue(ignoreClassHelper.isIgnoreClass("java/lang/Boolean"));
-    assertTrue(ignoreClassHelper.isIgnoreClass("org/joda/LocalDate"));
-    assertTrue(ignoreClassHelper.isIgnoreClass("org/koda/Foo"));
-    assertTrue(ignoreClassHelper.isIgnoreClass("bar/poo/Foo"));
-
-    assertFalse(ignoreClassHelper.isIgnoreClass("foo/Foo"));
-    assertFalse(ignoreClassHelper.isIgnoreClass("bar/pixie/Foo"));
-  }
 }

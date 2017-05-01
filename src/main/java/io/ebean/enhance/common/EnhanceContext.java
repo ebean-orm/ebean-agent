@@ -1,15 +1,12 @@
 package io.ebean.enhance.common;
 
 import io.ebean.enhance.entity.MessageOutput;
-import io.ebean.enhance.querybean.AgentManifestReader;
 import io.ebean.enhance.querybean.DetectQueryBean;
 import io.ebean.enhance.querybean.Distill;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,28 +37,25 @@ public class EnhanceContext {
 
   private final DetectQueryBean detectQueryBean;
 
+  private final FilterEntityTransactional filterEntityTransactional;
+
+  private final FilterQueryBean filterQueryBean;
+
   /**
    * Construct a context for enhancement.
-   *
-   * @param classBytesReader    used to read class meta data from raw bytes
-   * @param agentArgs           command line arguments for debug level etc
-   * @param packages            limit enhancement to specified packages
    */
-  public EnhanceContext(ClassBytesReader classBytesReader, ClassLoader classLoader, String agentArgs, Set<String> packages) {
+  public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest) {
 
     this.agentArgsMap = ArgParser.parse(agentArgs);
+    this.filterEntityTransactional = new FilterEntityTransactional(manifest);
+    this.filterQueryBean = new FilterQueryBean(manifest);
 
-    this.detectQueryBean = Distill.convert(AgentManifestReader.read(classLoader, packages));
+    this.detectQueryBean = Distill.convert(manifest.getEntityPackages());
     if (detectQueryBean.isEmpty()) {
       logger.log(Level.FINE, "No ebean.mf detected");
     }
 
-    List<String> distilledPackages = new DistillPackages()
-        .add(packages)
-        .addRaw(agentArgsMap.get("packages"))
-        .distill();
-
-    this.ignoreClassHelper = new IgnoreClassHelper(distilledPackages);
+    this.ignoreClassHelper = new IgnoreClassHelper();
     this.logout = new SysoutMessageOutput(System.out);
     this.classBytesReader = classBytesReader;
     this.reader = new ClassMetaReader(this);
@@ -110,6 +104,19 @@ public class EnhanceContext {
     }
   }
 
+  /**
+   * Return true if this class should be scanned for transactional enhancement.
+   */
+  public boolean detectEntityTransactionalEnhancement(String className) {
+    return filterEntityTransactional.detectEnhancement(className);
+  }
+
+  /**
+   * Return true if this class should be scanned for query bean enhancement.
+   */
+  public boolean detectQueryBeanEnhancement(String className) {
+    return filterQueryBean.detectEnhancement(className);
+  }
 
   /**
    * Return true if this class should be ignored. That is JDK classes and
