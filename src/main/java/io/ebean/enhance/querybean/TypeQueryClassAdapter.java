@@ -145,6 +145,10 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
 
   @Override
   public void visitEnd() {
+    if (classInfo.isAlreadyEnhanced()) {
+      throw new AlreadyEnhancedException(className);
+    }
+
     if (classInfo.isTypeQueryBean()) {
       if (!typeQueryRootBean) {
         classInfo.addAssocBeanExtras(cv);
