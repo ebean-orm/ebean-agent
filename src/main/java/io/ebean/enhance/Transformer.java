@@ -183,11 +183,11 @@ public class Transformer implements ClassFileTransformer {
   private void entityEnhancement(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS, loader);
+    ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES, loader);
     ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
     try {
 
-      cr.accept(ca, 0);
+      cr.accept(ca, ClassReader.EXPAND_FRAMES);
 
       if (ca.isLog(1)) {
         ca.logEnhanced();
