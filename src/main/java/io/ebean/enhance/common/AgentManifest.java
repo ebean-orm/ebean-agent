@@ -52,6 +52,10 @@ public class AgentManifest {
   public AgentManifest() {
   }
 
+  public String toString() {
+    return "entityPackages:" + entityPackages + " querybeanPackages:" + querybeanPackages + " transactionalPackages:" + transactionalPackages;
+  }
+
   /**
    * Return the parsed set of packages that type query beans are in.
    */

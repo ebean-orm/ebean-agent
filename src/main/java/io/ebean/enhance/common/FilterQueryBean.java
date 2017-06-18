@@ -1,5 +1,7 @@
 package io.ebean.enhance.common;
 
+import java.util.Arrays;
+
 /**
  * Filters classes for query bean enhancement.
  */
@@ -23,6 +25,11 @@ class FilterQueryBean {
 			distill.add(manifest.getQuerybeanPackages());
 		}
 		this.topLevelPackages = distill.distill();
+	}
+
+	@Override
+	public String toString() {
+		return "ignoreAll:" + ignoreAll + " detectOnAll:" + detectOnAll + " topLevelPackages:" + Arrays.toString(topLevelPackages);
 	}
 
 	/**

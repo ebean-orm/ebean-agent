@@ -1,5 +1,7 @@
 package io.ebean.enhance.common;
 
+import java.util.Arrays;
+
 /**
  * Filters classes for entity and transactional enhancement.
  */
@@ -19,6 +21,11 @@ class FilterEntityTransactional {
 			distill.add(manifest.getTransactionalPackages());
 		}
 		this.topLevelPackages = distill.distill();
+	}
+
+	@Override
+	public String toString() {
+		return "noFiltering:" + noFiltering + " topLevelPackages:" + Arrays.toString(topLevelPackages);
 	}
 
 	/**
