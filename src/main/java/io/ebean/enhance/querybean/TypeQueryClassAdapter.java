@@ -117,6 +117,13 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
         }
         return super.visitMethod(access, name, desc, signature, exceptions);
       }
+      MethodDesc methodDesc = new MethodDesc(access, name, desc, signature, exceptions);
+      if (methodDesc.isGetter()) {
+        if (isLog(3)) {
+          log("overwrite getter method - " + name + " " + desc + " " + signature);
+        }
+        return new TypeQueryGetterAdapter(cv, classInfo, methodDesc);
+      }
     }
 
     if (isLog(8)) {
