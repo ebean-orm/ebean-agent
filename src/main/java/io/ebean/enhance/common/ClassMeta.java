@@ -269,7 +269,7 @@ public class ClassMeta {
   public boolean hasPersistentFields() {
     
     for (FieldMeta fieldMeta : fields.values()) {
-      if (fieldMeta.isPersistent()) {
+      if (fieldMeta.isPersistent() || fieldMeta.isTransient()) {
         return true;
       }
     }
