@@ -89,9 +89,6 @@ public class ClassInfo implements Constants {
    * Check for the type query bean and type query user annotations.
    */
   public void checkTypeQueryAnnotation(String desc) {
-    if (isEntityBeanAnnotation(desc)) {
-      throw new NoEnhancementRequiredException("Not enhancing entity bean");
-    }
     if (isTypeQueryBeanAnnotation(desc)) {
       typeQueryBean = true;
     } else if (isAlreadyEnhancedAnnotation(desc)) {

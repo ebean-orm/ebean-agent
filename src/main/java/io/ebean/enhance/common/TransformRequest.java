@@ -21,17 +21,13 @@ public class TransformRequest {
     this.bytes = bytes;
   }
 
-  public boolean isEnhancedEntity() {
-    return enhancedEntity;
-  }
-
   public void enhancedTransactional(byte[] bytes) {
     this.enhancedTransactional = true;
     this.bytes = bytes;
   }
 
   public boolean isEnhanced() {
-    return enhancedTransactional || enhancedQueryBean;
+    return enhancedTransactional || enhancedQueryBean || enhancedEntity;
   }
 
   public void enhancedQueryBean(byte[] bytes) {

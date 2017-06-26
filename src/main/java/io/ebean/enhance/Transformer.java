@@ -116,11 +116,6 @@ public class Transformer implements ClassFileTransformer {
             detect.log(3, "already enhanced entity");
           } else {
             entityEnhancement(loader, request);
-            if (request.isEnhancedEntity()) {
-              // we don't need perform subsequent transactional
-              // or query bean enhancement so return early
-              return request.getBytes();
-            }
           }
         }
 
