@@ -517,9 +517,9 @@ public class ClassWriter extends ClassVisitor {
      */
     boolean hasAsmInsns;
 
-    private List<CommonSuperUnresolved> unresolved = new ArrayList<>();
+    protected List<CommonSuperUnresolved> unresolved = new ArrayList<>();
 
-    private final ClassLoader classLoader;
+    protected final ClassLoader classLoader;
 
     // ------------------------------------------------------------------------
     // Static initializer
