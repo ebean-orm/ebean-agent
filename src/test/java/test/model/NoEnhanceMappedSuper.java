@@ -8,7 +8,6 @@ public class NoEnhanceMappedSuper {
 
   static String oneStatic;
   
-  @Transient
-  String oneInstance;
+  transient String oneInstance;
   
 }
