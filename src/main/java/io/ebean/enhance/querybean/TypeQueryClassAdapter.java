@@ -34,25 +34,10 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
     if ((access & Opcodes.ACC_INTERFACE) != 0) {
       throw new NoEnhancementRequiredException("Not enhancing interface");
     }
-    if (hasEntityBeanInterface(interfaces)) {
-      throw new NoEnhancementRequiredException("Not enhancing EntityBean");
-    }
     this.typeQueryRootBean = TQ_ROOT_BEAN.equals(superName);
     this.className = name;
     this.signature = signature;
     this.classInfo = new ClassInfo(enhanceContext, name);
-  }
-
-  /**
-   * Return true if this case the EntityBean interface.
-   */
-  private boolean hasEntityBeanInterface(String[] interfaces) {
-    for (int i = 0; i < interfaces.length; i++) {
-      if (interfaces[i].equals(C_ENTITYBEAN)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
