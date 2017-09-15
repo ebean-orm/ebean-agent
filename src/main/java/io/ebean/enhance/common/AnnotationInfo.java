@@ -42,7 +42,7 @@ public class AnnotationInfo {
 			// this is an array value...
 			ArrayList<Object> list = (ArrayList<Object>)valueMap.get(prefix);
 			if (list == null){
-				list = new ArrayList<Object>();
+				list = new ArrayList<>();
 				valueMap.put(prefix, list);
 			}
 			//System.out.println("addArrayValue "+prefix+" value:"+value);

@@ -43,7 +43,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		super(Opcodes.ASM5, mv, access, name, desc);
 		this.owner = owner;
 		this.methodName = name;
-		
+
 		// inherit from class level Transactional annotation
 		AnnotationInfo parentInfo = owner.getClassAnnotationInfo();
 		
@@ -145,7 +145,16 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		}
 		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setReadOnly", "(Z)L"+C_TXSCOPE+";", false);
 	}
-	
+
+	private void setFlushOnQuery(Object flushObj){
+		boolean flushOnQuery = (Boolean)flushObj;
+		if (!flushOnQuery){
+			mv.visitVarInsn(ALOAD, posTxScope);
+			mv.visitInsn(ICONST_0);
+			mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setFlushOnQuery", "(Z)L"+C_TXSCOPE+";", false);
+		}
+	}
+
 	/**
 	 * Add bytecode to add the noRollbackFor throwable types to the TxScope.
 	 */
@@ -199,7 +208,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		mv.visitInsn(DUP);
 		mv.visitMethodInsn(INVOKESPECIAL, txScopeType.getInternalName(), "<init>", "()V", false);
 		mv.visitVarInsn(ASTORE, posTxScope);
-		
+
 		Object txType = annotationInfo.getValue("type");
 		if (txType != null){
 			setTxType(txType);
@@ -234,6 +243,12 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		if (readOnly != null){
 			setReadOnly(readOnly);
 		}
+
+		Object flushOnQuery = annotationInfo.getValue("flushOnQuery");
+		if (flushOnQuery != null){
+			setFlushOnQuery(flushOnQuery);
+		}
+
 		
 		Object noRollbackFor = annotationInfo.getValue("noRollbackFor");
 		if (noRollbackFor != null){

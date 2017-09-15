@@ -41,13 +41,13 @@ public interface EnhanceConstants {
 
   String L_DRAFT = "Lio/ebean/annotation/Draft;";
 
-  String C_TXTYPE = "io/ebean/TxType";
-
   String C_TXSCOPE = "io/ebean/TxScope";
 
-  String C_TXISOLATION = "io/ebean/TxIsolation";
+  String C_TXTYPE = "io/ebean/annotation/TxType";
 
-  String C_PERSISTBATCH = "io/ebean/PersistBatch";
+  String C_TXISOLATION = "io/ebean/annotation/TxIsolation";
+
+  String C_PERSISTBATCH = "io/ebean/annotation/PersistBatch";
 
   String EBEAN_MODEL = "io/ebean/Model";
 
