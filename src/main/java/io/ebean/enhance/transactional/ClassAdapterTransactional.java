@@ -159,7 +159,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 
 		MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-		if (name.equals("<init>")) {
+		if (name.equals("<init>") || name.equals("<clinit>")) {
 			// not enhancing constructors at the moment
 			return mv;
 		}
