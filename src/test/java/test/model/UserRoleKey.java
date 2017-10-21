@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
  * An embedded bean that has package visibility (is not public).
  */
 @Embeddable
-class UserRoleKey {
+public class UserRoleKey {
 
     private long userId;
 
