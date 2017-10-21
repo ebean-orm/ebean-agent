@@ -15,8 +15,8 @@ public class MainTransform {
 		}
 
 		String transformArgs = "debug=1";
-		String inDir = "home/rob/dev/workspace/ebeanExample/bin";
-		String pkg = "app/data/test";
+		String inDir = "./target/test-classes";
+		String pkg = "test";
 
 		if (args.length > 0) {
 			inDir = args[0];
