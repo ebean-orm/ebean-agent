@@ -1,6 +1,7 @@
 package test.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -14,8 +15,8 @@ public class WithInitialisedCollectionsAndConstructor extends BaseEntity {
   
   Date whenStart;
   
-  @OneToMany
-  List<Contact> contacts = new ArrayList<Contact>();
+  @OneToMany(cascade = CascadeType.PERSIST)
+  List<Contact> contacts = new ArrayList<>();
 
   public WithInitialisedCollectionsAndConstructor(List<Contact> add) {
     contacts.addAll(add);

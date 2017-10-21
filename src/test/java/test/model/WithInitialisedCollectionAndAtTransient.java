@@ -1,6 +1,7 @@
 package test.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -15,8 +16,8 @@ public class WithInitialisedCollectionAndAtTransient extends BaseEntity {
   
   Date whenStart;
   
-  @OneToMany
-  List<Contact> contacts = new ArrayList<Contact>();
+  @OneToMany(cascade = CascadeType.PERSIST)
+  List<Contact> contacts = new ArrayList<>();
 
   @Transient
   StringBuilder buffer = new StringBuilder();

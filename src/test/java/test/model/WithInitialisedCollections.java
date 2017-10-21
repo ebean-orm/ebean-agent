@@ -1,6 +1,7 @@
 package test.model;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -18,17 +19,17 @@ public class WithInitialisedCollections extends BaseEntity {
   
   Date whenStart;
   
-  @OneToMany
-  List<Contact> contacts = new ArrayList<Contact>();
+  @OneToMany(cascade = CascadeType.PERSIST)
+  List<Contact> contacts = new ArrayList<>();
 
-  @OneToMany
-  Set<Contact> myset = new HashSet<Contact>();
+  @OneToMany(cascade = CascadeType.PERSIST)
+  Set<Contact> myset = new HashSet<>();
 
-  @OneToMany
-  Set<Contact> myLinkedSet = new LinkedHashSet<Contact>();
+  @OneToMany(cascade = CascadeType.PERSIST)
+  Set<Contact> myLinkedSet = new LinkedHashSet<>();
 
   @Transient
-  Set<String> strings = new HashSet<String>();
+  Set<String> strings = new HashSet<>();
 
   public String toString() {
     return "id:"+id+" name:"+name;
