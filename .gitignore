@@ -4,3 +4,6 @@
 target/
 *.iml
 .idea
+log/
+*.sql
+

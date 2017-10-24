@@ -1,21 +1,21 @@
 package test.model;
 
 import io.ebean.Ebean;
-import io.ebean.TDTransaction;
 import io.ebean.annotation.SomePath;
 import io.ebean.annotation.Transactional;
+import io.ebeaninternal.api.SpiTransaction;
 
 public class SomeTransactionalService {
 
   public Boolean getGeneratedKeys;
 
   @SomePath(name = "HelloWorld")
-  @Transactional(getGeneratedKeys = false, batchSize = 100)
+  @Transactional(getGeneratedKeys = false, batchSize = 100, profileId = 100)
   public void someMethod(String param) {
 
     System.out.println("--- in someMethod");
 
-    TDTransaction tdTransaction = Ebean.testScopedTransaction();
+    SpiTransaction tdTransaction = (SpiTransaction)Ebean.currentTransaction();
     getGeneratedKeys = tdTransaction.getBatchGetGeneratedKeys();
   }
 

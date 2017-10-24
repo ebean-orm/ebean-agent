@@ -1,13 +1,14 @@
 package io.ebean.enhance.transactional;
 
-import io.ebean.enhance.common.AnnotationInfo;
-import io.ebean.enhance.common.AnnotationInfoVisitor;
-import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.asm.AnnotationVisitor;
+import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.commons.FinallyAdapter;
+import io.ebean.enhance.common.AnnotationInfo;
+import io.ebean.enhance.common.AnnotationInfoVisitor;
+import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.VisitUtil;
 
 import java.util.ArrayList;
@@ -38,8 +39,10 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
 	private int posTxScope;
 	private int posScopeTrans;
-	
-	public ScopeTransAdapter(ClassAdapterTransactional owner, final MethodVisitor mv, final int access, final String name, final String desc) {
+	private int lineNumber;
+	private TransactionalMethodKey methodKey;
+
+	ScopeTransAdapter(ClassAdapterTransactional owner, final MethodVisitor mv, final int access, final String name, final String desc) {
 		super(Opcodes.ASM5, mv, access, name, desc);
 		this.owner = owner;
 		this.methodName = name;
@@ -61,6 +64,15 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		// default based on whether Transactional annotation
 		// is at the class level or on interface method
 		transactional = parentInfo != null; 
+	}
+
+	@Override
+	public void visitLineNumber(int line, Label start) {
+		super.visitLineNumber(line, start);
+		if (lineNumber == 0 && methodKey != null) {
+			lineNumber = line;
+			methodKey.setLineNumber(lineNumber);
+		}
 	}
 
 	@Override
@@ -109,6 +121,14 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
     mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchOnCascade", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
     mv.visitInsn(POP);
   }
+
+	private void setProfileId(int profileId){
+
+		mv.visitVarInsn(ALOAD, posTxScope);
+		VisitUtil.visitIntInsn(mv, profileId);
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setProfileId", "(I)L"+C_TXSCOPE+";", false);
+		mv.visitInsn(POP);
+	}
 
   private void setBatchSize(Object batchSize){
 
@@ -190,16 +210,27 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 			mv.visitInsn(POP);
 		}
 	}
-	
+
+	/**
+	 * Return the profileId from the transactional annotation.
+	 */
+	private int annotationProfileId() {
+		Object value = annotationInfo.getValue("profileId");
+		if (value == null) {
+			return 0;
+		} else {
+			return (int)value;
+		}
+	}
+
 	@Override
 	protected void onMethodEnter() {
 
 		if (!transactional) {
 			return;
 		}
-		
-		// call back to owner to log debug information
-		owner.transactionalMethod(methodName, methodDesc, annotationInfo);
+
+		methodKey = owner.createMethodKey(methodName, methodDesc, annotationProfileId());
 
 		posTxScope = newLocal(txScopeType);
 		posScopeTrans = newLocal(scopeTransType);
@@ -213,7 +244,11 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		if (txType != null){
 			setTxType(txType);
 		}
-		
+		int profileId = methodKey.getProfileId();
+		if (profileId > 0) {
+			setProfileId(profileId);
+		}
+
 		Object txIsolation = annotationInfo.getValue("isolation");
 		if (txIsolation != null){
 			setTxIsolation(txIsolation);
@@ -279,6 +314,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 			return;
 		}
 
+		owner.transactionalMethod(methodKey);
 		if (opcode == RETURN) {
 			visitInsn(ACONST_NULL);
 

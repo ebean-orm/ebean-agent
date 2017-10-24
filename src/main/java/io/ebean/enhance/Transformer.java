@@ -18,6 +18,7 @@ import io.ebean.enhance.entity.ClassPathClassBytesReader;
 import io.ebean.enhance.entity.MessageOutput;
 import io.ebean.enhance.querybean.TypeQueryClassAdapter;
 import io.ebean.enhance.transactional.ClassAdapterTransactional;
+import io.ebean.enhance.transactional.TransactionalMethodKey;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -151,6 +152,15 @@ public class Transformer implements ClassFileTransformer {
     } finally {
       logUnresolvedCommonSuper(className);
     }
+  }
+
+  /**
+   * Return the transaction profiling keys.
+   *
+   * We use these to decode a the transaction profile.
+   */
+  public List<TransactionalMethodKey> getTransactionProfilingKeys() {
+    return enhanceContext.getTransactionProfilingKeys();
   }
 
   /**

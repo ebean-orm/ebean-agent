@@ -3,7 +3,7 @@ package test.enhancement;
 import org.testng.annotations.Test;
 import test.model.SomeTransactionalWithStatic;
 
-public class SomeTransactionalWithStaticTest {
+public class SomeTransactionalWithStaticTest extends BaseTest {
 
   @Test
   public void testSomeMethod() throws Exception {

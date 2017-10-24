@@ -15,11 +15,24 @@ import java.util.jar.Manifest;
  */
 public class AgentManifest {
 
+  enum TxProfileMode {
+    NONE,
+    ENABLED,
+    MANUAL
+  }
+
   private final Set<String> entityPackages = new HashSet<>();
 
   private final Set<String> transactionalPackages = new HashSet<>();
 
   private final Set<String> querybeanPackages = new HashSet<>();
+
+  private TxProfileMode transactionProfilingMode = TxProfileMode.NONE;
+
+  /**
+   * Start profileId when automatically assigned by enhancement.
+   */
+  private int transactionProfilingStart = 1000;
 
   public static AgentManifest read(ClassLoader classLoader, Set<String> initialPackages) {
 
@@ -53,7 +66,25 @@ public class AgentManifest {
   }
 
   public String toString() {
-    return "entityPackages:" + entityPackages + " querybeanPackages:" + querybeanPackages + " transactionalPackages:" + transactionalPackages;
+    return "entityPackages:" + entityPackages + " querybeanPackages:" + querybeanPackages
+      + " transactionalPackages:" + transactionalPackages + " profilingMode:" + transactionProfilingMode;
+  }
+
+  /**
+   * Return the initial starting profileId when automatically assigned.
+   */
+  int transactionProfilingStart() {
+    switch (transactionProfilingMode) {
+      case NONE:
+        return -1;
+      case MANUAL:
+        return 0;
+      case ENABLED:
+        return transactionProfilingStart;
+      default: {
+        return transactionProfilingStart;
+      }
+    }
   }
 
   /**
@@ -126,8 +157,43 @@ public class AgentManifest {
     }
   }
 
+  void readProfilingMode(Attributes attributes) {
+    String mode = attributes.getValue("transaction-profiling");
+    if (mode != null) {
+      transactionProfilingMode = parseMode(mode);
+    }
+  }
+
+  private TxProfileMode parseMode(String mode) {
+    switch (mode.trim().toLowerCase()) {
+      case "enabled":
+      case "auto":
+      case "enable":
+        return TxProfileMode.ENABLED;
+      case "manual":
+        return TxProfileMode.MANUAL;
+      case "none":
+        return TxProfileMode.NONE;
+      default:
+        return TxProfileMode.NONE;
+    }
+  }
+
+  void readProfilingStart(Attributes attributes) {
+    String start = attributes.getValue("transaction-profiling-startvalue");
+    if (start != null) {
+      try {
+        transactionProfilingStart = Integer.parseInt(start);
+      } catch (NumberFormatException e) {
+        // ignore
+      }
+    }
+  }
+
   private void addManifest(Manifest manifest) {
     Attributes attributes = manifest.getMainAttributes();
+    readProfilingMode(attributes);
+    readProfilingStart(attributes);
     add(entityPackages, attributes.getValue("packages"));
     add(entityPackages, attributes.getValue("entity-packages"));
     add(transactionalPackages, attributes.getValue("transactional-packages"));

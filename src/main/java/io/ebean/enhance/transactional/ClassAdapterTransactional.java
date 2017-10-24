@@ -1,14 +1,14 @@
 package io.ebean.enhance.transactional;
 
-import io.ebean.enhance.common.AnnotationInfo;
-import io.ebean.enhance.common.AnnotationInfoVisitor;
-import io.ebean.enhance.common.ClassMeta;
-import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.AlreadyEnhancedException;
+import io.ebean.enhance.common.AnnotationInfo;
+import io.ebean.enhance.common.AnnotationInfoVisitor;
+import io.ebean.enhance.common.ClassMeta;
+import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.EnhanceContext;
 
 import java.util.ArrayList;
@@ -174,14 +174,20 @@ public class ClassAdapterTransactional extends ClassVisitor {
 		super.visitEnd();
 	}
 
-	void transactionalMethod(String methodName, String methodDesc, AnnotationInfo annoInfo) {
+	void transactionalMethod(TransactionalMethodKey methodKey) {
 
-		transactionalMethods.add(methodName);
-
-		if (isLog(4)) {
-			log("method:" + methodName + " " + methodDesc + " transactional " + annoInfo);
-		} else if (isLog(3)) {
-			log("method:" + methodName);
+		transactionalMethods.add(methodKey.getMethodName());
+		if (isLog(3)) {
+			log("method - " + methodKey);
 		}
+	}
+
+	/**
+	 * Create and return the TransactionalMethodKey.
+	 *
+	 * Takes into account the profiling mode (as per manifest) and explicit profileId.
+	 */
+	public TransactionalMethodKey createMethodKey(String methodName, String methodDesc, int profId) {
+		return enhanceContext.createMethodKey(className, methodName, methodDesc, profId);
 	}
 }

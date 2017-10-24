@@ -77,7 +77,7 @@ public class LazyLoadingInvokeTests extends BaseTest {
   private void setupCustomerState(Customer customer, EntityBeanIntercept intercept, MyBeanLoader myBeanLoader) {
 
     customer.setId(27l);
-    intercept.setBeanLoader(0, myBeanLoader, null);
+    intercept.setBeanLoader(myBeanLoader);
     intercept.setLoaded();
     Assert.assertNull(myBeanLoader.wasLoad);
     Assert.assertEquals(0, myBeanLoader.count);

@@ -13,7 +13,7 @@ public class AgentManifestTest {
 
 		AgentManifest manifest = AgentManifest.read(this.getClass().getClassLoader(), null);
 
-		assertThat(manifest.getTransactionalPackages()).contains("test.model");
+		assertThat(manifest.getTransactionalPackages()).contains("test");
 		assertThat(manifest.getEntityPackages()).contains("test");
 
 		FilterEntityTransactional filterEntityTransactional = new FilterEntityTransactional(manifest);
