@@ -30,7 +30,7 @@ public class MyTransactional {
 //		scope.setBatchSize(100);
 //		scope.setBatch(PersistBatch.ALL);
 
-		ScopeTrans scopeTrans = HelpScopeTrans.createScopeTrans(newTxScope());
+		HelpScopeTrans.enter(newTxScope());
 		try {
 
 			System.out.println("hj");
@@ -40,11 +40,11 @@ public class MyTransactional {
 			}
 			other = val;
 
-			HelpScopeTrans.onExitScopeTrans(null, 177, scopeTrans);
+			HelpScopeTrans.exit(null, 177);
 			return val;
 
 		} catch (Throwable e) {
-			HelpScopeTrans.onExitScopeTrans(e, 191, scopeTrans);
+			HelpScopeTrans.exit(e, 191);
 			throw e;
 		}
 	}

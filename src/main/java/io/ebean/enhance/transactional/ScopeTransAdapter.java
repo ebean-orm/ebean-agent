@@ -24,21 +24,18 @@ import java.util.ArrayList;
  */
 public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstants {
 
-
 	private static final Type txScopeType = Type.getType("L"+C_TXSCOPE+";");
-	private static final Type scopeTransType = Type.getType(L_SCOPETRANS);
 	private static final Type helpScopeTrans = Type.getType(L_HELPSCOPETRANS);
 
 	private final AnnotationInfo annotationInfo;
 
 	private final ClassAdapterTransactional owner;
 
-  private final String methodName;
+	private final String methodName;
 
 	private boolean transactional;
 
 	private int posTxScope;
-	private int posScopeTrans;
 	private int lineNumber;
 	private TransactionalMethodKey methodKey;
 
@@ -49,7 +46,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
 		// inherit from class level Transactional annotation
 		AnnotationInfo parentInfo = owner.getClassAnnotationInfo();
-		
+
 		// inherit from interface method transactional annotation
 		AnnotationInfo interfaceInfo = owner.getInterfaceTransactionalInfo(name, desc);
 		if (parentInfo == null){
@@ -57,13 +54,13 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		} else {
 			parentInfo.setParent(interfaceInfo);
 		}
-		
+
 		// inherit transactional annotations from parentInfo
 		annotationInfo = new AnnotationInfo(parentInfo);
-		
+
 		// default based on whether Transactional annotation
 		// is at the class level or on interface method
-		transactional = parentInfo != null; 
+		transactional = parentInfo != null;
 	}
 
 	@Override
@@ -87,16 +84,16 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 	}
 
 	private void setTxType(Object txType){
-		
+
 		mv.visitVarInsn(ALOAD, posTxScope);
 		mv.visitLdcInsn(txType.toString());
 		mv.visitMethodInsn(INVOKESTATIC, C_TXTYPE, "valueOf", "(Ljava/lang/String;)L"+C_TXTYPE+";", false);
 		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setType", "(L"+C_TXTYPE+";)L"+C_TXSCOPE+";", false);
 		mv.visitInsn(POP);
 	}
-	
+
 	private void setTxIsolation(Object txIsolation){
-		
+
 		mv.visitVarInsn(ALOAD, posTxScope);
 		mv.visitLdcInsn(txIsolation.toString());
 		mv.visitMethodInsn(INVOKESTATIC, C_TXISOLATION, "valueOf", "(Ljava/lang/String;)L"+C_TXISOLATION+";", false);
@@ -104,23 +101,23 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		mv.visitInsn(POP);
 	}
 
-  private void setBatch(Object batch){
+	private void setBatch(Object batch){
 
-    mv.visitVarInsn(ALOAD, posTxScope);
-    mv.visitLdcInsn(batch.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L"+C_PERSISTBATCH+";", false);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatch", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
-    mv.visitInsn(POP);
-  }
+		mv.visitVarInsn(ALOAD, posTxScope);
+		mv.visitLdcInsn(batch.toString());
+		mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L"+C_PERSISTBATCH+";", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatch", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
+		mv.visitInsn(POP);
+	}
 
-  private void setBatchOnCascade(Object batch){
+	private void setBatchOnCascade(Object batch){
 
-    mv.visitVarInsn(ALOAD, posTxScope);
-    mv.visitLdcInsn(batch.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L"+C_PERSISTBATCH+";", false);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchOnCascade", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
-    mv.visitInsn(POP);
-  }
+		mv.visitVarInsn(ALOAD, posTxScope);
+		mv.visitLdcInsn(batch.toString());
+		mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L"+C_PERSISTBATCH+";", false);
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchOnCascade", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
+		mv.visitInsn(POP);
+	}
 
 	private void setProfileId(int profileId){
 
@@ -130,29 +127,21 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		mv.visitInsn(POP);
 	}
 
-  private void setBatchSize(Object batchSize){
+	private void setBatchSize(Object batchSize){
 
-    mv.visitVarInsn(ALOAD, posTxScope);
-    VisitUtil.visitIntInsn(mv, Integer.parseInt(batchSize.toString()));
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchSize", "(I)L"+C_TXSCOPE+";", false);
-    mv.visitInsn(POP);
-  }
-	
-	private void setServerName(Object serverName){
-		
 		mv.visitVarInsn(ALOAD, posTxScope);
-		mv.visitLdcInsn(serverName.toString());
-		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setServerName", "(Ljava/lang/String;)L"+C_TXSCOPE+";", false);
+		VisitUtil.visitIntInsn(mv, Integer.parseInt(batchSize.toString()));
+		mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchSize", "(I)L"+C_TXSCOPE+";", false);
 		mv.visitInsn(POP);
 	}
 
-  private void setGetGeneratedKeys(Object getGeneratedKeys){
-    boolean getKeys = (Boolean)getGeneratedKeys;
-    if (!getKeys) {
-      mv.visitVarInsn(ALOAD, posTxScope);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setSkipGeneratedKeys", "()L"+C_TXSCOPE+";", false);
-    }
-  }
+	private void setGetGeneratedKeys(Object getGeneratedKeys){
+		boolean getKeys = (Boolean)getGeneratedKeys;
+		if (!getKeys) {
+			mv.visitVarInsn(ALOAD, posTxScope);
+			mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setSkipGeneratedKeys", "()L"+C_TXSCOPE+";", false);
+		}
+	}
 
 	private void setReadOnly(Object readOnlyObj){
 
@@ -181,32 +170,28 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 	private void setNoRollbackFor(Object noRollbackFor){
 
 		ArrayList<?> list = (ArrayList<?>)noRollbackFor;
-		
-		for (int i = 0; i < list.size(); i++) {
-			
-			Type throwType =  (Type)list.get(i);
-			
+
+		for (Object aList : list) {
+			Type throwType = (Type) aList;
 			mv.visitVarInsn(ALOAD, posTxScope);
 			mv.visitLdcInsn(throwType);
-			mv.visitMethodInsn(INVOKEVIRTUAL, txScopeType.getInternalName(), "setNoRollbackFor", "(Ljava/lang/Class;)L"+C_TXSCOPE+";", false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, txScopeType.getInternalName(), "setNoRollbackFor", "(Ljava/lang/Class;)L" + C_TXSCOPE + ";", false);
 			mv.visitInsn(POP);
 		}
 	}
-	
+
 	/**
 	 * Add bytecode to add the rollbackFor throwable types to the TxScope.
 	 */
 	private void setRollbackFor(Object rollbackFor){
 
 		ArrayList<?> list = (ArrayList<?>)rollbackFor;
-		
-		for (int i = 0; i < list.size(); i++) {
-			
-			Type throwType =  (Type)list.get(i);
-			
+
+		for (Object aList : list) {
+			Type throwType = (Type) aList;
 			mv.visitVarInsn(ALOAD, posTxScope);
 			mv.visitLdcInsn(throwType);
-			mv.visitMethodInsn(INVOKEVIRTUAL, txScopeType.getInternalName(), "setRollbackFor", "(Ljava/lang/Class;)L"+C_TXSCOPE+";", false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, txScopeType.getInternalName(), "setRollbackFor", "(Ljava/lang/Class;)L" + C_TXSCOPE + ";", false);
 			mv.visitInsn(POP);
 		}
 	}
@@ -231,9 +216,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 		}
 
 		methodKey = owner.createMethodKey(methodName, methodDesc, annotationProfileId());
-
 		posTxScope = newLocal(txScopeType);
-		posScopeTrans = newLocal(scopeTransType);
 
 		mv.visitTypeInsn(NEW, txScopeType.getInternalName());
 		mv.visitInsn(DUP);
@@ -254,27 +237,27 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 			setTxIsolation(txIsolation);
 		}
 
-    Object batch = annotationInfo.getValue("batch");
-    if (batch != null){
-      setBatch(batch);
-    }
+		Object batch = annotationInfo.getValue("batch");
+		if (batch != null){
+			setBatch(batch);
+		}
 
-    Object batchOnCascade = annotationInfo.getValue("batchOnCascade");
-    if (batchOnCascade != null){
-      setBatchOnCascade(batchOnCascade);
-    }
+		Object batchOnCascade = annotationInfo.getValue("batchOnCascade");
+		if (batchOnCascade != null){
+			setBatchOnCascade(batchOnCascade);
+		}
 
-    Object batchSize = annotationInfo.getValue("batchSize");
-    if (batchSize != null){
-      setBatchSize(batchSize);
-    }
+		Object batchSize = annotationInfo.getValue("batchSize");
+		if (batchSize != null){
+			setBatchSize(batchSize);
+		}
 
 		Object getGeneratedKeys = annotationInfo.getValue("getGeneratedKeys");
 		if (getGeneratedKeys != null){
 			setGetGeneratedKeys(getGeneratedKeys);
 		}
 
-    Object readOnly = annotationInfo.getValue("readOnly");
+		Object readOnly = annotationInfo.getValue("readOnly");
 		if (readOnly != null){
 			setReadOnly(readOnly);
 		}
@@ -284,31 +267,25 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 			setFlushOnQuery(flushOnQuery);
 		}
 
-		
+
 		Object noRollbackFor = annotationInfo.getValue("noRollbackFor");
 		if (noRollbackFor != null){
 			setNoRollbackFor(noRollbackFor);
 		}
-		
+
 		Object rollbackFor = annotationInfo.getValue("rollbackFor");
 		if (rollbackFor != null){
 			setRollbackFor(rollbackFor);
 		}
 
-		Object serverName = annotationInfo.getValue("serverName");
-		if (serverName != null && !serverName.equals("")){
-			setServerName(serverName);
-		}
-
 		mv.visitVarInsn(ALOAD, posTxScope);
-		mv.visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "createScopeTrans", "("
-				+ txScopeType.getDescriptor() + ")" + scopeTransType.getDescriptor(), false);
-		mv.visitVarInsn(ASTORE, posScopeTrans);
+		mv.visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "enter", "("
+				+ txScopeType.getDescriptor() + ")V", false);
 	}
 
 
 	@Override
-  protected void onFinally(int opcode) {
+	protected void onFinally(int opcode) {
 
 		if (!transactional) {
 			return;
@@ -330,10 +307,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 			box(Type.getReturnType(this.methodDesc));
 		}
 		visitIntInsn(SIPUSH, opcode);
-		loadLocal(posScopeTrans);
-
-		visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "onExitScopeTrans", "(Ljava/lang/Object;I"
-				+ scopeTransType.getDescriptor() + ")V", false);
+		visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "exit", "(Ljava/lang/Object;I)V", false);
 	}
 
 }

@@ -31,9 +31,8 @@ public class MyEntityBean implements EntityBean {
   }
 
   public void _ebean_set_id(Long newValue) {
-    PropertyChangeEvent evt = intercept.preSetter(true, 1, id, newValue);
+    intercept.preSetter(true, 1, id, newValue);
     this.id = newValue;
-    intercept.postSetter(evt);
   }
 
   @Override
@@ -54,16 +53,6 @@ public class MyEntityBean implements EntityBean {
   @Override
   public Object _ebean_newInstance() {
     return null;
-  }
-
-  @Override
-  public void addPropertyChangeListener(PropertyChangeListener listener) {
-
-  }
-
-  @Override
-  public void removePropertyChangeListener(PropertyChangeListener listener) {
-
   }
 
   @Override
