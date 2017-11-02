@@ -283,9 +283,6 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 	      log("... add _ebean_getIntercept() and _ebean_setIntercept()");
 	    }
 			InterceptField.addGetterSetter(cv, classMeta.getClassName());
-			
-			// Add add/removePropertyChangeListener methods
-			MethodPropertyChangeListener.addMethod(cv, classMeta);
 		}
 		
 		// Add the field set/get methods which are used in place
