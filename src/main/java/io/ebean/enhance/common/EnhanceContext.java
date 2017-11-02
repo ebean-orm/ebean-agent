@@ -84,8 +84,8 @@ public class EnhanceContext {
       }
     }
 
-    this.transientInternalFields = getPropertyBoolean("transientInternalFields", false);
-    this.checkNullManyFields = getPropertyBoolean("checkNullManyFields", true);
+    this.transientInternalFields = getPropertyBoolean("transientInternalFields", manifest.isTransientInternalFields());
+    this.checkNullManyFields = getPropertyBoolean("checkNullManyFields", manifest.isCheckNullManyFields());
   }
 
   public byte[] getClassBytes(String className, ClassLoader classLoader) {

@@ -2,6 +2,8 @@ package io.ebean.enhance.common;
 
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -100,6 +102,9 @@ public class AgentManifestTest {
 		assertThat(manifest.isTransactionalNone()).isFalse();
 		assertThat(manifest.isQueryBeanNone()).isFalse();
 
+		assertThat(manifest.isTransientInternalFields()).isFalse();
+		assertThat(manifest.isCheckNullManyFields()).isTrue();
+
 		assertThat(manifest.getTransactionalPackages()).isEmpty();
 		assertThat(manifest.getQuerybeanPackages()).isEmpty();
 
@@ -136,6 +141,8 @@ public class AgentManifestTest {
 		assertThat(manifest.getEntityPackages()).contains("org.foo.domain", "org.foo.some.domain");
 		assertThat(manifest.isTransactionalNone()).isFalse();
 		assertThat(manifest.isQueryBeanNone()).isFalse();
+		assertThat(manifest.isTransientInternalFields()).isTrue();
+		assertThat(manifest.isCheckNullManyFields()).isFalse();
 
 		assertThat(manifest.getTransactionalPackages()).containsExactly("org.foo");
 		assertThat(manifest.getQuerybeanPackages()).containsExactly("org.foo");
@@ -152,6 +159,30 @@ public class AgentManifestTest {
 		assertTrue(filterQueryBean.detectEnhancement("org/foo/Any"));
 		assertFalse(filterQueryBean.detectEnhancement("com/Any"));
 		assertFalse(filterQueryBean.detectEnhancement("org/bar/Any"));
+	}
+
+	@Test
+	public void testRead_EnhanceContext() throws IOException {
+
+		AgentManifest manifest =
+				new AgentManifest(null)
+						.readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
+
+		EnhanceContext context = new EnhanceContext(null, null, manifest);
+		assertThat(context.isTransientInternalFields()).isTrue();
+		assertThat(context.isCheckNullManyFields()).isFalse();
+	}
+
+	@Test
+	public void testRead_EnhanceContext_notSet() throws IOException {
+
+		AgentManifest manifest =
+				new AgentManifest(null)
+						.readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
+
+		EnhanceContext context = new EnhanceContext(null, null, manifest);
+		assertThat(context.isTransientInternalFields()).isFalse();
+		assertThat(context.isCheckNullManyFields()).isTrue();
 	}
 
 }

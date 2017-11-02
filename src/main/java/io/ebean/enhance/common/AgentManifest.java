@@ -34,6 +34,10 @@ public class AgentManifest {
    */
   private int transactionProfilingStart = 1000;
 
+  private boolean transientInternalFields;
+
+  private boolean checkNullManyFields = true;
+
   public static AgentManifest read(ClassLoader classLoader, Set<String> initialPackages) {
 
     try {
@@ -99,6 +103,20 @@ public class AgentManifest {
    */
   public boolean isTransactionalNone() {
     return transactionalPackages.contains("none") && transactionalPackages.size() == 1;
+  }
+
+  /**
+   * Return true if we should use transient internal fields.
+   */
+  public boolean isTransientInternalFields() {
+    return transientInternalFields;
+  }
+
+  /**
+   * Return false if enhancement should skip checking for null many fields.
+   */
+  public boolean isCheckNullManyFields() {
+    return checkNullManyFields;
   }
 
   /**
@@ -194,10 +212,22 @@ public class AgentManifest {
     Attributes attributes = manifest.getMainAttributes();
     readProfilingMode(attributes);
     readProfilingStart(attributes);
+    readOptions(attributes);
+
     add(entityPackages, attributes.getValue("packages"));
     add(entityPackages, attributes.getValue("entity-packages"));
     add(transactionalPackages, attributes.getValue("transactional-packages"));
     add(querybeanPackages, attributes.getValue("querybean-packages"));
+  }
+
+  private void readOptions(Attributes attributes) {
+    transientInternalFields = bool("transient-internal-fields", transientInternalFields, attributes);
+    checkNullManyFields = bool("check-null-many-fields", checkNullManyFields, attributes);
+  }
+
+  private boolean bool(String key, boolean defaultValue, Attributes attributes) {
+    String val = attributes.getValue(key);
+    return val != null ? Boolean.parseBoolean(val) : defaultValue;
   }
 
   /**
