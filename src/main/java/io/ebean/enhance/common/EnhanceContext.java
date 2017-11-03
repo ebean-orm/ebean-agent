@@ -65,7 +65,7 @@ public class EnhanceContext {
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
     this.filterQueryBean = new FilterQueryBean(manifest);
 
-    this.detectQueryBean = Distill.convert(manifest.getEntityPackages());
+    this.detectQueryBean = Distill.convert(manifest.getQuerybeanPackages());
     if (detectQueryBean.isEmpty()) {
       logger.log(Level.FINE, "No ebean.mf detected");
     }
