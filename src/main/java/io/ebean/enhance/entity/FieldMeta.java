@@ -318,7 +318,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
     if (intercept) {
       // try to find the bean setter (the setter may not return void, if fluent pattern is used)
-      String methodDesc = classMeta.getSetterDesc(beanSetterName);
+      String methodDesc = classMeta.getSetterDesc(beanSetterName, fieldDesc);
       String methodName = beanSetterName;
       if (methodDesc == null) {
         // no setter found, go through the set method to check for interception...
@@ -326,6 +326,11 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
         methodDesc = setMethodDesc;
       }
       mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), methodName, methodDesc, false);
+      if (methodDesc.endsWith("D") || methodDesc.endsWith("J")) {
+    	  mv.visitInsn(POP2); // discard double or long
+      }else if (!methodDesc.endsWith("V")) {
+    	  mv.visitInsn(POP); // discard everything else, but not void.
+      }
 
     } else {
       mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc, false);

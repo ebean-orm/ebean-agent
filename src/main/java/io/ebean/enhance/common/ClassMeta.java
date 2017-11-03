@@ -383,7 +383,8 @@ public class ClassMeta {
 	public void addExistingMethod(String methodName, String methodDesc) {
 		existingMethods.add(methodName + methodDesc);
 		if (isSetter(methodName, methodDesc)) {
-			beanSetters.put(methodName, methodDesc);
+			String fieldDesc = methodDesc.substring(0,methodDesc.indexOf(')')+1);
+			beanSetters.put(methodName + fieldDesc, methodDesc);
 		}
 	}
 	
@@ -394,14 +395,29 @@ public class ClassMeta {
 				&& HAS_SINGLE_ARGUMENT.matcher(methodDesc).matches();
 	}
 
-	public String getSetterDesc(String methodName) {
-		return beanSetters.get(methodName);
+	public String getSetterDesc(String methodName, String fieldDesc) {
+		return getSetterDesc(methodName + "(" + fieldDesc + ")");
+	}
+	public String getSetterDesc(String methodNameAndParamDesc) {
+		String ret = beanSetters.get(methodNameAndParamDesc);
+		if (ret == null && superMeta != null) {
+			return superMeta.getSetterDesc(methodNameAndParamDesc);
+		}
+		return ret;
 	}
 	/**
 	 * Return true if the method already exists on the bean.
 	 */
 	public boolean isExistingMethod(String methodName, String methodDesc) {
-		return existingMethods.contains(methodName + methodDesc);
+		return isExistingMethod(methodName + methodDesc);
+	}
+	
+	/**
+	 * Return true if the method already exists on the bean.
+	 */
+	public boolean isExistingMethod(String methodNameAndDesc) {
+		return existingMethods.contains(methodNameAndDesc) 
+				|| (superMeta != null && superMeta.isExistingMethod(methodNameAndDesc));
 	}
 
 	public MethodVisitor createMethodVisitor(MethodVisitor mv, int access, String name, String desc) {

@@ -101,7 +101,9 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
     if (name.equals("equals") && desc.equals("(Ljava/lang/Object;)Z")) {
       classMeta.setHasEqualsOrHashcode(true);
     }
-		
+    if (!staticAccess) {
+		classMeta.addExistingMethod(name, desc);
+    }
 		MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
 		if (!staticAccess && readMethodMeta){
 			return classMeta.createMethodVisitor(mv, access, name, desc);

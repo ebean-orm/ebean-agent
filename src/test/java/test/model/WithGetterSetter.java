@@ -17,6 +17,10 @@ public class WithGetterSetter extends BaseEntity {
 	boolean flag;
 
 	long number;
+	
+	double salary;
+	
+	int age;
 
 	@Override
 	public void setId(Long id) {
@@ -62,13 +66,34 @@ public class WithGetterSetter extends BaseEntity {
 		return number;
 	}
 
-	public void setNumber(long number) {
+	public long setNumber(long number) {
 		log.add("setNumber");
+		long oldValue = this.number;
 		this.number = number;
+		return oldValue;
 	}
 	
-	// some different setters to test the setter detection in fieldMeta
+	public double setSalary(double salary) {
+		double oldValue = this.salary;
+		this.salary = salary;
+		return oldValue;
+	}
 	
+	public int setAge(int age) {
+		int oldValue = this.age;
+		this.age = age;
+		return oldValue;
+	}
+	
+
+	// some different setters to test the setter detection in fieldMeta
+	public void setAge(double age) {
+		this.age = (int) age;
+	}
+	
+	public void setSalary(int salary) {
+		this.salary = (double) salary;
+	}
 	public WithGetterSetter setNumber() { return this; }
 	public void setNumber(int i, int j) { }
 	public void setNumber(int i, int[] j) { }
