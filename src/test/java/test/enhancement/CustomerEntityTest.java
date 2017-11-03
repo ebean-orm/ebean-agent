@@ -13,7 +13,7 @@ import java.util.Date;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-public class CustomerEntityTests extends BaseTest {
+public class CustomerEntityTest extends BaseTest {
 
   private static final int PROPERTY_COUNT = 6;
 

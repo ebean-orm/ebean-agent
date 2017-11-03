@@ -7,7 +7,7 @@ import test.model.BExtends;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class BaseWithEqualsTests {
+public class BaseWithEqualsTest {
 
   @Test
   public void test() {

@@ -5,7 +5,7 @@ import test.model.AMappedSuperChild;
 
 import static org.testng.Assert.assertEquals;
 
-public class MappedSuperWithEqualsTests extends BaseTest {
+public class MappedSuperWithEqualsTest extends BaseTest {
 
   @Test
   public void test() {

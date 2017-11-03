@@ -13,7 +13,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-public class CreateNullListTests extends BaseTest {
+public class CreateNullListTest extends BaseTest {
 
   @Test
   public void test() {

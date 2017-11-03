@@ -8,7 +8,7 @@ import static org.testng.Assert.*;
 
 /**
  */
-public class PBeanTests extends BaseTest {
+public class PBeanTest extends BaseTest {
 
   @Test
   public void testBasic() {
