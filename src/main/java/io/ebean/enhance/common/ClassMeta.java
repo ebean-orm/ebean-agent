@@ -11,11 +11,14 @@ import io.ebean.enhance.entity.MessageOutput;
 import io.ebean.enhance.entity.MethodMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * Holds the meta data for an entity bean class that is being enhanced.
@@ -25,7 +28,9 @@ public class ClassMeta {
 	private static final Logger logger = Logger.getLogger(ClassMeta.class.getName());
 
 	private static final String OBJECT_CLASS = Object.class.getName().replace('.', '/');
-	
+
+	public static final Pattern HAS_SINGLE_ARGUMENT = Pattern.compile("\\(\\[?([ZBCSIJFD]|L.*;)\\).*");
+
 	private final MessageOutput logout;
 
 	private final int logLevel;
@@ -60,6 +65,8 @@ public class ClassMeta {
 	private boolean hasStaticInit;
 
 	private HashSet<String> existingMethods = new HashSet<String>();
+	
+	private Map<String, String> beanSetters = new HashMap<String, String>(); 
 
 	private LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<String, FieldMeta>();
 
@@ -375,8 +382,21 @@ public class ClassMeta {
 	 */
 	public void addExistingMethod(String methodName, String methodDesc) {
 		existingMethods.add(methodName + methodDesc);
+		if (isSetter(methodName, methodDesc)) {
+			beanSetters.put(methodName, methodDesc);
+		}
+	}
+	
+	private boolean isSetter(String methodName, String methodDesc) {
+		return methodName.length() >= 4
+				&& methodName.startsWith("set")
+				&& Character.isUpperCase(methodName.charAt(3))
+				&& HAS_SINGLE_ARGUMENT.matcher(methodDesc).matches();
 	}
 
+	public String getSetterDesc(String methodName) {
+		return beanSetters.get(methodName);
+	}
 	/**
 	 * Return true if the method already exists on the bean.
 	 */

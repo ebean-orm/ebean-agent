@@ -37,6 +37,8 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   private final String setMethodDesc;
   private final String getNoInterceptMethodName;
   private final String setNoInterceptMethodName;
+  private final String beanSetterName;
+  private final String beanGetterName;
 
   private int indexPosition;
 
@@ -64,8 +66,25 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     this.getMethodName = "_ebean_get_" + name;
     this.setMethodName = "_ebean_set_" + name;
 
+    this.beanSetterName = getSetterName(name);
+    this.beanGetterName = getGetterName(name, sort == Type.BOOLEAN);
+
     this.getNoInterceptMethodName = "_ebean_getni_" + name;
     this.setNoInterceptMethodName = "_ebean_setni_" + name;
+  }
+
+  private String getSetterName(String name) {
+    StringBuilder sb = new StringBuilder("set");
+    sb.append(name);
+    sb.setCharAt(3, Character.toUpperCase(name.charAt(0)));
+    return sb.toString();
+  }
+
+  private String getGetterName(String name, boolean bool) {
+    StringBuilder sb = new StringBuilder(bool ? "is" : "get");
+    sb.append(name);
+    sb.setCharAt(bool ? 2 : 3, Character.toUpperCase(name.charAt(0)));
+    return sb.toString();
   }
 
   public void setIndexPosition(int indexPosition) {
@@ -259,8 +278,13 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   public void appendSwitchGet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
 
     if (intercept) {
-      // use the special get method with interception...
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc, false);
+      if (classMeta.isExistingMethod(beanGetterName, getMethodDesc)) {
+          // use bean getter, which uses the special get method with interception internally...
+          mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), beanGetterName, getMethodDesc, false);
+      } else {
+        // use the special get method with interception...
+        mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc, false);
+      }
     } else {
       if (isLocalField(classMeta)) {
         mv.visitFieldInsn(GETFIELD, classMeta.getClassName(), fieldName, fieldDesc);
@@ -293,8 +317,15 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     }
 
     if (intercept) {
-      // go through the set method to check for interception...
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setMethodName, setMethodDesc, false);
+      // try to find the bean setter (the setter may not return void, if fluent pattern is used)
+      String methodDesc = classMeta.getSetterDesc(beanSetterName);
+      String methodName = beanSetterName;
+      if (methodDesc == null) {
+        // no setter found, go through the set method to check for interception...
+        methodName = setMethodName;
+        methodDesc = setMethodDesc;
+      }
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), methodName, methodDesc, false);
 
     } else {
       mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc, false);
