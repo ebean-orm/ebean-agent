@@ -24,6 +24,8 @@ public class OfflineFileTransform {
 
   protected  TransformationListener listener;
 
+  private int logLevel;
+
 	/**
 	 * Enhance the class file and replace the file with the the enhanced
 	 * version of the class.
@@ -37,6 +39,7 @@ public class OfflineFileTransform {
 	 */
 	public OfflineFileTransform(Transformer transformer, ClassLoader classLoader, String inDir) {
 		this.inputStreamTransform = new InputStreamTransform(transformer, classLoader);
+		logLevel = transformer.getLogLevel();
 		inDir = trimSlash(inDir);
 		this.inDir = inDir;
 	}
@@ -150,7 +153,7 @@ public class OfflineFileTransform {
 
 		if (result != null) {
 			InputStreamTransform.writeBytes(result, file);
-			if(listener!=null) {
+			if(listener!=null && logLevel > 0) {
 				listener.logEvent("Enhanced "+file);
 			}
 		}

@@ -20,6 +20,8 @@ import io.ebean.enhance.querybean.TypeQueryClassAdapter;
 import io.ebean.enhance.transactional.ClassAdapterTransactional;
 import io.ebean.enhance.transactional.TransactionalMethodKey;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
@@ -27,6 +29,7 @@ import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * A Class file Transformer that performs Ebean enhancement of entity beans,
@@ -37,6 +40,26 @@ import java.util.List;
  */
 public class Transformer implements ClassFileTransformer {
 
+  private static String version = "unknown";
+  static {
+    try {
+      Properties prop = new Properties();
+      InputStream in = Transformer.class.getResourceAsStream("/META-INF/maven/io.ebean/ebean-agent/pom.properties");
+      if (in != null) {
+        prop.load(in);
+        in.close();
+        version = prop.getProperty("version");
+      }
+      System.out.println("ebean-agent version: " + version);
+    } catch (IOException e) {
+      System.err.println("Could not determine ebean version: " +e.getMessage());
+    }
+  }
+  
+  public static String getVersion() {
+    return version;
+  }
+  
   public static void premain(String agentArgs, Instrumentation inst) {
 
     Transformer transformer = new Transformer(null, agentArgs);
@@ -110,42 +133,46 @@ public class Transformer implements ClassFileTransformer {
 
       boolean isEbeanModel = className.equals(EnhanceConstants.EBEAN_MODEL);
       if (isEbeanModel || enhanceContext.detectEntityTransactionalEnhancement(className)) {
-
-        DetectEnhancement detect = detect(loader, classfileBuffer);
-
-        if (detect.isEntity()) {
-          if (detect.isEnhancedEntity()) {
-            detect.log(3, "already enhanced entity");
-          } else {
-            entityEnhancement(loader, request);
+        try {
+          DetectEnhancement detect = detect(loader, classfileBuffer);
+  
+          if (detect.isEntity()) {
+            if (detect.isEnhancedEntity()) {
+              detect.log(3, "already enhanced entity");
+            } else {
+              entityEnhancement(loader, request);
+              log(8, className, "Entity Enhancement done");
+            }
           }
-        }
-
-        if (detect.isTransactional()) {
-          if (detect.isEnhancedTransactional()) {
-            detect.log(3, "already enhanced transactional");
-          } else {
-            transactionalEnhancement(loader, request);
+  
+          if (detect.isTransactional()) {
+            if (detect.isEnhancedTransactional()) {
+              detect.log(3, "already enhanced transactional");
+            } else {
+              transactionalEnhancement(loader, request);
+              log(1, className, "Transactional Enhancement done");
+            }
           }
+        } catch (NoEnhancementRequiredException e) {
+          log(8, className, "No Entity or Transactional Enhancement required " + e.getMessage());
         }
       }
 
       if (enhanceContext.detectQueryBeanEnhancement(className)) {
-        enhanceQueryBean(loader, request);
+        try {
+          enhanceQueryBean(loader, request);
+          log(1, className, "Query Bean Enhancement done");
+        } catch (NoEnhancementRequiredException e) {
+          log(8, className, "No Querybean Enhancement required " + e.getMessage());
+        }            
       }
-
+     
       if (request.isEnhanced()) {
         return request.getBytes();
+      } else {
+        log(9, className, "no enhancement on class");
+        return null;
       }
-
-      log(9, className, "no enhancement on class");
-      return null;
-
-    } catch (NoEnhancementRequiredException e) {
-      // the class is an interface
-      log(8, className, "No Enhancement required " + e.getMessage());
-      return null;
-
     } catch (Exception e) {
       enhanceContext.log(e);
       return null;
@@ -272,7 +299,7 @@ public class Transformer implements ClassFileTransformer {
 
     } catch (NoEnhancementRequiredException e) {
       if (ca.isLog(9)) {
-        ca.log("... skipping, no enhancement required");
+        ca.log("... skipping, no enhancement required: " + e.getMessage());
       }
     } finally {
       unresolved.addAll(cw.getUnresolved());
