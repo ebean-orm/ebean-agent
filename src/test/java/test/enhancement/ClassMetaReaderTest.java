@@ -15,7 +15,7 @@ import io.ebean.enhance.common.EnhanceContext;
 
 import static org.testng.Assert.*;
 
-public class ClassMetaReaderTests {
+public class ClassMetaReaderTest {
 
   @Test
   public void checkOtherClass_withAnnotations() throws ClassNotFoundException {

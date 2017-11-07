@@ -7,7 +7,7 @@ import static org.testng.Assert.assertEquals;
 
 /**
  */
-public class SomeXtendsBaseWithEqualsTests extends BaseTest {
+public class SomeXtendsBaseWithEqualsTest extends BaseTest {
 
 
   @Test

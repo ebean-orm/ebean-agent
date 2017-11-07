@@ -7,7 +7,7 @@ import static org.testng.Assert.assertNotNull;
 
 /**
  */
-public class PersistentFileTests extends BaseTest {
+public class PersistentFileTest extends BaseTest {
 
 
   @Test

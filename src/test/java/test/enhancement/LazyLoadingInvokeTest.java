@@ -10,7 +10,7 @@ import test.model.Customer;
 
 import java.util.List;
 
-public class LazyLoadingInvokeTests extends BaseTest {
+public class LazyLoadingInvokeTest extends BaseTest {
 
   @Test
   public void testNoLazyLoadOnToString() {
