@@ -13,41 +13,36 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
 	private final String prefix;
 	
 	public AnnotationInfoVisitor(String prefix, AnnotationInfo info, AnnotationVisitor av) {
-    super(Opcodes.ASM5, av);
+    super(Opcodes.ASM6, av);
 		this.info = info;
 		this.prefix = prefix;
 	}
 	
 	public void visit(String name, Object value) {
+		super.visit(name, value);
 		info.add(prefix, name, value);
 	}
 
 	public AnnotationVisitor visitAnnotation(String name, String desc) {
-		return create(name);
+		return create(name, super.visitAnnotation(name, desc));
 	}
 
 	public AnnotationVisitor visitArray(String name) {
-		
-		return create(name);
+		return create(name, super.visitArray(name));
 	}
 
-	private AnnotationInfoVisitor create(String name){
+	private AnnotationInfoVisitor create(String name, AnnotationVisitor underlying){
 		String newPrefix = prefix == null ? name: prefix+"."+name;
-		return new AnnotationInfoVisitor(newPrefix, info, av);
+		return new AnnotationInfoVisitor(newPrefix, info, underlying);
 	}
 	
 	public void visitEnd() {
-		if (av != null) {
-			av.visitEnd();
-		}
+		super.visitEnd();
 	}
 
 	public void visitEnum(String name, String desc, String value) {
-		
+		super.visitEnum(name, desc, value);
 		info.addEnum(prefix, name, desc, value);
-		if (av != null) {
-			av.visitEnum(name, desc, value);
-		}
 	}
 	
 }
