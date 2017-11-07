@@ -5,7 +5,7 @@ import test.model.SomeTransactionalWithStatic;
 
 public class SomeTransactionalWithStaticTest extends BaseTest {
 
-  @Test(enabled = false)
+  @Test
   public void testSomeMethod() throws Exception {
 
     SomeTransactionalWithStatic some = new SomeTransactionalWithStatic();

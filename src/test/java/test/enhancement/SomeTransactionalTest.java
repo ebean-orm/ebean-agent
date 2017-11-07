@@ -13,7 +13,7 @@ import static org.testng.Assert.assertNotNull;
 public class SomeTransactionalTest extends BaseTest {
 
 
-  @Test(enabled = false)
+  @Test
   public void test() throws NoSuchMethodException {
 
     SomeTransactionalService someService = new SomeTransactionalService();
