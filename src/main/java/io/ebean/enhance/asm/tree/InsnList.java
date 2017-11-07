@@ -29,10 +29,10 @@
  */
 package io.ebean.enhance.asm.tree;
 
+import io.ebean.enhance.asm.MethodVisitor;
+
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-
-import io.ebean.enhance.asm.MethodVisitor;
 
 /**
  * A doubly linked list of {@link AbstractInsnNode} objects. <i>This
@@ -622,7 +622,7 @@ public class InsnList {
                 if (remove == prev) {
                     prev = (AbstractInsnNode) o;
                 } else {
-                    next = (AbstractInsnNode) o;                    
+                    next = (AbstractInsnNode) o;
                 }
             } else {
                 throw new IllegalStateException();

@@ -89,8 +89,8 @@ public class LocalVariableNode {
      *            the local variable's index.
      */
     public LocalVariableNode(final String name, final String desc,
-            final String signature, final LabelNode start, final LabelNode end,
-            final int index) {
+                             final String signature, final LabelNode start, final LabelNode end,
+                             final int index) {
         this.name = name;
         this.desc = desc;
         this.signature = signature;

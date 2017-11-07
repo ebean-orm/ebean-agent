@@ -29,10 +29,10 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import java.util.Map;
-
-import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Type;
+
+import java.util.Map;
 
 /**
  * A node that represents a field instruction. A field instruction is an

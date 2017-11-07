@@ -91,7 +91,7 @@ public class LocalVariablesSorter extends MethodVisitor {
      */
     public LocalVariablesSorter(final int access, final String desc,
             final MethodVisitor mv) {
-        this(Opcodes.ASM5, access, desc, mv);
+        this(Opcodes.ASM6, access, desc, mv);
         if (getClass() != LocalVariablesSorter.class) {
             throw new IllegalStateException();
         }
@@ -102,7 +102,7 @@ public class LocalVariablesSorter extends MethodVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param access
      *            access flags of the adapted method.
      * @param desc
@@ -167,8 +167,8 @@ public class LocalVariablesSorter extends MethodVisitor {
 
     @Override
     public void visitLocalVariable(final String name, final String desc,
-            final String signature, final Label start, final Label end,
-            final int index) {
+                                   final String signature, final Label start, final Label end,
+                                   final int index) {
         int newIndex = remap(index, Type.getType(desc));
         mv.visitLocalVariable(name, desc, signature, start, end, newIndex);
     }

@@ -29,9 +29,6 @@
  */
 package io.ebean.enhance.asm.tree.analysis;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.tree.AbstractInsnNode;
@@ -40,6 +37,9 @@ import io.ebean.enhance.asm.tree.InvokeDynamicInsnNode;
 import io.ebean.enhance.asm.tree.MethodInsnNode;
 import io.ebean.enhance.asm.tree.MultiANewArrayInsnNode;
 import io.ebean.enhance.asm.tree.VarInsnNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A symbolic execution stack frame. A stack frame contains a set of local

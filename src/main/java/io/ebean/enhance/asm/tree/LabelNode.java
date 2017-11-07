@@ -29,10 +29,10 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import java.util.Map;
-
-import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Label;
+import io.ebean.enhance.asm.MethodVisitor;
+
+import java.util.Map;
 
 /**
  * An {@link AbstractInsnNode} that encapsulates a {@link Label}.

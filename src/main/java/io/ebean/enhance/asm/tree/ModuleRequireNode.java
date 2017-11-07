@@ -29,55 +29,60 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.ModuleVisitor;
 import io.ebean.enhance.asm.Opcodes;
 
-import java.util.Map;
-
 /**
- * A node that represents an IINC instruction.
+ * A node that represents a required module with its name and access of a module descriptor.
  * 
- * @author Eric Bruneton
+ * @author Remi Forax
  */
-public class IincInsnNode extends AbstractInsnNode {
-
+public class ModuleRequireNode {
     /**
-     * Index of the local variable to be incremented.
+     * The name of the required module.
      */
-    public int var;
+    public String module;
 
     /**
-     * Amount to increment the local variable by.
+     * The access flags (see {@link Opcodes}).
+     * Valid values are <tt>ACC_TRANSITIVE</tt>, <tt>ACC_STATIC_PHASE</tt>,
+     *        <tt>ACC_SYNTHETIC</tt> and <tt>ACC_MANDATED</tt>.
      */
-    public int incr;
+    public int access;
+    
+    /**
+     * Version at compile time of the required module or null.
+     */
+    public String version;
 
     /**
-     * Constructs a new {@link IincInsnNode}.
+     * Constructs a new {@link ModuleRequireNode}.
      * 
-     * @param var
-     *            index of the local variable to be incremented.
-     * @param incr
-     *            increment amount to increment the local variable by.
+     * @param module
+     *            the name of the required module.
+     * @param access
+     *            The access flags. Valid values are
+     *            <tt>ACC_TRANSITIVE</tt>, <tt>ACC_STATIC_PHASE</tt>,
+     *            <tt>ACC_SYNTHETIC</tt> and <tt>ACC_MANDATED</tt>
+     *            (see {@link Opcodes}).
+     * @param version
+     *            Version of the required module at compile time,
+     *            null if not defined.
      */
-    public IincInsnNode(final int var, final int incr) {
-        super(Opcodes.IINC);
-        this.var = var;
-        this.incr = incr;
+    public ModuleRequireNode(final String module, final int access,
+            final String version) {
+        this.module = module;
+        this.access = access;
+        this.version = version;
     }
 
-    @Override
-    public int getType() {
-        return IINC_INSN;
-    }
-
-    @Override
-    public void accept(final MethodVisitor mv) {
-        mv.visitIincInsn(var, incr);
-        acceptAnnotations(mv);
-    }
-
-    @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
-        return new IincInsnNode(var, incr).cloneAnnotations(this);
+    /**
+     * Makes the given module visitor visit this require directive.
+     * 
+     * @param mv
+     *            a module visitor.
+     */
+    public void accept(final ModuleVisitor mv) {
+        mv.visitRequire(module, access, version);
     }
 }

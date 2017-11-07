@@ -30,15 +30,15 @@
 
 package io.ebean.enhance.asm.tree;
 
+import io.ebean.enhance.asm.Label;
+import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.asm.TypePath;
+import io.ebean.enhance.asm.TypeReference;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.Label;
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.TypePath;
-import io.ebean.enhance.asm.TypeReference;
 
 /**
  * A node that represents a type annotation on a local or resource variable.
@@ -92,8 +92,8 @@ public class LocalVariableAnnotationNode extends TypeAnnotationNode {
      *            the class descriptor of the annotation class.
      */
     public LocalVariableAnnotationNode(int typeRef, TypePath typePath,
-            LabelNode[] start, LabelNode[] end, int[] index, String desc) {
-        this(Opcodes.ASM5, typeRef, typePath, start, end, index, desc);
+                                       LabelNode[] start, LabelNode[] end, int[] index, String desc) {
+        this(Opcodes.ASM6, typeRef, typePath, start, end, index, desc);
     }
 
     /**
@@ -101,7 +101,7 @@ public class LocalVariableAnnotationNode extends TypeAnnotationNode {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param typeRef
      *            a reference to the annotated type. See {@link TypeReference}.
      * @param start
@@ -122,7 +122,7 @@ public class LocalVariableAnnotationNode extends TypeAnnotationNode {
      *            the class descriptor of the annotation class.
      */
     public LocalVariableAnnotationNode(int api, int typeRef, TypePath typePath,
-            LabelNode[] start, LabelNode[] end, int[] index, String desc) {
+                                       LabelNode[] start, LabelNode[] end, int[] index, String desc) {
         super(api, typeRef, typePath, desc);
         this.start = new ArrayList<LabelNode>(start.length);
         this.start.addAll(Arrays.asList(start));
@@ -152,6 +152,6 @@ public class LocalVariableAnnotationNode extends TypeAnnotationNode {
             index[i] = this.index.get(i);
         }
         accept(mv.visitLocalVariableAnnotation(typeRef, typePath, start, end,
-                index, desc, true));
+                index, desc, visible));
     }
 }

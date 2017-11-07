@@ -57,7 +57,7 @@ public class InstructionAdapter extends MethodVisitor {
      *             If a subclass calls this constructor.
      */
     public InstructionAdapter(final MethodVisitor mv) {
-        this(Opcodes.ASM5, mv);
+        this(Opcodes.ASM6, mv);
         if (getClass() != InstructionAdapter.class) {
             throw new IllegalStateException();
         }
@@ -68,7 +68,7 @@ public class InstructionAdapter extends MethodVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param mv
      *            the method visitor to which this adapter delegates calls.
      */
@@ -671,13 +671,13 @@ public class InstructionAdapter extends MethodVisitor {
 
     @Override
     public void visitTableSwitchInsn(final int min, final int max,
-            final Label dflt, final Label... labels) {
+                                     final Label dflt, final Label... labels) {
         tableswitch(min, max, dflt, labels);
     }
 
     @Override
     public void visitLookupSwitchInsn(final Label dflt, final int[] keys,
-            final Label[] labels) {
+                                      final Label[] labels) {
         lookupswitch(dflt, keys, labels);
     }
 
@@ -983,7 +983,7 @@ public class InstructionAdapter extends MethodVisitor {
     }
 
     public void lookupswitch(final Label dflt, final int[] keys,
-            final Label[] labels) {
+                             final Label[] labels) {
         mv.visitLookupSwitchInsn(dflt, keys, labels);
     }
 

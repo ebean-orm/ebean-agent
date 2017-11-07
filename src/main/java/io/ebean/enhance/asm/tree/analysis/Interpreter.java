@@ -29,10 +29,10 @@
  */
 package io.ebean.enhance.asm.tree.analysis;
 
-import java.util.List;
-
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.tree.AbstractInsnNode;
+
+import java.util.List;
 
 /**
  * A semantic bytecode interpreter. More precisely, this interpreter only
@@ -170,7 +170,7 @@ public abstract class Interpreter<V extends Value> {
      *             if an error occured during the interpretation.
      */
     public abstract V ternaryOperation(AbstractInsnNode insn, V value1,
-            V value2, V value3) throws AnalyzerException;
+                                       V value2, V value3) throws AnalyzerException;
 
     /**
      * Interprets a bytecode instruction with a variable number of arguments.
@@ -206,7 +206,7 @@ public abstract class Interpreter<V extends Value> {
      *             if an error occured during the interpretation.
      */
     public abstract void returnOperation(AbstractInsnNode insn, V value,
-            V expected) throws AnalyzerException;
+                                         V expected) throws AnalyzerException;
 
     /**
      * Merges two values. The merge operation must return a value that

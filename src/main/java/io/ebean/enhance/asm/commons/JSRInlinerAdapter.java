@@ -29,19 +29,9 @@
  */
 package io.ebean.enhance.asm.commons;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.tree.AbstractInsnNode;
 import io.ebean.enhance.asm.tree.InsnList;
@@ -53,6 +43,16 @@ import io.ebean.enhance.asm.tree.LookupSwitchInsnNode;
 import io.ebean.enhance.asm.tree.MethodNode;
 import io.ebean.enhance.asm.tree.TableSwitchInsnNode;
 import io.ebean.enhance.asm.tree.TryCatchBlockNode;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A {@link MethodVisitor} that removes JSR instructions and
@@ -111,9 +111,9 @@ public class JSRInlinerAdapter extends MethodNode implements Opcodes {
      *             If a subclass calls this constructor.
      */
     public JSRInlinerAdapter(final MethodVisitor mv, final int access,
-            final String name, final String desc, final String signature,
-            final String[] exceptions) {
-        this(Opcodes.ASM5, mv, access, name, desc, signature, exceptions);
+                             final String name, final String desc, final String signature,
+                             final String[] exceptions) {
+        this(Opcodes.ASM6, mv, access, name, desc, signature, exceptions);
         if (getClass() != JSRInlinerAdapter.class) {
             throw new IllegalStateException();
         }
@@ -124,7 +124,7 @@ public class JSRInlinerAdapter extends MethodNode implements Opcodes {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param mv
      *            the <code>MethodVisitor</code> to send the resulting inlined
      *            method code to (use <code>null</code> for none).

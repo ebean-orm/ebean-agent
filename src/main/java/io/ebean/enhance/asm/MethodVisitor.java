@@ -57,7 +57,7 @@ public abstract class MethodVisitor {
 
     /**
      * The ASM API version implemented by this visitor. The value of this field
-     * must be one of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     * must be one of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      */
     protected final int api;
 
@@ -72,7 +72,7 @@ public abstract class MethodVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      */
     public MethodVisitor(final int api) {
         this(api, null);
@@ -83,13 +83,13 @@ public abstract class MethodVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param mv
      *            the method visitor to which this visitor must delegate method
      *            calls. May be null.
      */
     public MethodVisitor(final int api, final MethodVisitor mv) {
-        if (api != Opcodes.ASM4 && api != Opcodes.ASM5) {
+        if (api < Opcodes.ASM4 || api > Opcodes.ASM6) {
             throw new IllegalArgumentException();
         }
         this.api = api;
@@ -725,7 +725,7 @@ public abstract class MethodVisitor {
      *             (by the {@link #visitLabel visitLabel} method).
      */
     public void visitTryCatchBlock(Label start, Label end, Label handler,
-            String type) {
+                                   String type) {
         if (mv != null) {
             mv.visitTryCatchBlock(start, end, handler, type);
         }
@@ -787,7 +787,7 @@ public abstract class MethodVisitor {
      *             visitor (by the {@link #visitLabel visitLabel} method).
      */
     public void visitLocalVariable(String name, String desc, String signature,
-            Label start, Label end, int index) {
+                                   Label start, Label end, int index) {
         if (mv != null) {
             mv.visitLocalVariable(name, desc, signature, start, end, index);
         }

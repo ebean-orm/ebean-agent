@@ -29,9 +29,9 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import java.util.List;
-
 import io.ebean.enhance.asm.MethodVisitor;
+
+import java.util.List;
 
 /**
  * A node that represents a try catch block.
@@ -66,7 +66,7 @@ public class TryCatchBlockNode {
      * list is a list of {@link TypeAnnotationNode} objects. May be
      * <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label visible
      */
     public List<TypeAnnotationNode> visibleTypeAnnotations;
@@ -76,7 +76,7 @@ public class TryCatchBlockNode {
      * This list is a list of {@link TypeAnnotationNode} objects. May be
      * <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label invisible
      */
     public List<TypeAnnotationNode> invisibleTypeAnnotations;
@@ -96,7 +96,7 @@ public class TryCatchBlockNode {
      *            "finally" blocks).
      */
     public TryCatchBlockNode(final LabelNode start, final LabelNode end,
-            final LabelNode handler, final String type) {
+                             final LabelNode handler, final String type) {
         this.start = start;
         this.end = end;
         this.handler = handler;

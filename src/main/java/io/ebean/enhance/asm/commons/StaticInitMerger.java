@@ -49,7 +49,7 @@ public class StaticInitMerger extends ClassVisitor {
     private int counter;
 
     public StaticInitMerger(final String prefix, final ClassVisitor cv) {
-        this(Opcodes.ASM5, prefix, cv);
+        this(Opcodes.ASM6, prefix, cv);
     }
 
     protected StaticInitMerger(final int api, final String prefix,
@@ -68,7 +68,7 @@ public class StaticInitMerger extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(final int access, final String name,
-            final String desc, final String signature, final String[] exceptions) {
+                                     final String desc, final String signature, final String[] exceptions) {
         MethodVisitor mv;
         if ("<clinit>".equals(name)) {
             int a = Opcodes.ACC_PRIVATE + Opcodes.ACC_STATIC;

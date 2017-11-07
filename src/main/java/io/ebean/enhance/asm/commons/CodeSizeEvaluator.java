@@ -30,9 +30,9 @@
 package io.ebean.enhance.asm.commons;
 
 import io.ebean.enhance.asm.Handle;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
 
 /**
  * A {@link MethodVisitor} that can be used to approximate method size.
@@ -46,7 +46,7 @@ public class CodeSizeEvaluator extends MethodVisitor implements Opcodes {
     private int maxSize;
 
     public CodeSizeEvaluator(final MethodVisitor mv) {
-        this(Opcodes.ASM5, mv);
+        this(Opcodes.ASM6, mv);
     }
 
     protected CodeSizeEvaluator(final int api, final MethodVisitor mv) {
@@ -209,7 +209,7 @@ public class CodeSizeEvaluator extends MethodVisitor implements Opcodes {
 
     @Override
     public void visitTableSwitchInsn(final int min, final int max,
-            final Label dflt, final Label... labels) {
+                                     final Label dflt, final Label... labels) {
         minSize += 13 + labels.length * 4;
         maxSize += 16 + labels.length * 4;
         if (mv != null) {
@@ -219,7 +219,7 @@ public class CodeSizeEvaluator extends MethodVisitor implements Opcodes {
 
     @Override
     public void visitLookupSwitchInsn(final Label dflt, final int[] keys,
-            final Label[] labels) {
+                                      final Label[] labels) {
         minSize += 9 + keys.length * 8;
         maxSize += 12 + keys.length * 8;
         if (mv != null) {

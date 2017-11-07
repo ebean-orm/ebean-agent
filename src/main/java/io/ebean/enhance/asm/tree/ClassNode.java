@@ -29,18 +29,19 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Attribute;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.ModuleVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.TypePath;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A node that represents a class.
@@ -99,6 +100,11 @@ public class ClassNode extends ClassVisitor {
     public String sourceDebug;
 
     /**
+     * Module information. May be <tt>null</tt>.
+     */
+    public ModuleNode module;
+    
+    /**
      * The internal name of the enclosing class of the class. May be
      * <tt>null</tt>.
      */
@@ -120,7 +126,7 @@ public class ClassNode extends ClassVisitor {
      * The runtime visible annotations of this class. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates AnnotationNode
+     * @associates org.objectweb.asm.tree.AnnotationNode
      * @label visible
      */
     public List<AnnotationNode> visibleAnnotations;
@@ -129,7 +135,7 @@ public class ClassNode extends ClassVisitor {
      * The runtime invisible annotations of this class. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates AnnotationNode
+     * @associates org.objectweb.asm.tree.AnnotationNode
      * @label invisible
      */
     public List<AnnotationNode> invisibleAnnotations;
@@ -138,7 +144,7 @@ public class ClassNode extends ClassVisitor {
      * The runtime visible type annotations of this class. This list is a list
      * of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label visible
      */
     public List<TypeAnnotationNode> visibleTypeAnnotations;
@@ -147,7 +153,7 @@ public class ClassNode extends ClassVisitor {
      * The runtime invisible type annotations of this class. This list is a list
      * of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label invisible
      */
     public List<TypeAnnotationNode> invisibleTypeAnnotations;
@@ -156,7 +162,7 @@ public class ClassNode extends ClassVisitor {
      * The non standard attributes of this class. This list is a list of
      * {@link Attribute} objects. May be <tt>null</tt>.
      * 
-     * @associates Attribute
+     * @associates org.objectweb.asm.Attribute
      */
     public List<Attribute> attrs;
 
@@ -164,7 +170,7 @@ public class ClassNode extends ClassVisitor {
      * Informations about the inner classes of this class. This list is a list
      * of {@link InnerClassNode} objects.
      * 
-     * @associates InnerClassNode
+     * @associates org.objectweb.asm.tree.InnerClassNode
      */
     public List<InnerClassNode> innerClasses;
 
@@ -172,7 +178,7 @@ public class ClassNode extends ClassVisitor {
      * The fields of this class. This list is a list of {@link FieldNode}
      * objects.
      * 
-     * @associates FieldNode
+     * @associates org.objectweb.asm.tree.FieldNode
      */
     public List<FieldNode> fields;
 
@@ -180,7 +186,7 @@ public class ClassNode extends ClassVisitor {
      * The methods of this class. This list is a list of {@link MethodNode}
      * objects.
      * 
-     * @associates MethodNode
+     * @associates org.objectweb.asm.tree.MethodNode
      */
     public List<MethodNode> methods;
 
@@ -193,7 +199,7 @@ public class ClassNode extends ClassVisitor {
      *             If a subclass calls this constructor.
      */
     public ClassNode() {
-        this(Opcodes.ASM5);
+        this(Opcodes.ASM6);
         if (getClass() != ClassNode.class) {
             throw new IllegalStateException();
         }
@@ -204,7 +210,7 @@ public class ClassNode extends ClassVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      */
     public ClassNode(final int api) {
         super(api);
@@ -236,6 +242,12 @@ public class ClassNode extends ClassVisitor {
     public void visitSource(final String file, final String debug) {
         sourceFile = file;
         sourceDebug = debug;
+    }
+    
+    @Override
+    public ModuleVisitor visitModule(final String name, final int access,
+                                     final String version) {
+        return module = new ModuleNode(name, access, version); 
     }
 
     @Override
@@ -330,11 +342,16 @@ public class ClassNode extends ClassVisitor {
      * API than the given version.
      * 
      * @param api
-     *            an ASM API version. Must be one of {@link Opcodes#ASM4} or
-     *            {@link Opcodes#ASM5}.
+     *            an ASM API version. Must be one of {@link Opcodes#ASM4},
+     *            {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      */
     public void check(final int api) {
-        if (api == Opcodes.ASM4) {
+        if (api < Opcodes.ASM6) {
+            if (module != null) {
+                throw new RuntimeException();
+            }
+        }
+        if (api < Opcodes.ASM5) {
             if (visibleTypeAnnotations != null
                     && visibleTypeAnnotations.size() > 0) {
                 throw new RuntimeException();
@@ -343,12 +360,31 @@ public class ClassNode extends ClassVisitor {
                     && invisibleTypeAnnotations.size() > 0) {
                 throw new RuntimeException();
             }
-            for (FieldNode f : fields) {
-                f.check(api);
-            }
-            for (MethodNode m : methods) {
-                m.check(api);
-            }
+        }
+        // checks attributes
+        int i, n;
+        n = visibleAnnotations == null ? 0 : visibleAnnotations.size();
+        for (i = 0; i < n; ++i) {
+            visibleAnnotations.get(i).check(api);
+        }
+        n = invisibleAnnotations == null ? 0 : invisibleAnnotations.size();
+        for (i = 0; i < n; ++i) {
+            invisibleAnnotations.get(i).check(api);
+        }
+        n = visibleTypeAnnotations == null ? 0 : visibleTypeAnnotations.size();
+        for (i = 0; i < n; ++i) {
+            visibleTypeAnnotations.get(i).check(api);
+        }
+        n = invisibleTypeAnnotations == null ? 0 : invisibleTypeAnnotations
+                .size();
+        for (i = 0; i < n; ++i) {
+            invisibleTypeAnnotations.get(i).check(api);
+        }
+        for (FieldNode f : fields) {
+            f.check(api);
+        }
+        for (MethodNode m : methods) {
+            m.check(api);
         }
     }
 
@@ -366,6 +402,10 @@ public class ClassNode extends ClassVisitor {
         // visits source
         if (sourceFile != null || sourceDebug != null) {
             cv.visitSource(sourceFile, sourceDebug);
+        }
+        // visits module
+        if (module != null) {
+            module.accept(cv);
         }
         // visits outer class
         if (outerClass != null) {

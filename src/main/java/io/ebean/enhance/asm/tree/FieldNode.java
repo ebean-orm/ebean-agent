@@ -29,16 +29,16 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.ebean.enhance.asm.AnnotationVisitor;
+import io.ebean.enhance.asm.Attribute;
 import io.ebean.enhance.asm.ClassVisitor;
+import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
-import io.ebean.enhance.asm.Attribute;
-import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.TypePath;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A node that represents a field.
@@ -79,7 +79,7 @@ public class FieldNode extends FieldVisitor {
      * The runtime visible annotations of this field. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates AnnotationNode
+     * @associates org.objectweb.asm.tree.AnnotationNode
      * @label visible
      */
     public List<AnnotationNode> visibleAnnotations;
@@ -88,7 +88,7 @@ public class FieldNode extends FieldVisitor {
      * The runtime invisible annotations of this field. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates AnnotationNode
+     * @associates org.objectweb.asm.tree.AnnotationNode
      * @label invisible
      */
     public List<AnnotationNode> invisibleAnnotations;
@@ -97,7 +97,7 @@ public class FieldNode extends FieldVisitor {
      * The runtime visible type annotations of this field. This list is a list
      * of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label visible
      */
     public List<TypeAnnotationNode> visibleTypeAnnotations;
@@ -106,7 +106,7 @@ public class FieldNode extends FieldVisitor {
      * The runtime invisible type annotations of this field. This list is a list
      * of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label invisible
      */
     public List<TypeAnnotationNode> invisibleTypeAnnotations;
@@ -115,7 +115,7 @@ public class FieldNode extends FieldVisitor {
      * The non standard attributes of this field. This list is a list of
      * {@link Attribute} objects. May be <tt>null</tt>.
      * 
-     * @associates Attribute
+     * @associates org.objectweb.asm.Attribute
      */
     public List<Attribute> attrs;
 
@@ -145,7 +145,7 @@ public class FieldNode extends FieldVisitor {
      */
     public FieldNode(final int access, final String name, final String desc,
             final String signature, final Object value) {
-        this(Opcodes.ASM5, access, name, desc, signature, value);
+        this(Opcodes.ASM6, access, name, desc, signature, value);
         if (getClass() != FieldNode.class) {
             throw new IllegalStateException();
         }
@@ -209,7 +209,7 @@ public class FieldNode extends FieldVisitor {
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
+                                                 TypePath typePath, String desc, boolean visible) {
         TypeAnnotationNode an = new TypeAnnotationNode(typeRef, typePath, desc);
         if (visible) {
             if (visibleTypeAnnotations == null) {
@@ -248,8 +248,8 @@ public class FieldNode extends FieldVisitor {
      * API than the given version.
      * 
      * @param api
-     *            an ASM API version. Must be one of {@link Opcodes#ASM4} or
-     *            {@link Opcodes#ASM5}.
+     *            an ASM API version. Must be one of {@link Opcodes#ASM4},
+     *            {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      */
     public void check(final int api) {
         if (api == Opcodes.ASM4) {

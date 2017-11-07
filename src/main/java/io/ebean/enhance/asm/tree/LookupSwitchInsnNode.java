@@ -29,14 +29,14 @@
  */
 package io.ebean.enhance.asm.tree;
 
+import io.ebean.enhance.asm.Label;
+import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.Label;
 
 /**
  * A node that represents a LOOKUPSWITCH instruction.
@@ -73,7 +73,7 @@ public class LookupSwitchInsnNode extends AbstractInsnNode {
      *            beginning of the handler block for the <tt>keys[i]</tt> key.
      */
     public LookupSwitchInsnNode(final LabelNode dflt, final int[] keys,
-            final LabelNode[] labels) {
+                                final LabelNode[] labels) {
         super(Opcodes.LOOKUPSWITCH);
         this.dflt = dflt;
         this.keys = new ArrayList<Integer>(keys == null ? 0 : keys.length);

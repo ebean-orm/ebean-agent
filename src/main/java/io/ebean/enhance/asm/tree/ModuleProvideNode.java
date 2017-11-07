@@ -29,55 +29,46 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.asm.ModuleVisitor;
 
-import java.util.Map;
+import java.util.List;
 
 /**
- * A node that represents an IINC instruction.
+ * A node that represents a service and its implementation provided by the current module.
  * 
- * @author Eric Bruneton
+ * @author Remi Forax
  */
-public class IincInsnNode extends AbstractInsnNode {
-
+public class ModuleProvideNode {
     /**
-     * Index of the local variable to be incremented.
+     * The service name (in its internal form).
      */
-    public int var;
+    public String service;
 
     /**
-     * Amount to increment the local variable by.
+     * The service provider names (in their internal form).
      */
-    public int incr;
+    public List<String> providers;
 
     /**
-     * Constructs a new {@link IincInsnNode}.
+     * Constructs a new {@link ModuleProvideNode}.
      * 
-     * @param var
-     *            index of the local variable to be incremented.
-     * @param incr
-     *            increment amount to increment the local variable by.
+     * @param service
+     *            the service name (in its internal form).
+     * @param providers
+     *            the service provider names (in their internal form).
      */
-    public IincInsnNode(final int var, final int incr) {
-        super(Opcodes.IINC);
-        this.var = var;
-        this.incr = incr;
+    public ModuleProvideNode(final String service, final List<String> providers) {
+        this.service = service;
+        this.providers = providers;
     }
 
-    @Override
-    public int getType() {
-        return IINC_INSN;
-    }
-
-    @Override
-    public void accept(final MethodVisitor mv) {
-        mv.visitIincInsn(var, incr);
-        acceptAnnotations(mv);
-    }
-
-    @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
-        return new IincInsnNode(var, incr).cloneAnnotations(this);
+    /**
+     * Makes the given module visitor visit this require declaration.
+     * 
+     * @param mv
+     *            a module visitor.
+     */
+    public void accept(final ModuleVisitor mv) {
+        mv.visitProvide(service, providers.toArray(new String[0]));
     }
 }

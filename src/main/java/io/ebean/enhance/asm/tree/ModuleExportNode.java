@@ -29,55 +29,55 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.ModuleVisitor;
 import io.ebean.enhance.asm.Opcodes;
 
-import java.util.Map;
+import java.util.List;
 
 /**
- * A node that represents an IINC instruction.
+ * A node that represents an exported package with its name and the module that can access to it.
  * 
- * @author Eric Bruneton
+ * @author Remi Forax
  */
-public class IincInsnNode extends AbstractInsnNode {
-
+public class ModuleExportNode {
     /**
-     * Index of the local variable to be incremented.
+     * The package name.
      */
-    public int var;
-
+    public String packaze;
+    
     /**
-     * Amount to increment the local variable by.
+     * The access flags (see {@link Opcodes}).
+     * Valid values are {@code ACC_SYNTHETIC} and {@code ACC_MANDATED}.
      */
-    public int incr;
+    public int access;
 
     /**
-     * Constructs a new {@link IincInsnNode}.
+     * A list of modules that can access to this exported package.
+     * May be <tt>null</tt>.
+     */
+    public List<String> modules;
+
+    /**
+     * Constructs a new {@link ModuleExportNode}.
      * 
-     * @param var
-     *            index of the local variable to be incremented.
-     * @param incr
-     *            increment amount to increment the local variable by.
+     * @param packaze
+     *            the parameter's name.
+     * @param modules
+     *            a list of modules that can access to this exported package.
      */
-    public IincInsnNode(final int var, final int incr) {
-        super(Opcodes.IINC);
-        this.var = var;
-        this.incr = incr;
+    public ModuleExportNode(final String packaze, final int access, final List<String> modules) {
+        this.packaze = packaze;
+        this.access = access;
+        this.modules = modules;
     }
 
-    @Override
-    public int getType() {
-        return IINC_INSN;
-    }
-
-    @Override
-    public void accept(final MethodVisitor mv) {
-        mv.visitIincInsn(var, incr);
-        acceptAnnotations(mv);
-    }
-
-    @Override
-    public AbstractInsnNode clone(final Map<LabelNode, LabelNode> labels) {
-        return new IincInsnNode(var, incr).cloneAnnotations(this);
+    /**
+     * Makes the given module visitor visit this export declaration.
+     * 
+     * @param mv
+     *            a module visitor.
+     */
+    public void accept(final ModuleVisitor mv) {
+        mv.visitExport(packaze, access, (modules == null) ? null : modules.toArray(new String[0]));
     }
 }

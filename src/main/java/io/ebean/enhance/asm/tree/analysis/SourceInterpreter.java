@@ -29,17 +29,17 @@
  */
 package io.ebean.enhance.asm.tree.analysis;
 
+import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.asm.Type;
+import io.ebean.enhance.asm.tree.AbstractInsnNode;
+import io.ebean.enhance.asm.tree.FieldInsnNode;
+import io.ebean.enhance.asm.tree.InvokeDynamicInsnNode;
+import io.ebean.enhance.asm.tree.LdcInsnNode;
+import io.ebean.enhance.asm.tree.MethodInsnNode;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.tree.FieldInsnNode;
-import io.ebean.enhance.asm.tree.LdcInsnNode;
-import io.ebean.enhance.asm.Type;
-import io.ebean.enhance.asm.tree.AbstractInsnNode;
-import io.ebean.enhance.asm.tree.InvokeDynamicInsnNode;
-import io.ebean.enhance.asm.tree.MethodInsnNode;
 
 /**
  * An {@link Interpreter} for {@link SourceValue} values.
@@ -47,10 +47,10 @@ import io.ebean.enhance.asm.tree.MethodInsnNode;
  * @author Eric Bruneton
  */
 public class SourceInterpreter extends Interpreter<SourceValue> implements
-    Opcodes {
+		Opcodes {
 
     public SourceInterpreter() {
-        super(ASM5);
+        super(ASM6);
     }
 
     protected SourceInterpreter(final int api) {
@@ -90,13 +90,13 @@ public class SourceInterpreter extends Interpreter<SourceValue> implements
 
     @Override
     public SourceValue copyOperation(final AbstractInsnNode insn,
-            final SourceValue value) {
+                                     final SourceValue value) {
         return new SourceValue(value.getSize(), insn);
     }
 
     @Override
     public SourceValue unaryOperation(final AbstractInsnNode insn,
-            final SourceValue value) {
+                                      final SourceValue value) {
         int size;
         switch (insn.getOpcode()) {
         case LNEG:
@@ -120,7 +120,7 @@ public class SourceInterpreter extends Interpreter<SourceValue> implements
 
     @Override
     public SourceValue binaryOperation(final AbstractInsnNode insn,
-            final SourceValue value1, final SourceValue value2) {
+                                       final SourceValue value1, final SourceValue value2) {
         int size;
         switch (insn.getOpcode()) {
         case LALOAD:
@@ -151,14 +151,14 @@ public class SourceInterpreter extends Interpreter<SourceValue> implements
 
     @Override
     public SourceValue ternaryOperation(final AbstractInsnNode insn,
-            final SourceValue value1, final SourceValue value2,
-            final SourceValue value3) {
+                                        final SourceValue value1, final SourceValue value2,
+                                        final SourceValue value3) {
         return new SourceValue(1, insn);
     }
 
     @Override
     public SourceValue naryOperation(final AbstractInsnNode insn,
-            final List<? extends SourceValue> values) {
+                                     final List<? extends SourceValue> values) {
         int size;
         int opcode = insn.getOpcode();
         if (opcode == MULTIANEWARRAY) {
@@ -173,7 +173,7 @@ public class SourceInterpreter extends Interpreter<SourceValue> implements
 
     @Override
     public void returnOperation(final AbstractInsnNode insn,
-            final SourceValue value, final SourceValue expected) {
+                                final SourceValue value, final SourceValue expected) {
     }
 
     @Override

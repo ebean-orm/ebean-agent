@@ -30,13 +30,13 @@
 
 package io.ebean.enhance.asm.commons;
 
-import java.util.Collections;
-import java.util.Comparator;
-
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.tree.MethodNode;
 import io.ebean.enhance.asm.tree.TryCatchBlockNode;
+
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * A {@link MethodVisitor} adapter to sort the exception handlers. The handlers
@@ -55,9 +55,9 @@ import io.ebean.enhance.asm.tree.TryCatchBlockNode;
 public class TryCatchBlockSorter extends MethodNode {
 
     public TryCatchBlockSorter(final MethodVisitor mv, final int access,
-            final String name, final String desc, final String signature,
-            final String[] exceptions) {
-        this(Opcodes.ASM5, mv, access, name, desc, signature, exceptions);
+                               final String name, final String desc, final String signature,
+                               final String[] exceptions) {
+        this(Opcodes.ASM6, mv, access, name, desc, signature, exceptions);
     }
 
     protected TryCatchBlockSorter(final int api, final MethodVisitor mv,
@@ -84,7 +84,7 @@ public class TryCatchBlockSorter extends MethodNode {
                 return endidx - startidx;
             }
         };
-        tryCatchBlocks.sort(comp);
+        Collections.sort(tryCatchBlocks, comp);
         // Updates the 'target' of each try catch block annotation.
         for (int i = 0; i < tryCatchBlocks.size(); ++i) {
             tryCatchBlocks.get(i).updateIndex(i);

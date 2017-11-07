@@ -29,17 +29,17 @@
  */
 package io.ebean.enhance.asm.commons;
 
+import io.ebean.enhance.asm.ClassReader;
+import io.ebean.enhance.asm.Handle;
+import io.ebean.enhance.asm.Label;
+import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.asm.Type;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import io.ebean.enhance.asm.ClassReader;
-import io.ebean.enhance.asm.Handle;
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.Label;
-import io.ebean.enhance.asm.Type;
 
 /**
  * A {@link MethodVisitor} that keeps track of stack map frame changes between
@@ -142,7 +142,7 @@ public class AnalyzerAdapter extends MethodVisitor {
      */
     public AnalyzerAdapter(final String owner, final int access,
             final String name, final String desc, final MethodVisitor mv) {
-        this(Opcodes.ASM5, owner, access, name, desc, mv);
+        this(Opcodes.ASM6, owner, access, name, desc, mv);
         if (getClass() != AnalyzerAdapter.class) {
             throw new IllegalStateException();
         }
@@ -153,7 +153,7 @@ public class AnalyzerAdapter extends MethodVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param owner
      *            the owner's class name.
      * @param access
@@ -452,7 +452,7 @@ public class AnalyzerAdapter extends MethodVisitor {
 
     @Override
     public void visitTableSwitchInsn(final int min, final int max,
-            final Label dflt, final Label... labels) {
+                                     final Label dflt, final Label... labels) {
         if (mv != null) {
             mv.visitTableSwitchInsn(min, max, dflt, labels);
         }
@@ -463,7 +463,7 @@ public class AnalyzerAdapter extends MethodVisitor {
 
     @Override
     public void visitLookupSwitchInsn(final Label dflt, final int[] keys,
-            final Label[] labels) {
+                                      final Label[] labels) {
         if (mv != null) {
             mv.visitLookupSwitchInsn(dflt, keys, labels);
         }
@@ -662,6 +662,8 @@ public class AnalyzerAdapter extends MethodVisitor {
             t1 = pop();
             if (t1 instanceof String) {
                 pushDesc(((String) t1).substring(1));
+            } else if (t1 == Opcodes.NULL) {
+                push(t1);
             } else {
                 push("java/lang/Object");
             }

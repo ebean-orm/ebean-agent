@@ -29,19 +29,19 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import io.ebean.enhance.asm.Handle;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Attribute;
 import io.ebean.enhance.asm.ClassVisitor;
+import io.ebean.enhance.asm.Handle;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.TypePath;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A node that represents a method.
@@ -87,7 +87,7 @@ public class MethodNode extends MethodVisitor {
      * The runtime visible annotations of this method. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates AnnotationNode
+     * @associates org.objectweb.asm.tree.AnnotationNode
      * @label visible
      */
     public List<AnnotationNode> visibleAnnotations;
@@ -96,7 +96,7 @@ public class MethodNode extends MethodVisitor {
      * The runtime invisible annotations of this method. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates AnnotationNode
+     * @associates org.objectweb.asm.tree.AnnotationNode
      * @label invisible
      */
     public List<AnnotationNode> invisibleAnnotations;
@@ -105,7 +105,7 @@ public class MethodNode extends MethodVisitor {
      * The runtime visible type annotations of this method. This list is a list
      * of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label visible
      */
     public List<TypeAnnotationNode> visibleTypeAnnotations;
@@ -114,7 +114,7 @@ public class MethodNode extends MethodVisitor {
      * The runtime invisible type annotations of this method. This list is a
      * list of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label invisible
      */
     public List<TypeAnnotationNode> invisibleTypeAnnotations;
@@ -123,7 +123,7 @@ public class MethodNode extends MethodVisitor {
      * The non standard attributes of this method. This list is a list of
      * {@link Attribute} objects. May be <tt>null</tt>.
      * 
-     * @associates Attribute
+     * @associates org.objectweb.asm.Attribute
      */
     public List<Attribute> attrs;
 
@@ -141,7 +141,7 @@ public class MethodNode extends MethodVisitor {
      * The runtime visible parameter annotations of this method. These lists are
      * lists of {@link AnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates AnnotationNode
+     * @associates org.objectweb.asm.tree.AnnotationNode
      * @label invisible parameters
      */
     public List<AnnotationNode>[] visibleParameterAnnotations;
@@ -150,7 +150,7 @@ public class MethodNode extends MethodVisitor {
      * The runtime invisible parameter annotations of this method. These lists
      * are lists of {@link AnnotationNode} objects. May be <tt>null</tt>.
      * 
-     * @associates AnnotationNode
+     * @associates org.objectweb.asm.tree.AnnotationNode
      * @label visible parameters
      */
     public List<AnnotationNode>[] invisibleParameterAnnotations;
@@ -159,7 +159,7 @@ public class MethodNode extends MethodVisitor {
      * The instructions of this method. This list is a list of
      * {@link AbstractInsnNode} objects.
      * 
-     * @associates AbstractInsnNode
+     * @associates org.objectweb.asm.tree.AbstractInsnNode
      * @label instructions
      */
     public InsnList instructions;
@@ -168,7 +168,7 @@ public class MethodNode extends MethodVisitor {
      * The try catch blocks of this method. This list is a list of
      * {@link TryCatchBlockNode} objects.
      * 
-     * @associates TryCatchBlockNode
+     * @associates org.objectweb.asm.tree.TryCatchBlockNode
      */
     public List<TryCatchBlockNode> tryCatchBlocks;
 
@@ -186,7 +186,7 @@ public class MethodNode extends MethodVisitor {
      * The local variables of this method. This list is a list of
      * {@link LocalVariableNode} objects. May be <tt>null</tt>
      * 
-     * @associates LocalVariableNode
+     * @associates org.objectweb.asm.tree.LocalVariableNode
      */
     public List<LocalVariableNode> localVariables;
 
@@ -194,7 +194,7 @@ public class MethodNode extends MethodVisitor {
      * The visible local variable annotations of this method. This list is a
      * list of {@link LocalVariableAnnotationNode} objects. May be <tt>null</tt>
      * 
-     * @associates LocalVariableAnnotationNode
+     * @associates org.objectweb.asm.tree.LocalVariableAnnotationNode
      */
     public List<LocalVariableAnnotationNode> visibleLocalVariableAnnotations;
 
@@ -202,7 +202,7 @@ public class MethodNode extends MethodVisitor {
      * The invisible local variable annotations of this method. This list is a
      * list of {@link LocalVariableAnnotationNode} objects. May be <tt>null</tt>
      * 
-     * @associates LocalVariableAnnotationNode
+     * @associates org.objectweb.asm.tree.LocalVariableAnnotationNode
      */
     public List<LocalVariableAnnotationNode> invisibleLocalVariableAnnotations;
 
@@ -220,7 +220,7 @@ public class MethodNode extends MethodVisitor {
      *             If a subclass calls this constructor.
      */
     public MethodNode() {
-        this(Opcodes.ASM5);
+        this(Opcodes.ASM6);
         if (getClass() != MethodNode.class) {
             throw new IllegalStateException();
         }
@@ -231,7 +231,7 @@ public class MethodNode extends MethodVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      */
     public MethodNode(final int api) {
         super(api);
@@ -262,7 +262,7 @@ public class MethodNode extends MethodVisitor {
      */
     public MethodNode(final int access, final String name, final String desc,
             final String signature, final String[] exceptions) {
-        this(Opcodes.ASM5, access, name, desc, signature, exceptions);
+        this(Opcodes.ASM6, access, name, desc, signature, exceptions);
         if (getClass() != MethodNode.class) {
             throw new IllegalStateException();
         }
@@ -273,7 +273,7 @@ public class MethodNode extends MethodVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param access
      *            the method's access flags (see {@link Opcodes}). This
      *            parameter also indicates if the method is synthetic and/or
@@ -335,7 +335,7 @@ public class MethodNode extends MethodVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(final String desc,
-            final boolean visible) {
+                                             final boolean visible) {
         AnnotationNode an = new AnnotationNode(desc);
         if (visible) {
             if (visibleAnnotations == null) {
@@ -353,7 +353,7 @@ public class MethodNode extends MethodVisitor {
 
     @Override
     public AnnotationVisitor visitTypeAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
+                                                 TypePath typePath, String desc, boolean visible) {
         TypeAnnotationNode an = new TypeAnnotationNode(typeRef, typePath, desc);
         if (visible) {
             if (visibleTypeAnnotations == null) {
@@ -372,7 +372,7 @@ public class MethodNode extends MethodVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public AnnotationVisitor visitParameterAnnotation(final int parameter,
-            final String desc, final boolean visible) {
+                                                      final String desc, final boolean visible) {
         AnnotationNode an = new AnnotationNode(desc);
         if (visible) {
             if (visibleParameterAnnotations == null) {
@@ -493,14 +493,14 @@ public class MethodNode extends MethodVisitor {
 
     @Override
     public void visitTableSwitchInsn(final int min, final int max,
-            final Label dflt, final Label... labels) {
+                                     final Label dflt, final Label... labels) {
         instructions.add(new TableSwitchInsnNode(min, max, getLabelNode(dflt),
                 getLabelNodes(labels)));
     }
 
     @Override
     public void visitLookupSwitchInsn(final Label dflt, final int[] keys,
-            final Label[] labels) {
+                                      final Label[] labels) {
         instructions.add(new LookupSwitchInsnNode(getLabelNode(dflt), keys,
                 getLabelNodes(labels)));
     }
@@ -512,7 +512,7 @@ public class MethodNode extends MethodVisitor {
 
     @Override
     public AnnotationVisitor visitInsnAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
+                                                 TypePath typePath, String desc, boolean visible) {
         // Finds the last real instruction, i.e. the instruction targeted by
         // this annotation.
         AbstractInsnNode insn = instructions.getLast();
@@ -539,14 +539,14 @@ public class MethodNode extends MethodVisitor {
 
     @Override
     public void visitTryCatchBlock(final Label start, final Label end,
-            final Label handler, final String type) {
+                                   final Label handler, final String type) {
         tryCatchBlocks.add(new TryCatchBlockNode(getLabelNode(start),
                 getLabelNode(end), getLabelNode(handler), type));
     }
 
     @Override
     public AnnotationVisitor visitTryCatchAnnotation(int typeRef,
-            TypePath typePath, String desc, boolean visible) {
+                                                     TypePath typePath, String desc, boolean visible) {
         TryCatchBlockNode tcb = tryCatchBlocks.get((typeRef & 0x00FFFF00) >> 8);
         TypeAnnotationNode an = new TypeAnnotationNode(typeRef, typePath, desc);
         if (visible) {
@@ -567,16 +567,16 @@ public class MethodNode extends MethodVisitor {
 
     @Override
     public void visitLocalVariable(final String name, final String desc,
-            final String signature, final Label start, final Label end,
-            final int index) {
+                                   final String signature, final Label start, final Label end,
+                                   final int index) {
         localVariables.add(new LocalVariableNode(name, desc, signature,
                 getLabelNode(start), getLabelNode(end), index));
     }
 
     @Override
     public AnnotationVisitor visitLocalVariableAnnotation(int typeRef,
-            TypePath typePath, Label[] start, Label[] end, int[] index,
-            String desc, boolean visible) {
+                                                          TypePath typePath, Label[] start, Label[] end, int[] index,
+                                                          String desc, boolean visible) {
         LocalVariableAnnotationNode an = new LocalVariableAnnotationNode(
                 typeRef, typePath, getLabelNodes(start), getLabelNodes(end),
                 index, desc);
@@ -659,8 +659,8 @@ public class MethodNode extends MethodVisitor {
      * versions of the ASM API than the given version.
      * 
      * @param api
-     *            an ASM API version. Must be one of {@link Opcodes#ASM4} or
-     *            {@link Opcodes#ASM5}.
+     *            an ASM API version. Must be one of {@link Opcodes#ASM4},
+     *            {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      */
     public void check(final int api) {
         if (api == Opcodes.ASM4) {

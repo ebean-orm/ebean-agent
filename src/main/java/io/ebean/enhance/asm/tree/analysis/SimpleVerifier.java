@@ -29,9 +29,9 @@
  */
 package io.ebean.enhance.asm.tree.analysis;
 
-import java.util.List;
-
 import io.ebean.enhance.asm.Type;
+
+import java.util.List;
 
 /**
  * An extended {@link BasicVerifier} that performs more precise verifications.
@@ -87,7 +87,7 @@ public class SimpleVerifier extends BasicVerifier {
      *            if the class that is verified is an interface.
      */
     public SimpleVerifier(final Type currentClass,
-            final Type currentSuperClass, final boolean isInterface) {
+                          final Type currentSuperClass, final boolean isInterface) {
         this(currentClass, currentSuperClass, null, isInterface);
     }
 
@@ -105,15 +105,15 @@ public class SimpleVerifier extends BasicVerifier {
      *            if the class that is verified is an interface.
      */
     public SimpleVerifier(final Type currentClass,
-            final Type currentSuperClass,
-            final List<Type> currentClassInterfaces, final boolean isInterface) {
-        this(ASM5, currentClass, currentSuperClass, currentClassInterfaces,
+                          final Type currentSuperClass,
+                          final List<Type> currentClassInterfaces, final boolean isInterface) {
+        this(ASM6, currentClass, currentSuperClass, currentClassInterfaces,
                 isInterface);
     }
 
     protected SimpleVerifier(final int api, final Type currentClass,
-            final Type currentSuperClass,
-            final List<Type> currentClassInterfaces, final boolean isInterface) {
+                             final Type currentSuperClass,
+                             final List<Type> currentClassInterfaces, final boolean isInterface) {
         super(api);
         this.currentClass = currentClass;
         this.currentSuperClass = currentSuperClass;

@@ -29,16 +29,16 @@
  */
 package io.ebean.enhance.asm.commons;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import io.ebean.enhance.asm.Handle;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A {@link MethodVisitor} to insert before, after and around
@@ -83,7 +83,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param mv
      *            the method visitor to which this adapter delegates calls.
      * @param access
@@ -534,7 +534,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
 
     @Override
     public void visitLookupSwitchInsn(final Label dflt, final int[] keys,
-            final Label[] labels) {
+                                      final Label[] labels) {
         mv.visitLookupSwitchInsn(dflt, keys, labels);
         if (constructor) {
             popValue();
@@ -544,7 +544,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
 
     @Override
     public void visitTableSwitchInsn(final int min, final int max,
-            final Label dflt, final Label... labels) {
+                                     final Label dflt, final Label... labels) {
         mv.visitTableSwitchInsn(min, max, dflt, labels);
         if (constructor) {
             popValue();
@@ -554,7 +554,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
 
     @Override
     public void visitTryCatchBlock(Label start, Label end, Label handler,
-            String type) {
+                                   String type) {
         super.visitTryCatchBlock(start, end, handler, type);
         if (constructor && !branches.containsKey(handler)) {
             List<Object> stackFrame = new ArrayList<Object>();

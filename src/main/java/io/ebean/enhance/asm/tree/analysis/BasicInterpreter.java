@@ -29,19 +29,19 @@
  */
 package io.ebean.enhance.asm.tree.analysis;
 
-import java.util.List;
-
 import io.ebean.enhance.asm.Handle;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.asm.Type;
+import io.ebean.enhance.asm.tree.AbstractInsnNode;
 import io.ebean.enhance.asm.tree.FieldInsnNode;
 import io.ebean.enhance.asm.tree.IntInsnNode;
+import io.ebean.enhance.asm.tree.InvokeDynamicInsnNode;
 import io.ebean.enhance.asm.tree.LdcInsnNode;
 import io.ebean.enhance.asm.tree.MethodInsnNode;
 import io.ebean.enhance.asm.tree.MultiANewArrayInsnNode;
 import io.ebean.enhance.asm.tree.TypeInsnNode;
-import io.ebean.enhance.asm.Type;
-import io.ebean.enhance.asm.tree.AbstractInsnNode;
-import io.ebean.enhance.asm.tree.InvokeDynamicInsnNode;
+
+import java.util.List;
 
 /**
  * An {@link Interpreter} for {@link BasicValue} values.
@@ -50,10 +50,10 @@ import io.ebean.enhance.asm.tree.InvokeDynamicInsnNode;
  * @author Bing Ran
  */
 public class BasicInterpreter extends Interpreter<BasicValue> implements
-    Opcodes {
+		Opcodes {
 
     public BasicInterpreter() {
-        super(ASM5);
+        super(ASM6);
     }
 
     protected BasicInterpreter(final int api) {
@@ -158,13 +158,13 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements
 
     @Override
     public BasicValue copyOperation(final AbstractInsnNode insn,
-            final BasicValue value) throws AnalyzerException {
+                                    final BasicValue value) throws AnalyzerException {
         return value;
     }
 
     @Override
     public BasicValue unaryOperation(final AbstractInsnNode insn,
-            final BasicValue value) throws AnalyzerException {
+                                     final BasicValue value) throws AnalyzerException {
         switch (insn.getOpcode()) {
         case INEG:
         case IINC:
@@ -252,7 +252,7 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements
 
     @Override
     public BasicValue binaryOperation(final AbstractInsnNode insn,
-            final BasicValue value1, final BasicValue value2)
+                                      final BasicValue value1, final BasicValue value2)
             throws AnalyzerException {
         switch (insn.getOpcode()) {
         case IALOAD:
@@ -323,14 +323,14 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements
 
     @Override
     public BasicValue ternaryOperation(final AbstractInsnNode insn,
-            final BasicValue value1, final BasicValue value2,
-            final BasicValue value3) throws AnalyzerException {
+                                       final BasicValue value1, final BasicValue value2,
+                                       final BasicValue value3) throws AnalyzerException {
         return null;
     }
 
     @Override
     public BasicValue naryOperation(final AbstractInsnNode insn,
-            final List<? extends BasicValue> values) throws AnalyzerException {
+                                    final List<? extends BasicValue> values) throws AnalyzerException {
         int opcode = insn.getOpcode();
         if (opcode == MULTIANEWARRAY) {
             return newValue(Type.getType(((MultiANewArrayInsnNode) insn).desc));
@@ -344,7 +344,7 @@ public class BasicInterpreter extends Interpreter<BasicValue> implements
 
     @Override
     public void returnOperation(final AbstractInsnNode insn,
-            final BasicValue value, final BasicValue expected)
+                                final BasicValue value, final BasicValue expected)
             throws AnalyzerException {
     }
 

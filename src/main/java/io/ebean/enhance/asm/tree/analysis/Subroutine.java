@@ -29,11 +29,11 @@
  */
 package io.ebean.enhance.asm.tree.analysis;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.ebean.enhance.asm.tree.JumpInsnNode;
 import io.ebean.enhance.asm.tree.LabelNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A method subroutine (corresponds to a JSR instruction).
@@ -52,7 +52,7 @@ class Subroutine {
     }
 
     Subroutine(final LabelNode start, final int maxLocals,
-            final JumpInsnNode caller) {
+               final JumpInsnNode caller) {
         this.start = start;
         this.access = new boolean[maxLocals];
         this.callers = new ArrayList<JumpInsnNode>();

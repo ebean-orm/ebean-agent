@@ -29,6 +29,11 @@
  */
 package io.ebean.enhance.asm.commons;
 
+import io.ebean.enhance.asm.ClassVisitor;
+import io.ebean.enhance.asm.FieldVisitor;
+import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
@@ -37,11 +42,6 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-
-import io.ebean.enhance.asm.ClassVisitor;
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.FieldVisitor;
 
 /**
  * A {@link ClassVisitor} that adds a serial version unique identifier to a
@@ -170,7 +170,7 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      *             If a subclass calls this constructor.
      */
     public SerialVersionUIDAdder(final ClassVisitor cv) {
-        this(Opcodes.ASM5, cv);
+        this(Opcodes.ASM6, cv);
         if (getClass() != SerialVersionUIDAdder.class) {
             throw new IllegalStateException();
         }
@@ -181,7 +181,7 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      * 
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
-     *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
+     *            of {@link Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
      * @param cv
      *            a {@link ClassVisitor} to which this visitor will delegate
      *            calls.
@@ -261,7 +261,7 @@ public class SerialVersionUIDAdder extends ClassVisitor {
      */
     @Override
     public FieldVisitor visitField(final int access, final String name,
-            final String desc, final String signature, final Object value) {
+                                   final String desc, final String signature, final Object value) {
         if (computeSVUID) {
             if ("serialVersionUID".equals(name)) {
                 // since the class already has SVUID, we won't be computing it.

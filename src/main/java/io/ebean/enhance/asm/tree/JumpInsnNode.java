@@ -29,9 +29,9 @@
  */
 package io.ebean.enhance.asm.tree;
 
-import java.util.Map;
-
 import io.ebean.enhance.asm.MethodVisitor;
+
+import java.util.Map;
 
 /**
  * A node that represents a jump instruction. A jump instruction is an

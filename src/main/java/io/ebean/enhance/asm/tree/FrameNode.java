@@ -29,13 +29,13 @@
  */
 package io.ebean.enhance.asm.tree;
 
+import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.MethodVisitor;
 
 /**
  * A node that represents a stack map frame. These nodes are pseudo instruction

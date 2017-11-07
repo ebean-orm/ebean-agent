@@ -29,23 +29,23 @@
  */
 package io.ebean.enhance.asm.tree.analysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.tree.JumpInsnNode;
-import io.ebean.enhance.asm.tree.MethodNode;
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.tree.AbstractInsnNode;
 import io.ebean.enhance.asm.tree.IincInsnNode;
 import io.ebean.enhance.asm.tree.InsnList;
+import io.ebean.enhance.asm.tree.JumpInsnNode;
 import io.ebean.enhance.asm.tree.LabelNode;
 import io.ebean.enhance.asm.tree.LookupSwitchInsnNode;
+import io.ebean.enhance.asm.tree.MethodNode;
 import io.ebean.enhance.asm.tree.TableSwitchInsnNode;
 import io.ebean.enhance.asm.tree.TryCatchBlockNode;
 import io.ebean.enhance.asm.tree.VarInsnNode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A semantic bytecode analyzer. <i>This class does not fully check that JSR and
@@ -524,8 +524,8 @@ public class Analyzer<V extends Value> implements Opcodes {
     }
 
     private void merge(final int insn, final Frame<V> beforeJSR,
-            final Frame<V> afterRET, final Subroutine subroutineBeforeJSR,
-            final boolean[] access) throws AnalyzerException {
+                       final Frame<V> afterRET, final Subroutine subroutineBeforeJSR,
+                       final boolean[] access) throws AnalyzerException {
         Frame<V> oldFrame = frames[insn];
         Subroutine oldSubroutine = subroutines[insn];
         boolean changes;

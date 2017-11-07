@@ -29,11 +29,11 @@
  */
 package io.ebean.enhance.asm.tree;
 
+import io.ebean.enhance.asm.MethodVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import io.ebean.enhance.asm.MethodVisitor;
 
 /**
  * A node that represents a bytecode instruction. <i>An instruction can appear
@@ -134,7 +134,7 @@ public abstract class AbstractInsnNode {
      * number nodes). This list is a list of {@link TypeAnnotationNode} objects.
      * May be <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label visible
      */
     public List<TypeAnnotationNode> visibleTypeAnnotations;
@@ -145,7 +145,7 @@ public abstract class AbstractInsnNode {
      * number nodes). This list is a list of {@link TypeAnnotationNode} objects.
      * May be <tt>null</tt>.
      * 
-     * @associates TypeAnnotationNode
+     * @associates org.objectweb.asm.tree.TypeAnnotationNode
      * @label invisible
      */
     public List<TypeAnnotationNode> invisibleTypeAnnotations;
@@ -270,7 +270,7 @@ public abstract class AbstractInsnNode {
      * @return the clone of the given label.
      */
     static LabelNode clone(final LabelNode label,
-            final Map<LabelNode, LabelNode> map) {
+                           final Map<LabelNode, LabelNode> map) {
         return map.get(label);
     }
 
@@ -284,7 +284,7 @@ public abstract class AbstractInsnNode {
      * @return the clones of the given labels.
      */
     static LabelNode[] clone(final List<LabelNode> labels,
-            final Map<LabelNode, LabelNode> map) {
+                             final Map<LabelNode, LabelNode> map) {
         LabelNode[] clones = new LabelNode[labels.size()];
         for (int i = 0; i < clones.length; ++i) {
             clones[i] = map.get(labels.get(i));
