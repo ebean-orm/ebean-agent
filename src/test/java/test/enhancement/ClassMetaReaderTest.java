@@ -86,27 +86,31 @@ public class ClassMetaReaderTest {
   @Test
   public void testEnhanceContext() {
 
-    Set<String> initialPackages = new HashSet<String>();
+    Set<String> initialPackages = new HashSet<>();
     initialPackages.add("jim.bob");
     initialPackages.add("jack.jones.fred");
-
+    initialPackages.add("line.foo");
 
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
     AgentManifest manifest = AgentManifest.read(getClass().getClassLoader(), initialPackages);
-    EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9;packages=line.foo", manifest);
+    EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9", manifest);
 
-    assertTrue(enhanceContext.isIgnoreClass("jim.Me"));
     assertFalse(enhanceContext.isIgnoreClass("jim.bob.Me"));
     assertFalse(enhanceContext.isIgnoreClass("jim.bob.other.Me"));
+    assertFalse(enhanceContext.isIgnoreClass("jack.jones.Me"));
 
-    assertTrue(enhanceContext.isIgnoreClass("jack.jones.Me"));
+    assertTrue(enhanceContext.detectEntityTransactionalEnhancement("jim/bob/Me"));
+    assertTrue(enhanceContext.detectEntityTransactionalEnhancement("jim/bob/other/Me"));
+
+    assertFalse(enhanceContext.detectEntityTransactionalEnhancement("jim/Me"));
+    assertFalse(enhanceContext.detectEntityTransactionalEnhancement("jack/jones/Me"));
+
     assertFalse(enhanceContext.isIgnoreClass("jack.jones.fred.Me"));
     assertFalse(enhanceContext.isIgnoreClass("jack.jones.fred.other.Me"));
 
-    assertTrue(enhanceContext.isIgnoreClass("line.Me"));
     assertFalse(enhanceContext.isIgnoreClass("line.foo.Me"));
     assertFalse(enhanceContext.isIgnoreClass("line.foo.other.Me"));
-
+    assertTrue(enhanceContext.detectEntityTransactionalEnhancement("line/foo/Me"));
   }
 
   private ClassMetaReader createClassMetaReader() {
