@@ -98,7 +98,7 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
   private void initializeTypeHierarchyFor(final String internalTypeName) {
     try (InputStream classBytes = classLoader.getResourceAsStream(internalTypeName + ".class")){
       ClassReader classReader = new ClassReader(classBytes);
-      classReader.accept(new ClassVisitor(Opcodes.ASM5) {
+      classReader.accept(new ClassVisitor(Opcodes.ASM6) {
 
         @Override
         public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {

@@ -38,7 +38,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 	private String className;
 
 	public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
-		super(Opcodes.ASM5, cv);
+		super(Opcodes.ASM6, cv);
 		this.classLoader = classLoader;
 		this.enhanceContext = context;
 	}

@@ -21,7 +21,7 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 	private final boolean readMethodMeta;
 	
 	public ClassMetaReaderVisitor(boolean readMethodMeta, EnhanceContext context) {
-		super(Opcodes.ASM5);
+		super(Opcodes.ASM6);
 		this.readMethodMeta = readMethodMeta;
 		this.classMeta = context.createClassMeta();
 	}
@@ -41,6 +41,7 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 	/**
 	 * Create the class definition replacing the className and super class.
 	 */
+	@Override
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
 		classMeta.setClassName(name, superName);
@@ -68,6 +69,7 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 	 * The ebeanIntercept field is added once but thats all. Note the other
 	 * fields are defined in the superclass.
 	 */
+	@Override
 	public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
 
 		if ((access & Opcodes.ACC_STATIC) != 0) {
@@ -90,6 +92,7 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 	/**
 	 * Look for equals/hashCode implementations.
 	 */
+	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 
 		boolean staticAccess = ((access & Opcodes.ACC_STATIC) != 0);

@@ -20,7 +20,7 @@ public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants 
 	 * @param fieldMeta the fieldMeta data
 	 */
 	public LocalFieldVisitor(FieldVisitor fv, FieldMeta fieldMeta) {
-    super(Opcodes.ASM5, fv);
+    super(Opcodes.ASM6, fv);
 		this.fieldMeta = fieldMeta;
 	}
 
@@ -30,7 +30,8 @@ public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants 
 	public String getName() {
 		return fieldMeta.getFieldName();
 	}
-	
+
+	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 		fieldMeta.addAnnotationDesc(desc);
 		if (fv != null){
@@ -43,12 +44,14 @@ public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants 
 		}
 	}
 
+	@Override
 	public void visitAttribute(Attribute attr) {
 		if (fv != null){
 			fv.visitAttribute(attr);
 		}
 	}
 
+	@Override
 	public void visitEnd() {
 		if (fv != null){
 			fv.visitEnd();

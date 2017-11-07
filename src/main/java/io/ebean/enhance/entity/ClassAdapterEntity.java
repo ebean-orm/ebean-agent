@@ -30,7 +30,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 	private boolean firstMethod = true;
 
 	public ClassAdapterEntity(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
-		super(Opcodes.ASM5, cv);
+		super(Opcodes.ASM6, cv);
 		this.classLoader = classLoader;
 		this.enhanceContext = context;
 		this.classMeta = context.createClassMeta();
@@ -54,6 +54,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 	/**
 	 * Create the class definition replacing the className and super class.
 	 */
+	@Override
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
 		classMeta.setClassName(name, superName);
@@ -135,6 +136,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 	 * The ebeanIntercept field is added once but thats all. Note the other
 	 * fields are defined in the superclass.
 	 */
+	@Override
 	public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
 
 		if ((access & Opcodes.ACC_STATIC) != 0) {
@@ -181,6 +183,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 	/**
 	 * Replace the method code with field interception.
 	 */
+	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		
 		if (firstMethod){
@@ -256,6 +259,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 	 * Add methods to get and set the entityBeanIntercept. Also add the
 	 * writeReplace method to control serialisation.
 	 */
+	@Override
 	public void visitEnd() {
 
 		if (!classMeta.isEntityEnhancementRequired()){

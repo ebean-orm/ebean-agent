@@ -9,7 +9,7 @@ public class MethodStaticInitAdapter extends MethodVisitor {
   protected final ClassMeta classMeta;
 
   public MethodStaticInitAdapter(final MethodVisitor mv, ClassMeta classMeta) {
-    super(Opcodes.ASM5, mv);
+    super(Opcodes.ASM6, mv);
     this.classMeta = classMeta;
   }
 

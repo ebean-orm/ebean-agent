@@ -40,7 +40,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 	private TransactionalMethodKey methodKey;
 
 	ScopeTransAdapter(ClassAdapterTransactional owner, final MethodVisitor mv, final int access, final String name, final String desc) {
-		super(Opcodes.ASM5, mv, access, name, desc);
+		super(Opcodes.ASM6, mv, access, name, desc);
 		this.owner = owner;
 		this.methodName = name;
 

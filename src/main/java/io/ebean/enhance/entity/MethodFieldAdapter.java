@@ -25,7 +25,7 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 	private boolean transientAnnotation;
 
 	public MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
-		super(Opcodes.ASM5, mv);
+		super(Opcodes.ASM6, mv);
 		this.meta = meta;
 		this.className = meta.getClassName();
 		this.methodDescription = methodDescription;
@@ -58,6 +58,7 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 		super.visitMethodInsn(opcode, owner, name, desc, itf);
 	}
 
+	@Override
 	public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 
 		if (transientAnnotation) {

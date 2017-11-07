@@ -397,16 +397,15 @@ public class ClassMeta {
     final MethodMeta methodMeta;
 
 		MethodReader(MethodVisitor mv, MethodMeta methodMeta) {
-      super(Opcodes.ASM5, mv);
+      super(Opcodes.ASM6, mv);
 			this.methodMeta = methodMeta;
 		}
 
+		@Override
 		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-
       if (mv == null) {
         return null;
       }
-
       AnnotationVisitor av = mv.visitAnnotation(desc, visible);
       return new AnnotationInfoVisitor(null, methodMeta.getAnnotationInfo(), av);
 		}

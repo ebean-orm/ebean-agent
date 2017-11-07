@@ -35,7 +35,7 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
   private final ConstructorDeferredCode deferredCode;
 
 	public ConstructorAdapter(MethodVisitor mv, ClassMeta meta, String constructorDesc) {
-		super(Opcodes.ASM5, mv);
+		super(Opcodes.ASM6, mv);
 		this.meta = meta;
 		this.className = meta.getClassName();
 		this.constructorDesc = constructorDesc;
@@ -71,6 +71,7 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
     }
 	}
 
+  @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 
     if (deferredCode.consumeVisitFieldInsn(opcode, owner, name, desc)) {
