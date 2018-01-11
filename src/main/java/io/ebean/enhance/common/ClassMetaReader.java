@@ -2,9 +2,6 @@ package io.ebean.enhance.common;
 
 import io.ebean.enhance.asm.ClassReader;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Reads class information as an alternative to using a ClassLoader.
  * <p>
@@ -15,12 +12,13 @@ import java.util.Map;
  */
 public class ClassMetaReader {
 
-	private final Map<String, ClassMeta> cache = new HashMap<>();
+	private ClassMetaCache metaCache;
 
 	private final EnhanceContext enhanceContext;
 
-	public ClassMetaReader(EnhanceContext enhanceContext) {
+	public ClassMetaReader(EnhanceContext enhanceContext, ClassMetaCache metaCache) {
 		this.enhanceContext = enhanceContext;
+		this.metaCache = metaCache;
 	}
 
 	public ClassMeta get(boolean readMethodAnnotations, String name, ClassLoader classLoader) throws ClassNotFoundException {
@@ -29,8 +27,8 @@ public class ClassMetaReader {
 
 	private ClassMeta getWithCache(boolean readMethodAnnotations, String name, ClassLoader classLoader) throws ClassNotFoundException {
 		
-		synchronized (cache) {
-			ClassMeta meta = cache.get(name);
+		synchronized (metaCache) {
+			ClassMeta meta = metaCache.get(name);
 			if (meta == null) {
 				meta = readFromResource(readMethodAnnotations, name, classLoader);
 				if (meta != null) {
@@ -40,7 +38,7 @@ public class ClassMetaReader {
 							meta.setSuperMeta(superMeta);
 						}
 					}
-					cache.put(name, meta);
+					metaCache.put(name, meta);
 				}
 			}
 			return meta;
@@ -61,11 +59,20 @@ public class ClassMetaReader {
 				enhanceContext.log(className, "read ClassMeta");
 			}
 		}
-		ClassReader cr = new ClassReader(classBytes);
-		ClassMetaReaderVisitor ca = new ClassMetaReaderVisitor(readMethodAnnotations, enhanceContext);
-		cr.accept(ca, ClassReader.SKIP_FRAMES + ClassReader.SKIP_DEBUG);
+		try {
+			ClassReader cr = new ClassReader(classBytes);
+			ClassMetaReaderVisitor ca = new ClassMetaReaderVisitor(readMethodAnnotations, enhanceContext);
+			cr.accept(ca, ClassReader.SKIP_FRAMES + ClassReader.SKIP_DEBUG);
+			return ca.getClassMeta();
 
-		return ca.getClassMeta();
+		} catch (IllegalArgumentException e) {
+			// try fallback for IDE partial compile
+			ClassMeta classMeta = metaCache.getFallback(className);
+			if (classMeta != null) {
+				return classMeta;
+			}
+			throw new ClassNotFoundException("Error reading " + className + " bytes len:" + classBytes.length + " no fallback in " + metaCache.fallbackKeys());
+		}
 	}
 
 }

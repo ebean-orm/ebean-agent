@@ -49,15 +49,21 @@ public class EnhanceContext {
    */
   private int autoProfileId;
 
+  private boolean throwOnError;
+
   /**
    * Mapping of profileId to transactional method descriptions (for decoding profiling).
    */
-  private final List<TransactionalMethodKey> profilingKeys = new ArrayList();
+  private final List<TransactionalMethodKey> profilingKeys = new ArrayList<>();
+
+	public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest) {
+    this(classBytesReader, agentArgs, manifest, new ClassMetaCache());
+  }
 
   /**
    * Construct a context for enhancement.
    */
-  public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest) {
+  public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest, ClassMetaCache metaCache) {
 
     this.autoProfileId = manifest.transactionProfilingStart();
 
@@ -73,7 +79,7 @@ public class EnhanceContext {
     this.ignoreClassHelper = new IgnoreClassHelper();
     this.logout = new SysoutMessageOutput(System.out);
     this.classBytesReader = classBytesReader;
-    this.reader = new ClassMetaReader(this);
+    this.reader = new ClassMetaReader(this, metaCache);
 
     String debugValue = agentArgsMap.get("debug");
     if (debugValue != null) {
@@ -106,11 +112,11 @@ public class EnhanceContext {
   /**
    * Return a value from the entity arguments using its key.
    */
-  public String getProperty(String key) {
+  private String getProperty(String key) {
     return agentArgsMap.get(key.toLowerCase());
   }
 
-  public boolean getPropertyBoolean(String key, boolean defaultValue) {
+  private boolean getPropertyBoolean(String key, boolean defaultValue) {
     String s = getProperty(key);
     if (s == null) {
       return defaultValue;
@@ -296,4 +302,18 @@ public class EnhanceContext {
   public List<TransactionalMethodKey> getTransactionProfilingKeys() {
     return profilingKeys;
   }
+
+	/**
+	 * Return true if transform should throw exception rather than log and return null.
+	 */
+	public boolean isThrowOnError() {
+		return throwOnError;
+	}
+
+	/**
+	 * Set to true if you want transform to throw exceptions rather than return null.
+	 */
+	public void setThrowOnError(boolean throwOnError) {
+		this.throwOnError = throwOnError;
+	}
 }

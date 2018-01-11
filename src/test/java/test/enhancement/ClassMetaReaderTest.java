@@ -6,6 +6,7 @@ import java.util.Set;
 
 import io.ebean.enhance.common.AgentManifest;
 import io.ebean.enhance.common.AnnotationInfo;
+import io.ebean.enhance.common.ClassMetaCache;
 import org.testng.annotations.Test;
 
 import io.ebean.enhance.common.ClassMeta;
@@ -119,6 +120,6 @@ public class ClassMetaReaderTest {
     AgentManifest manifest = AgentManifest.read(getClass().getClassLoader(), null);
 
     EnhanceContext enhanceContext = new EnhanceContext(reader, "debug=9", manifest);
-    return new ClassMetaReader(enhanceContext);
+    return new ClassMetaReader(enhanceContext, new ClassMetaCache());
   }
 }

@@ -310,6 +310,13 @@ public class ClassMeta {
 	}
 
 	/**
+	 * Return true if this is a mapped superclass.
+	 */
+	public boolean isMappedSuper() {
+		return classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION);
+	}
+
+	/**
 	 * Return true if the class has an Entity, Embeddable, MappedSuperclass (with persistent fields).
 	 */
 	public boolean isEntity() {
