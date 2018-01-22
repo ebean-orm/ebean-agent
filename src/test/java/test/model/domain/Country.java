@@ -1,5 +1,7 @@
 package test.model.domain;
 
+import test.model.domain.finder.CountryFinder;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -10,6 +12,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name="o_country")
 public class Country {
+
+	public static CountryFinder find = new CountryFinder();
 
     @Id
     //@Size(max=2)

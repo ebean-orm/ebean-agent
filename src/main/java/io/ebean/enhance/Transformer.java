@@ -161,7 +161,7 @@ public class Transformer implements ClassFileTransformer {
           }
         }
 
-        if (detect.isTransactional()) {
+        if (enhanceContext.isEnableProfileLocation() || detect.isTransactional()) {
           if (detect.isEnhancedTransactional()) {
             detect.log(3, "already enhanced transactional");
           } else {
@@ -245,13 +245,13 @@ public class Transformer implements ClassFileTransformer {
       request.enhancedEntity(cw.toByteArray());
 
     } catch (AlreadyEnhancedException e) {
-      if (ca.isLog(1)) {
+      if (ca.isLog(2)) {
         ca.log("already enhanced entity");
       }
       request.enhancedEntity(null);
 
     } catch (NoEnhancementRequiredException e) {
-      if (ca.isLog(2)) {
+      if (ca.isLog(3)) {
         ca.log("skipping... no enhancement required");
       }
     } finally {
@@ -260,7 +260,7 @@ public class Transformer implements ClassFileTransformer {
   }
 
   /**
-   * Perform transactional enhancement.
+   * Perform transactional enhancement and Finder profileLocation enhancement.
    */
   private void transactionalEnhancement(ClassLoader loader, TransformRequest request) {
 
@@ -278,12 +278,12 @@ public class Transformer implements ClassFileTransformer {
       request.enhancedTransactional(cw.toByteArray());
 
     } catch (AlreadyEnhancedException e) {
-      if (ca.isLog(1)) {
+      if (ca.isLog(3)) {
         ca.log("already enhanced");
       }
 
     } catch (NoEnhancementRequiredException e) {
-      if (ca.isLog(0)) {
+      if (ca.isLog(3)) {
         ca.log("skipping... no enhancement required");
       }
     } finally {

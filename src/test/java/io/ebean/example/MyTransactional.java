@@ -1,16 +1,28 @@
 package io.ebean.example;
 
 import io.ebean.TxScope;
+//import io.ebean.annotation.PersistBatch;
 import io.ebean.annotation.Transactional;
 import io.ebean.bean.HelpTx;
 import io.ebeaninternal.api.HelpScopeTrans;
-import io.ebeaninternal.api.ScopeTrans;
 
 import java.util.function.Supplier;
 
 public class MyTransactional {
 
 	String other;
+
+//  private static ProfileLocation _$ebt1;
+//  private static ProfileLocation _$ebt2;
+//
+//  private static void _$initProfileLocations() {
+//    _$ebt1 = ProfileLocation.create();
+//    _$ebt2 = ProfileLocation.create(12);
+//  }
+//
+//  static {
+//    _$initProfileLocations();
+//  }
 
 	public <T> T exe(TxScope scope, Supplier<T> producer) {
 
@@ -26,8 +38,10 @@ public class MyTransactional {
 
 //		TxScope scope = new TxScope();
 //		scope.setType(TxType.REQUIRES_NEW);
-//		scope.setServerName("db");
 //		scope.setBatchSize(100);
+//		scope.setLabel("sd");
+//		scope.setSkipCache(true);
+//		scope.setProfileLocation(_$ebx1);
 //		scope.setBatch(PersistBatch.ALL);
 
 		HelpScopeTrans.enter(newTxScope());

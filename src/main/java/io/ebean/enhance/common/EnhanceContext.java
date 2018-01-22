@@ -51,6 +51,8 @@ public class EnhanceContext {
 
   private boolean throwOnError;
 
+  private boolean enableProfileLocation;
+
   /**
    * Mapping of profileId to transactional method descriptions (for decoding profiling).
    */
@@ -66,6 +68,7 @@ public class EnhanceContext {
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest, ClassMetaCache metaCache) {
 
     this.autoProfileId = manifest.transactionProfilingStart();
+    this.enableProfileLocation = manifest.isEnableProfileLocation();
 
     this.agentArgsMap = ArgParser.parse(agentArgs);
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
@@ -123,6 +126,13 @@ public class EnhanceContext {
     } else {
       return s.trim().equalsIgnoreCase("true");
     }
+  }
+
+  /**
+   * Return true if profile location enhancement is on.
+   */
+  public boolean isEnableProfileLocation() {
+    return enableProfileLocation;
   }
 
   /**

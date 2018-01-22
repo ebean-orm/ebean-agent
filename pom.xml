@@ -9,7 +9,7 @@
 
   <groupId>io.ebean</groupId>
   <artifactId>ebean-agent</artifactId>
-  <version>11.6.1-SNAPSHOT</version>
+  <version>11.9.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ebean-agent</name>
@@ -38,8 +38,8 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.4.1</version>
-      <scope>test</scope>
+      <version>11.9.1</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

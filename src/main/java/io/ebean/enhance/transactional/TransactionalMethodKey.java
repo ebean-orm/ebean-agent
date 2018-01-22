@@ -33,6 +33,10 @@ public class TransactionalMethodKey {
     this.lineNumber = lineNumber;
   }
 
+  public int getLineNumber() {
+    return lineNumber;
+  }
+
   public String getMethodName() {
     return methodName;
   }

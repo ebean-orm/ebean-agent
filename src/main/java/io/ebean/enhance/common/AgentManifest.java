@@ -15,7 +15,7 @@ import java.util.jar.Manifest;
  */
 public class AgentManifest {
 
-  enum TxProfileMode {
+	enum TxProfileMode {
     NONE,
     ENABLED,
     MANUAL
@@ -37,6 +37,8 @@ public class AgentManifest {
   private boolean transientInternalFields;
 
   private boolean checkNullManyFields = true;
+
+  private boolean enableProfileLocation;
 
   public static AgentManifest read(ClassLoader classLoader, Set<String> initialPackages) {
 
@@ -72,6 +74,13 @@ public class AgentManifest {
   public String toString() {
     return "entityPackages:" + entityPackages + " querybeanPackages:" + querybeanPackages
       + " transactionalPackages:" + transactionalPackages + " profilingMode:" + transactionProfilingMode;
+  }
+
+  /**
+   * Return true if enhancement of profileLocations should be added.
+   */
+  public boolean isEnableProfileLocation() {
+    return enableProfileLocation;
   }
 
   /**
@@ -176,6 +185,12 @@ public class AgentManifest {
   }
 
   void readProfilingMode(Attributes attributes) {
+
+    String locationMode = attributes.getValue("profile-location");
+    if (locationMode != null) {
+      enableProfileLocation = Boolean.parseBoolean(locationMode);
+    }
+
     String mode = attributes.getValue("transaction-profiling");
     if (mode != null) {
       transactionProfilingMode = parseMode(mode);

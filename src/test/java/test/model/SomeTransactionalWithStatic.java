@@ -6,13 +6,13 @@ import io.ebean.annotation.Transactional;
 
 import static org.testng.Assert.assertNotNull;
 
-@Transactional
 public class SomeTransactionalWithStatic {
 
   static {
     Boolean anything = true;
   }
 
+  @Transactional(label = "something")
   public void someMethod(String param) {
 
     Transaction tdTransaction = Ebean.currentTransaction();
