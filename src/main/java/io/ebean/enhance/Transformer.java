@@ -151,22 +151,25 @@ public class Transformer implements ClassFileTransformer {
       boolean isEbeanModel = className.equals(EnhanceConstants.EBEAN_MODEL);
       if (isEbeanModel || enhanceContext.detectEntityTransactionalEnhancement(className)) {
 
-        DetectEnhancement detect = detect(loader, classfileBuffer);
-
-        if (detect.isEntity()) {
-          if (detect.isEnhancedEntity()) {
-            detect.log(3, "already enhanced entity");
-          } else {
-            entityEnhancement(loader, request);
+        try {
+          DetectEnhancement detect = detect(loader, classfileBuffer);
+          if (detect.isEntity()) {
+            if (detect.isEnhancedEntity()) {
+              detect.log(3, "already enhanced entity");
+            } else {
+              entityEnhancement(loader, request);
+            }
           }
-        }
 
-        if (enhanceContext.isEnableProfileLocation() || detect.isTransactional()) {
-          if (detect.isEnhancedTransactional()) {
-            detect.log(3, "already enhanced transactional");
-          } else {
-            transactionalEnhancement(loader, request);
+          if (enhanceContext.isEnableProfileLocation() || detect.isTransactional()) {
+            if (detect.isEnhancedTransactional()) {
+              detect.log(3, "already enhanced transactional");
+            } else {
+              transactionalEnhancement(loader, request);
+            }
           }
+        } catch (NoEnhancementRequiredException e) {
+          log(8, className, "No entity or transactional enhancement required " + e.getMessage());
         }
       }
 

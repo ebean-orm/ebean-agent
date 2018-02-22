@@ -31,9 +31,6 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
     super.visit(version, access, name, signature, superName, interfaces);
-    if ((access & Opcodes.ACC_INTERFACE) != 0) {
-      throw new NoEnhancementRequiredException("Not enhancing interface");
-    }
     this.typeQueryRootBean = TQ_ROOT_BEAN.equals(superName);
     this.className = name;
     this.signature = signature;
