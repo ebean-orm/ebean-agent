@@ -146,31 +146,11 @@ public class Transformer implements ClassFileTransformer {
         log(9, className, "ignore class");
         return null;
       }
-      TransformRequest request = new TransformRequest(classfileBuffer);
+      TransformRequest request = new TransformRequest(className, classfileBuffer);
 
       boolean isEbeanModel = className.equals(EnhanceConstants.EBEAN_MODEL);
       if (isEbeanModel || enhanceContext.detectEntityTransactionalEnhancement(className)) {
-
-        try {
-          DetectEnhancement detect = detect(loader, classfileBuffer);
-          if (detect.isEntity()) {
-            if (detect.isEnhancedEntity()) {
-              detect.log(3, "already enhanced entity");
-            } else {
-              entityEnhancement(loader, request);
-            }
-          }
-
-          if (enhanceContext.isEnableProfileLocation() || detect.isTransactional()) {
-            if (detect.isEnhancedTransactional()) {
-              detect.log(3, "already enhanced transactional");
-            } else {
-              transactionalEnhancement(loader, request);
-            }
-          }
-        } catch (NoEnhancementRequiredException e) {
-          log(8, className, "No entity or transactional enhancement required " + e.getMessage());
-        }
+        enhanceEntityAndTransactional(loader, request);
       }
 
       if (enhanceContext.detectQueryBeanEnhancement(className)) {
@@ -197,6 +177,31 @@ public class Transformer implements ClassFileTransformer {
       return null;
     } finally {
       logUnresolvedCommonSuper(className);
+    }
+  }
+
+  /**
+   * Perform entity and transactional enhancement.
+   */
+  private void enhanceEntityAndTransactional(ClassLoader loader, TransformRequest request) {
+    try {
+      DetectEnhancement detect = detect(loader, request.getBytes());
+      if (detect.isEntity()) {
+        if (detect.isEnhancedEntity()) {
+          detect.log(3, "already enhanced entity");
+        } else {
+          entityEnhancement(loader, request);
+        }
+      }
+      if (enhanceContext.isEnableProfileLocation() || detect.isTransactional()) {
+        if (detect.isEnhancedTransactional()) {
+          detect.log(3, "already enhanced transactional");
+        } else {
+          transactionalEnhancement(loader, request);
+        }
+      }
+    } catch (NoEnhancementRequiredException e) {
+      log(8, request.getClassName(), "No entity or transactional enhancement required " + e.getMessage());
     }
   }
 

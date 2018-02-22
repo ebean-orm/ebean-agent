@@ -2,14 +2,20 @@ package io.ebean.enhance.common;
 
 public class TransformRequest {
 
-  boolean enhancedEntity;
-  boolean enhancedTransactional;
-  boolean enhancedQueryBean;
+  private final String className;
+  private boolean enhancedEntity;
+  private boolean enhancedTransactional;
+  private boolean enhancedQueryBean;
 
-  byte[] bytes;
+  private byte[] bytes;
 
-  public TransformRequest(byte[] bytes) {
+  public TransformRequest(String className, byte[] bytes) {
+    this.className = className;
     this.bytes = bytes;
+  }
+
+  public String getClassName() {
+    return className;
   }
 
   public byte[] getBytes() {
