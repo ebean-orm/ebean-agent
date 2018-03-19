@@ -8,7 +8,7 @@ import io.ebean.annotation.TxType;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 
-@Transactional(type = TxType.SUPPORTS)
+@Transactional(type = TxType.REQUIRED)
 public class SomeTransactionalWithStatic {
 
   static {
