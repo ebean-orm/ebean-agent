@@ -15,7 +15,7 @@ public class SomeTransactionalWithStatic {
     Boolean anything = true;
 
     Transaction tdTransaction = Ebean.currentTransaction();
-    System.out.println("--- in someMethod " + tdTransaction);
+    System.out.println("--- in <clinit> " + tdTransaction);
     assertNull(tdTransaction);
   }
 
