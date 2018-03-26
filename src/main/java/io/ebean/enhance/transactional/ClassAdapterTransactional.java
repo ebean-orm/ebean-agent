@@ -200,11 +200,14 @@ public class ClassAdapterTransactional extends ClassVisitor {
 			throw new AlreadyEnhancedException(className);
 		}
 		if (name.equals("<init>")) {
-			// not enhancing constructors at the moment
+			// not enhancing constructors
 			return mv;
 		}
-		if (enhanceContext.isEnableProfileLocation()) {
-			if (name.equals("<clinit>")) {
+		if (name.equals("<clinit>")) {
+			if (!enhanceContext.isEnableProfileLocation()) {
+				// not enhancing class static initialiser
+				return mv;
+			} else {
 				if (isLog(3)) {
 					log("... <clinit> exists - adding call to _$initProfileLocations()");
 				}
