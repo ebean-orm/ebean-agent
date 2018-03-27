@@ -25,27 +25,53 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 // THE POSSIBILITY OF SUCH DAMAGE.
+
 package io.ebean.enhance.asm.commons;
 
+import io.ebean.enhance.asm.Attribute;
+import io.ebean.enhance.asm.ByteVector;
+import io.ebean.enhance.asm.ClassReader;
+import io.ebean.enhance.asm.ClassWriter;
 import io.ebean.enhance.asm.Label;
 
 /**
- * A code generator for switch statements.
+ * ModuleTarget attribute. This attribute is specific to the OpenJDK and may change in the future.
  *
- * @author Juozas Baliuka
- * @author Chris Nokleberg
- * @author Eric Bruneton
+ * @author Remi Forax
  */
-public interface TableSwitchGenerator {
+public final class ModuleTargetAttribute extends Attribute {
+  public String platform;
 
   /**
-   * Generates the code for a switch case.
+   * Constructs an attribute with a platform name.
    *
-   * @param key the switch case key.
-   * @param end a label that corresponds to the end of the switch statement.
+   * @param platform the platform name on which the module can run.
    */
-  void generateCase(int key, Label end);
+  public ModuleTargetAttribute(final String platform) {
+    super("ModuleTarget");
+    this.platform = platform;
+  }
 
-  /** Generates the code for the default switch case. */
-  void generateDefault();
+  /**
+   * Constructs an empty attribute that can be used as prototype to be passed as argument of the method
+   * {@link ClassReader#accept(io.ebean.enhance.asm.ClassVisitor, Attribute[], int)}.
+   */
+  public ModuleTargetAttribute() {
+    this(null);
+  }
+
+  @Override
+  protected Attribute read(
+      ClassReader cr, int off, int len, char[] buf, int codeOff, Label[] labels) {
+    String platform = cr.readUTF8(off, buf);
+    return new ModuleTargetAttribute(platform);
+  }
+
+  @Override
+  protected ByteVector write(ClassWriter cw, byte[] code, int len, int maxStack, int maxLocals) {
+    ByteVector v = new ByteVector();
+    int index = (platform == null) ? 0 : cw.newUTF8(platform);
+    v.putShort(index);
+    return v;
+  }
 }

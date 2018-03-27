@@ -25,27 +25,43 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 // THE POSSIBILITY OF SUCH DAMAGE.
+
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.Label;
+import io.ebean.enhance.asm.AnnotationVisitor;
+import io.ebean.enhance.asm.FieldVisitor;
+import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.asm.TypePath;
 
 /**
- * A code generator for switch statements.
+ * A {@link FieldVisitor} adapter for type remapping.
  *
- * @author Juozas Baliuka
- * @author Chris Nokleberg
- * @author Eric Bruneton
+ * @author Eugene Kuleshov
  */
-public interface TableSwitchGenerator {
+public class FieldRemapper extends FieldVisitor {
 
-  /**
-   * Generates the code for a switch case.
-   *
-   * @param key the switch case key.
-   * @param end a label that corresponds to the end of the switch statement.
-   */
-  void generateCase(int key, Label end);
+  private final Remapper remapper;
 
-  /** Generates the code for the default switch case. */
-  void generateDefault();
+  public FieldRemapper(final FieldVisitor fv, final Remapper remapper) {
+    this(Opcodes.ASM6, fv, remapper);
+  }
+
+  protected FieldRemapper(final int api, final FieldVisitor fv, final Remapper remapper) {
+    super(api, fv);
+    this.remapper = remapper;
+  }
+
+  @Override
+  public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+    AnnotationVisitor av = fv.visitAnnotation(remapper.mapDesc(desc), visible);
+    return av == null ? null : new AnnotationRemapper(api, av, remapper);
+  }
+
+  @Override
+  public AnnotationVisitor visitTypeAnnotation(
+      int typeRef, TypePath typePath, String desc, boolean visible) {
+    AnnotationVisitor av =
+        super.visitTypeAnnotation(typeRef, typePath, remapper.mapDesc(desc), visible);
+    return av == null ? null : new AnnotationRemapper(api, av, remapper);
+  }
 }

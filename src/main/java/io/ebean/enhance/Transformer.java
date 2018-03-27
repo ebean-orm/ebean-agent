@@ -240,7 +240,7 @@ public class Transformer implements ClassFileTransformer {
   private void entityEnhancement(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
+    ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
     ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
     try {
 
@@ -273,7 +273,7 @@ public class Transformer implements ClassFileTransformer {
   private void transactionalEnhancement(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
+    ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
 
     try {
@@ -306,7 +306,7 @@ public class Transformer implements ClassFileTransformer {
   private void enhanceQueryBean(ClassLoader loader, TransformRequest request) {
 
     ClassReader cr = new ClassReader(request.getBytes());
-    ClassWriter cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
+    ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
     TypeQueryClassAdapter ca = new TypeQueryClassAdapter(cw, enhanceContext);
 
     try {

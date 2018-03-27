@@ -25,27 +25,49 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 // THE POSSIBILITY OF SUCH DAMAGE.
+
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.Label;
+import io.ebean.enhance.asm.AnnotationVisitor;
+import io.ebean.enhance.asm.Opcodes;
 
 /**
- * A code generator for switch statements.
+ * An {@link AnnotationVisitor} adapter for type remapping.
  *
- * @author Juozas Baliuka
- * @author Chris Nokleberg
- * @author Eric Bruneton
+ * @author Eugene Kuleshov
  */
-public interface TableSwitchGenerator {
+public class AnnotationRemapper extends AnnotationVisitor {
 
-  /**
-   * Generates the code for a switch case.
-   *
-   * @param key the switch case key.
-   * @param end a label that corresponds to the end of the switch statement.
-   */
-  void generateCase(int key, Label end);
+  protected final Remapper remapper;
 
-  /** Generates the code for the default switch case. */
-  void generateDefault();
+  public AnnotationRemapper(final AnnotationVisitor av, final Remapper remapper) {
+    this(Opcodes.ASM6, av, remapper);
+  }
+
+  protected AnnotationRemapper(final int api, final AnnotationVisitor av, final Remapper remapper) {
+    super(api, av);
+    this.remapper = remapper;
+  }
+
+  @Override
+  public void visit(String name, Object value) {
+    av.visit(name, remapper.mapValue(value));
+  }
+
+  @Override
+  public void visitEnum(String name, String desc, String value) {
+    av.visitEnum(name, remapper.mapDesc(desc), value);
+  }
+
+  @Override
+  public AnnotationVisitor visitAnnotation(String name, String desc) {
+    AnnotationVisitor v = av.visitAnnotation(name, remapper.mapDesc(desc));
+    return v == null ? null : (v == av ? this : new AnnotationRemapper(api, v, remapper));
+  }
+
+  @Override
+  public AnnotationVisitor visitArray(String name) {
+    AnnotationVisitor v = av.visitArray(name);
+    return v == null ? null : (v == av ? this : new AnnotationRemapper(api, v, remapper));
+  }
 }

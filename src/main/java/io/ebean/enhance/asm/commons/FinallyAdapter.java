@@ -11,11 +11,13 @@ public abstract class FinallyAdapter extends AdviceAdapter {
 		super(api, mv, acc, name, desc);
 	}
 
+	@Override
 	public void visitCode() {
 		super.visitCode();
 		mv.visitLabel(startFinally);
 	}
 
+	@Override
 	public void visitMaxs(int maxStack, int maxLocals) {
 
 		Label endFinally = new Label();
@@ -26,6 +28,7 @@ public abstract class FinallyAdapter extends AdviceAdapter {
 		mv.visitMaxs(maxStack, maxLocals);
 	}
 
+	@Override
 	protected final void onMethodExit(int opcode) {
 		if (opcode != ATHROW) {
 			onFinally(opcode);

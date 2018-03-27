@@ -2,15 +2,17 @@ package io.ebean.enhance.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import io.ebean.enhance.common.CommonSuperUnresolved;
 
 /**
- * ClassWriter without class loading. Fixes problems on dynamic enhancement metioned here:
+ * ClassWriter without class loading. Fixes problems on dynamic enhancement mentioned here:
  * https://github.com/ebean-orm/ebean-agent/issues/59
  *
  * Idea taken from here:
@@ -27,17 +29,22 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
 
   private final Map<String, Boolean> type2isInterface = new HashMap<>();
 
+  private final ClassLoader classLoader;
+
+  private List<CommonSuperUnresolved> unresolved = new ArrayList<>();
+
   public ClassWriterWithoutClassLoading(ClassReader classReader, int flags, ClassLoader classLoader) {
-    super(classReader, flags, classLoader);
+    super(classReader, flags);
+    this.classLoader = classLoader;
   }
 
   public ClassWriterWithoutClassLoading(int flags, ClassLoader classLoader) {
-    super(flags, classLoader);
+    super(flags);
+    this.classLoader = classLoader;
   }
 
-  @Override
-  protected Class<?> classForName(String type) throws ClassNotFoundException {
-    throw new UnsupportedOperationException("This classloader does not support class loading.");
+  public List<CommonSuperUnresolved> getUnresolved() {
+    return unresolved;
   }
 
   /**
@@ -48,7 +55,7 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
    * @return the internal name of the common super class of the two given classes.
    */
   @Override
-  protected synchronized String getCommonSuperClass(final String type1, final String type2) {
+  protected String getCommonSuperClass(final String type1, final String type2) {
     try {
       if (getInstanceOfs(type2).contains(type1)) {
         return type1;
