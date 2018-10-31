@@ -49,8 +49,6 @@ public interface EnhanceConstants {
 
   String C_PERSISTBATCH = "io/ebean/annotation/PersistBatch";
 
-  String EBEAN_MODEL = "io/ebean/Model";
-
   String BEANLIST = "io/ebean/common/BeanList";
 
   String BEANSET = "io/ebean/common/BeanSet";

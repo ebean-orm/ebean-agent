@@ -91,11 +91,6 @@ class IgnoreClassHelper {
 
     className = className.replace('.', '/');
 
-    // the special entity beans supplied by Ebean SHOULD be processed
-    if (className.equals(EnhanceConstants.EBEAN_MODEL)) {
-      return false;
-    }
-
     // we will ignore packages that we know we don't want to
     // process (they won't contain entity beans etc).
 

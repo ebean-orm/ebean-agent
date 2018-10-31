@@ -148,8 +148,7 @@ public class Transformer implements ClassFileTransformer {
       }
       TransformRequest request = new TransformRequest(className, classfileBuffer);
 
-      boolean isEbeanModel = className.equals(EnhanceConstants.EBEAN_MODEL);
-      if (isEbeanModel || enhanceContext.detectEntityTransactionalEnhancement(className)) {
+      if (enhanceContext.detectEntityTransactionalEnhancement(className)) {
         enhanceEntityAndTransactional(loader, request);
       }
 
