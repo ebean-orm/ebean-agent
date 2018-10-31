@@ -12,7 +12,7 @@ import io.ebean.enhance.common.EnhanceConstants;
 public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants {
 
 	private final FieldMeta fieldMeta;
-	
+
 	/**
 	 * Constructor used for entity class enhancement.
    *
@@ -20,7 +20,7 @@ public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants 
 	 * @param fieldMeta the fieldMeta data
 	 */
 	public LocalFieldVisitor(FieldVisitor fv, FieldMeta fieldMeta) {
-    super(Opcodes.ASM6, fv);
+    super(Opcodes.ASM7, fv);
 		this.fieldMeta = fieldMeta;
 	}
 

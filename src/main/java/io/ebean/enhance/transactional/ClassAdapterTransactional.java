@@ -71,7 +71,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 	private Map<Integer,String> txLabels = new LinkedHashMap<>();
 
 	public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
-		super(Opcodes.ASM6, cv);
+		super(Opcodes.ASM7, cv);
 		this.classLoader = classLoader;
 		this.enhanceContext = context;
 	}
@@ -91,7 +91,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
   public AnnotationInfo getClassAnnotationInfo() {
     return classAnnotationInfo;
   }
-  
+
 	/**
 	 * Returns Transactional information from a matching interface method.
 	 * <p>
@@ -148,7 +148,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 				// the interface was transactional. We gather its information
 				// because our methods inherit that transactional configuration
 				transactionalInterfaces.add(interfaceMeta);
-				
+
 				if (isLog(6)) {
 					log(" implements transactional interface " + interfaceMeta.getDescription());
 				}

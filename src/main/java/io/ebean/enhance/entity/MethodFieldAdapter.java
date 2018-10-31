@@ -25,7 +25,7 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 	private boolean transientAnnotation;
 
 	public MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
-		super(Opcodes.ASM6, mv);
+		super(Opcodes.ASM7, mv);
 		this.meta = meta;
 		this.className = meta.getClassName();
 		this.methodDescription = methodDescription;
@@ -74,7 +74,7 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 			super.visitFieldInsn(opcode, owner, name, desc);
 			return;
 		}
-		
+
 		if (isNonPersistentField(owner, name)) {
 			if (meta.isLog(3)) {
 				meta.log(" ... info: non-persistent field "+owner+" "+name+" in "+methodDescription);
@@ -88,7 +88,7 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 			String methodName = "_ebean_get_" + name;
 			String methodDesc = "()" + desc;
 			if (meta.isLog(4)) {
-				meta.log("GETFIELD method:" + methodDescription 
+				meta.log("GETFIELD method:" + methodDescription
 					+ " field:" + name + " > " + methodName + " "+ methodDesc);
 			}
 			super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
@@ -97,16 +97,16 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 			String methodName = "_ebean_set_" + name;
 			String methodDesc = "(" + desc + ")V";
 			if (meta.isLog(4)) {
-				meta.log("PUTFIELD method:" + methodDescription 
+				meta.log("PUTFIELD method:" + methodDescription
 					+ " field:" + name + " > " + methodName + " "+ methodDesc);
 			}
 			super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
 
 		} else {
-			meta.log("Warning adapting method:" + methodDescription 
+			meta.log("Warning adapting method:" + methodDescription
 				+ "; unexpected static access to a persistent field?? " + name
 				+" opCode not GETFIELD or PUTFIELD??  opCode:"+opcode+"");
-			
+
 			super.visitFieldInsn(opcode, owner, name, desc);
 		}
 	}

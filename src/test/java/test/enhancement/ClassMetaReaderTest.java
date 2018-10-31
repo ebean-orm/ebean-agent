@@ -33,38 +33,38 @@ public class ClassMetaReaderTest {
 
   @Test
   public void checkNoEnhanceMappedSuper_hasNoPersistentFields() throws ClassNotFoundException {
-    
+
     ClassMetaReader classMetaReader = createClassMetaReader();
-    
+
     ClassLoader classLoader = this.getClass().getClassLoader();
     ClassMeta classMeta = classMetaReader.get(false, "test.model.NoEnhanceMappedSuper", classLoader);
-    
+
     assertNotNull(classMeta);
     assertFalse(classMeta.hasPersistentFields());
     assertFalse(classMeta.isEntity());
   }
-  
+
   @Test
   public void checkEnhanceMappedSuper_hasPersistentField() throws ClassNotFoundException {
-    
+
     ClassMetaReader classMetaReader = createClassMetaReader();
-    
+
     ClassLoader classLoader = this.getClass().getClassLoader();
     ClassMeta classMeta = classMetaReader.get(false, "test.model.EnhanceMappedSuper", classLoader);
-    
+
     assertNotNull(classMeta);
     assertTrue(classMeta.hasPersistentFields());
     assertTrue(classMeta.isEntity());
   }
-  
+
   @Test
   public void checkEnhanceMappedSuper_hasPersistentFieldId() throws ClassNotFoundException {
-    
+
     ClassMetaReader classMetaReader = createClassMetaReader();
-    
+
     ClassLoader classLoader = this.getClass().getClassLoader();
     ClassMeta classMeta = classMetaReader.get(false, "test.model.EnhanceMappedSuperId", classLoader);
-    
+
     assertNotNull(classMeta);
     assertTrue(classMeta.hasPersistentFields());
     assertTrue(classMeta.isEntity());
@@ -115,7 +115,7 @@ public class ClassMetaReaderTest {
   }
 
   private ClassMetaReader createClassMetaReader() {
-    
+
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
     AgentManifest manifest = AgentManifest.read(getClass().getClassLoader(), null);
 

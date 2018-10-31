@@ -44,7 +44,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 	private int locationField;
 
 	ScopeTransAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
-		super(Opcodes.ASM6, mv, access, name, desc);
+		super(Opcodes.ASM7, mv, access, name, desc);
 		this.classAdapter = classAdapter;
 		this.methodName = name;
 

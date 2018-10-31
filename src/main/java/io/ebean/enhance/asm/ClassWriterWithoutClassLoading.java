@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.org.apache.xpath.internal.compiler.OpCodes;
 import io.ebean.enhance.common.CommonSuperUnresolved;
 
 /**
@@ -105,7 +106,7 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
   private void initializeTypeHierarchyFor(final String internalTypeName) {
     try (InputStream classBytes = classLoader.getResourceAsStream(internalTypeName + ".class")){
       ClassReader classReader = new ClassReader(classBytes);
-      classReader.accept(new ClassVisitor(Opcodes.ASM6) {
+      classReader.accept(new ClassVisitor(Opcodes.ASM7) {
 
         @Override
         public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {

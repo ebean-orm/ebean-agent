@@ -13,6 +13,9 @@ public class IgnoreClassHelperTest {
 
     IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper();
 
+    assertTrue(ignoreClassHelper.isIgnoreClass("io/ebean/Model"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("io.ebean.Model"));
+
     assertTrue(ignoreClassHelper.isIgnoreClass("java/lang/Boolean"));
     assertTrue(ignoreClassHelper.isIgnoreClass("java/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("org/joda/LocalDate"));

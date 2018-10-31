@@ -13,7 +13,7 @@ import io.ebean.enhance.common.EnhanceConstants;
 /**
  * Modify the constructor to additionally initialise the entityBeanIntercept
  * field.
- * 
+ *
  * <pre class="code">
  * // added into constructor
  * _ebean_intercept = new EntityBeanIntercept(this);
@@ -35,7 +35,7 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
   private final ConstructorDeferredCode deferredCode;
 
 	public ConstructorAdapter(MethodVisitor mv, ClassMeta meta, String constructorDesc) {
-		super(Opcodes.ASM6, mv);
+		super(Opcodes.ASM7, mv);
 		this.meta = meta;
 		this.className = meta.getClassName();
 		this.constructorDesc = constructorDesc;
@@ -114,10 +114,10 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
       }
     }
   }
-	
+
 	/**
 	 * Add initialisation of EntityBeanIntercept to constructor.
-	 * 
+	 *
 	 * <pre>
 	 * _ebean_intercept = new EntityBeanIntercept(this);
 	 * </pre>
@@ -164,7 +164,7 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
 			} else {
 				if (meta.isLog(3)) {
 					meta.log("... skipping intercept <init> ... incorrect type "+owner);
-				}				
+				}
 			}
 		}
 	}
