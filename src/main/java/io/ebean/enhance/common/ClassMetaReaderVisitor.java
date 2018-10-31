@@ -19,9 +19,9 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 	private final ClassMeta classMeta;
 
 	private final boolean readMethodMeta;
-	
+
 	public ClassMetaReaderVisitor(boolean readMethodMeta, EnhanceContext context) {
-		super(Opcodes.ASM6);
+		super(Opcodes.ASM7);
 		this.readMethodMeta = readMethodMeta;
 		this.classMeta = context.createClassMeta();
 	}
@@ -50,11 +50,11 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 
 	@Override
 	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		
+
 		classMeta.addClassAnnotation(desc);
-		
+
 		AnnotationVisitor av = super.visitAnnotation(desc, visible);
-		
+
 		if (desc.equals(AVAJE_TRANSACTIONAL_ANNOTATION)) {
 			// we have class level Transactional annotation
 			// which will act as default for all methods in this class
@@ -96,7 +96,7 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 
 		boolean staticAccess = ((access & Opcodes.ACC_STATIC) != 0);
-		
+
     if (name.equals("hashCode") && desc.equals("()I")) {
       classMeta.setHasEqualsOrHashcode(true);
     }
@@ -104,11 +104,11 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
     if (name.equals("equals") && desc.equals("(Ljava/lang/Object;)Z")) {
       classMeta.setHasEqualsOrHashcode(true);
     }
-		
+
 		MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
 		if (!staticAccess && readMethodMeta){
 			return classMeta.createMethodVisitor(mv, access, name, desc);
-			
+
 		} else {
 			// not interested in the methods...
 			return mv;

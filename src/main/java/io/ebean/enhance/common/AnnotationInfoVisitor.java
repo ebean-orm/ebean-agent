@@ -9,15 +9,15 @@ import io.ebean.enhance.asm.Opcodes;
 public class AnnotationInfoVisitor extends AnnotationVisitor {
 
 	private final AnnotationInfo info;
-	
+
 	private final String prefix;
-	
+
 	public AnnotationInfoVisitor(String prefix, AnnotationInfo info, AnnotationVisitor av) {
-    super(Opcodes.ASM6, av);
+    super(Opcodes.ASM7, av);
 		this.info = info;
 		this.prefix = prefix;
 	}
-	
+
 	public void visit(String name, Object value) {
 		super.visit(name, value);
 		info.add(prefix, name, value);
@@ -35,7 +35,7 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
 		String newPrefix = prefix == null ? name: prefix+"."+name;
 		return new AnnotationInfoVisitor(newPrefix, info, underlying);
 	}
-	
+
 	public void visitEnd() {
 		super.visitEnd();
 	}
@@ -44,5 +44,5 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
 		super.visitEnum(name, desc, value);
 		info.addEnum(prefix, name, desc, value);
 	}
-	
+
 }

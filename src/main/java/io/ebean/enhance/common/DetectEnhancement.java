@@ -28,7 +28,7 @@ public class DetectEnhancement extends ClassVisitor {
   private boolean enhancedTransactional;
 
   public DetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
-    super(Opcodes.ASM6);
+    super(Opcodes.ASM7);
     this.classLoader = classLoader;
     this.enhanceContext = context;
   }
@@ -148,7 +148,7 @@ public class DetectEnhancement extends ClassVisitor {
   private class DetectTransactionalMethod extends MethodVisitor {
 
     DetectTransactionalMethod() {
-      super(Opcodes.ASM6);
+      super(Opcodes.ASM7);
     }
 
     @Override

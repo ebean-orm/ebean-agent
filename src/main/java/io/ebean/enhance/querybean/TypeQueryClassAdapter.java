@@ -23,7 +23,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   private ClassInfo classInfo;
 
   public TypeQueryClassAdapter(ClassWriter cw, EnhanceContext enhanceContext) {
-    super(Opcodes.ASM6, cw);
+    super(Opcodes.ASM7, cw);
     this.enhanceContext = enhanceContext;
   }
 

@@ -25,7 +25,7 @@ public class ClassMeta {
 	private static final Logger logger = Logger.getLogger(ClassMeta.class.getName());
 
 	private static final String OBJECT_CLASS = Object.class.getName().replace('.', '/');
-	
+
 	private final MessageOutput logout;
 
 	private final int logLevel;
@@ -50,13 +50,13 @@ public class ClassMeta {
 	 * Set to true if the class already implements the EntityBean interface.
 	 */
 	private boolean hasEntityBeanInterface;
-	
+
 	private boolean alreadyEnhanced;
 
 	private boolean hasEqualsOrHashcode;
 
 	private boolean hasDefaultConstructor;
-	
+
 	private boolean hasStaticInit;
 
 	private HashSet<String> existingMethods = new HashSet<String>();
@@ -70,24 +70,24 @@ public class ClassMeta {
 	private ArrayList<MethodMeta> methodMetaList = new ArrayList<MethodMeta>();
 
 	private final EnhanceContext enhanceContext;
-	
+
   private List<FieldMeta> allFields;
-  
+
 	public ClassMeta(EnhanceContext enhanceContext, int logLevel, MessageOutput logout) {
 		this.enhanceContext = enhanceContext;
 		this.logLevel = logLevel;
 		this.logout = logout;
 	}
-	
+
 	/**
 	 * Return the enhance context which has options for enhancement.
 	 */
 	public EnhanceContext getEnhanceContext() {
         return enhanceContext;
     }
-	
+
 	/**
-	 * Return the AnnotationInfo collected on methods. 
+	 * Return the AnnotationInfo collected on methods.
 	 * Used to determine Transactional method enhancement.
 	 */
 	public AnnotationInfo getAnnotationInfo() {
@@ -108,10 +108,10 @@ public class ClassMeta {
 					String msg = "Error in [" + className + "] searching the transactional methods[" + methodMetaList
 							+ "] found more than one match for the transactional method:" + methodName + " "
 							+ methodDesc;
-					
+
 					logger.log(Level.SEVERE, msg);
 					log(msg);
-					
+
 				} else {
 					annotationInfo = meta.getAnnotationInfo();
 					if (isLog(9)){
@@ -155,7 +155,7 @@ public class ClassMeta {
 		}
 		logout.println("ebean-enhance> " + msg);
 	}
-	
+
 	public void logEnhanced() {
 		String m = "enhanced ";
 		if (hasScalaInterface()){
@@ -184,7 +184,7 @@ public class ClassMeta {
 	public boolean hasEqualsOrHashCode() {
 	  if (hasEqualsOrHashcode) {
 	    return true;
-	    
+
 	  } else {
       return (superMeta != null && superMeta.hasEqualsOrHashCode());
     }
@@ -262,12 +262,12 @@ public class ClassMeta {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return true if the class contains persistent fields.
 	 */
   public boolean hasPersistentFields() {
-    
+
     for (FieldMeta fieldMeta : fields.values()) {
       if (fieldMeta.isPersistent() || fieldMeta.isTransient()) {
         return true;
@@ -276,7 +276,7 @@ public class ClassMeta {
 
     return superMeta != null && superMeta.hasPersistentFields();
   }
-  
+
 	/**
 	 * Return the list of all fields including ones inherited from entity super
 	 * types and mappedSuperclasses.
@@ -288,12 +288,12 @@ public class ClassMeta {
 	  }
 		List<FieldMeta> list = getLocalFields();
 		getInheritedFields(list);
-		
+
 		this.allFields = list;
 		for (int i=0; i<allFields.size(); i++) {
 		  allFields.get(i).setIndexPosition(i);
 		}
-		
+
 		return list;
 	}
 
@@ -404,7 +404,7 @@ public class ClassMeta {
     final MethodMeta methodMeta;
 
 		MethodReader(MethodVisitor mv, MethodMeta methodMeta) {
-      super(Opcodes.ASM6, mv);
+      super(Opcodes.ASM7, mv);
 			this.methodMeta = methodMeta;
 		}
 
@@ -502,5 +502,5 @@ public class ClassMeta {
 	public void setGroovyInterface(boolean hasGroovyInterface) {
 		this.hasGroovyInterface = hasGroovyInterface;
 	}
-	
+
 }

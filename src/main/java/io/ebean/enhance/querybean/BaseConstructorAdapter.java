@@ -17,7 +17,7 @@ public abstract class BaseConstructorAdapter extends MethodVisitor implements Op
    * Construct for a query bean class given its associated entity bean domain class and a class visitor.
    */
   public BaseConstructorAdapter() {
-    super(Opcodes.ASM6, null);
+    super(Opcodes.ASM7, null);
   }
 
   @Override
