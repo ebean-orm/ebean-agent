@@ -31,11 +31,11 @@ public class CreateNullListTest extends BaseTest {
     // Not invoking lazy loading btw
     assertTrue(contacts.isEmpty());
 
-    contacts.add(new Contact());
+    contacts.add(new Contact("1"));
     assertFalse(contacts.isEmpty());
 
     assertTrue(contacts instanceof BeanList<?>);
 
   }
-  
+
 }

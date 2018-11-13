@@ -176,5 +176,5 @@ public class CustomerEntityTest extends BaseTest {
       assertEquals(propertyLoaded, changedFlags[pos]);
     }
   }
-  
+
 }

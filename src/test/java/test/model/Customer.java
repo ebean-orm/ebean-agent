@@ -11,16 +11,16 @@ import javax.persistence.OneToMany;
 public class Customer extends BaseEntity {
 
   String name;
-  
+
   Date whenStart;
-  
+
   @OneToMany(mappedBy="customer")
   List<Contact> contacts;
 
   public String toString() {
     return "id:"+id+" name:"+name;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -44,5 +44,5 @@ public class Customer extends BaseEntity {
   public void setContacts(List<Contact> contacts) {
     this.contacts = contacts;
   }
-  
+
 }

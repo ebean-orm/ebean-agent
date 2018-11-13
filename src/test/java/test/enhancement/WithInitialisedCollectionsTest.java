@@ -89,8 +89,8 @@ public class WithInitialisedCollectionsTest extends BaseTest {
   @Test
   public void test_withConstructor() {
 
-    List<Contact> contacts = new ArrayList<Contact>();
-    contacts.add(new Contact());
+    List<Contact> contacts = new ArrayList<>();
+    contacts.add(new Contact("2"));
 
     WithInitialisedCollectionsAndConstructor bean = new WithInitialisedCollectionsAndConstructor(contacts);
 

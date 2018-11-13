@@ -172,11 +172,12 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 			return super.visitField(access, name, desc, signature, value);
 		}
 
-		// this will hide the field on the super object...
-		// but being in a different ClassLoader means we don't
-		// get access to those 'real' private fields
-		FieldVisitor fv = super.visitField(access, name, desc, signature, value);
+		if ((access & Opcodes.ACC_FINAL) != 0) {
+			// remove final modifier from fields (for lazy loading partials in Java9+)
+			access = (access ^ Opcodes.ACC_FINAL);
+		}
 
+		FieldVisitor fv = super.visitField(access, name, desc, signature, value);
 		return classMeta.createLocalFieldVisitor(fv, name, desc);
 	}
 
