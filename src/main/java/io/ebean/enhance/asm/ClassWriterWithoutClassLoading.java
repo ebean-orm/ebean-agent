@@ -104,6 +104,10 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
    * Here we read the class at bytecode-level.
    */
   private void initializeTypeHierarchyFor(final String internalTypeName) {
+    if (classLoader == null) {
+      // Bug in Zulu JDK for jdk classes (which we should skip anyway)
+      throw new IllegalStateException("ClassLoader is null?");
+    }
     try (InputStream classBytes = classLoader.getResourceAsStream(internalTypeName + ".class")){
       ClassReader classReader = new ClassReader(classBytes);
       classReader.accept(new ClassVisitor(Opcodes.ASM7) {

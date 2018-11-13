@@ -18,6 +18,7 @@ class IgnoreClassHelper {
   private static final Set<String> ignoreTwoLevel = new HashSet<>();
 
   static  {
+    ignoreOneLevel.add("jdk");
     ignoreOneLevel.add("java");
     ignoreOneLevel.add("javax");
     ignoreOneLevel.add("play");
@@ -31,8 +32,9 @@ class IgnoreClassHelper {
     ignoreOneLevel.add("junit");
     ignoreOneLevel.add("microsoft");
 
-    ignoreTwoLevel.add("com/sun");
     ignoreTwoLevel.add("org/aopalliance");
+    ignoreTwoLevel.add("org/jcp");
+    ignoreTwoLevel.add("org/omg");
     ignoreTwoLevel.add("org/wc3");
     ignoreTwoLevel.add("org/xml");
     ignoreTwoLevel.add("org/junit");
@@ -40,17 +42,14 @@ class IgnoreClassHelper {
     ignoreTwoLevel.add("org/eclipse");
     ignoreTwoLevel.add("org/jetbrains");
     ignoreTwoLevel.add("org/joda");
-    ignoreTwoLevel.add("com/mysql");
     ignoreTwoLevel.add("org/postgresql");
     ignoreTwoLevel.add("org/h2");
-    ignoreTwoLevel.add("com/h2database");
     ignoreTwoLevel.add("org/hsqldb");
     ignoreTwoLevel.add("org/ibex");
     ignoreTwoLevel.add("org/sqlite");
     ignoreTwoLevel.add("ch/qos");
     ignoreTwoLevel.add("org/slf4j");
     ignoreTwoLevel.add("org/codehaus");
-    ignoreTwoLevel.add("com/fasterxml");
     ignoreTwoLevel.add("org/assertj");
     ignoreTwoLevel.add("org/hamcrest");
     ignoreTwoLevel.add("org/mockito");
@@ -58,10 +57,15 @@ class IgnoreClassHelper {
     ignoreTwoLevel.add("org/objectweb");
     ignoreTwoLevel.add("org/jboss");
     ignoreTwoLevel.add("org/testng");
+    ignoreTwoLevel.add("com/sun");
+    ignoreTwoLevel.add("com/mysql");
+    ignoreTwoLevel.add("com/h2database");
+    ignoreTwoLevel.add("com/fasterxml");
     ignoreTwoLevel.add("com/intellij");
     ignoreTwoLevel.add("com/google");
     ignoreTwoLevel.add("com/squareup");
     ignoreTwoLevel.add("com/microsoft");
+    ignoreTwoLevel.add("com/oracle");
     ignoreTwoLevel.add("org/avaje");
     ignoreTwoLevel.add("io/ebean");
     ignoreTwoLevel.add("io/ebeaninternal");
