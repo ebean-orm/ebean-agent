@@ -1,5 +1,6 @@
 package io.ebean.enhance.common;
 
+import io.ebean.enhance.Transformer;
 import io.ebean.enhance.entity.MessageOutput;
 import io.ebean.enhance.querybean.DetectQueryBean;
 import io.ebean.enhance.querybean.Distill;
@@ -95,6 +96,9 @@ public class EnhanceContext {
 
     this.transientInternalFields = getPropertyBoolean("transientInternalFields", manifest.isTransientInternalFields());
     this.checkNullManyFields = getPropertyBoolean("checkNullManyFields", manifest.isCheckNullManyFields());
+    if (getPropertyBoolean("printversion", true)) {
+      System.out.println("ebean agent version: " + Transformer.getVersion());
+    }
   }
 
   public byte[] getClassBytes(String className, ClassLoader classLoader) {
