@@ -2,6 +2,7 @@ package io.ebean.enhance.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Collects the annotation information.
@@ -41,17 +42,13 @@ public class AnnotationInfo {
   public void add(String prefix, String name, Object value){
     if (name == null){
       // this is an array value...
-      ArrayList<Object> list = (ArrayList<Object>)valueMap.get(prefix);
-      if (list == null){
-        list = new ArrayList<>();
-        valueMap.put(prefix, list);
+      List<Object> list = (List<Object>) valueMap.computeIfAbsent(prefix, k -> new ArrayList<>());
+      if (value != null) {
+        // add it if it is not null (null is not allowed in annotations, but used to init empty array)
+        list.add(value);
       }
-      //System.out.println("addArrayValue "+prefix+" value:"+value);
-      list.add(value);
-
     } else {
       String key = getKey(prefix, name);
-      //System.out.println("addValue "+key+" value:"+value);
       valueMap.put(key, value);
     }
   }

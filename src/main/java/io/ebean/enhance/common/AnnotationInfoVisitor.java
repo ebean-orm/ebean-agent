@@ -16,6 +16,9 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
     super(Opcodes.ASM7, av);
     this.info = info;
     this.prefix = prefix;
+    if (prefix != null) {
+      info.add(prefix, null, null);
+    }
   }
 
   @Override
