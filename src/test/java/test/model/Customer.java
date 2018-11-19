@@ -17,6 +17,7 @@ public class Customer extends BaseEntity {
   @OneToMany(mappedBy="customer")
   List<Contact> contacts;
 
+  @Override
   public String toString() {
     return "id:"+id+" name:"+name;
   }

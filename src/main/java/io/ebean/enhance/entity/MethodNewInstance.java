@@ -12,8 +12,8 @@ import io.ebean.enhance.common.ClassMeta;
 public class MethodNewInstance {
 
   /**
-   * Add the _ebean_newInstance() method.
-   */
+  * Add the _ebean_newInstance() method.
+  */
   public static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
 
     MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, "_ebean_newInstance", "()Ljava/lang/Object;", null, null);

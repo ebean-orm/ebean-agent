@@ -58,36 +58,36 @@ import java.util.Map;
 public class AnalyzerAdapter extends MethodVisitor {
 
   /**
-   * The local variable slots for the current execution frame. Primitive types are represented by
-   * {@link Opcodes#TOP}, {@link Opcodes#INTEGER}, {@link Opcodes#FLOAT}, {@link Opcodes#LONG},
-   * {@link Opcodes#DOUBLE},{@link Opcodes#NULL} or {@link Opcodes#UNINITIALIZED_THIS} (long and
-   * double are represented by two elements, the second one being TOP). Reference types are
-   * represented by String objects (representing internal names), and uninitialized types by Label
-   * objects (this label designates the NEW instruction that created this uninitialized value). This
-   * field is {@literal null} for unreachable instructions.
-   */
+  * The local variable slots for the current execution frame. Primitive types are represented by
+  * {@link Opcodes#TOP}, {@link Opcodes#INTEGER}, {@link Opcodes#FLOAT}, {@link Opcodes#LONG},
+  * {@link Opcodes#DOUBLE},{@link Opcodes#NULL} or {@link Opcodes#UNINITIALIZED_THIS} (long and
+  * double are represented by two elements, the second one being TOP). Reference types are
+  * represented by String objects (representing internal names), and uninitialized types by Label
+  * objects (this label designates the NEW instruction that created this uninitialized value). This
+  * field is {@literal null} for unreachable instructions.
+  */
   public List<Object> locals;
 
   /**
-   * The operand stack slots for the current execution frame. Primitive types are represented by
-   * {@link Opcodes#TOP}, {@link Opcodes#INTEGER}, {@link Opcodes#FLOAT}, {@link Opcodes#LONG},
-   * {@link Opcodes#DOUBLE},{@link Opcodes#NULL} or {@link Opcodes#UNINITIALIZED_THIS} (long and
-   * double are represented by two elements, the second one being TOP). Reference types are
-   * represented by String objects (representing internal names), and uninitialized types by Label
-   * objects (this label designates the NEW instruction that created this uninitialized value). This
-   * field is {@literal null} for unreachable instructions.
-   */
+  * The operand stack slots for the current execution frame. Primitive types are represented by
+  * {@link Opcodes#TOP}, {@link Opcodes#INTEGER}, {@link Opcodes#FLOAT}, {@link Opcodes#LONG},
+  * {@link Opcodes#DOUBLE},{@link Opcodes#NULL} or {@link Opcodes#UNINITIALIZED_THIS} (long and
+  * double are represented by two elements, the second one being TOP). Reference types are
+  * represented by String objects (representing internal names), and uninitialized types by Label
+  * objects (this label designates the NEW instruction that created this uninitialized value). This
+  * field is {@literal null} for unreachable instructions.
+  */
   public List<Object> stack;
 
   /** The labels that designate the next instruction to be visited. May be {@literal null}. */
   private List<Label> labels;
 
   /**
-   * The uninitialized types in the current execution frame. This map associates internal names to
-   * Label objects. Each label designates a NEW instruction that created the currently uninitialized
-   * types, and the associated internal name represents the NEW operand, i.e. the final, initialized
-   * type value.
-   */
+  * The uninitialized types in the current execution frame. This map associates internal names to
+  * Label objects. Each label designates a NEW instruction that created the currently uninitialized
+  * types, and the associated internal name represents the NEW operand, i.e. the final, initialized
+  * type value.
+  */
   public Map<Object, Object> uninitializedTypes;
 
   /** The maximum stack size of this method. */
@@ -100,18 +100,18 @@ public class AnalyzerAdapter extends MethodVisitor {
   private String owner;
 
   /**
-   * Constructs a new {@link AnalyzerAdapter}. <i>Subclasses must not use this constructor</i>.
-   * Instead, they must use the {@link #AnalyzerAdapter(int, String, int, String, String,
-   * MethodVisitor)} version.
-   *
-   * @param owner the owner's class name.
-   * @param access the method's access flags (see {@link Opcodes}).
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @param methodVisitor the method visitor to which this adapter delegates calls. May be {@literal
-   *     null}.
-   * @throws IllegalStateException If a subclass calls this constructor.
-   */
+  * Constructs a new {@link AnalyzerAdapter}. <i>Subclasses must not use this constructor</i>.
+  * Instead, they must use the {@link #AnalyzerAdapter(int, String, int, String, String,
+  * MethodVisitor)} version.
+  *
+  * @param owner the owner's class name.
+  * @param access the method's access flags (see {@link Opcodes}).
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @param methodVisitor the method visitor to which this adapter delegates calls. May be {@literal
+  *     null}.
+  * @throws IllegalStateException If a subclass calls this constructor.
+  */
   public AnalyzerAdapter(
       final String owner,
       final int access,
@@ -125,17 +125,17 @@ public class AnalyzerAdapter extends MethodVisitor {
   }
 
   /**
-   * Constructs a new {@link AnalyzerAdapter}.
-   *
-   * @param api the ASM API version implemented by this visitor. Must be one of {@link
-   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
-   * @param owner the owner's class name.
-   * @param access the method's access flags (see {@link Opcodes}).
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @param methodVisitor the method visitor to which this adapter delegates calls. May be {@literal
-   *     null}.
-   */
+  * Constructs a new {@link AnalyzerAdapter}.
+  *
+  * @param api the ASM API version implemented by this visitor. Must be one of {@link
+  *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
+  * @param owner the owner's class name.
+  * @param access the method's access flags (see {@link Opcodes}).
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @param methodVisitor the method visitor to which this adapter delegates calls. May be {@literal
+  *     null}.
+  */
   protected AnalyzerAdapter(
       final int api,
       final String owner,
@@ -282,10 +282,10 @@ public class AnalyzerAdapter extends MethodVisitor {
   }
 
   /**
-   * Deprecated.
-   *
-   * @deprecated use {@link #visitMethodInsn(int, String, String, String, boolean)} instead.
-   */
+  * Deprecated.
+  *
+  * @deprecated use {@link #visitMethodInsn(int, String, String, String, boolean)} instead.
+  */
   @Deprecated
   @Override
   public void visitMethodInsn(

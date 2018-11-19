@@ -46,12 +46,12 @@ public class InstructionAdapter extends MethodVisitor {
   public static final Type OBJECT_TYPE = Type.getType("Ljava/lang/Object;");
 
   /**
-   * Constructs a new {@link InstructionAdapter}. <i>Subclasses must not use this constructor</i>.
-   * Instead, they must use the {@link #InstructionAdapter(int, MethodVisitor)} version.
-   *
-   * @param methodVisitor the method visitor to which this adapter delegates calls.
-   * @throws IllegalStateException If a subclass calls this constructor.
-   */
+  * Constructs a new {@link InstructionAdapter}. <i>Subclasses must not use this constructor</i>.
+  * Instead, they must use the {@link #InstructionAdapter(int, MethodVisitor)} version.
+  *
+  * @param methodVisitor the method visitor to which this adapter delegates calls.
+  * @throws IllegalStateException If a subclass calls this constructor.
+  */
   public InstructionAdapter(final MethodVisitor methodVisitor) {
     this(Opcodes.ASM7, methodVisitor);
     if (getClass() != InstructionAdapter.class) {
@@ -60,12 +60,12 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Constructs a new {@link InstructionAdapter}.
-   *
-   * @param api the ASM API version implemented by this visitor. Must be one of {@link
-   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
-   * @param methodVisitor the method visitor to which this adapter delegates calls.
-   */
+  * Constructs a new {@link InstructionAdapter}.
+  *
+  * @param api the ASM API version implemented by this visitor. Must be one of {@link
+  *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
+  * @param methodVisitor the method visitor to which this adapter delegates calls.
+  */
   protected InstructionAdapter(final int api, final MethodVisitor methodVisitor) {
     super(api, methodVisitor);
   }
@@ -507,10 +507,10 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Deprecated.
-   *
-   * @deprecated use {@link #visitMethodInsn(int, String, String, String, boolean)} instead.
-   */
+  * Deprecated.
+  *
+  * @deprecated use {@link #visitMethodInsn(int, String, String, String, boolean)} instead.
+  */
   @Deprecated
   @Override
   public void visitMethodInsn(
@@ -704,15 +704,15 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to push the given value on the stack.
-   *
-   * @param value the constant to be pushed on the stack. This parameter must be an {@link Integer},
-   *     a {@link Float}, a {@link Long}, a {@link Double}, a {@link String}, a {@link Type} of
-   *     OBJECT or ARRAY sort for {@code .class} constants, for classes whose version is 49, a
-   *     {@link Type} of METHOD sort for MethodType, a {@link Handle} for MethodHandle constants,
-   *     for classes whose version is 51 or a {@link ConstantDynamic} for a constant dynamic for
-   *     classes whose version is 55.
-   */
+  * Generates the instruction to push the given value on the stack.
+  *
+  * @param value the constant to be pushed on the stack. This parameter must be an {@link Integer},
+  *     a {@link Float}, a {@link Long}, a {@link Double}, a {@link String}, a {@link Type} of
+  *     OBJECT or ARRAY sort for {@code .class} constants, for classes whose version is 49, a
+  *     {@link Type} of METHOD sort for MethodType, a {@link Handle} for MethodHandle constants,
+  *     for classes whose version is 51 or a {@link ConstantDynamic} for a constant dynamic for
+  *     classes whose version is 55.
+  */
   public void aconst(final Object value) {
     if (value == null) {
       mv.visitInsn(Opcodes.ACONST_NULL);
@@ -722,10 +722,10 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to push the given value on the stack.
-   *
-   * @param intValue the constant to be pushed on the stack.
-   */
+  * Generates the instruction to push the given value on the stack.
+  *
+  * @param intValue the constant to be pushed on the stack.
+  */
   public void iconst(final int intValue) {
     if (intValue >= -1 && intValue <= 5) {
       mv.visitInsn(Opcodes.ICONST_0 + intValue);
@@ -739,10 +739,10 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to push the given value on the stack.
-   *
-   * @param longValue the constant to be pushed on the stack.
-   */
+  * Generates the instruction to push the given value on the stack.
+  *
+  * @param longValue the constant to be pushed on the stack.
+  */
   public void lconst(final long longValue) {
     if (longValue == 0L || longValue == 1L) {
       mv.visitInsn(Opcodes.LCONST_0 + (int) longValue);
@@ -752,10 +752,10 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to push the given value on the stack.
-   *
-   * @param floatValue the constant to be pushed on the stack.
-   */
+  * Generates the instruction to push the given value on the stack.
+  *
+  * @param floatValue the constant to be pushed on the stack.
+  */
   public void fconst(final float floatValue) {
     int bits = Float.floatToIntBits(floatValue);
     if (bits == 0L || bits == 0x3F800000 || bits == 0x40000000) { // 0..2
@@ -766,10 +766,10 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to push the given value on the stack.
-   *
-   * @param doubleValue the constant to be pushed on the stack.
-   */
+  * Generates the instruction to push the given value on the stack.
+  *
+  * @param doubleValue the constant to be pushed on the stack.
+  */
   public void dconst(final double doubleValue) {
     long bits = Double.doubleToLongBits(doubleValue);
     if (bits == 0L || bits == 0x3FF0000000000000L) { // +0.0d and 1.0d
@@ -780,28 +780,28 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to push the given type on the stack.
-   *
-   * @param type the type to be pushed on the stack.
-   */
+  * Generates the instruction to push the given type on the stack.
+  *
+  * @param type the type to be pushed on the stack.
+  */
   public void tconst(final Type type) {
     mv.visitLdcInsn(type);
   }
 
   /**
-   * Generates the instruction to push the given handle on the stack.
-   *
-   * @param handle the handle to be pushed on the stack.
-   */
+  * Generates the instruction to push the given handle on the stack.
+  *
+  * @param handle the handle to be pushed on the stack.
+  */
   public void hconst(final Handle handle) {
     mv.visitLdcInsn(handle);
   }
 
   /**
-   * Generates the instruction to push the given constant dynamic on the stack.
-   *
-   * @param constantDynamic the constant dynamic to be pushed on the stack.
-   */
+  * Generates the instruction to push the given constant dynamic on the stack.
+  *
+  * @param constantDynamic the constant dynamic to be pushed on the stack.
+  */
   public void cconst(final ConstantDynamic constantDynamic) {
     mv.visitLdcInsn(constantDynamic);
   }
@@ -911,11 +911,11 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to cast from the first given type to the other.
-   *
-   * @param from a Type.
-   * @param to a Type.
-   */
+  * Generates the instruction to cast from the first given type to the other.
+  *
+  * @param from a Type.
+  * @param to a Type.
+  */
   public void cast(final Type from, final Type to) {
     if (from != to) {
       if (from == Type.DOUBLE_TYPE) {
@@ -1072,13 +1072,13 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Deprecated.
-   *
-   * @param owner the internal name of the method's owner class.
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @deprecated use {@link #invokevirtual(String, String, String, boolean)} instead.
-   */
+  * Deprecated.
+  *
+  * @param owner the internal name of the method's owner class.
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @deprecated use {@link #invokevirtual(String, String, String, boolean)} instead.
+  */
   @Deprecated
   public void invokevirtual(final String owner, final String name, final String descriptor) {
     if (api >= Opcodes.ASM5) {
@@ -1089,14 +1089,14 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to call the given virtual method.
-   *
-   * @param owner the internal name of the method's owner class (see {@link
-   *     Type#getInternalName()}).
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @param isInterface if the method's owner class is an interface.
-   */
+  * Generates the instruction to call the given virtual method.
+  *
+  * @param owner the internal name of the method's owner class (see {@link
+  *     Type#getInternalName()}).
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @param isInterface if the method's owner class is an interface.
+  */
   public void invokevirtual(
       final String owner, final String name, final String descriptor, final boolean isInterface) {
     if (api < Opcodes.ASM5) {
@@ -1110,13 +1110,13 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Deprecated.
-   *
-   * @param owner the internal name of the method's owner class.
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @deprecated use {@link #invokespecial(String, String, String, boolean)} instead.
-   */
+  * Deprecated.
+  *
+  * @param owner the internal name of the method's owner class.
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @deprecated use {@link #invokespecial(String, String, String, boolean)} instead.
+  */
   @Deprecated
   public void invokespecial(final String owner, final String name, final String descriptor) {
     if (api >= Opcodes.ASM5) {
@@ -1127,14 +1127,14 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to call the given special method.
-   *
-   * @param owner the internal name of the method's owner class (see {@link
-   *     Type#getInternalName()}).
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @param isInterface if the method's owner class is an interface.
-   */
+  * Generates the instruction to call the given special method.
+  *
+  * @param owner the internal name of the method's owner class (see {@link
+  *     Type#getInternalName()}).
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @param isInterface if the method's owner class is an interface.
+  */
   public void invokespecial(
       final String owner, final String name, final String descriptor, final boolean isInterface) {
     if (api < Opcodes.ASM5) {
@@ -1148,13 +1148,13 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Deprecated.
-   *
-   * @param owner the internal name of the method's owner class.
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @deprecated use {@link #invokestatic(String, String, String, boolean)} instead.
-   */
+  * Deprecated.
+  *
+  * @param owner the internal name of the method's owner class.
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @deprecated use {@link #invokestatic(String, String, String, boolean)} instead.
+  */
   @Deprecated
   public void invokestatic(final String owner, final String name, final String descriptor) {
     if (api >= Opcodes.ASM5) {
@@ -1165,14 +1165,14 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to call the given static method.
-   *
-   * @param owner the internal name of the method's owner class (see {@link
-   *     Type#getInternalName()}).
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @param isInterface if the method's owner class is an interface.
-   */
+  * Generates the instruction to call the given static method.
+  *
+  * @param owner the internal name of the method's owner class (see {@link
+  *     Type#getInternalName()}).
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @param isInterface if the method's owner class is an interface.
+  */
   public void invokestatic(
       final String owner, final String name, final String descriptor, final boolean isInterface) {
     if (api < Opcodes.ASM5) {
@@ -1186,28 +1186,28 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to call the given interface method.
-   *
-   * @param owner the internal name of the method's owner class (see {@link
-   *     Type#getInternalName()}).
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   */
+  * Generates the instruction to call the given interface method.
+  *
+  * @param owner the internal name of the method's owner class (see {@link
+  *     Type#getInternalName()}).
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  */
   public void invokeinterface(final String owner, final String name, final String descriptor) {
     mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, owner, name, descriptor, true);
   }
 
   /**
-   * Generates the instruction to call the given dynamic method.
-   *
-   * @param name the method's name.
-   * @param descriptor the method's descriptor (see {@link Type}).
-   * @param bootstrapMethodHandle the bootstrap method.
-   * @param bootstrapMethodArguments the bootstrap method constant arguments. Each argument must be
-   *     an {@link Integer}, {@link Float}, {@link Long}, {@link Double}, {@link String}, {@link
-   *     Type}, {@link Handle} or {@link ConstantDynamic} value. This method is allowed to modify
-   *     the content of the array so a caller should expect that this array may change.
-   */
+  * Generates the instruction to call the given dynamic method.
+  *
+  * @param name the method's name.
+  * @param descriptor the method's descriptor (see {@link Type}).
+  * @param bootstrapMethodHandle the bootstrap method.
+  * @param bootstrapMethodArguments the bootstrap method constant arguments. Each argument must be
+  *     an {@link Integer}, {@link Float}, {@link Long}, {@link Double}, {@link String}, {@link
+  *     Type}, {@link Handle} or {@link ConstantDynamic} value. This method is allowed to modify
+  *     the content of the array so a caller should expect that this array may change.
+  */
   public void invokedynamic(
       final String name,
       final String descriptor,
@@ -1221,10 +1221,10 @@ public class InstructionAdapter extends MethodVisitor {
   }
 
   /**
-   * Generates the instruction to create and push on the stack an array of the given type.
-   *
-   * @param type an array Type.
-   */
+  * Generates the instruction to create and push on the stack an array of the given type.
+  *
+  * @param type an array Type.
+  */
   public void newarray(final Type type) {
     int arrayType;
     switch (type.getSort()) {

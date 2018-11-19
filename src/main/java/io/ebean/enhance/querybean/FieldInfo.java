@@ -25,13 +25,14 @@ public class FieldInfo implements Opcodes, Constants {
     this.signature = signature;
   }
 
+  @Override
   public String toString() {
     return "name:" + name + " desc:" + desc + " sig:" + signature;
   }
 
   /**
-   * Add the 'property access method' that callers should use (instead of get field).
-   */
+  * Add the 'property access method' that callers should use (instead of get field).
+  */
   public void writeMethod(ClassVisitor cw, boolean typeQueryRootBean) {
 
     // simple why to determine the property is an associated bean type
@@ -109,8 +110,8 @@ public class FieldInfo implements Opcodes, Constants {
   }
 
   /**
-   * Initialise the field (used by 'Alias' constructor).
-   */
+  * Initialise the field (used by 'Alias' constructor).
+  */
   public void writeFieldInit(MethodVisitor mv) {
     Label l10 = new Label();
     mv.visitLabel(l10);

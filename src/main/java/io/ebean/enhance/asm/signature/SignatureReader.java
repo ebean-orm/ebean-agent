@@ -45,24 +45,24 @@ public class SignatureReader {
   private final String signatureValue;
 
   /**
-   * Constructs a {@link SignatureReader} for the given signature.
-   *
-   * @param signature A <i>JavaTypeSignature</i>, <i>ClassSignature</i> or <i>MethodSignature</i>.
-   */
+  * Constructs a {@link SignatureReader} for the given signature.
+  *
+  * @param signature A <i>JavaTypeSignature</i>, <i>ClassSignature</i> or <i>MethodSignature</i>.
+  */
   public SignatureReader(final String signature) {
     this.signatureValue = signature;
   }
 
   /**
-   * Makes the given visitor visit the signature of this {@link SignatureReader}. This signature is
-   * the one specified in the constructor (see {@link #SignatureReader}). This method is intended to
-   * be called on a {@link SignatureReader} that was created using a <i>ClassSignature</i> (such as
-   * the <code>signature</code> parameter of the {@link ClassVisitor#visit}
-   * method) or a <i>MethodSignature</i> (such as the <code>signature</code> parameter of the {@link
-   * ClassVisitor#visitMethod} method).
-   *
-   * @param signatureVistor the visitor that must visit this signature.
-   */
+  * Makes the given visitor visit the signature of this {@link SignatureReader}. This signature is
+  * the one specified in the constructor (see {@link #SignatureReader}). This method is intended to
+  * be called on a {@link SignatureReader} that was created using a <i>ClassSignature</i> (such as
+  * the <code>signature</code> parameter of the {@link ClassVisitor#visit}
+  * method) or a <i>MethodSignature</i> (such as the <code>signature</code> parameter of the {@link
+  * ClassVisitor#visitMethod} method).
+  *
+  * @param signatureVistor the visitor that must visit this signature.
+  */
   public void accept(final SignatureVisitor signatureVistor) {
     String signature = this.signatureValue;
     int length = signature.length();
@@ -130,27 +130,27 @@ public class SignatureReader {
   }
 
   /**
-   * Makes the given visitor visit the signature of this {@link SignatureReader}. This signature is
-   * the one specified in the constructor (see {@link #SignatureReader}). This method is intended to
-   * be called on a {@link SignatureReader} that was created using a <i>JavaTypeSignature</i>, such
-   * as the <code>signature</code> parameter of the {@link
-   * ClassVisitor#visitField} or {@link
-   * MethodVisitor#visitLocalVariable} methods.
-   *
-   * @param signatureVisitor the visitor that must visit this signature.
-   */
+  * Makes the given visitor visit the signature of this {@link SignatureReader}. This signature is
+  * the one specified in the constructor (see {@link #SignatureReader}). This method is intended to
+  * be called on a {@link SignatureReader} that was created using a <i>JavaTypeSignature</i>, such
+  * as the <code>signature</code> parameter of the {@link
+  * ClassVisitor#visitField} or {@link
+  * MethodVisitor#visitLocalVariable} methods.
+  *
+  * @param signatureVisitor the visitor that must visit this signature.
+  */
   public void acceptType(final SignatureVisitor signatureVisitor) {
     parseType(signatureValue, 0, signatureVisitor);
   }
 
   /**
-   * Parses a JavaTypeSignature and makes the given visitor visit it.
-   *
-   * @param signature a string containing the signature that must be parsed.
-   * @param startOffset index of the first character of the signature to parsed.
-   * @param signatureVisitor the visitor that must visit this signature.
-   * @return the index of the first character after the parsed signature.
-   */
+  * Parses a JavaTypeSignature and makes the given visitor visit it.
+  *
+  * @param signature a string containing the signature that must be parsed.
+  * @param startOffset index of the first character of the signature to parsed.
+  * @param signatureVisitor the visitor that must visit this signature.
+  * @return the index of the first character after the parsed signature.
+  */
   private static int parseType(
       final String signature, final int startOffset, final SignatureVisitor signatureVisitor) {
     int offset = startOffset; // Current offset in the parsed signature.

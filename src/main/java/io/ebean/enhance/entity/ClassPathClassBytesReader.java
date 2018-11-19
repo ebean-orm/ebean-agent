@@ -12,47 +12,48 @@ import java.net.URLClassLoader;
  * Implementation of ClassBytesReader based on URLClassLoader.
  */
 public class ClassPathClassBytesReader implements ClassBytesReader {
-	
 
-	private final URL[] urls;
 
-	public ClassPathClassBytesReader(URL[] urls) {
-		this.urls = urls == null ? new URL[0]: urls;
-	}
-	
-	public byte[] getClassBytes(String className, ClassLoader classLoader) {
+  private final URL[] urls;
 
-		try (URLClassLoader cl = new URLClassLoader(urls, classLoader)) {
+  public ClassPathClassBytesReader(URL[] urls) {
+    this.urls = urls == null ? new URL[0]: urls;
+  }
 
-			InputStream is = null;
-			try {
+  @Override
+  public byte[] getClassBytes(String className, ClassLoader classLoader) {
 
-				String resource = className.replace('.', '/') + ".class";
-				
-				// read the class bytes, and define the class
-				URL url = cl.getResource(resource);
-				if (url == null) {
-					return null;
-				}
+    try (URLClassLoader cl = new URLClassLoader(urls, classLoader)) {
 
-				is = url.openStream();
-				return InputStreamTransform.readBytes(is);
+      InputStream is = null;
+      try {
 
-			} catch (IOException e){
-				throw new RuntimeException("IOException reading bytes for "+className, e);
+        String resource = className.replace('.', '/') + ".class";
 
-			} finally {
-				if (is != null){
-					try {
-						is.close();
-					} catch (IOException e) {
-						throw new RuntimeException("Error closing InputStream for "+className, e);
-					}
-				}
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Error closing URLClassLoader for "+className, e);
-		}
-	}
-	
+        // read the class bytes, and define the class
+        URL url = cl.getResource(resource);
+        if (url == null) {
+          return null;
+        }
+
+        is = url.openStream();
+        return InputStreamTransform.readBytes(is);
+
+      } catch (IOException e){
+        throw new RuntimeException("IOException reading bytes for "+className, e);
+
+      } finally {
+        if (is != null){
+          try {
+            is.close();
+          } catch (IOException e) {
+            throw new RuntimeException("Error closing InputStream for "+className, e);
+          }
+        }
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Error closing URLClassLoader for "+className, e);
+    }
+  }
+
 }

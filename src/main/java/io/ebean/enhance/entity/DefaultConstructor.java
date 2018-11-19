@@ -12,18 +12,18 @@ import io.ebean.enhance.common.ClassMeta;
 public class DefaultConstructor {
 
     /**
-     * Adds a default constructor.
-     */
+    * Adds a default constructor.
+    */
     public static void add(ClassVisitor cw, ClassMeta classMeta) {
-        
+
         if (classMeta.isLog(3)) {
             classMeta.log("... adding default constructor, super class: "+classMeta.getSuperClassName());
         }
-        
+
         MethodVisitor underlyingMV = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
-        
+
         ConstructorAdapter mv = new ConstructorAdapter(underlyingMV, classMeta, "()V");
-        
+
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);
@@ -34,7 +34,7 @@ public class DefaultConstructor {
         mv.visitLabel(l1);
         mv.visitLineNumber(2, l1);
         mv.visitInsn(Opcodes.RETURN);
-        
+
         Label l2 = new Label();
         mv.visitLabel(l2);
         mv.visitLocalVariable("this", "L"+classMeta.getClassName()+";", null, l0, l2, 0);

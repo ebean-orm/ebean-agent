@@ -12,25 +12,25 @@ import java.util.List;
  */
 public class CountryTest extends BaseTest {
 
-	@Test
-	public void finderTest() {
+  @Test
+  public void finderTest() {
 
-		Country got = Country.find.byCode("NZ");
-		System.out.println("done" + got);
-	}
+    Country got = Country.find.byCode("NZ");
+    System.out.println("done" + got);
+  }
 
-	@Test
-	public void finderOrmQuery() {
+  @Test
+  public void finderOrmQuery() {
 
-		List<Country> countries = Country.find.byCodeLike("N");
-		System.out.println("done" + countries);
-	}
+    List<Country> countries = Country.find.byCodeLike("N");
+    System.out.println("done" + countries);
+  }
 
-	@Test
-	public void finderNativeSql() {
+  @Test
+  public void finderNativeSql() {
 
-		List<String> countryNames = Country.find.byName();
-		System.out.println("done" + countryNames);
-	}
+    List<String> countryNames = Country.find.byName();
+    System.out.println("done" + countryNames);
+  }
 
 }

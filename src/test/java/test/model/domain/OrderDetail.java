@@ -33,29 +33,29 @@ public class OrderDetail extends BaseModel {
   }
 
   /**
-   * Return order qty.
-   */
+  * Return order qty.
+  */
   public Integer getOrderQty() {
     return orderQty;
   }
 
   /**
-   * Set order qty.
-   */
+  * Set order qty.
+  */
   public void setOrderQty(Integer orderQty) {
     this.orderQty = orderQty;
   }
 
   /**
-   * Return ship qty.
-   */
+  * Return ship qty.
+  */
   public Integer getShipQty() {
     return shipQty;
   }
 
   /**
-   * Set ship qty.
-   */
+  * Set ship qty.
+  */
   public void setShipQty(Integer shipQty) {
     this.shipQty = shipQty;
   }
@@ -69,29 +69,29 @@ public class OrderDetail extends BaseModel {
   }
 
   /**
-   * Return order.
-   */
+  * Return order.
+  */
   public Order getOrder() {
     return order;
   }
 
   /**
-   * Set order.
-   */
+  * Set order.
+  */
   public void setOrder(Order order) {
     this.order = order;
   }
 
   /**
-   * Return product.
-   */
+  * Return product.
+  */
   public Product getProduct() {
     return product;
   }
 
   /**
-   * Set product.
-   */
+  * Set product.
+  */
   public void setProduct(Product product) {
     this.product = product;
   }

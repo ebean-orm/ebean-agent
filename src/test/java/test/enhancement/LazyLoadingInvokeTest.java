@@ -123,8 +123,8 @@ public class LazyLoadingInvokeTest extends BaseTest {
   }
 
   /**
-   * For asserting the lazy loading occured.
-   */
+  * For asserting the lazy loading occured.
+  */
   private static class MyBeanLoader implements BeanLoader {
 
     int count;

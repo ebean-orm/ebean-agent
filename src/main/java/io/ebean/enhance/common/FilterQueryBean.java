@@ -7,47 +7,47 @@ import java.util.Arrays;
  */
 class FilterQueryBean {
 
-	private final boolean ignoreAll;
-	private final boolean detectOnAll;
+  private final boolean ignoreAll;
+  private final boolean detectOnAll;
 
-	private final String[] topLevelPackages;
+  private final String[] topLevelPackages;
 
-	FilterQueryBean(AgentManifest manifest) {
+  FilterQueryBean(AgentManifest manifest) {
 
-		// if no packages for either then run detection on everything
-		ignoreAll = manifest.isQueryBeanNone();
+    // if no packages for either then run detection on everything
+    ignoreAll = manifest.isQueryBeanNone();
 
-		// if no query beans packages we need to run detection on everything
-		detectOnAll = manifest.getQuerybeanPackages().isEmpty();
+    // if no query beans packages we need to run detection on everything
+    detectOnAll = manifest.getQuerybeanPackages().isEmpty();
 
-		DistillPackages distill = new DistillPackages().add(manifest.getEntityPackages());
-		if (!manifest.isQueryBeanNone()) {
-			distill.add(manifest.getQuerybeanPackages());
-		}
-		this.topLevelPackages = distill.distill();
-	}
+    DistillPackages distill = new DistillPackages().add(manifest.getEntityPackages());
+    if (!manifest.isQueryBeanNone()) {
+      distill.add(manifest.getQuerybeanPackages());
+    }
+    this.topLevelPackages = distill.distill();
+  }
 
-	@Override
-	public String toString() {
-		return "ignoreAll:" + ignoreAll + " detectOnAll:" + detectOnAll + " topLevelPackages:" + Arrays.toString(topLevelPackages);
-	}
+  @Override
+  public String toString() {
+    return "ignoreAll:" + ignoreAll + " detectOnAll:" + detectOnAll + " topLevelPackages:" + Arrays.toString(topLevelPackages);
+  }
 
-	/**
-	 * Return true if the enhancement/detection should be performed on this class.
-	 */
-	boolean detectEnhancement(String className) {
+  /**
+  * Return true if the enhancement/detection should be performed on this class.
+  */
+  boolean detectEnhancement(String className) {
 
-		if (ignoreAll) {
-			return false;
-		}
-		if (detectOnAll) {
-			return true;
-		}
-		for (String pkg :topLevelPackages) {
-			if (className.startsWith(pkg)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    if (ignoreAll) {
+      return false;
+    }
+    if (detectOnAll) {
+      return true;
+    }
+    for (String pkg :topLevelPackages) {
+      if (className.startsWith(pkg)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

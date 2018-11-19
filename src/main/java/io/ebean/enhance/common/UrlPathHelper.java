@@ -13,8 +13,8 @@ public class UrlPathHelper {
   private static final String PROTOCAL_PREFIX = "file:";
 
   /**
-   * Convert string paths into URL class paths.
-   */
+  * Convert string paths into URL class paths.
+  */
   public static URL[] convertToUrl(String[] paths) {
     ArrayList<URL> list = new ArrayList<URL>();
     for (int i = 0; i < paths.length; i++) {
@@ -27,8 +27,8 @@ public class UrlPathHelper {
   }
 
   /**
-   * Convert string path into URL class path.
-   */
+  * Convert string path into URL class path.
+  */
   public static URL convertToUrl(String path) {
     if (isEmpty(path)) {
       return null;
@@ -41,8 +41,8 @@ public class UrlPathHelper {
   }
 
   /**
-   * Convert a string path to be used in URL class path entry.
-   */
+  * Convert a string path to be used in URL class path entry.
+  */
   public static String convertUrlString(String classpath) {
 
     if (isEmpty(classpath)) {

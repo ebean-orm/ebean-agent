@@ -18,8 +18,8 @@ public class StaticInitAdapter extends AdviceAdapter {
   }
 
   /**
-   * Adds the call to the static _$initProfileLocations() method.
-   */
+  * Adds the call to the static _$initProfileLocations() method.
+  */
   @Override
   public void visitCode() {
     super.visitCode();

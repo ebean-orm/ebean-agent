@@ -13,8 +13,8 @@ class DistillPackages {
   private TreeSet<String> treeSet = new TreeSet<>();
 
   /**
-   * Add packages that we want to distill.
-   */
+  * Add packages that we want to distill.
+  */
   DistillPackages add(Collection<String> packages) {
     if (packages != null) {
       treeSet.addAll(packages);
@@ -23,8 +23,8 @@ class DistillPackages {
   }
 
   /**
-   * Add a raw entry splitting it into individual packages by delimiters.
-   */
+  * Add a raw entry splitting it into individual packages by delimiters.
+  */
   DistillPackages addRaw(String packages) {
     if (packages != null) {
       String[] split = packages.split(",|;| ");
@@ -39,15 +39,15 @@ class DistillPackages {
   }
 
   /**
-   * Return the top level packages (with trailing slash) as an Array.
-   */
+  * Return the top level packages (with trailing slash) as an Array.
+  */
   String[] distill() {
     return convertToArray(deriveTopLevel());
   }
 
   /**
-   * Distill the list of packages into distinct top level packages.
-   */
+  * Distill the list of packages into distinct top level packages.
+  */
   private List<String> deriveTopLevel() {
 
     List<String> distilled = new ArrayList<>();
@@ -63,10 +63,10 @@ class DistillPackages {
   }
 
   /**
-   * Convert the dot notation entity bean packages to slash notation.
-   *
-   * @param packages entity bean packages
-   */
+  * Convert the dot notation entity bean packages to slash notation.
+  *
+  * @param packages entity bean packages
+  */
   private String[] convertToArray(Collection<String> packages) {
 
     String[] asArray = packages.toArray(new String[packages.size()]);
@@ -77,8 +77,8 @@ class DistillPackages {
   }
 
   /**
-   * Convert package to slash notation taking into account trailing wildcard.
-   */
+  * Convert package to slash notation taking into account trailing wildcard.
+  */
   private String convert(String pkg) {
 
     pkg = pkg.trim();
@@ -90,8 +90,8 @@ class DistillPackages {
   }
 
   /**
-   * Return true if the package is not already contained in the distilled list.
-   */
+  * Return true if the package is not already contained in the distilled list.
+  */
   private boolean notAlreadyContained(List<String> distilled, String pack) {
 
     for (String aDistilled : distilled) {

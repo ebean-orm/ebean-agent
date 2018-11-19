@@ -17,28 +17,29 @@ public class DetectQueryBean {
     this.entityPackages = entityPackages;
   }
 
+  @Override
   public String toString() {
     return Arrays.toString(entityPackages);
   }
 
   /**
-   * Return true if there are no known packages.
-   */
+  * Return true if there are no known packages.
+  */
   public boolean isEmpty() {
     return entityPackages.length == 0;
   }
 
   /**
-   * Return the packages that entity beans are expected.
-   * Query beans are expected to be in a query sub-package.
-   */
+  * Return the packages that entity beans are expected.
+  * Query beans are expected to be in a query sub-package.
+  */
   String[] getEntityPackages() {
     return entityPackages;
   }
 
   /**
-   * Return true if this class is a query bean using naming conventions for query beans.
-   */
+  * Return true if this class is a query bean using naming conventions for query beans.
+  */
   public boolean isQueryBean(String owner) {
 
     int subPackagePos = owner.lastIndexOf("/query/");
@@ -53,8 +54,8 @@ public class DetectQueryBean {
   }
 
   /**
-   * Check that the class is in an expected package (sub package of a package containing entity beans).
-   */
+  * Check that the class is in an expected package (sub package of a package containing entity beans).
+  */
   private boolean isQueryBeanPackage(String domainPackage) {
     for (String aPackage : entityPackages) {
       if (domainPackage.startsWith(aPackage)) {
@@ -65,8 +66,8 @@ public class DetectQueryBean {
   }
 
   /**
-   * Check that the class follows query bean naming convention.
-   */
+  * Check that the class follows query bean naming convention.
+  */
   private boolean isQueryBeanSuffix(String suffix) {
     return (suffix.startsWith("/query/Q") || suffix.startsWith("/query/assoc/Q"));
   }

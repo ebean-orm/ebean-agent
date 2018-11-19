@@ -59,8 +59,8 @@ public class QAddress extends TQRootBean<Address,QAddress> {
   }
 
   /**
-   * Construct for alias.
-   */
+  * Construct for alias.
+  */
   private QAddress(boolean alias) {
     super(alias);
   }

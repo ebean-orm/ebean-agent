@@ -20,8 +20,8 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
   private final String signature;
 
   /**
-   * Construct for a query bean class given its associated entity bean domain class and a class visitor.
-   */
+  * Construct for a query bean class given its associated entity bean domain class and a class visitor.
+  */
   public TypeQueryAssocBasicConstructor(ClassInfo classInfo, ClassVisitor cv, String desc, String signature) {
     super();
     this.cv = cv;

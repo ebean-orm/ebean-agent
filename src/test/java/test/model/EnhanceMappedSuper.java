@@ -6,5 +6,5 @@ import javax.persistence.MappedSuperclass;
 public class EnhanceMappedSuper {
 
   String name;
-  
+
 }

@@ -8,7 +8,7 @@ public class BExtends extends BaseWithEqualsAndNoIdEntity {
 
   @Id
   Long id;
-  
+
   String name;
 
   public String getName() {
@@ -26,5 +26,5 @@ public class BExtends extends BaseWithEqualsAndNoIdEntity {
   public void setId(Long id) {
     this.id = id;
   }
-  
+
 }

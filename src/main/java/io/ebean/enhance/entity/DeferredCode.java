@@ -9,11 +9,11 @@ import io.ebean.enhance.asm.MethodVisitor;
 public interface DeferredCode {
 
   /**
-   * Write the bytecode to the method visitor.
-   * <p>
-   * Called when it is deemed the instructions should not be removed.
-   * </p>
-   */
+  * Write the bytecode to the method visitor.
+  * <p>
+  * Called when it is deemed the instructions should not be removed.
+  * </p>
+  */
   void write(MethodVisitor mv);
 
 }

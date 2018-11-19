@@ -6,11 +6,11 @@ import io.ebean.enhance.asm.Opcodes;
 public class VisitUtil implements Opcodes {
 
   /**
-   * Helper method for visiting an int value.
-   * <p>
-   * This can use special constant values for int values from 0 to 5.
-   * </p>
-   */
+  * Helper method for visiting an int value.
+  * <p>
+  * This can use special constant values for int values from 0 to 5.
+  * </p>
+  */
   public static void visitIntInsn(MethodVisitor mv, int value) {
 
     switch (value) {

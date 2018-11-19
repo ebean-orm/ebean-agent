@@ -14,8 +14,8 @@ import io.ebean.enhance.asm.TypePath;
 public abstract class BaseConstructorAdapter extends MethodVisitor implements Opcodes {
 
   /**
-   * Construct for a query bean class given its associated entity bean domain class and a class visitor.
-   */
+  * Construct for a query bean class given its associated entity bean domain class and a class visitor.
+  */
   public BaseConstructorAdapter() {
     super(Opcodes.ASM7, null);
   }

@@ -20,43 +20,43 @@ public class OfflineFileTransform {
 
   protected final InputStreamTransform inputStreamTransform;
 
-	protected final String inDir;
+  protected final String inDir;
 
   protected  TransformationListener listener;
 
-	/**
-	 * Enhance the class file and replace the file with the the enhanced
-	 * version of the class.
-	 * 
-	 * @param transformer
-	 *            object that actually transforms the class bytes
-	 * @param classLoader
-	 *            the ClassLoader used as part of the transformation
-	 * @param inDir
-	 *            the root directory where the class files are located
-	 */
-	public OfflineFileTransform(Transformer transformer, ClassLoader classLoader, String inDir) {
-		this.inputStreamTransform = new InputStreamTransform(transformer, classLoader);
-		inDir = trimSlash(inDir);
-		this.inDir = inDir;
-	}
+  /**
+  * Enhance the class file and replace the file with the the enhanced
+  * version of the class.
+  *
+  * @param transformer
+  *            object that actually transforms the class bytes
+  * @param classLoader
+  *            the ClassLoader used as part of the transformation
+  * @param inDir
+  *            the root directory where the class files are located
+  */
+  public OfflineFileTransform(Transformer transformer, ClassLoader classLoader, String inDir) {
+    this.inputStreamTransform = new InputStreamTransform(transformer, classLoader);
+    inDir = trimSlash(inDir);
+    this.inDir = inDir;
+  }
 
-	/** Register a listener to receive event notification */
-	public void setListener(TransformationListener v) {
-		this.listener = v;
-	}
+  /** Register a listener to receive event notification */
+  public void setListener(TransformationListener v) {
+    this.listener = v;
+  }
 
-	private String trimSlash(String dir) {
-		if (dir.endsWith("/")){
-			return dir.substring(0, dir.length()-1);
-		} else {
-			return dir;
-		}
-	}
+  private String trimSlash(String dir) {
+    if (dir.endsWith("/")){
+      return dir.substring(0, dir.length()-1);
+    } else {
+      return dir;
+    }
+  }
 
   /**
-   * Process the packageNames as comma delimited string.
-   */
+  * Process the packageNames as comma delimited string.
+  */
   public void process(String packageNames) {
 
     if (packageNames == null) {
@@ -71,14 +71,14 @@ public class OfflineFileTransform {
     process(pkgNames);
   }
 
-	/**
-	 * Process all the comma delimited list of packages.
-	 * <p>
-	 * Package names are effectively converted into a directory on the file
-	 * system, and the class files are found and processed.
-	 * </p>
-	 */
-	public void process(Set<String> packageNames) {
+  /**
+  * Process all the comma delimited list of packages.
+  * <p>
+  * Package names are effectively converted into a directory on the file
+  * system, and the class files are found and processed.
+  * </p>
+  */
+  public void process(Set<String> packageNames) {
 
     if (packageNames == null || packageNames.isEmpty()) {
       // just process all directories
@@ -87,25 +87,25 @@ public class OfflineFileTransform {
       return;
     }
 
-		for (String pkgName : packageNames) {
+    for (String pkgName : packageNames) {
 
-			String pkg = pkgName.trim().replace('.', '/');
+      String pkg = pkgName.trim().replace('.', '/');
 
-			if (pkg.endsWith("**")) {
-				pkg = pkg.substring(0, pkg.length() - 2);
-			} else if (pkg.endsWith("*")) {
-				pkg = pkg.substring(0, pkg.length() - 1);
-			}
-			
-			pkg = trimSlash(pkg);
+      if (pkg.endsWith("**")) {
+        pkg = pkg.substring(0, pkg.length() - 2);
+      } else if (pkg.endsWith("*")) {
+        pkg = pkg.substring(0, pkg.length() - 1);
+      }
 
-			processPackage(pkg);
-		}
-	}
+      pkg = trimSlash(pkg);
 
-	private void processPackage(String dir) {
+      processPackage(pkg);
+    }
+  }
 
-		inputStreamTransform.log(3, "transform> pkg: " + dir);
+  private void processPackage(String dir) {
+
+    inputStreamTransform.log(3, "transform> pkg: " + dir);
 
     String dirPath = inDir + "/" + dir;
     File d = new File(dirPath);
@@ -113,54 +113,54 @@ public class OfflineFileTransform {
       throw new RuntimeException("File not found " + dirPath + "  currentDir:" + new File(".").getAbsolutePath());
     }
 
-		File[] files = d.listFiles();
+    File[] files = d.listFiles();
 
-		File file = null;
+    File file = null;
 
-		try {
-			for (int i = 0; i < files.length; i++) {
-				file = files[i];
-				if (file.isDirectory()) {
+    try {
+      for (int i = 0; i < files.length; i++) {
+        file = files[i];
+        if (file.isDirectory()) {
           String subDir = dir + "/" + file.getName();
           processPackage(subDir);
-				} else {
-					String fileName = file.getName();
-					if (fileName.endsWith(".java")) {
-						// possibly a common mistake... mixing .java and .class
-						System.err.println("Expecting a .class file but got " + fileName + " ... ignoring");
+        } else {
+          String fileName = file.getName();
+          if (fileName.endsWith(".java")) {
+            // possibly a common mistake... mixing .java and .class
+            System.err.println("Expecting a .class file but got " + fileName + " ... ignoring");
 
-					} else if (fileName.endsWith(".class")) {
-						transformFile(file);
-					}
-				}
-			}
+          } else if (fileName.endsWith(".class")) {
+            transformFile(file);
+          }
+        }
+      }
 
-		} catch (Exception e) {
-			String fileName = file == null ? "null" : file.getName();
-			throw new RuntimeException("Error transforming file " + fileName, e);
-		}
+    } catch (Exception e) {
+      String fileName = file == null ? "null" : file.getName();
+      throw new RuntimeException("Error transforming file " + fileName, e);
+    }
 
-	}
+  }
 
-	private void transformFile(File file) throws IOException, IllegalClassFormatException {
+  private void transformFile(File file) throws IOException, IllegalClassFormatException {
 
-		String className = getClassName(file);
+    String className = getClassName(file);
 
-		byte[] result = inputStreamTransform.transform(className, file);
+    byte[] result = inputStreamTransform.transform(className, file);
 
-		if (result != null) {
-			InputStreamTransform.writeBytes(result, file);
-			if(listener!=null) {
-				listener.logEvent("Enhanced "+file);
-			}
-		}
-	}
+    if (result != null) {
+      InputStreamTransform.writeBytes(result, file);
+      if(listener!=null) {
+        listener.logEvent("Enhanced "+file);
+      }
+    }
+  }
 
-	private String getClassName(File file) {
-		String path = file.getPath();
-		path = path.substring(inDir.length() + 1);
-		path = path.substring(0, path.length() - ".class".length());
-		// for windows... replace the
-		return StringReplace.replace(path,"\\", "/");
-	}
+  private String getClassName(File file) {
+    String path = file.getPath();
+    path = path.substring(inDir.length() + 1);
+    path = path.substring(0, path.length() - ".class".length());
+    // for windows... replace the
+    return StringReplace.replace(path,"\\", "/");
+  }
 }

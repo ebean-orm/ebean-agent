@@ -21,9 +21,9 @@ public class Address extends BaseModel {
   Country country;
 
   /**
-   * Create a copy of the address. Used to provide a 'snapshot' of 
-   * the shippingAddress for a give order.
-   */
+  * Create a copy of the address. Used to provide a 'snapshot' of
+  * the shippingAddress for a give order.
+  */
   public Address createCopy() {
     Address copy = new Address();
     copy.setLine1(line1);
@@ -32,63 +32,64 @@ public class Address extends BaseModel {
     copy.setCountry(country);
     return copy;
   }
-  
+
+  @Override
   public String toString() {
     return id + " " + line1 + " " + line2 + " " + city + " " + country;
   }
 
   /**
-   * Return line 1.
-   */
+  * Return line 1.
+  */
   public String getLine1() {
     return line1;
   }
 
   /**
-   * Set line 1.
-   */
+  * Set line 1.
+  */
   public void setLine1(String line1) {
     this.line1 = line1;
   }
 
   /**
-   * Return line 2.
-   */
+  * Return line 2.
+  */
   public String getLine2() {
     return line2;
   }
 
   /**
-   * Set line 2.
-   */
+  * Set line 2.
+  */
   public void setLine2(String line2) {
     this.line2 = line2;
   }
 
   /**
-   * Return city.
-   */
+  * Return city.
+  */
   public String getCity() {
     return city;
   }
 
   /**
-   * Set city.
-   */
+  * Set city.
+  */
   public void setCity(String city) {
     this.city = city;
   }
 
   /**
-   * Return country.
-   */
+  * Return country.
+  */
   public Country getCountry() {
     return country;
   }
 
   /**
-   * Set country.
-   */
+  * Set country.
+  */
   public void setCountry(Country country) {
     this.country = country;
   }

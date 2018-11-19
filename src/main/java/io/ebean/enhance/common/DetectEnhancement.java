@@ -56,22 +56,22 @@ public class DetectEnhancement extends ClassVisitor {
   }
 
   /**
-   * Return true if this is an entity bean or embeddable bean.
-   */
+  * Return true if this is an entity bean or embeddable bean.
+  */
   public boolean isEntity() {
     return entity;
   }
 
   /**
-   * Return true if ANY method has the transactional annotation.
-   */
+  * Return true if ANY method has the transactional annotation.
+  */
   public boolean isTransactional() {
     return transactional;
   }
 
   /**
-   * Visit the class with interfaces.
-   */
+  * Visit the class with interfaces.
+  */
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
@@ -107,8 +107,8 @@ public class DetectEnhancement extends ClassVisitor {
   }
 
   /**
-   * Visit class level annotations.
-   */
+  * Visit class level annotations.
+  */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     if (isEntityAnnotation(desc)) {
@@ -127,24 +127,24 @@ public class DetectEnhancement extends ClassVisitor {
   }
 
   /**
-   * Return true if the annotation is for an Entity, Embeddable or MappedSuperclass.
-   */
+  * Return true if the annotation is for an Entity, Embeddable or MappedSuperclass.
+  */
   private boolean isEntityAnnotation(String desc) {
     return EntityCheck.isEntityAnnotation(desc);
   }
 
   /**
-   * Visit the methods specifically looking for method level transactional
-   * annotations.
-   */
+  * Visit the methods specifically looking for method level transactional
+  * annotations.
+  */
   @Override
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
     return detectTransactionalMethod;
   }
 
   /**
-   * Check methods for Transactional annotation.
-   */
+  * Check methods for Transactional annotation.
+  */
   private class DetectTransactionalMethod extends MethodVisitor {
 
     DetectTransactionalMethod() {

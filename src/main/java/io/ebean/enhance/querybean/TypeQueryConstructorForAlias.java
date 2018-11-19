@@ -16,8 +16,8 @@ public class TypeQueryConstructorForAlias extends BaseConstructorAdapter impleme
   private final ClassVisitor cv;
 
   /**
-   * Construct for a query bean class and a class visitor.
-   */
+  * Construct for a query bean class and a class visitor.
+  */
   public TypeQueryConstructorForAlias(ClassInfo classInfo, ClassVisitor cv) {
     super();
     this.cv = cv;
@@ -25,8 +25,8 @@ public class TypeQueryConstructorForAlias extends BaseConstructorAdapter impleme
   }
 
   /**
-   * Write the constructor initialising all the fields eagerly.
-   */
+  * Write the constructor initialising all the fields eagerly.
+  */
   @Override
   public void visitCode() {
 

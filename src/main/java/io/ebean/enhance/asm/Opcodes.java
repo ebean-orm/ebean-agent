@@ -66,11 +66,11 @@ public interface Opcodes {
   int V12 = 0 << 16 | 56;
 
   /**
-   * Version flag indicating that the class is using 'preview' features.
-   *
-   * <p>{@code version & V_PREVIEW == V_PREVIEW} tests if a version is flagged with {@code
-   * V_PREVIEW}.
-   */
+  * Version flag indicating that the class is using 'preview' features.
+  *
+  * <p>{@code version & V_PREVIEW == V_PREVIEW} tests if a version is flagged with {@code
+  * V_PREVIEW}.
+  */
   int V_PREVIEW = 0xFFFF0000;
 
   // Access flags values, defined in
@@ -144,26 +144,26 @@ public interface Opcodes {
   int F_FULL = 0;
 
   /**
-   * A compressed frame where locals are the same as the locals in the previous frame, except that
-   * additional 1-3 locals are defined, and with an empty stack.
-   */
+  * A compressed frame where locals are the same as the locals in the previous frame, except that
+  * additional 1-3 locals are defined, and with an empty stack.
+  */
   int F_APPEND = 1;
 
   /**
-   * A compressed frame where locals are the same as the locals in the previous frame, except that
-   * the last 1-3 locals are absent and with an empty stack.
-   */
+  * A compressed frame where locals are the same as the locals in the previous frame, except that
+  * the last 1-3 locals are absent and with an empty stack.
+  */
   int F_CHOP = 2;
 
   /**
-   * A compressed frame with exactly the same locals as the previous frame and with an empty stack.
-   */
+  * A compressed frame with exactly the same locals as the previous frame and with an empty stack.
+  */
   int F_SAME = 3;
 
   /**
-   * A compressed frame with exactly the same locals as the previous frame and with a single value
-   * on the stack.
-   */
+  * A compressed frame with exactly the same locals as the previous frame and with a single value
+  * on the stack.
+  */
   int F_SAME1 = 4;
 
   // Standard stack map frame element types, used in {@link ClassVisitor#visitFrame}.
