@@ -6,6 +6,7 @@ import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.ClassMeta;
+import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.VisitUtil;
 
 import java.util.List;
@@ -307,8 +308,8 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitLabel(l9);
     mv.visitLocalVariable("this", "L" + className + ";", null, l0, l9, 0);
     mv.visitLocalVariable("index", "I", null, l0, l9, 1);
-    mv.visitLocalVariable("o", "Ljava/lang/Object;", null, l0, l9, 2);
-    mv.visitLocalVariable("arg", "Ljava/lang/Object;", null, l0, l9, 3);
+    mv.visitLocalVariable("o", EnhanceConstants.OBJECT_CLASS, null, l0, l9, 2);
+    mv.visitLocalVariable("arg", EnhanceConstants.OBJECT_CLASS, null, l0, l9, 3);
     mv.visitLocalVariable("p", "L" + className + ";", null, l1, l9, 4);
     mv.visitMaxs(5, 5);
     mv.visitEnd();

@@ -61,7 +61,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
   public static void addIdentityField(ClassVisitor cv) {
 
       int access = ACC_PROTECTED + ACC_TRANSIENT;
-    FieldVisitor f0 = cv.visitField(access, IDENTITY_FIELD, "Ljava/lang/Object;", null, null);
+    FieldVisitor f0 = cv.visitField(access, IDENTITY_FIELD, OBJECT_CLASS, null, null);
     f0.visitEnd();
   }
 
@@ -119,13 +119,13 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     mv.visitJumpInsn(IFNULL, l3);
     Label l7 = new Label();
     mv.visitLabel(l7);
     mv.visitLineNumber(1, l7);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     mv.visitVarInsn(ALOAD, 1);
     mv.visitInsn(MONITOREXIT);
     mv.visitLabel(l1);
@@ -146,7 +146,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitVarInsn(ALOAD, 0);
     idFieldMeta.appendGetPrimitiveIdValue(mv, classMeta);
     idFieldMeta.appendValueOf(mv);
-    mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     Label l10 = new Label();
     mv.visitJumpInsn(GOTO, l10);
     mv.visitLabel(l8);
@@ -156,12 +156,12 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitTypeInsn(NEW, "java/lang/Object");
     mv.visitInsn(DUP);
     mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-    mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     mv.visitLabel(l10);
     mv.visitLineNumber(1, l10);
     mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     mv.visitVarInsn(ALOAD, 1);
     mv.visitInsn(MONITOREXIT);
     mv.visitLabel(l4);
@@ -231,13 +231,13 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     mv.visitJumpInsn(IFNULL, l3);
     Label l7 = new Label();
     mv.visitLabel(l7);
     mv.visitLineNumber(1, l7);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     mv.visitVarInsn(ALOAD, 1);
     mv.visitInsn(MONITOREXIT);
     mv.visitLabel(l1);
@@ -260,7 +260,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitLineNumber(1, l10);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitVarInsn(ALOAD, 2);
-    mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     Label l11 = new Label();
     mv.visitJumpInsn(GOTO, l11);
     mv.visitLabel(l9);
@@ -270,12 +270,12 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitTypeInsn(NEW, "java/lang/Object");
     mv.visitInsn(DUP);
     mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-    mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(PUTFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     mv.visitLabel(l11);
     mv.visitLineNumber(1, l11);
     mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, "Ljava/lang/Object;");
+    mv.visitFieldInsn(GETFIELD, className, IDENTITY_FIELD, OBJECT_CLASS);
     mv.visitVarInsn(ALOAD, 1);
     mv.visitInsn(MONITOREXIT);
     mv.visitLabel(l4);
@@ -292,7 +292,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     Label l12 = new Label();
     mv.visitLabel(l12);
     mv.visitLocalVariable("this", "L"+className+";", null, l6, l12, 0);
-    mv.visitLocalVariable("tmpId", "Ljava/lang/Object;", null, l8, l2, 2);
+    mv.visitLocalVariable("tmpId", OBJECT_CLASS, null, l8, l2, 2);
     mv.visitMaxs(3, 4);
     mv.visitEnd();
   }
@@ -372,7 +372,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     Label l7 = new Label();
     mv.visitLabel(l7);
     mv.visitLocalVariable("this", "L"+classMeta.getClassName()+";", null, l0, l7, 0);
-    mv.visitLocalVariable("obj", "Ljava/lang/Object;", null, l0, l7, 1);
+    mv.visitLocalVariable("obj", OBJECT_CLASS, null, l0, l7, 1);
     mv.visitMaxs(2, 2);
     mv.visitEnd();
   }

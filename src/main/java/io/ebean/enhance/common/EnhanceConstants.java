@@ -5,6 +5,10 @@ package io.ebean.enhance.common;
  */
 public interface EnhanceConstants {
 
+  String STRING_CLASS = "Ljava/lang/String;";
+
+  String OBJECT_CLASS = "Ljava/lang/Object;";
+
   String AVAJE_TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
 
   String JAVAX_PERSISTENCE = "Ljavax/persistence/";

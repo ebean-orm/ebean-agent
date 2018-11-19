@@ -5,11 +5,12 @@ import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
+import io.ebean.enhance.common.EnhanceConstants;
 
 /**
  * Field information.
  */
-public class FieldInfo implements Opcodes, Constants {
+public class FieldInfo implements Opcodes, Constants, EnhanceConstants {
 
   private final ClassInfo classInfo;
   private final String name;
@@ -65,9 +66,9 @@ public class FieldInfo implements Opcodes, Constants {
         mv.visitInsn(ICONST_1);
         mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;I)V", false);
       } else {
-        mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_ROOT, "Ljava/lang/Object;");
+        mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_ROOT, OBJECT_CLASS);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_PATH, "Ljava/lang/String;");
+        mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_PATH, STRING_CLASS);
         mv.visitInsn(ICONST_1);
         mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;I)V", false);
       }
@@ -76,9 +77,9 @@ public class FieldInfo implements Opcodes, Constants {
       if (typeQueryRootBean) {
         mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;)V", false);
       } else {
-        mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_ROOT, "Ljava/lang/Object;");
+        mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_ROOT, OBJECT_CLASS);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_PATH, "Ljava/lang/String;");
+        mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_PATH, STRING_CLASS);
         mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
       }
     }

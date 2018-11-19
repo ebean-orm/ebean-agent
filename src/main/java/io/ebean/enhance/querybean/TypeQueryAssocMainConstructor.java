@@ -3,6 +3,7 @@ package io.ebean.enhance.querybean;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.EnhanceConstants;
 
 /**
  * Changes the existing constructor to remove all the field initialisation as these are going to be
@@ -49,9 +50,9 @@ public class TypeQueryAssocMainConstructor extends BaseConstructorAdapter implem
     Label l2 = new Label();
     mv.visitLabel(l2);
     mv.visitLocalVariable("this", "L"+classInfo.getClassName()+";", "L"+classInfo.getClassName()+"<TR;>;", l0, l2, 0);
-    mv.visitLocalVariable("name", "Ljava/lang/String;", null, l0, l2, 1);
-    mv.visitLocalVariable("root", "Ljava/lang/Object;", "TR;", l0, l2, 2);
-    mv.visitLocalVariable("prefix", "Ljava/lang/String;", null, l0, l2, 3);
+    mv.visitLocalVariable("name", EnhanceConstants.STRING_CLASS, null, l0, l2, 1);
+    mv.visitLocalVariable("root", EnhanceConstants.OBJECT_CLASS, "TR;", l0, l2, 2);
+    mv.visitLocalVariable("prefix", EnhanceConstants.STRING_CLASS, null, l0, l2, 3);
     mv.visitLocalVariable("depth", "I", null, l0, l2, 4);
     mv.visitMaxs(4, 5);
     mv.visitEnd();
