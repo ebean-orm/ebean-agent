@@ -38,12 +38,12 @@ public abstract class MyModelEntity {
 //    throw new IllegalArgumentException("Invalid index " + pos);
 //    }
 //  }
-  
+
 
   public Long getTwo() {
     return null;
   }
-  
+
 //  public void setfield2(int pos, Object value) {
 //    switch (pos) {
 //    case 0:

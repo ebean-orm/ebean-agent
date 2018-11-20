@@ -14,5 +14,5 @@ public class AExtends extends BaseWithEqualsEntity {
   public void setName(String name) {
     this.name = name;
   }
-  
+
 }

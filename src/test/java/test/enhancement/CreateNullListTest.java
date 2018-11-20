@@ -22,7 +22,7 @@ public class CreateNullListTest extends BaseTest {
     EntityBean customerEntity = (EntityBean)customer;
     EntityBeanIntercept intercept = customerEntity._ebean_getIntercept();
 
-     assertTrue(intercept.isNew());
+    assertTrue(intercept.isNew());
 
     // contacts created automatically when "checkNullManyFields" is set
     List<Contact> contacts = customer.getContacts();

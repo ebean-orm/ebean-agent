@@ -55,12 +55,12 @@ public final class ModuleHashesAttribute extends Attribute {
   public List<byte[]> hashes;
 
   /**
-   * Constructs a new {@link ModuleHashesAttribute}.
-   *
-   * @param algorithm the name of the hashing algorithm.
-   * @param modules a list of module names.
-   * @param hashes the hash of the modules in 'modules'. The two lists must have the same size.
-   */
+  * Constructs a new {@link ModuleHashesAttribute}.
+  *
+  * @param algorithm the name of the hashing algorithm.
+  * @param modules a list of module names.
+  * @param hashes the hash of the modules in 'modules'. The two lists must have the same size.
+  */
   public ModuleHashesAttribute(
       final String algorithm, final List<String> modules, final List<byte[]> hashes) {
     super("ModuleHashes");
@@ -70,9 +70,9 @@ public final class ModuleHashesAttribute extends Attribute {
   }
 
   /**
-   * Constructs an empty {@link ModuleHashesAttribute}. This object can be passed as a prototype to
-   * the {@link ClassReader#accept(ClassVisitor, Attribute[], int)} method.
-   */
+  * Constructs an empty {@link ModuleHashesAttribute}. This object can be passed as a prototype to
+  * the {@link ClassReader#accept(ClassVisitor, Attribute[], int)} method.
+  */
   public ModuleHashesAttribute() {
     this(null, null, null);
   }

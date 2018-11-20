@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.org.apache.xpath.internal.compiler.OpCodes;
 import io.ebean.enhance.common.CommonSuperUnresolved;
 
 /**
@@ -49,12 +48,12 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
   }
 
   /**
-   * Returns the common super type of the two given types.
-   *
-   * @param type1 the internal name of a class.
-   * @param type2 the internal name of another class.
-   * @return the internal name of the common super class of the two given classes.
-   */
+  * Returns the common super type of the two given types.
+  *
+  * @param type1 the internal name of a class.
+  * @param type2 the internal name of another class.
+  * @return the internal name of the common super class of the two given classes.
+  */
   @Override
   protected String getCommonSuperClass(final String type1, final String type2) {
     try {
@@ -101,8 +100,8 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
   }
 
   /**
-   * Here we read the class at bytecode-level.
-   */
+  * Here we read the class at bytecode-level.
+  */
   private void initializeTypeHierarchyFor(final String internalTypeName) {
     if (classLoader == null) {
       // Bug in Zulu JDK for jdk classes (which we should skip anyway)

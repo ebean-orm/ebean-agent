@@ -9,10 +9,10 @@ import java.sql.Timestamp;
 
 /**
  * Base domain object with Id, version, whenCreated and whenUpdated.
- * 
+ *
  * <p>
  * Extending Model to enable the 'active record' style.
- * 
+ *
  * <p>
  * whenCreated and whenUpdated are generally useful for maintaining external search services (like
  * elasticsearch) and audit.

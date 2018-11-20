@@ -144,13 +144,13 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   private Collection<Item> svuidMethods;
 
   /**
-   * Constructs a new {@link SerialVersionUIDAdder}. <i>Subclasses must not use this
-   * constructor</i>. Instead, they must use the {@link #SerialVersionUIDAdder(int, ClassVisitor)}
-   * version.
-   *
-   * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
-   * @throws IllegalStateException If a subclass calls this constructor.
-   */
+  * Constructs a new {@link SerialVersionUIDAdder}. <i>Subclasses must not use this
+  * constructor</i>. Instead, they must use the {@link #SerialVersionUIDAdder(int, ClassVisitor)}
+  * version.
+  *
+  * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
+  * @throws IllegalStateException If a subclass calls this constructor.
+  */
   public SerialVersionUIDAdder(final ClassVisitor classVisitor) {
     this(Opcodes.ASM7, classVisitor);
     if (getClass() != SerialVersionUIDAdder.class) {
@@ -159,12 +159,12 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   }
 
   /**
-   * Constructs a new {@link SerialVersionUIDAdder}.
-   *
-   * @param api the ASM API version implemented by this visitor. Must be one of {@link
-   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
-   * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
-   */
+  * Constructs a new {@link SerialVersionUIDAdder}.
+  *
+  * @param api the ASM API version implemented by this visitor. Must be one of {@link
+  *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
+  * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
+  */
   protected SerialVersionUIDAdder(final int api, final ClassVisitor classVisitor) {
     super(api, classVisitor);
   }
@@ -309,21 +309,21 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   // -----------------------------------------------------------------------------------------------
 
   /**
-   * Returns true if the class already has a SVUID field. The result of this method is only valid
-   * when visitEnd has been called.
-   *
-   * @return true if the class already has a SVUID field.
-   */
+  * Returns true if the class already has a SVUID field. The result of this method is only valid
+  * when visitEnd has been called.
+  *
+  * @return true if the class already has a SVUID field.
+  */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   public boolean hasSVUID() {
     return hasSvuid;
   }
 
   /**
-   * Adds a final static serialVersionUID field to the class, with the given value.
-   *
-   * @param svuid the serialVersionUID field value.
-   */
+  * Adds a final static serialVersionUID field to the class, with the given value.
+  *
+  * @param svuid the serialVersionUID field value.
+  */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   protected void addSVUID(final long svuid) {
     FieldVisitor fieldVisitor =
@@ -335,11 +335,11 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   }
 
   /**
-   * Computes and returns the value of SVUID.
-   *
-   * @return the serial version UID.
-   * @throws IOException if an I/O error occurs.
-   */
+  * Computes and returns the value of SVUID.
+  *
+  * @return the serial version UID.
+  * @throws IOException if an I/O error occurs.
+  */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   protected long computeSVUID() throws IOException {
     ByteArrayOutputStream byteArrayOutputStream = null;
@@ -425,11 +425,11 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   }
 
   /**
-   * Returns the SHA-1 message digest of the given value.
-   *
-   * @param value the value whose SHA message digest must be computed.
-   * @return the SHA-1 message digest of the given value.
-   */
+  * Returns the SHA-1 message digest of the given value.
+  *
+  * @param value the value whose SHA message digest must be computed.
+  * @return the SHA-1 message digest of the given value.
+  */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   protected byte[] computeSHAdigest(final byte[] value) {
     try {
@@ -440,13 +440,13 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   }
 
   /**
-   * Sorts the items in the collection and writes it to the given output stream.
-   *
-   * @param itemCollection a collection of items.
-   * @param dataOutputStream where the items must be written.
-   * @param dotted whether package names must use dots, instead of slashes.
-   * @exception IOException if an error occurs.
-   */
+  * Sorts the items in the collection and writes it to the given output stream.
+  *
+  * @param itemCollection a collection of items.
+  * @param dataOutputStream where the items must be written.
+  * @param dotted whether package names must use dots, instead of slashes.
+  * @exception IOException if an error occurs.
+  */
   private static void writeItems(
       final Collection<Item> itemCollection,
       final DataOutput dataOutputStream,

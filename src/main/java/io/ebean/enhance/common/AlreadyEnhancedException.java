@@ -8,16 +8,16 @@ package io.ebean.enhance.common;
  */
 public class AlreadyEnhancedException extends RuntimeException {
 
-	private static final long serialVersionUID = -831705721822834774L;
+  private static final long serialVersionUID = -831705721822834774L;
 
-	final String className;
-	
-	public AlreadyEnhancedException(String className) {
-		this.className = className;
-	}
+  final String className;
 
-	public String getClassName() {
-		return className;
-	}
+  public AlreadyEnhancedException(String className) {
+    this.className = className;
+  }
+
+  public String getClassName() {
+    return className;
+  }
 
 }

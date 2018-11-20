@@ -79,13 +79,13 @@ final class Constants implements Opcodes {
   // ASM specific stack map frame types, used in {@link ClassVisitor#visitFrame}.
 
   /**
-   * A frame inserted between already existing frames. This internal stack map frame type (in
-   * addition to the ones declared in {@link Opcodes}) can only be used if the frame content can be
-   * computed from the previous existing frame and from the instructions between this existing frame
-   * and the inserted one, without any knowledge of the type hierarchy. This kind of frame is only
-   * used when an unconditional jump is inserted in a method while expanding an ASM specific
-   * instruction. Keep in sync with Opcodes.java.
-   */
+  * A frame inserted between already existing frames. This internal stack map frame type (in
+  * addition to the ones declared in {@link Opcodes}) can only be used if the frame content can be
+  * computed from the previous existing frame and from the instructions between this existing frame
+  * and the inserted one, without any knowledge of the type hierarchy. This kind of frame is only
+  * used when an unconditional jump is inserted in a method while expanding an ASM specific
+  * instruction. Keep in sync with Opcodes.java.
+  */
   static final int F_INSERT = 256;
 
   // The JVM opcode values which are not part of the ASM public API.

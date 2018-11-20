@@ -112,10 +112,10 @@ public class CodeSizeEvaluator extends MethodVisitor implements Opcodes {
   }
 
   /**
-   * Deprecated.
-   *
-   * @deprecated use {@link #visitMethodInsn(int, String, String, String, boolean)} instead.
-   */
+  * Deprecated.
+  *
+  * @deprecated use {@link #visitMethodInsn(int, String, String, String, boolean)} instead.
+  */
   @Deprecated
   @Override
   public void visitMethodInsn(

@@ -16,9 +16,9 @@ import java.util.Set;
 public class WithInitialisedCollections extends BaseEntity {
 
   String name;
-  
+
   Date whenStart;
-  
+
   @OneToMany(cascade = CascadeType.PERSIST)
   List<Contact> contacts = new ArrayList<>();
 
@@ -31,10 +31,11 @@ public class WithInitialisedCollections extends BaseEntity {
   @Transient
   Set<String> strings = new HashSet<>();
 
+  @Override
   public String toString() {
     return "id:"+id+" name:"+name;
   }
-  
+
   public String getName() {
     return name;
   }

@@ -8,10 +8,10 @@ import java.util.Collection;
 public class Distill {
 
   /**
-   * Convert the dot notation entity bean packages to slash notation.
-   *
-   * @param packages entity bean packages
-   */
+  * Convert the dot notation entity bean packages to slash notation.
+  *
+  * @param packages entity bean packages
+  */
   public static DetectQueryBean convert(Collection<String> packages) {
 
     String[] asArray = packages.toArray(new String[packages.size()]);
@@ -22,8 +22,8 @@ public class Distill {
   }
 
   /**
-   * Convert package to slash notation taking into account trailing wildcard.
-   */
+  * Convert package to slash notation taking into account trailing wildcard.
+  */
   private static String convert(String pkg) {
 
     pkg = pkg.trim();

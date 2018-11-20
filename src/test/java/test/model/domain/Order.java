@@ -29,67 +29,68 @@ public class Order extends BaseModel {
 
   @ManyToOne
   Address shippingAddress;
-  
+
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
   @OrderBy("id asc")
   List<OrderDetail> details;
 
+  @Override
   public String toString() {
     return id + " status:" + status;
   }
-  
+
   /**
-   * Return order date.
-   */
+  * Return order date.
+  */
   public Date getOrderDate() {
     return orderDate;
   }
 
   /**
-   * Set order date.
-   */
+  * Set order date.
+  */
   public void setOrderDate(Date orderDate) {
     this.orderDate = orderDate;
   }
 
   /**
-   * Return ship date.
-   */
+  * Return ship date.
+  */
   public Date getShipDate() {
     return shipDate;
   }
 
   /**
-   * Set ship date.
-   */
+  * Set ship date.
+  */
   public void setShipDate(Date shipDate) {
     this.shipDate = shipDate;
   }
 
   /**
-   * Return status.
-   */
+  * Return status.
+  */
   public Status getStatus() {
     return status;
   }
 
   /**
-   * Set status.
-   */
+  * Set status.
+  */
   public void setStatus(Status status) {
     this.status = status;
   }
 
   /**
-   * Return details.
-   */
+  * Return details.
+  */
   public List<OrderDetail> getDetails() {
     return details;
   }
 
   /**
-   * Set details.
-   */
+  * Set details.
+  */
   public void setDetails(List<OrderDetail> details) {
     this.details = details;
   }

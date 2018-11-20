@@ -38,8 +38,8 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   }
 
   /**
-   * Extract and return the associated entity bean class from the signature.
-   */
+  * Extract and return the associated entity bean class from the signature.
+  */
   protected String getDomainClass() {
     int posStart = signature.indexOf('<');
     int posEnd = signature.indexOf(';', posStart + 1);
@@ -47,8 +47,8 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   }
 
   /**
-   * Look for TypeQueryBean annotation.
-   */
+  * Look for TypeQueryBean annotation.
+  */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     classInfo.checkTypeQueryAnnotation(desc);
@@ -116,8 +116,8 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   }
 
   /**
-   * Handle the constructors for assoc type query beans.
-   */
+  * Handle the constructors for assoc type query beans.
+  */
   private MethodVisitor handleAssocBeanConstructor(int access, String name, String desc, String signature, String[] exceptions) {
 
     if (desc.equals(ASSOC_BEAN_BASIC_CONSTRUCTOR_DESC)) {
@@ -157,8 +157,8 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   }
 
   /**
-   * Add the marker annotation so that we don't enhance the type query bean twice.
-   */
+  * Add the marker annotation so that we don't enhance the type query bean twice.
+  */
   private void addMarkerAnnotation() {
 
     if (isLog(4)) {

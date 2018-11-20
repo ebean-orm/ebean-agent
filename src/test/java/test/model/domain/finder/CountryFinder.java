@@ -6,24 +6,24 @@ import java.util.List;
 
 public class CountryFinder extends io.ebean.Finder<String,Country> {
 
-	public CountryFinder() {
-		super(Country.class);
-	}
+  public CountryFinder() {
+    super(Country.class);
+  }
 
-	public Country byCode(String code) {
-		return query().where()
-				.eq("code", code)
-				.findOne();
-	}
+  public Country byCode(String code) {
+    return query().where()
+        .eq("code", code)
+        .findOne();
+  }
 
-	public List<String> byName() {
-		return nativeSql("select name from o_country")
-				.findSingleAttributeList();
-	}
+  public List<String> byName() {
+    return nativeSql("select name from o_country")
+        .findSingleAttributeList();
+  }
 
-	public List<Country> byCodeLike(String code) {
-		return query("where code startsWith :code")
-				.setParameter("code", code)
-				.findList();
-	}
+  public List<Country> byCodeLike(String code) {
+    return query("where code startsWith :code")
+        .setParameter("code", code)
+        .findList();
+  }
 }

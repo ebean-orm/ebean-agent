@@ -8,8 +8,8 @@ package io.ebean.enhance.common;
  */
 public interface ClassBytesReader {
 
-	/**
-	 * Return the class bytes for a given class.
-	 */
-	byte[] getClassBytes(String className, ClassLoader classLoader);
+  /**
+  * Return the class bytes for a given class.
+  */
+  byte[] getClassBytes(String className, ClassLoader classLoader);
 }

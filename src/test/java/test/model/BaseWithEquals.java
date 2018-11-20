@@ -1,7 +1,6 @@
 package test.model;
 
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
 
 /**
  * Mapped superClass with equals/hashCode also needs to be enhanced.
@@ -10,11 +9,13 @@ import javax.persistence.Version;
 public abstract class BaseWithEquals {
 
   public transient int equalsCount;
-  
+
+  @Override
   public String toString() {
     return ""+equalsCount;
   }
 
+  @Override
   public boolean equals(Object obj) {
     equalsCount++;
     return (obj != null);

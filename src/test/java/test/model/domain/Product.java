@@ -15,29 +15,29 @@ public class Product extends BaseModel {
   String name;
 
   /**
-   * Return sku.
-   */
+  * Return sku.
+  */
   public String getSku() {
     return sku;
   }
 
   /**
-   * Set sku.
-   */
+  * Set sku.
+  */
   public void setSku(String sku) {
     this.sku = sku;
   }
 
   /**
-   * Return name.
-   */
+  * Return name.
+  */
   public String getName() {
     return name;
   }
 
   /**
-   * Set name.
-   */
+  * Set name.
+  */
   public void setName(String name) {
     this.name = name;
   }

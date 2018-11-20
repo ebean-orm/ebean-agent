@@ -25,16 +25,16 @@ public class QProduct extends TQRootBean<Product,QProduct> {
   }
 
   /**
-   * Construct with a given EbeanServer.
-   */
+  * Construct with a given EbeanServer.
+  */
   public QProduct(EbeanServer server) {
     super(Product.class, server);
     setRoot(this);
   }
 
   /**
-   * Construct for alias.
-   */
+  * Construct for alias.
+  */
   private QProduct(boolean alias) {
     super(alias);
   }

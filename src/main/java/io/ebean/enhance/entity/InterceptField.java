@@ -13,8 +13,8 @@ import io.ebean.enhance.common.EnhanceConstants;
 public class InterceptField implements Opcodes, EnhanceConstants {
 
   /**
-   * Add the _ebean_intercept field.
-   */
+  * Add the _ebean_intercept field.
+  */
   public static void addField(ClassVisitor cv, boolean transientInternalFields) {
 
     int access = ACC_PROTECTED + (transientInternalFields ? ACC_TRANSIENT : 0);
@@ -23,14 +23,14 @@ public class InterceptField implements Opcodes, EnhanceConstants {
   }
 
   /**
-   * Generate the _ebean_getIntercept() method.
-   * <p>
-   * <pre>
-   * public EntityBeanIntercept _ebean_getIntercept() {
-   *     return _ebean_intercept;
-   * }
-   * </pre>
-   */
+  * Generate the _ebean_getIntercept() method.
+  * <p>
+  * <pre>
+  * public EntityBeanIntercept _ebean_getIntercept() {
+  *     return _ebean_intercept;
+  * }
+  * </pre>
+  */
   public static void addGetterSetter(ClassVisitor cv, String className) {
 
     String lClassName = "L" + className + ";";
@@ -56,23 +56,23 @@ public class InterceptField implements Opcodes, EnhanceConstants {
   }
 
   /**
-   * Add _ebean_intercept() method that includes initialisation of the
-   * EntityBeanIntercept.
-   * <p>
-   * This is only required when transientInternalFields=true with enhancement.
-   * In that case the EntityBeanIntercept is transient and can be null after
-   * deserialization - in which case it needs to be initialised.
-   * </p>
-   * <p>
-   * <pre>
-   * public EntityBeanIntercept _ebean_intercept() {
-   *     if (_ebean_intercept == null) {
-   *         _ebean_intercept = new EntityBeanIntercept(this);
-   *     }
-   *     return _ebean_intercept;
-   * }
-   * </pre>
-   */
+  * Add _ebean_intercept() method that includes initialisation of the
+  * EntityBeanIntercept.
+  * <p>
+  * This is only required when transientInternalFields=true with enhancement.
+  * In that case the EntityBeanIntercept is transient and can be null after
+  * deserialization - in which case it needs to be initialised.
+  * </p>
+  * <p>
+  * <pre>
+  * public EntityBeanIntercept _ebean_intercept() {
+  *     if (_ebean_intercept == null) {
+  *         _ebean_intercept = new EntityBeanIntercept(this);
+  *     }
+  *     return _ebean_intercept;
+  * }
+  * </pre>
+  */
   private static void addInitInterceptMethod(ClassVisitor cv, String className) {
 
     MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_intercept", "()" + L_INTERCEPT, null, null);

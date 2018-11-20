@@ -44,10 +44,10 @@ final class FieldWriter extends FieldVisitor {
   // ordered as in Section 4.7 of the JVMS.
 
   /**
-   * The access_flags field of the field_info JVMS structure. This field can contain ASM specific
-   * access flags, such as {@link Opcodes#ACC_DEPRECATED}, which are removed when generating the
-   * ClassFile structure.
-   */
+  * The access_flags field of the field_info JVMS structure. This field can contain ASM specific
+  * access flags, such as {@link Opcodes#ACC_DEPRECATED}, which are removed when generating the
+  * ClassFile structure.
+  */
   private final int accessFlags;
 
   /** The name_index field of the field_info JVMS structure. */
@@ -57,50 +57,50 @@ final class FieldWriter extends FieldVisitor {
   private final int descriptorIndex;
 
   /**
-   * The signature_index field of the Signature attribute of this field_info, or 0 if there is no
-   * Signature attribute.
-   */
+  * The signature_index field of the Signature attribute of this field_info, or 0 if there is no
+  * Signature attribute.
+  */
   private int signatureIndex;
 
   /**
-   * The constantvalue_index field of the ConstantValue attribute of this field_info, or 0 if there
-   * is no ConstantValue attribute.
-   */
+  * The constantvalue_index field of the ConstantValue attribute of this field_info, or 0 if there
+  * is no ConstantValue attribute.
+  */
   private int constantValueIndex;
 
   /**
-   * The last runtime visible annotation of this field. The previous ones can be accessed with the
-   * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
-   */
+  * The last runtime visible annotation of this field. The previous ones can be accessed with the
+  * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+  */
   private AnnotationWriter lastRuntimeVisibleAnnotation;
 
   /**
-   * The last runtime invisible annotation of this field. The previous ones can be accessed with the
-   * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
-   */
+  * The last runtime invisible annotation of this field. The previous ones can be accessed with the
+  * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+  */
   private AnnotationWriter lastRuntimeInvisibleAnnotation;
 
   /**
-   * The last runtime visible type annotation of this field. The previous ones can be accessed with
-   * the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
-   */
+  * The last runtime visible type annotation of this field. The previous ones can be accessed with
+  * the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+  */
   private AnnotationWriter lastRuntimeVisibleTypeAnnotation;
 
   /**
-   * The last runtime invisible type annotation of this field. The previous ones can be accessed
-   * with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
-   */
+  * The last runtime invisible type annotation of this field. The previous ones can be accessed
+  * with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+  */
   private AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
 
   /**
-   * The first non standard attribute of this field. The next ones can be accessed with the {@link
-   * Attribute#nextAttribute} field. May be {@literal null}.
-   *
-   * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
-   * firstAttribute is actually the last attribute visited in {@link #visitAttribute}. The {@link
-   * #putFieldInfo} method writes the attributes in the order defined by this list, i.e. in the
-   * reverse order specified by the user.
-   */
+  * The first non standard attribute of this field. The next ones can be accessed with the {@link
+  * Attribute#nextAttribute} field. May be {@literal null}.
+  *
+  * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
+  * firstAttribute is actually the last attribute visited in {@link #visitAttribute}. The {@link
+  * #putFieldInfo} method writes the attributes in the order defined by this list, i.e. in the
+  * reverse order specified by the user.
+  */
   private Attribute firstAttribute;
 
   // -----------------------------------------------------------------------------------------------
@@ -108,15 +108,15 @@ final class FieldWriter extends FieldVisitor {
   // -----------------------------------------------------------------------------------------------
 
   /**
-   * Constructs a new {@link FieldWriter}.
-   *
-   * @param symbolTable where the constants used in this FieldWriter must be stored.
-   * @param access the field's access flags (see {@link Opcodes}).
-   * @param name the field's name.
-   * @param descriptor the field's descriptor (see {@link Type}).
-   * @param signature the field's signature. May be {@literal null}.
-   * @param constantValue the field's constant value. May be {@literal null}.
-   */
+  * Constructs a new {@link FieldWriter}.
+  *
+  * @param symbolTable where the constants used in this FieldWriter must be stored.
+  * @param access the field's access flags (see {@link Opcodes}).
+  * @param name the field's name.
+  * @param descriptor the field's descriptor (see {@link Type}).
+  * @param signature the field's signature. May be {@literal null}.
+  * @param constantValue the field's constant value. May be {@literal null}.
+  */
   FieldWriter(
       final SymbolTable symbolTable,
       final int access,
@@ -194,11 +194,11 @@ final class FieldWriter extends FieldVisitor {
   // -----------------------------------------------------------------------------------------------
 
   /**
-   * Returns the size of the field_info JVMS structure generated by this FieldWriter. Also adds the
-   * names of the attributes of this field in the constant pool.
-   *
-   * @return the size in bytes of the field_info JVMS structure.
-   */
+  * Returns the size of the field_info JVMS structure generated by this FieldWriter. Also adds the
+  * names of the attributes of this field in the constant pool.
+  *
+  * @return the size in bytes of the field_info JVMS structure.
+  */
   int computeFieldInfoSize() {
     // The access_flags, name_index, descriptor_index and attributes_count fields use 8 bytes.
     int size = 8;
@@ -253,11 +253,11 @@ final class FieldWriter extends FieldVisitor {
   }
 
   /**
-   * Puts the content of the field_info JVMS structure generated by this FieldWriter into the given
-   * ByteVector.
-   *
-   * @param output where the field_info structure must be put.
-   */
+  * Puts the content of the field_info JVMS structure generated by this FieldWriter into the given
+  * ByteVector.
+  *
+  * @param output where the field_info structure must be put.
+  */
   void putFieldInfo(final ByteVector output) {
     boolean useSyntheticAttribute = symbolTable.getMajorVersion() < Opcodes.V1_5;
     // Put the access_flags, name_index and descriptor_index fields.
@@ -336,10 +336,10 @@ final class FieldWriter extends FieldVisitor {
   }
 
   /**
-   * Collects the attributes of this field into the given set of attribute prototypes.
-   *
-   * @param attributePrototypes a set of attribute prototypes.
-   */
+  * Collects the attributes of this field into the given set of attribute prototypes.
+  *
+  * @param attributePrototypes a set of attribute prototypes.
+  */
   final void collectAttributePrototypes(final Attribute.Set attributePrototypes) {
     attributePrototypes.addAttributes(firstAttribute);
   }

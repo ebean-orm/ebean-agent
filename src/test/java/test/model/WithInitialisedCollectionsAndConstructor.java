@@ -12,9 +12,9 @@ import java.util.List;
 public class WithInitialisedCollectionsAndConstructor extends BaseEntity {
 
   String name;
-  
+
   Date whenStart;
-  
+
   @OneToMany(cascade = CascadeType.PERSIST)
   List<Contact> contacts = new ArrayList<>();
 
@@ -22,10 +22,11 @@ public class WithInitialisedCollectionsAndConstructor extends BaseEntity {
     contacts.addAll(add);
   }
 
+  @Override
   public String toString() {
     return "id:"+id+" name:"+name;
   }
-  
+
   public String getName() {
     return name;
   }

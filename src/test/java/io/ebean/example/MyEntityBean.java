@@ -5,8 +5,6 @@ import io.ebean.bean.EntityBeanIntercept;
 import test.model.MyEmbeddedBean;
 
 import javax.persistence.Id;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * Prototype bean for ASM bytecode generation.

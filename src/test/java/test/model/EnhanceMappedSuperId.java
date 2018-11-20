@@ -16,5 +16,5 @@ public class EnhanceMappedSuperId {
   public void setId(Long id) {
     this.id = id;
   }
-  
+
 }

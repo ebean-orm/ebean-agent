@@ -1,8 +1,6 @@
 package test.model.domain.finder;
 
 import org.testng.annotations.Test;
-import test.model.domain.query.QAddress;
-import test.model.domain.query.QOrder;
 import test.model.domain.query.QProduct;
 import test.enhancement.BaseTest;
 

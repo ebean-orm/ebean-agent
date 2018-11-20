@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface RepoInterfaceWithDefaultMethod {
 
-	default Optional<Address> findOneById(int id) {
-		return new QAddress().id.eq(id).findOneOrEmpty();
-	}
+  default Optional<Address> findOneById(int id) {
+    return new QAddress().id.eq(id).findOneOrEmpty();
+  }
 }

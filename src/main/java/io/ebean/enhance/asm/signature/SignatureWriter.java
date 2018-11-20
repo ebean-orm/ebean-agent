@@ -50,22 +50,22 @@ public class SignatureWriter extends SignatureVisitor {
   private boolean hasParameters;
 
   /**
-   * The stack used to keep track of class types that have arguments. Each element of this stack is
-   * a boolean encoded in one bit. The top of the stack is the least significant bit. Pushing false
-   * = *2, pushing true = *2+1, popping = /2.
-   *
-   * <p>Class type arguments must be surrounded with '&lt;' and '&gt;' and, because
-   *
-   * <ol>
-   *   <li>class types can be nested (because type arguments can themselves be class types),
-   *   <li>SignatureWriter always returns 'this' in each visit* method (to avoid allocating new
-   *       SignatureWriter instances),
-   * </ol>
-   *
-   * <p>we need a stack to properly balance these 'parentheses'. A new element is pushed on this
-   * stack for each new visited type, and popped when the visit of this type ends (either is
-   * visitEnd, or because visitInnerClassType is called).
-   */
+  * The stack used to keep track of class types that have arguments. Each element of this stack is
+  * a boolean encoded in one bit. The top of the stack is the least significant bit. Pushing false
+  * = *2, pushing true = *2+1, popping = /2.
+  *
+  * <p>Class type arguments must be surrounded with '&lt;' and '&gt;' and, because
+  *
+  * <ol>
+  *   <li>class types can be nested (because type arguments can themselves be class types),
+  *   <li>SignatureWriter always returns 'this' in each visit* method (to avoid allocating new
+  *       SignatureWriter instances),
+  * </ol>
+  *
+  * <p>we need a stack to properly balance these 'parentheses'. A new element is pushed on this
+  * stack for each new visited type, and popped when the visit of this type ends (either is
+  * visitEnd, or because visitInnerClassType is called).
+  */
   private int argumentStack;
 
   /** Constructs a new {@link SignatureWriter}. */
@@ -206,10 +206,10 @@ public class SignatureWriter extends SignatureVisitor {
   }
 
   /**
-   * Returns the signature that was built by this signature writer.
-   *
-   * @return the signature that was built by this signature writer.
-   */
+  * Returns the signature that was built by this signature writer.
+  *
+  * @return the signature that was built by this signature writer.
+  */
   @Override
   public String toString() {
     return stringBuilder.toString();

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Table(name="o_country")
 public class Country {
 
-	public static CountryFinder find = new CountryFinder();
+  public static CountryFinder find = new CountryFinder();
 
     @Id
     //@Size(max=2)
@@ -21,37 +21,38 @@ public class Country {
 
     //@Size(max=60)
     String name;
-    
+
+    @Override
     public String toString() {
-    	return code;
+      return code;
     }
-    
+
     /**
-     * Return code.
-     */    
+    * Return code.
+    */
     public String getCode() {
-  	    return code;
+        return code;
     }
 
     /**
-     * Set code.
-     */    
+    * Set code.
+    */
     public void setCode(String code) {
-  	    this.code = code;
+        this.code = code;
     }
 
     /**
-     * Return name.
-     */    
+    * Return name.
+    */
     public String getName() {
-  	    return name;
+        return name;
     }
 
     /**
-     * Set name.
-     */    
+    * Set name.
+    */
     public void setName(String name) {
-  	    this.name = name;
+        this.name = name;
     }
 
 
