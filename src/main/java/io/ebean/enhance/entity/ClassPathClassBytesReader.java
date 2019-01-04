@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLConnection;
 
 /**
  * Implementation of ClassBytesReader based on URLClassLoader.
@@ -36,7 +37,9 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
           return null;
         }
 
-        is = url.openStream();
+        URLConnection con = url.openConnection();
+        con.setUseCaches(false);
+        is = con.getInputStream();
         return InputStreamTransform.readBytes(is);
 
       } catch (IOException e){
