@@ -161,9 +161,7 @@ public class AgentManifest {
     while (resources.hasMoreElements()) {
       URL url = resources.nextElement();
       try {
-        URLConnection con = url.openConnection();
-        con.setUseCaches(false);
-        addResource(con.getInputStream());
+        addResource(UrlOpen.noCache(url));
       } catch (IOException e) {
         System.err.println("Error reading manifest resources " + url);
         e.printStackTrace();

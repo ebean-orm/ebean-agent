@@ -2,12 +2,12 @@ package io.ebean.enhance.entity;
 
 import io.ebean.enhance.common.ClassBytesReader;
 import io.ebean.enhance.common.InputStreamTransform;
+import io.ebean.enhance.common.UrlOpen;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLConnection;
 
 /**
  * Implementation of ClassBytesReader based on URLClassLoader.
@@ -37,9 +37,7 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
           return null;
         }
 
-        URLConnection con = url.openConnection();
-        con.setUseCaches(false);
-        is = con.getInputStream();
+        is = UrlOpen.noCache(url);
         return InputStreamTransform.readBytes(is);
 
       } catch (IOException e){
