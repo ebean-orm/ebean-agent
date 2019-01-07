@@ -3,6 +3,7 @@ package io.ebean.enhance.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -160,7 +161,9 @@ public class AgentManifest {
     while (resources.hasMoreElements()) {
       URL url = resources.nextElement();
       try {
-        addResource(url.openStream());
+        URLConnection con = url.openConnection();
+        con.setUseCaches(false);
+        addResource(con.getInputStream());
       } catch (IOException e) {
         System.err.println("Error reading manifest resources " + url);
         e.printStackTrace();
