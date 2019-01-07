@@ -2,7 +2,7 @@ package io.ebean.enhance.entity;
 
 import io.ebean.enhance.common.ClassBytesReader;
 import io.ebean.enhance.common.InputStreamTransform;
-import io.ebean.enhance.common.UrlOpen;
+import io.ebean.enhance.common.UrlHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
           return null;
         }
 
-        is = UrlOpen.noCache(url);
+        is = UrlHelper.openNoCache(url);
         return InputStreamTransform.readBytes(is);
 
       } catch (IOException e){
