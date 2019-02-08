@@ -13,7 +13,7 @@ public class StaticInitAdapter extends AdviceAdapter {
   private final String className;
 
   StaticInitAdapter(MethodVisitor mv, int access, String name, String desc, String className) {
-    super(ASM5, mv, access, name, desc);
+    super(ASM7, mv, access, name, desc);
     this.className = className;
   }
 

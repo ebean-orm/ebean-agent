@@ -15,7 +15,7 @@ public class MethodAdapter extends MethodVisitor implements Opcodes {
   private final ClassInfo classInfo;
 
   public MethodAdapter(MethodVisitor mv, EnhanceContext enhanceContext, ClassInfo classInfo) {
-    super(ASM5, mv);
+    super(ASM7, mv);
     this.enhanceContext = enhanceContext;
     this.classInfo = classInfo;
   }
