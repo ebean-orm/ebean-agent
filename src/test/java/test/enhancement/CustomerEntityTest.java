@@ -65,7 +65,6 @@ public class CustomerEntityTest extends BaseTest {
     customer.setId(23l);
 
     // this is null as the bean has not been marked as loaded yet
-    Assert.assertNull(customerIntercept.getChanged());
     boolean[] loaded = customerIntercept.getLoaded();
     assertNotNull(loaded);
     assertEquals(PROPERTY_COUNT, loaded.length);
@@ -83,7 +82,6 @@ public class CustomerEntityTest extends BaseTest {
     assertLoaded(customerIntercept, 0, 1, 3);
     assertNotLoaded(customerIntercept, 2, 4);
 
-    Assert.assertNull(customerIntercept.getChanged());
     Assert.assertTrue(customer.hashCode() > 0);
 
     Assert.assertTrue(customerIntercept.isNew());
@@ -93,13 +91,11 @@ public class CustomerEntityTest extends BaseTest {
     // Will not change (set dirty flag)
     String otherName = "h"+"ello";
     customer.setName(otherName);
-    Assert.assertNull(customerIntercept.getChanged());
 
     // This will set it to be modified
     customer.setName("nameModified");
     Assert.assertTrue(customerIntercept.isDirty());
     Assert.assertTrue(customerIntercept.isNewOrDirty());
-    assertNotNull(customerIntercept.getChanged());
     assertChanged(customerIntercept, 3);
     assertNotChanged(customerIntercept, 0,1,2,4);
 
@@ -129,12 +125,9 @@ public class CustomerEntityTest extends BaseTest {
 
     // AFTER LOADED ... then changes are tracked
     c2Intercept.setLoaded();
-    Assert.assertNull(c2Intercept.getChanged());
 
 
     c2.setName("c2NameChanged");
-    assertNotNull(c2Intercept.getChanged());
-    assertEquals(PROPERTY_COUNT, c2Intercept.getChanged().length);
     assertChanged(c2Intercept, 3);
     assertNotChanged(c2Intercept, 0,1,2,4);
 
@@ -170,10 +163,8 @@ public class CustomerEntityTest extends BaseTest {
   }
 
   private void assertThatChanged(EntityBeanIntercept intercept, boolean propertyLoaded, int... idx) {
-    boolean[] changedFlags = intercept.getChanged();
-    assertNotNull(changedFlags);
     for (int pos : idx) {
-      assertEquals(propertyLoaded, changedFlags[pos]);
+      assertEquals(propertyLoaded, intercept.isChangedProperty(pos));
     }
   }
 

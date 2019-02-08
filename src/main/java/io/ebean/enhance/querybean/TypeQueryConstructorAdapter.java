@@ -36,7 +36,8 @@ public class TypeQueryConstructorAdapter extends BaseConstructorAdapter implemen
   @Override
   public void visitCode() {
 
-    boolean withEbeanServer = WITH_EBEANSERVER_ARGUMENT.equals(desc);
+    boolean withDatabase = WITH_DATABASE_ARGUMENT.equals(desc);
+    boolean withEbeanServer = !withDatabase && WITH_EBEANSERVER_ARGUMENT.equals(desc);
 
     mv = cv.visitMethod(ACC_PUBLIC, "<init>", desc, signature, null);
     mv.visitCode();
@@ -45,7 +46,10 @@ public class TypeQueryConstructorAdapter extends BaseConstructorAdapter implemen
     mv.visitLineNumber(1, l0);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitLdcInsn(Type.getType("L" + domainClass + ";"));
-    if (withEbeanServer) {
+    if (withDatabase) {
+      mv.visitVarInsn(ALOAD, 1);
+      mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, "<init>", "(Ljava/lang/Class;Lio/ebean/Database;)V", false);
+    } else if (withEbeanServer) {
       mv.visitVarInsn(ALOAD, 1);
       mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, "<init>", "(Ljava/lang/Class;Lio/ebean/EbeanServer;)V", false);
     } else {
@@ -65,7 +69,10 @@ public class TypeQueryConstructorAdapter extends BaseConstructorAdapter implemen
     Label l3 = new Label();
     mv.visitLabel(l3);
     mv.visitLocalVariable("this", "L" + classInfo.getClassName() + ";", null, l0, l3, 0);
-    if (withEbeanServer) {
+    if (withDatabase) {
+      mv.visitLocalVariable("server", "Lio/ebean/Database;", null, l0, l3, 1);
+      mv.visitMaxs(3, 2);
+    } else if (withEbeanServer) {
       mv.visitLocalVariable("server", "Lio/ebean/EbeanServer;", null, l0, l3, 1);
       mv.visitMaxs(3, 2);
     } else {
