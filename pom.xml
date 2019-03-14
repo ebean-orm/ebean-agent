@@ -9,7 +9,7 @@
 
   <groupId>io.ebean</groupId>
   <artifactId>ebean-agent</artifactId>
-  <version>11.35.2-SNAPSHOT</version>
+  <version>11.36.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ebean-agent</name>
