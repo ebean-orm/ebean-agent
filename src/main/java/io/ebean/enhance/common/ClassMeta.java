@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static io.ebean.enhance.common.EnhanceConstants.C_OBJECT;
+
 /**
  * Holds the meta data for an entity bean class that is being enhanced.
  */
 public class ClassMeta {
 
   private static final Logger logger = Logger.getLogger(ClassMeta.class.getName());
-
-  private static final String OBJECT_CLASS = Object.class.getName().replace('.', '/');
 
   private final MessageOutput logout;
 
@@ -125,7 +125,7 @@ public class ClassMeta {
   }
 
   public boolean isCheckSuperClassForEntity() {
-    return !superClassName.equals(OBJECT_CLASS) && isCheckEntity();
+    return !superClassName.equals(C_OBJECT) && isCheckEntity();
   }
 
   @Override

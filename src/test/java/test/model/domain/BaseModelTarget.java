@@ -1,6 +1,8 @@
 package test.model.domain;
 
 import io.ebean.Model;
+import io.ebean.annotation.WhenCreated;
+import io.ebean.annotation.WhenModified;
 
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -18,22 +20,22 @@ import java.sql.Timestamp;
  * elasticsearch) and audit.
  */
 @MappedSuperclass
-public abstract class BaseModel extends Model {
+public abstract class BaseModelTarget extends Model {
 
   @Id
-  Long id;
+  protected Long id;
 
   @Version
-  Long version;
+  protected Long version;
 
-  //@CreatedTimestamp
-  Timestamp whenCreated;
+  @WhenCreated
+  protected Timestamp whenCreated;
 
-  //@UpdatedTimestamp
-  Timestamp whenUpdated;
+  @WhenModified
+  protected Timestamp whenModified;
 
-  public BaseModel() {
-    super();
+  public BaseModelTarget() {
+    super("central");
   }
 
   public Long getId() {
@@ -60,12 +62,12 @@ public abstract class BaseModel extends Model {
     this.whenCreated = whenCreated;
   }
 
-  public Timestamp getWhenUpdated() {
-    return whenUpdated;
+  public Timestamp getWhenModified() {
+    return whenModified;
   }
 
-  public void setWhenUpdated(Timestamp whenUpdated) {
-    this.whenUpdated = whenUpdated;
+  public void setWhenModified(Timestamp whenModified) {
+    this.whenModified = whenModified;
   }
 
 }

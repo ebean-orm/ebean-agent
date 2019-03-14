@@ -39,7 +39,7 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.34.1</version>
+      <version>11.36.2</version>
       <scope>provided</scope>
     </dependency>
 
