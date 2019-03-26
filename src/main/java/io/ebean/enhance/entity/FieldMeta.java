@@ -386,7 +386,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitLineNumber(5, labelStart);
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetId", "()V", false);
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetId", NOARG_VOID, false);
 
     } else if (isInterceptGet()) {
       maxVars = 2;
@@ -446,7 +446,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitVarInsn(ALOAD, 0);
       mv.visitTypeInsn(NEW, ebCollection);
       mv.visitInsn(DUP);
-      mv.visitMethodInsn(INVOKESPECIAL, ebCollection, INIT, "()V", false);
+      mv.visitMethodInsn(INVOKESPECIAL, ebCollection, INIT, NOARG_VOID, false);
       mv.visitFieldInsn(PUTFIELD, className, fieldName, fieldDesc);
 
       mv.visitVarInsn(ALOAD, 0);

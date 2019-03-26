@@ -228,7 +228,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
     }
 
     if (isConstructor(name, desc)) {
-      if (desc.equals("()V")) {
+      if (desc.equals(NOARG_VOID)) {
         // ensure public access on the default constructor
         access = Opcodes.ACC_PUBLIC;
       }
@@ -310,7 +310,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
   private boolean isConstructor(String name, String desc){
 
     if (name.equals(INIT)) {
-      if (desc.equals("()V")) {
+      if (desc.equals(NOARG_VOID)) {
         classMeta.setHasDefaultConstructor(true);
       }
       return true;
@@ -320,7 +320,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 
   private boolean isStaticInit(String name, String desc) {
 
-    if (name.equals("<clinit>") && desc.equals("()V")) {
+    if (name.equals("<clinit>") && desc.equals(NOARG_VOID)) {
       classMeta.setHasStaticInit(true);
       return true;
     }

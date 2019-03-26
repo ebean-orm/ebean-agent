@@ -4,6 +4,8 @@ import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.commons.AdviceAdapter;
 
+import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
+
 /**
  * Enhance an existing static initialisation block with a call to our static
  * _$initProfileLocations() method.
@@ -26,7 +28,7 @@ public class StaticInitAdapter extends AdviceAdapter {
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
-    mv.visitMethodInsn(INVOKESTATIC, className, "_$initProfileLocations", "()V", false);
+    mv.visitMethodInsn(INVOKESTATIC, className, "_$initProfileLocations", NOARG_VOID, false);
   }
 
 }

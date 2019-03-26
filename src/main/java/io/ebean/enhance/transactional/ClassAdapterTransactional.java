@@ -30,6 +30,7 @@ import static io.ebean.enhance.asm.Opcodes.INVOKESTATIC;
 import static io.ebean.enhance.asm.Opcodes.PUTSTATIC;
 import static io.ebean.enhance.asm.Opcodes.RETURN;
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
+import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 
 /**
  * ClassAdapter used to add transactional support.
@@ -256,7 +257,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
   }
 
   private void addStaticFieldInitialisers() {
-    MethodVisitor mv = cv.visitMethod(ACC_PRIVATE + ACC_STATIC, "_$initProfileLocations", "()V", null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_PRIVATE + ACC_STATIC, "_$initProfileLocations", NOARG_VOID, null, null);
     mv.visitCode();
 
     for (int i = 0; i < queryProfileCount; i++) {
@@ -305,12 +306,12 @@ public class ClassAdapterTransactional extends ClassVisitor {
    */
   private void addStaticInitialiser() {
 
-    MethodVisitor mv = cv.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_STATIC, "<clinit>", NOARG_VOID, null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(4, l0);
-    mv.visitMethodInsn(INVOKESTATIC, className, "_$initProfileLocations", "()V", false);
+    mv.visitMethodInsn(INVOKESTATIC, className, "_$initProfileLocations", NOARG_VOID, false);
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(5, l1);

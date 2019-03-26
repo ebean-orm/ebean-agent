@@ -11,6 +11,7 @@ import io.ebean.enhance.common.VisitUtil;
 import java.util.List;
 
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
+import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 
 /**
  * Generate the methods based on the list of fields.
@@ -26,7 +27,7 @@ public class IndexFieldWeaver implements Opcodes {
   }
 
   public static void addPropertiesInit(ClassVisitor cv, ClassMeta classMeta) {
-    MethodVisitor mv = cv.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_STATIC, "<clinit>", NOARG_VOID, null, null);
     mv.visitCode();
     addPropertiesInit(mv, classMeta);
 

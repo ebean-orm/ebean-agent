@@ -332,7 +332,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
     mv.visitTypeInsn(NEW, txScopeType.getInternalName());
     mv.visitInsn(DUP);
-    mv.visitMethodInsn(INVOKESPECIAL, txScopeType.getInternalName(), INIT, "()V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, txScopeType.getInternalName(), INIT, NOARG_VOID, false);
     mv.visitVarInsn(ASTORE, posTxScope);
 
     Object txType = annotationInfo.getValue("type");
