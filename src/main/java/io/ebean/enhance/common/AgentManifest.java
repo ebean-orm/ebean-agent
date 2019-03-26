@@ -40,6 +40,8 @@ public class AgentManifest {
 
   private boolean enableProfileLocation;
 
+  private boolean enableQueryAutoLabel;
+
   public static AgentManifest read(ClassLoader classLoader, Set<String> initialPackages) {
 
     try {
@@ -82,6 +84,13 @@ public class AgentManifest {
   */
   public boolean isEnableProfileLocation() {
     return enableProfileLocation;
+  }
+
+  /**
+   * Return true if enhancement should add labels to query bean queries.
+   */
+  public boolean isEnableQueryAutoLabel() {
+    return enableQueryAutoLabel;
   }
 
   /**
@@ -190,6 +199,11 @@ public class AgentManifest {
     String locationMode = attributes.getValue("profile-location");
     if (locationMode != null) {
       enableProfileLocation = Boolean.parseBoolean(locationMode);
+    }
+
+    String queryLabelMode = attributes.getValue("query-labels");
+    if (queryLabelMode != null) {
+      enableQueryAutoLabel = Boolean.parseBoolean(queryLabelMode);
     }
 
     String mode = attributes.getValue("transaction-profiling");

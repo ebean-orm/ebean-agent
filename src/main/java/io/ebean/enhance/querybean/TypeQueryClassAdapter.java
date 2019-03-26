@@ -112,7 +112,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
       log("... checking method " + name + " " + desc);
     }
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-    return new MethodAdapter(mv, enhanceContext, classInfo);
+    return new MethodAdapter(mv, enhanceContext, classInfo, name);
   }
 
   /**

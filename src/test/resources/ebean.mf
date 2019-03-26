@@ -1,3 +1,4 @@
 entity-packages: test
 transactional-packages: test
 querybean-packages: test.model, foo
+query-labels: true

@@ -32,5 +32,7 @@ public class QueryBeanEnhanceTest extends BaseTest {
 
     System.out.println("done");
 
+    qAddress.findList();
+
   }
 }
