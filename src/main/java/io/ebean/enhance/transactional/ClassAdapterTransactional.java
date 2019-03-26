@@ -29,6 +29,7 @@ import static io.ebean.enhance.asm.Opcodes.BIPUSH;
 import static io.ebean.enhance.asm.Opcodes.INVOKESTATIC;
 import static io.ebean.enhance.asm.Opcodes.PUTSTATIC;
 import static io.ebean.enhance.asm.Opcodes.RETURN;
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
 
 /**
  * ClassAdapter used to add transactional support.
@@ -86,6 +87,10 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   public void log(String msg) {
     enhanceContext.log(className, msg);
+  }
+
+  public boolean isQueryBean(String owner) {
+    return enhanceContext.isQueryBean(owner);
   }
 
   public AnnotationInfo getClassAnnotationInfo() {
@@ -198,7 +203,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
     if (name.equals("_$initProfileLocations")) {
       throw new AlreadyEnhancedException(className);
     }
-    if (name.equals("<init>")) {
+    if (name.equals(INIT)) {
       // not enhancing constructors
       return mv;
     }
@@ -354,10 +359,10 @@ public class ClassAdapterTransactional extends ClassVisitor {
   }
 
   /**
-   * Return true if this enhancing class extends Ebean Finder and we have profile location enabled.
+   * Return true if this enhancing class extends Ebean Finder.
    */
-  public boolean isFinderProfileLocation() {
-    return finder && isEnableProfileLocation();
+  public boolean isFinder() {
+    return finder;
   }
 
   /**

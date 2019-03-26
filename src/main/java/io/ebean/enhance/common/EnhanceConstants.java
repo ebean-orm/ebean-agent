@@ -5,6 +5,8 @@ package io.ebean.enhance.common;
  */
 public interface EnhanceConstants {
 
+  String INIT = "<init>";
+
   String AVAJE_TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
 
   String JAVAX_PERSISTENCE = "Ljavax/persistence/";

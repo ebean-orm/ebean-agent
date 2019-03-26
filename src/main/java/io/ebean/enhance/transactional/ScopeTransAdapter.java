@@ -27,7 +27,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
   private static final String QP_FIELD_PREFIX = ClassAdapterTransactional.QP_FIELD_PREFIX;
   private static final String TX_FIELD_PREFIX = ClassAdapterTransactional.TX_FIELD_PREFIX;
 
-  private static final Type txScopeType = Type.getType("L"+C_TXSCOPE+";");
+  private static final Type txScopeType = Type.getType("L" + C_TXSCOPE + ";");
   private static final Type helpScopeTrans = Type.getType(L_HELPSCOPETRANS);
 
   private final AnnotationInfo annotationInfo;
@@ -53,7 +53,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
     // inherit from interface method transactional annotation
     AnnotationInfo interfaceInfo = classAdapter.getInterfaceTransactionalInfo(name, desc);
-    if (parentInfo == null){
+    if (parentInfo == null) {
       parentInfo = interfaceInfo;
     } else {
       parentInfo.setParent(interfaceInfo);
@@ -94,7 +94,22 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-    if (!classAdapter.isFinderProfileLocation()) {
+
+    if (!classAdapter.isEnableProfileLocation()) {
+      super.visitMethodInsn(opcode, owner, name, desc, itf);
+
+    } else if (INIT.equals(name) && classAdapter.isQueryBean(owner)) {
+      super.visitMethodInsn(opcode, owner, name, desc, itf);
+
+      int fieldIdx = classAdapter.nextQueryProfileLocation();
+      if (classAdapter.isLog(4)) {
+        classAdapter.log("add profile location " + fieldIdx);
+      }
+      mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
+      mv.visitMethodInsn(INVOKEVIRTUAL, owner, "setProfileLocation", "(Lio/ebean/ProfileLocation;)Ljava/lang/Object;", false);
+      mv.visitTypeInsn(CHECKCAST, owner);
+
+    } else if (!classAdapter.isFinder()) {
       super.visitMethodInsn(opcode, owner, name, desc, itf);
 
     } else {
@@ -122,7 +137,7 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
   }
 
   private boolean isNewQuery(String name, String desc) {
-    if (name.equals("query") && (desc.equals("()Lio/ebean/Query;") || desc.equals("(Ljava/lang/String;)Lio/ebean/Query;")) ) {
+    if (name.equals("query") && (desc.equals("()Lio/ebean/Query;") || desc.equals("(Ljava/lang/String;)Lio/ebean/Query;"))) {
       return true;
     }
     if (name.equals("nativeSql") && desc.equals("(Ljava/lang/String;)Lio/ebean/Query;")) {
@@ -131,23 +146,23 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
     return false;
   }
 
-  private void setTxType(Object txType){
+  private void setTxType(Object txType) {
 
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
     mv.visitLdcInsn(txType.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_TXTYPE, "valueOf", "(Ljava/lang/String;)L"+C_TXTYPE+";", false);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setType", "(L"+C_TXTYPE+";)L"+C_TXSCOPE+";", false);
+    mv.visitMethodInsn(INVOKESTATIC, C_TXTYPE, "valueOf", "(Ljava/lang/String;)L" + C_TXTYPE + ";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setType", "(L" + C_TXTYPE + ";)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
-  private void setTxIsolation(Object txIsolation){
+  private void setTxIsolation(Object txIsolation) {
 
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
     mv.visitLdcInsn(txIsolation.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_TXISOLATION, "valueOf", "(Ljava/lang/String;)L"+C_TXISOLATION+";", false);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setIsolation", "(L"+C_TXISOLATION+";)L"+C_TXSCOPE+";", false);
+    mv.visitMethodInsn(INVOKESTATIC, C_TXISOLATION, "valueOf", "(Ljava/lang/String;)L" + C_TXISOLATION + ";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setIsolation", "(L" + C_TXISOLATION + ";)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
@@ -159,13 +174,13 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
     mv.visitInsn(POP);
   }
 
-  private void setBatch(Object batch){
+  private void setBatch(Object batch) {
 
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
     mv.visitLdcInsn(batch.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L"+C_PERSISTBATCH+";", false);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatch", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
+    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L" + C_PERSISTBATCH + ";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatch", "(L" + C_PERSISTBATCH + ";)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
@@ -175,81 +190,81 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
     mv.visitLineNumber(1, l6);
   }
 
-  private void setBatchOnCascade(Object batch){
+  private void setBatchOnCascade(Object batch) {
 
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
     mv.visitLdcInsn(batch.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L"+C_PERSISTBATCH+";", false);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchOnCascade", "(L"+C_PERSISTBATCH+";)L"+C_TXSCOPE+";", false);
+    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L" + C_PERSISTBATCH + ";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchOnCascade", "(L" + C_PERSISTBATCH + ";)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
-  private void setProfileId(int profileId){
+  private void setProfileId(int profileId) {
 
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
     VisitUtil.visitIntInsn(mv, profileId);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setProfileId", "(I)L"+C_TXSCOPE+";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setProfileId", "(I)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
-  private void setBatchSize(Object batchSize){
+  private void setBatchSize(Object batchSize) {
 
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
     VisitUtil.visitIntInsn(mv, Integer.parseInt(batchSize.toString()));
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchSize", "(I)L"+C_TXSCOPE+";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchSize", "(I)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
-  private void setGetGeneratedKeys(Object getGeneratedKeys){
-    boolean getKeys = (Boolean)getGeneratedKeys;
+  private void setGetGeneratedKeys(Object getGeneratedKeys) {
+    boolean getKeys = (Boolean) getGeneratedKeys;
     if (!getKeys) {
       visitLabelLine();
       mv.visitVarInsn(ALOAD, posTxScope);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setSkipGeneratedKeys", "()L"+C_TXSCOPE+";", false);
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setSkipGeneratedKeys", "()L" + C_TXSCOPE + ";", false);
       mv.visitInsn(POP);
     }
   }
 
-  private void setReadOnly(Object readOnlyObj){
+  private void setReadOnly(Object readOnlyObj) {
 
     visitLabelLine();
-    boolean readOnly = (Boolean)readOnlyObj;
+    boolean readOnly = (Boolean) readOnlyObj;
     mv.visitVarInsn(ALOAD, posTxScope);
-    if (readOnly){
+    if (readOnly) {
       mv.visitInsn(ICONST_1);
     } else {
       mv.visitInsn(ICONST_0);
     }
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setReadOnly", "(Z)L"+C_TXSCOPE+";", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setReadOnly", "(Z)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
-  private void setFlushOnQuery(Object flushObj){
-    boolean flushOnQuery = (Boolean)flushObj;
-    if (!flushOnQuery){
+  private void setFlushOnQuery(Object flushObj) {
+    boolean flushOnQuery = (Boolean) flushObj;
+    if (!flushOnQuery) {
       visitLabelLine();
       mv.visitVarInsn(ALOAD, posTxScope);
       mv.visitInsn(ICONST_0);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setFlushOnQuery", "(Z)L"+C_TXSCOPE+";", false);
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setFlushOnQuery", "(Z)L" + C_TXSCOPE + ";", false);
       mv.visitInsn(POP);
     }
   }
 
-  private void setSkipCache(Object skipCacheObj){
-    boolean skipCache = (Boolean)skipCacheObj;
-    if (skipCache){
+  private void setSkipCache(Object skipCacheObj) {
+    boolean skipCache = (Boolean) skipCacheObj;
+    if (skipCache) {
       visitLabelLine();
       mv.visitVarInsn(ALOAD, posTxScope);
       mv.visitInsn(ICONST_1);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setSkipCache", "(Z)L"+C_TXSCOPE+";", false);
+      mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setSkipCache", "(Z)L" + C_TXSCOPE + ";", false);
       mv.visitInsn(POP);
     }
   }
 
-  private void setLabel(String label){
+  private void setLabel(String label) {
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
     mv.visitLdcInsn(label);
@@ -258,11 +273,11 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
   }
 
   /**
-  * Add bytecode to add the noRollbackFor throwable types to the TxScope.
-  */
-  private void setNoRollbackFor(Object noRollbackFor){
+   * Add bytecode to add the noRollbackFor throwable types to the TxScope.
+   */
+  private void setNoRollbackFor(Object noRollbackFor) {
 
-    ArrayList<?> list = (ArrayList<?>)noRollbackFor;
+    ArrayList<?> list = (ArrayList<?>) noRollbackFor;
 
     for (Object aList : list) {
       visitLabelLine();
@@ -275,11 +290,11 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
   }
 
   /**
-  * Add bytecode to add the rollbackFor throwable types to the TxScope.
-  */
-  private void setRollbackFor(Object rollbackFor){
+   * Add bytecode to add the rollbackFor throwable types to the TxScope.
+   */
+  private void setRollbackFor(Object rollbackFor) {
 
-    ArrayList<?> list = (ArrayList<?>)rollbackFor;
+    ArrayList<?> list = (ArrayList<?>) rollbackFor;
 
     for (Object aList : list) {
       visitLabelLine();
@@ -292,14 +307,14 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
   }
 
   /**
-  * Return the profileId from the transactional annotation.
-  */
+   * Return the profileId from the transactional annotation.
+   */
   private int annotationProfileId() {
     Object value = annotationInfo.getValue("profileId");
     if (value == null) {
       return 0;
     } else {
-      return (int)value;
+      return (int) value;
     }
   }
 
@@ -317,11 +332,11 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
 
     mv.visitTypeInsn(NEW, txScopeType.getInternalName());
     mv.visitInsn(DUP);
-    mv.visitMethodInsn(INVOKESPECIAL, txScopeType.getInternalName(), "<init>", "()V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, txScopeType.getInternalName(), INIT, "()V", false);
     mv.visitVarInsn(ASTORE, posTxScope);
 
     Object txType = annotationInfo.getValue("type");
-    if (txType != null){
+    if (txType != null) {
       setTxType(txType);
     }
     if (classAdapter.isEnableProfileLocation()) {
@@ -331,65 +346,65 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
     if (profileId > 0) {
       setProfileId(profileId);
     }
-    String txLabel = (String)annotationInfo.getValue("label");
+    String txLabel = (String) annotationInfo.getValue("label");
     if (txLabel != null && !txLabel.isEmpty()) {
       classAdapter.putTxnLabel(locationField, txLabel);
       setLabel(txLabel);
     }
 
     Object txIsolation = annotationInfo.getValue("isolation");
-    if (txIsolation != null){
+    if (txIsolation != null) {
       setTxIsolation(txIsolation);
     }
 
     Object batch = annotationInfo.getValue("batch");
-    if (batch != null){
+    if (batch != null) {
       setBatch(batch);
     }
 
     Object batchOnCascade = annotationInfo.getValue("batchOnCascade");
-    if (batchOnCascade != null){
+    if (batchOnCascade != null) {
       setBatchOnCascade(batchOnCascade);
     }
 
     Object batchSize = annotationInfo.getValue("batchSize");
-    if (batchSize != null){
+    if (batchSize != null) {
       setBatchSize(batchSize);
     }
 
     Object getGeneratedKeys = annotationInfo.getValue("getGeneratedKeys");
-    if (getGeneratedKeys != null){
+    if (getGeneratedKeys != null) {
       setGetGeneratedKeys(getGeneratedKeys);
     }
 
     Object readOnly = annotationInfo.getValue("readOnly");
-    if (readOnly != null){
+    if (readOnly != null) {
       setReadOnly(readOnly);
     }
 
     Object flushOnQuery = annotationInfo.getValue("flushOnQuery");
-    if (flushOnQuery != null){
+    if (flushOnQuery != null) {
       setFlushOnQuery(flushOnQuery);
     }
 
     Object skipCache = annotationInfo.getValue("skipCache");
-    if (skipCache != null){
+    if (skipCache != null) {
       setSkipCache(skipCache);
     }
 
     Object noRollbackFor = annotationInfo.getValue("noRollbackFor");
-    if (noRollbackFor != null){
+    if (noRollbackFor != null) {
       setNoRollbackFor(noRollbackFor);
     }
 
     Object rollbackFor = annotationInfo.getValue("rollbackFor");
-    if (rollbackFor != null){
+    if (rollbackFor != null) {
       setRollbackFor(rollbackFor);
     }
 
     mv.visitVarInsn(ALOAD, posTxScope);
     mv.visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "enter", "("
-        + txScopeType.getDescriptor() + ")V", false);
+      + txScopeType.getDescriptor() + ")V", false);
   }
 
 
