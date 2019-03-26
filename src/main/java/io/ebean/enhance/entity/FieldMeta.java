@@ -446,7 +446,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitVarInsn(ALOAD, 0);
       mv.visitTypeInsn(NEW, ebCollection);
       mv.visitInsn(DUP);
-      mv.visitMethodInsn(INVOKESPECIAL, ebCollection, "<init>", "()V", false);
+      mv.visitMethodInsn(INVOKESPECIAL, ebCollection, INIT, "()V", false);
       mv.visitFieldInsn(PUTFIELD, className, fieldName, fieldDesc);
 
       mv.visitVarInsn(ALOAD, 0);

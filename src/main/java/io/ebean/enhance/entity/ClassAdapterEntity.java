@@ -309,7 +309,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 
   private boolean isConstructor(String name, String desc){
 
-    if (name.equals("<init>")) {
+    if (name.equals(INIT)) {
       if (desc.equals("()V")) {
         classMeta.setHasDefaultConstructor(true);
       }

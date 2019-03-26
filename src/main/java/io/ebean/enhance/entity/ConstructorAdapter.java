@@ -21,7 +21,6 @@ import io.ebean.enhance.common.EnhanceConstants;
  */
 public class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opcodes {
 
-  private static final String INIT = "<init>";
   private static final String NOARG_VOID = "()V";
 
   private final ClassMeta meta;

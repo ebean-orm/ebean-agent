@@ -6,6 +6,8 @@ import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+
 /**
  * Field information.
  */
@@ -63,23 +65,23 @@ public class FieldInfo implements Opcodes, Constants {
     if (assocProperty) {
       if (typeQueryRootBean) {
         mv.visitInsn(ICONST_1);
-        mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;I)V", false);
+        mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;I)V", false);
       } else {
         mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_ROOT, "Ljava/lang/Object;");
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_PATH, "Ljava/lang/String;");
         mv.visitInsn(ICONST_1);
-        mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;I)V", false);
+        mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;I)V", false);
       }
 
     } else {
       if (typeQueryRootBean) {
-        mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;)V", false);
+        mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;)V", false);
       } else {
         mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_ROOT, "Ljava/lang/Object;");
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_PATH, "Ljava/lang/String;");
-        mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
+        mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
       }
     }
 
@@ -121,7 +123,7 @@ public class FieldInfo implements Opcodes, Constants {
     mv.visitInsn(DUP);
     mv.visitLdcInsn(name);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKESPECIAL, internalName, "<init>", "(Ljava/lang/String;Ljava/lang/Object;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;)V", false);
     mv.visitFieldInsn(PUTFIELD, classInfo.getClassName(), name, desc);
   }
 }

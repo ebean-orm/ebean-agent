@@ -4,6 +4,8 @@ import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.Opcodes;
 
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+
 /**
  * Changes the existing constructor to remove all the field initialisation as these are going to be
  * initialised lazily by calls to our generated methods.
@@ -33,7 +35,7 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
   @Override
   public void visitCode() {
 
-    mv = cv.visitMethod(ACC_PUBLIC, "<init>", desc, signature, null);
+    mv = cv.visitMethod(ACC_PUBLIC, INIT, desc, signature, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
@@ -42,7 +44,7 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
     mv.visitVarInsn(ALOAD, 1);
     mv.visitVarInsn(ALOAD, 2);
     mv.visitInsn(ACONST_NULL);
-    mv.visitMethodInsn(INVOKESPECIAL, TQ_ASSOC_BEAN, "<init>", "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, TQ_ASSOC_BEAN, INIT, "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(2, l1);

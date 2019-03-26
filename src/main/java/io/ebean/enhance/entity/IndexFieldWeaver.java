@@ -10,6 +10,8 @@ import io.ebean.enhance.common.VisitUtil;
 
 import java.util.List;
 
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+
 /**
  * Generate the methods based on the list of fields.
  * <p>
@@ -213,11 +215,11 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
     mv.visitInsn(DUP);
     mv.visitLdcInsn("Invalid index ");
-    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", INIT, "(Ljava/lang/String;)V", false);
     mv.visitVarInsn(ILOAD, 1);
     mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
     mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
-    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", INIT, "(Ljava/lang/String;)V", false);
     mv.visitInsn(ATHROW);
 
     Label l5 = new Label();
@@ -297,11 +299,11 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
     mv.visitInsn(DUP);
     mv.visitLdcInsn("Invalid index ");
-    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", INIT, "(Ljava/lang/String;)V", false);
     mv.visitVarInsn(ILOAD, 1);
     mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
     mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
-    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", INIT, "(Ljava/lang/String;)V", false);
     mv.visitInsn(ATHROW);
     Label l9 = new Label();
     mv.visitLabel(l9);

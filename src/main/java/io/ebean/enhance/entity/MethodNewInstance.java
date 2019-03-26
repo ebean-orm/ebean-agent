@@ -6,6 +6,8 @@ import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.ClassMeta;
 
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+
 /**
  * Adds the _ebean_newInstance() method.
  */
@@ -23,7 +25,7 @@ public class MethodNewInstance {
     mv.visitLineNumber(10, l0);
     mv.visitTypeInsn(Opcodes.NEW, classMeta.getClassName());
     mv.visitInsn(Opcodes.DUP);
-    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, classMeta.getClassName(), "<init>", "()V", false);
+    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, classMeta.getClassName(), INIT, "()V", false);
     mv.visitInsn(Opcodes.ARETURN);
 
     Label l1 = new Label();
