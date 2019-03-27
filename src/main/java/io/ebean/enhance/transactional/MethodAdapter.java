@@ -3,9 +3,7 @@ package io.ebean.enhance.transactional;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
-import io.ebean.enhance.asm.commons.FinallyAdapter;
 import io.ebean.enhance.common.AnnotationInfo;
 import io.ebean.enhance.common.AnnotationInfoVisitor;
 import io.ebean.enhance.common.EnhanceConstants;
@@ -14,7 +12,7 @@ import io.ebean.enhance.common.VisitUtil;
 import java.util.ArrayList;
 
 /**
- * Adapts a method to support Transactional.
+ * Adapts a method to support Transactional and profile location.
  * <p>
  * Adds a TxScope and ScopeTrans local variables. On normal exit makes a call
  * out via InternalServer to end the scopeTrans depending on the exit type
@@ -22,17 +20,14 @@ import java.util.ArrayList;
  * rollback or not.
  * </p>
  */
-public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstants {
+class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants {
 
-  private static final String QP_FIELD_PREFIX = ClassAdapterTransactional.QP_FIELD_PREFIX;
   private static final String TX_FIELD_PREFIX = ClassAdapterTransactional.TX_FIELD_PREFIX;
 
   private static final Type txScopeType = Type.getType("L" + C_TXSCOPE + ";");
   private static final Type helpScopeTrans = Type.getType(L_HELPSCOPETRANS);
 
   private final AnnotationInfo annotationInfo;
-
-  private final ClassAdapterTransactional classAdapter;
 
   private final String methodName;
 
@@ -43,9 +38,8 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
   private TransactionalMethodKey methodKey;
   private int locationField;
 
-  ScopeTransAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
-    super(Opcodes.ASM7, mv, access, name, desc);
-    this.classAdapter = classAdapter;
+  MethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
+    super(classAdapter, mv, access, name, desc);
     this.methodName = name;
 
     // inherit from class level Transactional annotation
@@ -68,8 +62,13 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
   }
 
   @Override
-  public String toString() {
-    return classAdapter.className();
+  public void visitCode() {
+    finallyVisitCode();;
+  }
+
+  @Override
+  public void visitMaxs(int maxStack, int maxLocals) {
+    finallyVisitMaxs(maxStack, maxLocals);
   }
 
   @Override
@@ -90,60 +89,6 @@ public class ScopeTransAdapter extends FinallyAdapter implements EnhanceConstant
     } else {
       return av;
     }
-  }
-
-  @Override
-  public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-
-    if (!classAdapter.isEnableProfileLocation()) {
-      super.visitMethodInsn(opcode, owner, name, desc, itf);
-
-    } else if (INIT.equals(name) && classAdapter.isQueryBean(owner)) {
-      super.visitMethodInsn(opcode, owner, name, desc, itf);
-
-      int fieldIdx = classAdapter.nextQueryProfileLocation();
-      if (classAdapter.isLog(4)) {
-        classAdapter.log("add profile location " + fieldIdx);
-      }
-      mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
-      mv.visitMethodInsn(INVOKEVIRTUAL, owner, "setProfileLocation", "(Lio/ebean/ProfileLocation;)Ljava/lang/Object;", false);
-      mv.visitTypeInsn(CHECKCAST, owner);
-
-    } else if (!classAdapter.isFinder()) {
-      super.visitMethodInsn(opcode, owner, name, desc, itf);
-
-    } else {
-      // enhance method in Finder with profileLocation awareness
-      if (isNewQuery(name, desc)) {
-        int fieldIdx = classAdapter.nextQueryProfileLocation();
-        mv.visitMethodInsn(opcode, owner, name, desc, itf);
-        mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "io/ebean/Query", "setProfileLocation", "(Lio/ebean/ProfileLocation;)Lio/ebean/Query;", true);
-
-      } else if (isNewUpdateQuery(name, desc)) {
-        int fieldIdx = classAdapter.nextQueryProfileLocation();
-        mv.visitMethodInsn(opcode, owner, name, desc, itf);
-        mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "io/ebean/UpdateQuery", "setProfileLocation", "(Lio/ebean/ProfileLocation;)Lio/ebean/UpdateQuery;", true);
-
-      } else {
-        super.visitMethodInsn(opcode, owner, name, desc, itf);
-      }
-    }
-  }
-
-  private boolean isNewUpdateQuery(String name, String desc) {
-    return name.equals("update") && desc.equals("()Lio/ebean/UpdateQuery;");
-  }
-
-  private boolean isNewQuery(String name, String desc) {
-    if (name.equals("query") && (desc.equals("()Lio/ebean/Query;") || desc.equals("(Ljava/lang/String;)Lio/ebean/Query;"))) {
-      return true;
-    }
-    if (name.equals("nativeSql") && desc.equals("(Ljava/lang/String;)Lio/ebean/Query;")) {
-      return true;
-    }
-    return false;
   }
 
   private void setTxType(Object txType) {

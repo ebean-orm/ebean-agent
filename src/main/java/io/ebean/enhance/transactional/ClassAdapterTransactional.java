@@ -205,7 +205,10 @@ public class ClassAdapterTransactional extends ClassVisitor {
       throw new AlreadyEnhancedException(className);
     }
     if (name.equals(INIT)) {
-      // not enhancing constructors
+      if (enhanceContext.isEnableProfileLocation()) {
+        // enhance constructors containing query bean queries with profile location
+        return new ConstructorMethodAdapter(this, mv, access, name, desc);
+      }
       return mv;
     }
     if (name.equals("<clinit>")) {
@@ -221,7 +224,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
       }
     }
 
-    return new ScopeTransAdapter(this, mv, access, name, desc);
+    return new MethodAdapter(this, mv, access, name, desc);
   }
 
   @Override
