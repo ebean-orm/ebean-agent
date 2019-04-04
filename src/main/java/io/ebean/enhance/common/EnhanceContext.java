@@ -87,6 +87,10 @@ public class EnhanceContext {
     this.classBytesReader = classBytesReader;
     this.reader = new ClassMetaReader(this, metaCache);
 
+    if (manifest.getDebugLevel() > -1) {
+      logLevel = manifest.getDebugLevel();
+    }
+
     String debugValue = agentArgsMap.get("debug");
     if (debugValue != null) {
       try {

@@ -7,6 +7,8 @@ public interface EnhanceConstants {
 
   String INIT = "<init>";
 
+  String CLINIT = "<clinit>";
+
   String NOARG_VOID = "()V";
 
   String AVAJE_TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";

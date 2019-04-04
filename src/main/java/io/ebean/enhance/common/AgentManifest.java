@@ -34,6 +34,8 @@ public class AgentManifest {
   */
   private int transactionProfilingStart = 1000;
 
+  private int debugLevel = -1;
+
   private boolean transientInternalFields;
 
   private boolean checkNullManyFields = true;
@@ -108,6 +110,13 @@ public class AgentManifest {
         return transactionProfilingStart;
       }
     }
+  }
+
+  /**
+   * Return the debug level read from ebean.mf
+   */
+  public int getDebugLevel() {
+    return debugLevel;
   }
 
   /**
@@ -195,6 +204,11 @@ public class AgentManifest {
   }
 
   void readProfilingMode(Attributes attributes) {
+
+    String debug = attributes.getValue("debug");
+    if (debug != null) {
+      debugLevel = Integer.parseInt(debug);
+    }
 
     String locationMode = attributes.getValue("profile-location");
     if (locationMode != null) {

@@ -29,6 +29,7 @@ import static io.ebean.enhance.asm.Opcodes.BIPUSH;
 import static io.ebean.enhance.asm.Opcodes.INVOKESTATIC;
 import static io.ebean.enhance.asm.Opcodes.PUTSTATIC;
 import static io.ebean.enhance.asm.Opcodes.RETURN;
+import static io.ebean.enhance.common.EnhanceConstants.CLINIT;
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
 import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 
@@ -44,6 +45,13 @@ public class ClassAdapterTransactional extends ClassVisitor {
   static final String TX_FIELD_PREFIX = "_$ebpt";
 
   static final String IO_EBEAN_FINDER = "io/ebean/Finder";
+
+  static final String $_COMPANION = "$Companion";
+
+  static final String INIT_PROFILE_LOCATIONS = "_$initProfileLocations";
+  static final String LKOTLIN_METADATA = "Lkotlin/Metadata;";
+  static final String _$EBP = "_$ebp";
+  static final String LIO_EBEAN_PROFILE_LOCATION = "Lio/ebean/ProfileLocation;";
 
   private final Set<String> transactionalMethods = new LinkedHashSet<>();
 
@@ -61,6 +69,8 @@ public class ClassAdapterTransactional extends ClassVisitor {
   private AnnotationInfo classAnnotationInfo;
 
   private String className;
+
+  private boolean markAsKotlin;
 
   private boolean existingStaticInitialiser;
 
@@ -172,6 +182,10 @@ public class ClassAdapterTransactional extends ClassVisitor {
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 
+    if (LKOTLIN_METADATA.equals(desc)) {
+      markAsKotlin = true;
+    }
+
     AnnotationVisitor av = super.visitAnnotation(desc, visible);
 
     if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
@@ -187,7 +201,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   @Override
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-    if (name.startsWith("_$ebp") && desc.equals("Lio/ebean/ProfileLocation;")) {
+    if (name.startsWith(_$EBP) && desc.equals(LIO_EBEAN_PROFILE_LOCATION)) {
       throw new AlreadyEnhancedException(className);
     }
     return super.visitField(access, name, desc, signature, value);
@@ -201,17 +215,20 @@ public class ClassAdapterTransactional extends ClassVisitor {
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-    if (name.equals("_$initProfileLocations")) {
+    if (name.equals(INIT_PROFILE_LOCATIONS)) {
       throw new AlreadyEnhancedException(className);
     }
     if (name.equals(INIT)) {
-      if (enhanceContext.isEnableProfileLocation()) {
+      if (!kotlinCompanion() && enhanceContext.isEnableProfileLocation()) {
         // enhance constructors containing query bean queries with profile location
+        if (isLog(4)) {
+          log("enhance constructor with profile location on className:" + className);
+        }
         return new ConstructorMethodAdapter(this, mv, access, name, desc);
       }
       return mv;
     }
-    if (name.equals("<clinit>")) {
+    if (name.equals(CLINIT)) {
       if (!enhanceContext.isEnableProfileLocation()) {
         // not enhancing class static initialiser
         return mv;
@@ -225,6 +242,10 @@ public class ClassAdapterTransactional extends ClassVisitor {
     }
 
     return new MethodAdapter(this, mv, access, name, desc);
+  }
+
+  private boolean kotlinCompanion() {
+    return markAsKotlin && className.endsWith($_COMPANION);
   }
 
   @Override
