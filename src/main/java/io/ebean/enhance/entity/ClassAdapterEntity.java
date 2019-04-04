@@ -320,7 +320,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 
   private boolean isStaticInit(String name, String desc) {
 
-    if (name.equals("<clinit>") && desc.equals(NOARG_VOID)) {
+    if (name.equals(CLINIT) && desc.equals(NOARG_VOID)) {
       classMeta.setHasStaticInit(true);
       return true;
     }

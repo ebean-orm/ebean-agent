@@ -44,14 +44,14 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   static final String TX_FIELD_PREFIX = "_$ebpt";
 
-  static final String IO_EBEAN_FINDER = "io/ebean/Finder";
+  private static final String IO_EBEAN_FINDER = "io/ebean/Finder";
 
-  static final String $_COMPANION = "$Companion";
+  private static final String $_COMPANION = "$Companion";
 
-  static final String INIT_PROFILE_LOCATIONS = "_$initProfileLocations";
-  static final String LKOTLIN_METADATA = "Lkotlin/Metadata;";
-  static final String _$EBP = "_$ebp";
-  static final String LIO_EBEAN_PROFILE_LOCATION = "Lio/ebean/ProfileLocation;";
+  private static final String INIT_PROFILE_LOCATIONS = "_$initProfileLocations";
+  private static final String LKOTLIN_METADATA = "Lkotlin/Metadata;";
+  private static final String _$EBP = "_$ebp";
+  private static final String LIO_EBEAN_PROFILE_LOCATION = "Lio/ebean/ProfileLocation;";
 
   private final Set<String> transactionalMethods = new LinkedHashSet<>();
 
@@ -330,12 +330,12 @@ public class ClassAdapterTransactional extends ClassVisitor {
    */
   private void addStaticInitialiser() {
 
-    MethodVisitor mv = cv.visitMethod(ACC_STATIC, "<clinit>", NOARG_VOID, null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_STATIC, CLINIT, NOARG_VOID, null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(4, l0);
-    mv.visitMethodInsn(INVOKESTATIC, className, "_$initProfileLocations", NOARG_VOID, false);
+    mv.visitMethodInsn(INVOKESTATIC, className, INIT_PROFILE_LOCATIONS, NOARG_VOID, false);
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(5, l1);
