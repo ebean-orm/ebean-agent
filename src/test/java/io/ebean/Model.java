@@ -5,17 +5,17 @@ package io.ebean;
  */
 public abstract class Model {
 
-  protected final String _$targetDatabase;
+  protected final String _$dbName;
 
   protected Model() {
     this(null);
   }
 
   protected Model(String dbName) {
-    _$targetDatabase = dbName;
+    _$dbName = dbName;
   }
 
   public Database db() {
-    return DB.byName(_$targetDatabase);
+    return DB.byName(_$dbName);
   }
 }

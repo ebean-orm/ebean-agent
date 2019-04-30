@@ -9,7 +9,7 @@
 
   <groupId>io.ebean</groupId>
   <artifactId>ebean-agent</artifactId>
-  <version>11.37.2-SNAPSHOT</version>
+  <version>11.38.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ebean-agent</name>
@@ -39,14 +39,14 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.36.2</version>
+      <version>11.38.1</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean-querybean</artifactId>
-      <version>11.36.3</version>
+      <version>11.37.1</version>
       <scope>test</scope>
     </dependency>
 
