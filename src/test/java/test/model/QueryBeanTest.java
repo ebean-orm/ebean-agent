@@ -9,7 +9,7 @@ import java.util.List;
 
 public class QueryBeanTest extends BaseTest {
 
-  @Test
+  @Test(enabled = false)
   public void runQuery() {
 
     final List<Address> list = new QAddress()
