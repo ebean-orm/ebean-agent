@@ -30,9 +30,5 @@ public class QueryBeanEnhanceTest extends BaseTest {
     assertNotNull(version2);
     assertSame(result, version2);
 
-    System.out.println("done");
-
-    qAddress.findList();
-
   }
 }

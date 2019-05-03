@@ -11,12 +11,12 @@ import static org.testng.Assert.assertTrue;
 public class AgentManifestTest {
 
   @Test
-  public void testRead() throws Exception {
+  public void testRead() {
 
     AgentManifest manifest = AgentManifest.read(this.getClass().getClassLoader(), null);
 
     assertThat(manifest.getTransactionalPackages()).contains("test");
-    assertThat(manifest.getEntityPackages()).contains("test");
+    assertThat(manifest.getEntityPackages()).contains("test.model.domain");
 
     FilterEntityTransactional filterEntityTransactional = new FilterEntityTransactional(manifest);
     assertTrue(filterEntityTransactional.detectEnhancement("test/model/domain/Foo"));
@@ -25,7 +25,7 @@ public class AgentManifestTest {
 
 
     FilterQueryBean filterQueryBean = new FilterQueryBean(manifest);
-    assertTrue(filterQueryBean.detectEnhancement("test/Any"));
+    assertTrue(filterQueryBean.detectEnhancement("test/model/domain/Any"));
     assertTrue(filterQueryBean.detectEnhancement("foo/Any"));
   }
 

@@ -1,4 +1,4 @@
-entity-packages: test
+entity-packages: test.model.domain
 transactional-packages: test
 querybean-packages: test.model, foo
 query-labels: true
