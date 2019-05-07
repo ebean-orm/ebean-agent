@@ -54,19 +54,19 @@ package io.ebean.enhance.asm;
  *
  * <pre>
  *   =====================================
- *   |.DIM|KIND|FLAG|...............VALUE|
+ *   |...DIM|KIND|.F|...............VALUE|
  *   =====================================
  * </pre>
  *
  * <ul>
- *   <li>the DIM field, stored in the 4 most significant bits, is a signed number of array
- *       dimensions (from -8 to 7, included). It can be retrieved with {@link #DIM_MASK} and a right
- *       shift of {@link #DIM_SHIFT}.
+ *   <li>the DIM field, stored in the 6 most significant bits, is a signed number of array
+ *       dimensions (from -32 to 31, included). It can be retrieved with {@link #DIM_MASK} and a
+ *       right shift of {@link #DIM_SHIFT}.
  *   <li>the KIND field, stored in 4 bits, indicates the kind of VALUE used. These 4 bits can be
  *       retrieved with {@link #KIND_MASK} and, without any shift, must be equal to {@link
  *       #CONSTANT_KIND}, {@link #REFERENCE_KIND}, {@link #UNINITIALIZED_KIND}, {@link #LOCAL_KIND}
  *       or {@link #STACK_KIND}.
- *   <li>the FLAGS field, stored in 4 bits, contains up to 4 boolean flags. Currently only one flag
+ *   <li>the FLAGS field, stored in 2 bits, contains up to 2 boolean flags. Currently only one flag
  *       is defined, namely {@link #TOP_IF_LONG_OR_DOUBLE_FLAG}.
  *   <li>the VALUE field, stored in the remaining 20 bits, contains either
  *       <ul>
@@ -129,17 +129,24 @@ class Frame {
   private static final int ITEM_ASM_CHAR = 11;
   private static final int ITEM_ASM_SHORT = 12;
 
+  // The size and offset in bits of each field of an abstract type.
+
+  private static final int DIM_SIZE = 6;
+  private static final int KIND_SIZE = 4;
+  private static final int FLAGS_SIZE = 2;
+  private static final int VALUE_SIZE = 32 - DIM_SIZE - KIND_SIZE - FLAGS_SIZE;
+
+  private static final int DIM_SHIFT = KIND_SIZE + FLAGS_SIZE + VALUE_SIZE;
+  private static final int KIND_SHIFT = FLAGS_SIZE + VALUE_SIZE;
+  private static final int FLAGS_SHIFT = VALUE_SIZE;
+
   // Bitmasks to get each field of an abstract type.
 
-  private static final int DIM_MASK = 0xF0000000;
-  private static final int KIND_MASK = 0x0F000000;
-  private static final int FLAGS_MASK = 0x00F00000;
-  private static final int VALUE_MASK = 0x000FFFFF;
+  private static final int DIM_MASK = ((1 << DIM_SIZE) - 1) << DIM_SHIFT;
+  private static final int KIND_MASK = ((1 << KIND_SIZE) - 1) << KIND_SHIFT;
+  private static final int VALUE_MASK = (1 << VALUE_SIZE) - 1;
 
   // Constants to manipulate the DIM field of an abstract type.
-
-  /** The number of right shift bits to use to get the array dimensions of an abstract type. */
-  private static final int DIM_SHIFT = 28;
 
   /** The constant to be added to an abstract type to get one with one more array dimension. */
   private static final int ARRAY_OF = +1 << DIM_SHIFT;
@@ -149,20 +156,20 @@ class Frame {
 
   // Possible values for the KIND field of an abstract type.
 
-  private static final int CONSTANT_KIND = 0x01000000;
-  private static final int REFERENCE_KIND = 0x02000000;
-  private static final int UNINITIALIZED_KIND = 0x03000000;
-  private static final int LOCAL_KIND = 0x04000000;
-  private static final int STACK_KIND = 0x05000000;
+  private static final int CONSTANT_KIND = 1 << KIND_SHIFT;
+  private static final int REFERENCE_KIND = 2 << KIND_SHIFT;
+  private static final int UNINITIALIZED_KIND = 3 << KIND_SHIFT;
+  private static final int LOCAL_KIND = 4 << KIND_SHIFT;
+  private static final int STACK_KIND = 5 << KIND_SHIFT;
 
   // Possible flags for the FLAGS field of an abstract type.
 
   /**
-  * A flag used for LOCAL_KIND and STACK_KIND abstract types, indicating that if the resolved,
-  * concrete type is LONG or DOUBLE, TOP should be used instead (because the value has been
-  * partially overridden with an xSTORE instruction).
-  */
-  private static final int TOP_IF_LONG_OR_DOUBLE_FLAG = 0x00100000 & FLAGS_MASK;
+   * A flag used for LOCAL_KIND and STACK_KIND abstract types, indicating that if the resolved,
+   * concrete type is LONG or DOUBLE, TOP should be used instead (because the value has been
+   * partially overridden with an xSTORE instruction).
+   */
+  private static final int TOP_IF_LONG_OR_DOUBLE_FLAG = 1 << FLAGS_SHIFT;
 
   // Useful predefined abstract types (all the possible CONSTANT_KIND types).
 
@@ -198,11 +205,11 @@ class Frame {
   private int[] outputStack;
 
   /**
-  * The start of the output stack, relatively to the input stack. This offset is always negative or
-  * null. A null offset means that the output stack must be appended to the input stack. A -n
-  * offset means that the first n output stack elements must replace the top n input stack
-  * elements, and that the other elements must be appended to the input stack.
-  */
+   * The start of the output stack, relatively to the input stack. This offset is always negative or
+   * null. A null offset means that the output stack must be appended to the input stack. A -n
+   * offset means that the first n output stack elements must replace the top n input stack
+   * elements, and that the other elements must be appended to the input stack.
+   */
   private short outputStackStart;
 
   /** The index of the top stack element in {@link #outputStack}. */
@@ -212,15 +219,15 @@ class Frame {
   private int initializationCount;
 
   /**
-  * The abstract types that are initialized in the basic block. A constructor invocation on an
-  * UNINITIALIZED or UNINITIALIZED_THIS abstract type must replace <i>every occurrence</i> of this
-  * type in the local variables and in the operand stack. This cannot be done during the first step
-  * of the algorithm since, during this step, the local variables and the operand stack types are
-  * still abstract. It is therefore necessary to store the abstract types of the constructors which
-  * are invoked in the basic block, in order to do this replacement during the second step of the
-  * algorithm, where the frames are fully computed. Note that this array can contain abstract types
-  * that are relative to the input locals or to the input stack.
-  */
+   * The abstract types that are initialized in the basic block. A constructor invocation on an
+   * UNINITIALIZED or UNINITIALIZED_THIS abstract type must replace <i>every occurrence</i> of this
+   * type in the local variables and in the operand stack. This cannot be done during the first step
+   * of the algorithm since, during this step, the local variables and the operand stack types are
+   * still abstract. It is therefore necessary to store the abstract types of the constructors which
+   * are invoked in the basic block, in order to do this replacement during the second step of the
+   * algorithm, where the frames are fully computed. Note that this array can contain abstract types
+   * that are relative to the input locals or to the input stack.
+   */
   private int[] initializations;
 
   // -----------------------------------------------------------------------------------------------
@@ -228,22 +235,22 @@ class Frame {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Constructs a new Frame.
-  *
-  * @param owner the basic block to which these input and output stack map frames correspond.
-  */
+   * Constructs a new Frame.
+   *
+   * @param owner the basic block to which these input and output stack map frames correspond.
+   */
   Frame(final Label owner) {
     this.owner = owner;
   }
 
   /**
-  * Sets this frame to the value of the given frame.
-  *
-  * <p>WARNING: after this method is called the two frames share the same data structures. It is
-  * recommended to discard the given frame to avoid unexpected side effects.
-  *
-  * @param frame The new frame value.
-  */
+   * Sets this frame to the value of the given frame.
+   *
+   * <p>WARNING: after this method is called the two frames share the same data structures. It is
+   * recommended to discard the given frame to avoid unexpected side effects.
+   *
+   * @param frame The new frame value.
+   */
   final void copyFrom(final Frame frame) {
     inputLocals = frame.inputLocals;
     inputStack = frame.inputStack;
@@ -260,16 +267,16 @@ class Frame {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Returns the abstract type corresponding to the given public API frame element type.
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param type a frame element type described using the same format as in {@link
-  *     MethodVisitor#visitFrame}, i.e. either {@link Opcodes#TOP}, {@link Opcodes#INTEGER}, {@link
-  *     Opcodes#FLOAT}, {@link Opcodes#LONG}, {@link Opcodes#DOUBLE}, {@link Opcodes#NULL}, or
-  *     {@link Opcodes#UNINITIALIZED_THIS}, or the internal name of a class, or a Label designating
-  *     a NEW instruction (for uninitialized types).
-  * @return the abstract type corresponding to the given frame element type.
-  */
+   * Returns the abstract type corresponding to the given public API frame element type.
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param type a frame element type described using the same format as in {@link
+   *     MethodVisitor#visitFrame}, i.e. either {@link Opcodes#TOP}, {@link Opcodes#INTEGER}, {@link
+   *     Opcodes#FLOAT}, {@link Opcodes#LONG}, {@link Opcodes#DOUBLE}, {@link Opcodes#NULL}, or
+   *     {@link Opcodes#UNINITIALIZED_THIS}, or the internal name of a class, or a Label designating
+   *     a NEW instruction (for uninitialized types).
+   * @return the abstract type corresponding to the given frame element type.
+   */
   static int getAbstractTypeFromApiFormat(final SymbolTable symbolTable, final Object type) {
     if (type instanceof Integer) {
       return CONSTANT_KIND | ((Integer) type).intValue();
@@ -283,28 +290,28 @@ class Frame {
   }
 
   /**
-  * Returns the abstract type corresponding to the internal name of a class.
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param internalName the internal name of a class. This must <i>not</i> be an array type
-  *     descriptor.
-  * @return the abstract type value corresponding to the given internal name.
-  */
+   * Returns the abstract type corresponding to the internal name of a class.
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param internalName the internal name of a class. This must <i>not</i> be an array type
+   *     descriptor.
+   * @return the abstract type value corresponding to the given internal name.
+   */
   static int getAbstractTypeFromInternalName(
-    final SymbolTable symbolTable, final String internalName) {
+      final SymbolTable symbolTable, final String internalName) {
     return REFERENCE_KIND | symbolTable.addType(internalName);
   }
 
   /**
-  * Returns the abstract type corresponding to the given type descriptor.
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param buffer a string ending with a type descriptor.
-  * @param offset the start offset of the type descriptor in buffer.
-  * @return the abstract type corresponding to the given type descriptor.
-  */
+   * Returns the abstract type corresponding to the given type descriptor.
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param buffer a string ending with a type descriptor.
+   * @param offset the start offset of the type descriptor in buffer.
+   * @return the abstract type corresponding to the given type descriptor.
+   */
   private static int getAbstractTypeFromDescriptor(
-    final SymbolTable symbolTable, final String buffer, final int offset) {
+      final SymbolTable symbolTable, final String buffer, final int offset) {
     String internalName;
     switch (buffer.charAt(offset)) {
       case 'V':
@@ -373,15 +380,15 @@ class Frame {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Sets the input frame from the given method description. This method is used to initialize the
-  * first frame of a method, which is implicit (i.e. not stored explicitly in the StackMapTable
-  * attribute).
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param access the method's access flags.
-  * @param descriptor the method descriptor.
-  * @param maxLocals the maximum number of local variables of the method.
-  */
+   * Sets the input frame from the given method description. This method is used to initialize the
+   * first frame of a method, which is implicit (i.e. not stored explicitly in the StackMapTable
+   * attribute).
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param access the method's access flags.
+   * @param descriptor the method descriptor.
+   * @param maxLocals the maximum number of local variables of the method.
+   */
   final void setInputFrameFromDescriptor(
       final SymbolTable symbolTable,
       final int access,
@@ -412,16 +419,16 @@ class Frame {
   }
 
   /**
-  * Sets the input frame from the given public API frame description.
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param numLocal the number of local variables.
-  * @param local the local variable types, described using the same format as in {@link
-  *     MethodVisitor#visitFrame}.
-  * @param numStack the number of operand stack elements.
-  * @param stack the operand stack types, described using the same format as in {@link
-  *     MethodVisitor#visitFrame}.
-  */
+   * Sets the input frame from the given public API frame description.
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param numLocal the number of local variables.
+   * @param local the local variable types, described using the same format as in {@link
+   *     MethodVisitor#visitFrame}.
+   * @param numStack the number of operand stack elements.
+   * @param stack the operand stack types, described using the same format as in {@link
+   *     MethodVisitor#visitFrame}.
+   */
   final void setInputFrameFromApiFormat(
       final SymbolTable symbolTable,
       final int numLocal,
@@ -465,11 +472,11 @@ class Frame {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Returns the abstract type stored at the given local variable index in the output frame.
-  *
-  * @param localIndex the index of the local variable whose value must be returned.
-  * @return the abstract type stored at the given local variable index in the output frame.
-  */
+   * Returns the abstract type stored at the given local variable index in the output frame.
+   *
+   * @param localIndex the index of the local variable whose value must be returned.
+   * @return the abstract type stored at the given local variable index in the output frame.
+   */
   private int getLocal(final int localIndex) {
     if (outputLocals == null || localIndex >= outputLocals.length) {
       // If this local has never been assigned in this basic block, it is still equal to its value
@@ -487,11 +494,11 @@ class Frame {
   }
 
   /**
-  * Replaces the abstract type stored at the given local variable index in the output frame.
-  *
-  * @param localIndex the index of the output frame local variable that must be set.
-  * @param abstractType the value that must be set.
-  */
+   * Replaces the abstract type stored at the given local variable index in the output frame.
+   *
+   * @param localIndex the index of the output frame local variable that must be set.
+   * @param abstractType the value that must be set.
+   */
   private void setLocal(final int localIndex, final int abstractType) {
     // Create and/or resize the output local variables array if necessary.
     if (outputLocals == null) {
@@ -508,10 +515,10 @@ class Frame {
   }
 
   /**
-  * Pushes the given abstract type on the output frame stack.
-  *
-  * @param abstractType an abstract type.
-  */
+   * Pushes the given abstract type on the output frame stack.
+   *
+   * @param abstractType an abstract type.
+   */
   private void push(final int abstractType) {
     // Create and/or resize the output stack array if necessary.
     if (outputStack == null) {
@@ -534,13 +541,14 @@ class Frame {
   }
 
   /**
-  * Pushes the abstract type corresponding to the given descriptor on the output frame stack.
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param descriptor a type or method descriptor (in which case its return type is pushed).
-  */
+   * Pushes the abstract type corresponding to the given descriptor on the output frame stack.
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param descriptor a type or method descriptor (in which case its return type is pushed).
+   */
   private void push(final SymbolTable symbolTable, final String descriptor) {
-    int typeDescriptorOffset = descriptor.charAt(0) == '(' ? descriptor.indexOf(')') + 1 : 0;
+    int typeDescriptorOffset =
+        descriptor.charAt(0) == '(' ? Type.getReturnTypeOffset(descriptor) : 0;
     int abstractType = getAbstractTypeFromDescriptor(symbolTable, descriptor, typeDescriptorOffset);
     if (abstractType != 0) {
       push(abstractType);
@@ -551,10 +559,10 @@ class Frame {
   }
 
   /**
-  * Pops an abstract type from the output frame stack and returns its value.
-  *
-  * @return the abstract type that has been popped from the output frame stack.
-  */
+   * Pops an abstract type from the output frame stack and returns its value.
+   *
+   * @return the abstract type that has been popped from the output frame stack.
+   */
   private int pop() {
     if (outputStackTop > 0) {
       return outputStack[--outputStackTop];
@@ -565,10 +573,10 @@ class Frame {
   }
 
   /**
-  * Pops the given number of abstract types from the output frame stack.
-  *
-  * @param elements the number of abstract types that must be popped.
-  */
+   * Pops the given number of abstract types from the output frame stack.
+   *
+   * @param elements the number of abstract types that must be popped.
+   */
   private void pop(final int elements) {
     if (outputStackTop >= elements) {
       outputStackTop -= elements;
@@ -581,10 +589,10 @@ class Frame {
   }
 
   /**
-  * Pops as many abstract types from the output frame stack as described by the given descriptor.
-  *
-  * @param descriptor a type or method descriptor (in which case its argument types are popped).
-  */
+   * Pops as many abstract types from the output frame stack as described by the given descriptor.
+   *
+   * @param descriptor a type or method descriptor (in which case its argument types are popped).
+   */
   private void pop(final String descriptor) {
     char firstDescriptorChar = descriptor.charAt(0);
     if (firstDescriptorChar == '(') {
@@ -601,11 +609,11 @@ class Frame {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Adds an abstract type to the list of types on which a constructor is invoked in the basic
-  * block.
-  *
-  * @param abstractType an abstract type on a which a constructor is invoked.
-  */
+   * Adds an abstract type to the list of types on which a constructor is invoked in the basic
+   * block.
+   *
+   * @param abstractType an abstract type on a which a constructor is invoked.
+   */
   private void addInitializedType(final int abstractType) {
     // Create and/or resize the initializations array if necessary.
     if (initializations == null) {
@@ -623,14 +631,14 @@ class Frame {
   }
 
   /**
-  * Returns the "initialized" abstract type corresponding to the given abstract type.
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param abstractType an abstract type.
-  * @return the REFERENCE_KIND abstract type corresponding to abstractType if it is
-  *     UNINITIALIZED_THIS or an UNINITIALIZED_KIND abstract type for one of the types on which a
-  *     constructor is invoked in the basic block. Otherwise returns abstractType.
-  */
+   * Returns the "initialized" abstract type corresponding to the given abstract type.
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param abstractType an abstract type.
+   * @return the REFERENCE_KIND abstract type corresponding to abstractType if it is
+   *     UNINITIALIZED_THIS or an UNINITIALIZED_KIND abstract type for one of the types on which a
+   *     constructor is invoked in the basic block. Otherwise returns abstractType.
+   */
   private int getInitializedType(final SymbolTable symbolTable, final int abstractType) {
     if (abstractType == UNINITIALIZED_THIS
         || (abstractType & (DIM_MASK | KIND_MASK)) == UNINITIALIZED_KIND) {
@@ -662,15 +670,15 @@ class Frame {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Simulates the action of the given instruction on the output stack frame.
-  *
-  * @param opcode the opcode of the instruction.
-  * @param arg the numeric operand of the instruction, if any.
-  * @param argSymbol the Symbol operand of the instruction, if any.
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  */
+   * Simulates the action of the given instruction on the output stack frame.
+   *
+   * @param opcode the opcode of the instruction.
+   * @param arg the numeric operand of the instruction, if any.
+   * @param argSymbol the Symbol operand of the instruction, if any.
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   */
   void execute(
-    final int opcode, final int arg, final Symbol argSymbol, final SymbolTable symbolTable) {
+      final int opcode, final int arg, final Symbol argSymbol, final SymbolTable symbolTable) {
     // Abstract types popped from the stack or read from local variables.
     int abstractType1;
     int abstractType2;
@@ -1104,17 +1112,53 @@ class Frame {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Merges the input frame of the given {@link Frame} with the input and output frames of this
-  * {@link Frame}. Returns {@literal true} if the given frame has been changed by this operation
-  * (the input and output frames of this {@link Frame} are never changed).
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param dstFrame the {@link Frame} whose input frame must be updated. This should be the frame
-  *     of a successor, in the control flow graph, of the basic block corresponding to this frame.
-  * @param catchTypeIndex if 'frame' corresponds to an exception handler basic block, the type
-  *     table index of the caught exception type, otherwise 0.
-  * @return {@literal true} if the input frame of 'frame' has been changed by this operation.
-  */
+   * Computes the concrete output type corresponding to a given abstract output type.
+   *
+   * @param abstractOutputType an abstract output type.
+   * @param numStack the size of the input stack, used to resolve abstract output types of
+   *     STACK_KIND kind.
+   * @return the concrete output type corresponding to 'abstractOutputType'.
+   */
+  private int getConcreteOutputType(final int abstractOutputType, final int numStack) {
+    int dim = abstractOutputType & DIM_MASK;
+    int kind = abstractOutputType & KIND_MASK;
+    if (kind == LOCAL_KIND) {
+      // By definition, a LOCAL_KIND type designates the concrete type of a local variable at
+      // the beginning of the basic block corresponding to this frame (which is known when
+      // this method is called, but was not when the abstract type was computed).
+      int concreteOutputType = dim + inputLocals[abstractOutputType & VALUE_MASK];
+      if ((abstractOutputType & TOP_IF_LONG_OR_DOUBLE_FLAG) != 0
+          && (concreteOutputType == LONG || concreteOutputType == DOUBLE)) {
+        concreteOutputType = TOP;
+      }
+      return concreteOutputType;
+    } else if (kind == STACK_KIND) {
+      // By definition, a STACK_KIND type designates the concrete type of a local variable at
+      // the beginning of the basic block corresponding to this frame (which is known when
+      // this method is called, but was not when the abstract type was computed).
+      int concreteOutputType = dim + inputStack[numStack - (abstractOutputType & VALUE_MASK)];
+      if ((abstractOutputType & TOP_IF_LONG_OR_DOUBLE_FLAG) != 0
+          && (concreteOutputType == LONG || concreteOutputType == DOUBLE)) {
+        concreteOutputType = TOP;
+      }
+      return concreteOutputType;
+    } else {
+      return abstractOutputType;
+    }
+  }
+
+  /**
+   * Merges the input frame of the given {@link Frame} with the input and output frames of this
+   * {@link Frame}. Returns {@literal true} if the given frame has been changed by this operation
+   * (the input and output frames of this {@link Frame} are never changed).
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param dstFrame the {@link Frame} whose input frame must be updated. This should be the frame
+   *     of a successor, in the control flow graph, of the basic block corresponding to this frame.
+   * @param catchTypeIndex if 'frame' corresponds to an exception handler basic block, the type
+   *     table index of the caught exception type, otherwise 0.
+   * @return {@literal true} if the input frame of 'frame' has been changed by this operation.
+   */
   final boolean merge(
     final SymbolTable symbolTable, final Frame dstFrame, final int catchTypeIndex) {
     boolean frameChanged = false;
@@ -1137,29 +1181,7 @@ class Frame {
           // value at the beginning of the block.
           concreteOutputType = inputLocals[i];
         } else {
-          int dim = abstractOutputType & DIM_MASK;
-          int kind = abstractOutputType & KIND_MASK;
-          if (kind == LOCAL_KIND) {
-            // By definition, a LOCAL_KIND type designates the concrete type of a local variable at
-            // the beginning of the basic block corresponding to this frame (which is known when
-            // this method is called, but was not when the abstract type was computed).
-            concreteOutputType = dim + inputLocals[abstractOutputType & VALUE_MASK];
-            if ((abstractOutputType & TOP_IF_LONG_OR_DOUBLE_FLAG) != 0
-                && (concreteOutputType == LONG || concreteOutputType == DOUBLE)) {
-              concreteOutputType = TOP;
-            }
-          } else if (kind == STACK_KIND) {
-            // By definition, a STACK_KIND type designates the concrete type of a local variable at
-            // the beginning of the basic block corresponding to this frame (which is known when
-            // this method is called, but was not when the abstract type was computed).
-            concreteOutputType = dim + inputStack[numStack - (abstractOutputType & VALUE_MASK)];
-            if ((abstractOutputType & TOP_IF_LONG_OR_DOUBLE_FLAG) != 0
-                && (concreteOutputType == LONG || concreteOutputType == DOUBLE)) {
-              concreteOutputType = TOP;
-            }
-          } else {
-            concreteOutputType = abstractOutputType;
-          }
+          concreteOutputType = getConcreteOutputType(abstractOutputType, numStack);
         }
       } else {
         // If the local variable has never been assigned in this basic block, it is equal to its
@@ -1213,25 +1235,8 @@ class Frame {
     // Then, do this for the stack operands that have pushed in the basic block (this code is the
     // same as the one above for local variables).
     for (int i = 0; i < outputStackTop; ++i) {
-      int concreteOutputType;
       int abstractOutputType = outputStack[i];
-      int dim = abstractOutputType & DIM_MASK;
-      int kind = abstractOutputType & KIND_MASK;
-      if (kind == LOCAL_KIND) {
-        concreteOutputType = dim + inputLocals[abstractOutputType & VALUE_MASK];
-        if ((abstractOutputType & TOP_IF_LONG_OR_DOUBLE_FLAG) != 0
-            && (concreteOutputType == LONG || concreteOutputType == DOUBLE)) {
-          concreteOutputType = TOP;
-        }
-      } else if (kind == STACK_KIND) {
-        concreteOutputType = dim + inputStack[numStack - (abstractOutputType & VALUE_MASK)];
-        if ((abstractOutputType & TOP_IF_LONG_OR_DOUBLE_FLAG) != 0
-            && (concreteOutputType == LONG || concreteOutputType == DOUBLE)) {
-          concreteOutputType = TOP;
-        }
-      } else {
-        concreteOutputType = abstractOutputType;
-      }
+      int concreteOutputType = getConcreteOutputType(abstractOutputType, numStack);
       if (initializations != null) {
         concreteOutputType = getInitializedType(symbolTable, concreteOutputType);
       }
@@ -1242,19 +1247,19 @@ class Frame {
   }
 
   /**
-  * Merges the type at the given index in the given abstract type array with the given type.
-  * Returns {@literal true} if the type array has been modified by this operation.
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param sourceType the abstract type with which the abstract type array element must be merged.
-  *     This type should be of {@link #CONSTANT_KIND}, {@link #REFERENCE_KIND} or {@link
-  *     #UNINITIALIZED_KIND} kind, with positive or null array dimensions.
-  * @param dstTypes an array of abstract types. These types should be of {@link #CONSTANT_KIND},
-  *     {@link #REFERENCE_KIND} or {@link #UNINITIALIZED_KIND} kind, with positive or null array
-  *     dimensions.
-  * @param dstIndex the index of the type that must be merged in dstTypes.
-  * @return {@literal true} if the type array has been modified by this operation.
-  */
+   * Merges the type at the given index in the given abstract type array with the given type.
+   * Returns {@literal true} if the type array has been modified by this operation.
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param sourceType the abstract type with which the abstract type array element must be merged.
+   *     This type should be of {@link #CONSTANT_KIND}, {@link #REFERENCE_KIND} or {@link
+   *     #UNINITIALIZED_KIND} kind, with positive or null array dimensions.
+   * @param dstTypes an array of abstract types. These types should be of {@link #CONSTANT_KIND},
+   *     {@link #REFERENCE_KIND} or {@link #UNINITIALIZED_KIND} kind, with positive or null array
+   *     dimensions.
+   * @param dstIndex the index of the type that must be merged in dstTypes.
+   * @return {@literal true} if the type array has been modified by this operation.
+   */
   private static boolean merge(
       final SymbolTable symbolTable,
       final int sourceType,
@@ -1338,13 +1343,13 @@ class Frame {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Makes the given {@link MethodWriter} visit the input frame of this {@link Frame}. The visit is
-  * done with the {@link MethodWriter#visitFrameStart}, {@link MethodWriter#visitAbstractType} and
-  * {@link MethodWriter#visitFrameEnd} methods.
-  *
-  * @param methodWriter the {@link MethodWriter} that should visit the input frame of this {@link
-  *     Frame}.
-  */
+   * Makes the given {@link MethodWriter} visit the input frame of this {@link Frame}. The visit is
+   * done with the {@link MethodWriter#visitFrameStart}, {@link MethodWriter#visitAbstractType} and
+   * {@link MethodWriter#visitFrameEnd} methods.
+   *
+   * @param methodWriter the {@link MethodWriter} that should visit the input frame of this {@link
+   *     Frame}.
+   */
   final void accept(final MethodWriter methodWriter) {
     // Compute the number of locals, ignoring TOP types that are just after a LONG or a DOUBLE, and
     // all trailing TOP types.
@@ -1389,18 +1394,18 @@ class Frame {
   }
 
   /**
-  * Put the given abstract type in the given ByteVector, using the JVMS verification_type_info
-  * format used in StackMapTable attributes.
-  *
-  * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
-  * @param abstractType an abstract type, restricted to {@link Frame#CONSTANT_KIND}, {@link
-  *     Frame#REFERENCE_KIND} or {@link Frame#UNINITIALIZED_KIND} types.
-  * @param output where the abstract type must be put.
-  * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.4">JVMS
-  *     4.7.4</a>
-  */
+   * Put the given abstract type in the given ByteVector, using the JVMS verification_type_info
+   * format used in StackMapTable attributes.
+   *
+   * @param symbolTable the type table to use to lookup and store type {@link Symbol}.
+   * @param abstractType an abstract type, restricted to {@link Frame#CONSTANT_KIND}, {@link
+   *     Frame#REFERENCE_KIND} or {@link Frame#UNINITIALIZED_KIND} types.
+   * @param output where the abstract type must be put.
+   * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.4">JVMS
+   *     4.7.4</a>
+   */
   static void putAbstractType(
-    final SymbolTable symbolTable, final int abstractType, final ByteVector output) {
+      final SymbolTable symbolTable, final int abstractType, final ByteVector output) {
     int arrayDimensions = (abstractType & Frame.DIM_MASK) >> DIM_SHIFT;
     if (arrayDimensions == 0) {
       int typeValue = abstractType & VALUE_MASK;

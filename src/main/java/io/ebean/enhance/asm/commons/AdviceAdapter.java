@@ -70,42 +70,42 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
   private final boolean isConstructor;
 
   /**
-  * Whether the super class constructor has been called (if the visited method is a constructor),
-  * at the current instruction. There can be multiple call sites to the super constructor (e.g. for
-  * Java code such as {@code super(expr ? value1 : value2);}), in different branches. When scanning
-  * the bytecode linearly, we can move from one branch where the super constructor has been called
-  * to another where it has not been called yet. Therefore, this value can change from false to
-  * true, and vice-versa.
-  */
+   * Whether the super class constructor has been called (if the visited method is a constructor),
+   * at the current instruction. There can be multiple call sites to the super constructor (e.g. for
+   * Java code such as {@code super(expr ? value1 : value2);}), in different branches. When scanning
+   * the bytecode linearly, we can move from one branch where the super constructor has been called
+   * to another where it has not been called yet. Therefore, this value can change from false to
+   * true, and vice-versa.
+   */
   private boolean superClassConstructorCalled;
 
   /**
-  * The values on the current execution stack frame (long and double are represented by two
-  * elements). Each value is either {@link #UNINITIALIZED_THIS} (for the uninitialized this value),
-  * or {@link #OTHER} (for any other value). This field is only maintained for constructors, in
-  * branches where the super class constructor has not been called yet.
-  */
+   * The values on the current execution stack frame (long and double are represented by two
+   * elements). Each value is either {@link #UNINITIALIZED_THIS} (for the uninitialized this value),
+   * or {@link #OTHER} (for any other value). This field is only maintained for constructors, in
+   * branches where the super class constructor has not been called yet.
+   */
   private List<Object> stackFrame;
 
   /**
-  * The stack map frames corresponding to the labels of the forward jumps made *before* the super
-  * class constructor has been called (note that the Java Virtual Machine forbids backward jumps
-  * before the super class constructor is called). Note that by definition (cf. the 'before'), when
-  * we reach a label from this map, {@link #superClassConstructorCalled} must be reset to false.
-  * This field is only maintained for constructors.
-  */
+   * The stack map frames corresponding to the labels of the forward jumps made *before* the super
+   * class constructor has been called (note that the Java Virtual Machine forbids backward jumps
+   * before the super class constructor is called). Note that by definition (cf. the 'before'), when
+   * we reach a label from this map, {@link #superClassConstructorCalled} must be reset to false.
+   * This field is only maintained for constructors.
+   */
   private Map<Label, List<Object>> forwardJumpStackFrames;
 
   /**
-  * Constructs a new {@link AdviceAdapter}.
-  *
-  * @param api the ASM API version implemented by this visitor. Must be one of {@link
-  *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
-  * @param methodVisitor the method visitor to which this adapter delegates calls.
-  * @param access the method's access flags (see {@link Opcodes}).
-  * @param name the method's name.
-  * @param descriptor the method's descriptor (see {@link Type Type}).
-  */
+   * Constructs a new {@link AdviceAdapter}.
+   *
+   * @param api the ASM API version implemented by this visitor. Must be one of {@link
+   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
+   * @param methodVisitor the method visitor to which this adapter delegates calls.
+   * @param access the method's access flags (see {@link Opcodes}).
+   * @param name the method's name.
+   * @param descriptor the method's descriptor (see {@link Type Type}).
+   */
   protected AdviceAdapter(
       final int api,
       final MethodVisitor methodVisitor,
@@ -122,8 +122,8 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
   public void visitCode() {
     super.visitCode();
     if (isConstructor) {
-      stackFrame = new ArrayList<Object>();
-      forwardJumpStackFrames = new HashMap<Label, List<Object>>();
+      stackFrame = new ArrayList<>();
+      forwardJumpStackFrames = new HashMap<>();
     } else {
       onMethodEnter();
     }
@@ -437,35 +437,21 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
     }
   }
 
-  /**
-  * Deprecated.
-  *
-  * @deprecated use {@link #visitMethodInsn(int, String, String, String, boolean)} instead.
-  */
-  @Deprecated
   @Override
   public void visitMethodInsn(
-      final int opcode, final String owner, final String name, final String descriptor) {
-    if (api >= Opcodes.ASM5) {
-      super.visitMethodInsn(opcode, owner, name, descriptor);
-      return;
-    }
-    mv.visitMethodInsn(opcode, owner, name, descriptor, opcode == Opcodes.INVOKEINTERFACE);
-    doVisitMethodInsn(opcode, descriptor);
-  }
-
-  @Override
-  public void visitMethodInsn(
-      final int opcode,
+      final int opcodeAndSource,
       final String owner,
       final String name,
       final String descriptor,
       final boolean isInterface) {
-    if (api < Opcodes.ASM5) {
-      super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+    if (api < Opcodes.ASM5 && (opcodeAndSource & Opcodes.SOURCE_DEPRECATED) == 0) {
+      // Redirect the call to the deprecated version of this method.
+      super.visitMethodInsn(opcodeAndSource, owner, name, descriptor, isInterface);
       return;
     }
-    mv.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+    super.visitMethodInsn(opcodeAndSource, owner, name, descriptor, isInterface);
+    int opcode = opcodeAndSource & ~Opcodes.SOURCE_MASK;
+
     doVisitMethodInsn(opcode, descriptor);
   }
 
@@ -560,7 +546,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
 
   @Override
   public void visitTableSwitchInsn(
-      final int min, final int max, final Label dflt, final Label... labels) {
+    final int min, final int max, final Label dflt, final Label... labels) {
     super.visitTableSwitchInsn(min, max, dflt, labels);
     if (isConstructor && !superClassConstructorCalled) {
       popValue();
@@ -570,7 +556,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
 
   @Override
   public void visitTryCatchBlock(
-      final Label start, final Label end, final Label handler, final String type) {
+    final Label start, final Label end, final Label handler, final String type) {
     super.visitTryCatchBlock(start, end, handler, type);
     // By definition of 'forwardJumpStackFrames', 'handler' should be pushed only if there is an
     // instruction between 'start' and 'end' at which the super class constructor is not yet
@@ -581,7 +567,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
     // initialized twice), so this is not issue (in the sense that there is no risk to emit a wrong
     // 'onMethodEnter').
     if (isConstructor && !forwardJumpStackFrames.containsKey(handler)) {
-      List<Object> handlerStackFrame = new ArrayList<Object>();
+      List<Object> handlerStackFrame = new ArrayList<>();
       handlerStackFrame.add(OTHER);
       forwardJumpStackFrames.put(handler, handlerStackFrame);
     }
@@ -598,7 +584,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
     if (forwardJumpStackFrames.containsKey(label)) {
       return;
     }
-    forwardJumpStackFrames.put(label, new ArrayList<Object>(stackFrame));
+    forwardJumpStackFrames.put(label, new ArrayList<>(stackFrame));
   }
 
   private Object popValue() {
@@ -614,47 +600,47 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
   }
 
   /**
-  * Generates the "before" advice for the visited method. The default implementation of this method
-  * does nothing. Subclasses can use or change all the local variables, but should not change state
-  * of the stack. This method is called at the beginning of the method or after super class
-  * constructor has been called (in constructors).
-  */
+   * Generates the "before" advice for the visited method. The default implementation of this method
+   * does nothing. Subclasses can use or change all the local variables, but should not change state
+   * of the stack. This method is called at the beginning of the method or after super class
+   * constructor has been called (in constructors).
+   */
   protected void onMethodEnter() {}
 
   /**
-  * Generates the "after" advice for the visited method. The default implementation of this method
-  * does nothing. Subclasses can use or change all the local variables, but should not change state
-  * of the stack. This method is called at the end of the method, just before return and athrow
-  * instructions. The top element on the stack contains the return value or the exception instance.
-  * For example:
-  *
-  * <pre>
-  * public void onMethodExit(final int opcode) {
-  *   if (opcode == RETURN) {
-  *     visitInsn(ACONST_NULL);
-  *   } else if (opcode == ARETURN || opcode == ATHROW) {
-  *     dup();
-  *   } else {
-  *     if (opcode == LRETURN || opcode == DRETURN) {
-  *       dup2();
-  *     } else {
-  *       dup();
-  *     }
-  *     box(Type.getReturnType(this.methodDesc));
-  *   }
-  *   visitIntInsn(SIPUSH, opcode);
-  *   visitMethodInsn(INVOKESTATIC, owner, "onExit", "(Ljava/lang/Object;I)V");
-  * }
-  *
-  * // An actual call back method.
-  * public static void onExit(final Object exitValue, final int opcode) {
-  *   ...
-  * }
-  * </pre>
-  *
-  * @param opcode one of {@link Opcodes#RETURN}, {@link Opcodes#IRETURN}, {@link Opcodes#FRETURN},
-  *     {@link Opcodes#ARETURN}, {@link Opcodes#LRETURN}, {@link Opcodes#DRETURN} or {@link
-  *     Opcodes#ATHROW}.
-  */
+   * Generates the "after" advice for the visited method. The default implementation of this method
+   * does nothing. Subclasses can use or change all the local variables, but should not change state
+   * of the stack. This method is called at the end of the method, just before return and athrow
+   * instructions. The top element on the stack contains the return value or the exception instance.
+   * For example:
+   *
+   * <pre>
+   * public void onMethodExit(final int opcode) {
+   *   if (opcode == RETURN) {
+   *     visitInsn(ACONST_NULL);
+   *   } else if (opcode == ARETURN || opcode == ATHROW) {
+   *     dup();
+   *   } else {
+   *     if (opcode == LRETURN || opcode == DRETURN) {
+   *       dup2();
+   *     } else {
+   *       dup();
+   *     }
+   *     box(Type.getReturnType(this.methodDesc));
+   *   }
+   *   visitIntInsn(SIPUSH, opcode);
+   *   visitMethodInsn(INVOKESTATIC, owner, "onExit", "(Ljava/lang/Object;I)V");
+   * }
+   *
+   * // An actual call back method.
+   * public static void onExit(final Object exitValue, final int opcode) {
+   *   ...
+   * }
+   * </pre>
+   *
+   * @param opcode one of {@link Opcodes#RETURN}, {@link Opcodes#IRETURN}, {@link Opcodes#FRETURN},
+   *     {@link Opcodes#ARETURN}, {@link Opcodes#LRETURN}, {@link Opcodes#DRETURN} or {@link
+   *     Opcodes#ATHROW}.
+   */
   protected void onMethodExit(final int opcode) {}
 }

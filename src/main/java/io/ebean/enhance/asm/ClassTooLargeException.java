@@ -40,11 +40,11 @@ public final class ClassTooLargeException extends IndexOutOfBoundsException {
   private final int constantPoolCount;
 
   /**
-  * Constructs a new {@link ClassTooLargeException}.
-  *
-  * @param className the internal name of the class.
-  * @param constantPoolCount the number of constant pool items of the class.
-  */
+   * Constructs a new {@link ClassTooLargeException}.
+   *
+   * @param className the internal name of the class.
+   * @param constantPoolCount the number of constant pool items of the class.
+   */
   public ClassTooLargeException(final String className, final int constantPoolCount) {
     super("Class too large: " + className);
     this.className = className;
@@ -52,19 +52,19 @@ public final class ClassTooLargeException extends IndexOutOfBoundsException {
   }
 
   /**
-  * Returns the internal name of the class.
-  *
-  * @return the internal name of the class.
-  */
+   * Returns the internal name of the class.
+   *
+   * @return the internal name of the class.
+   */
   public String getClassName() {
     return className;
   }
 
   /**
-  * Returns the number of constant pool items of the class.
-  *
-  * @return the number of constant pool items of the class.
-  */
+   * Returns the number of constant pool items of the class.
+   *
+   * @return the number of constant pool items of the class.
+   */
   public int getConstantPoolCount() {
     return constantPoolCount;
   }
