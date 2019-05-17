@@ -113,33 +113,30 @@ public class OfflineFileTransform {
       throw new RuntimeException("File not found " + dirPath + "  currentDir:" + new File(".").getAbsolutePath());
     }
 
-    File[] files = d.listFiles();
+    final File[] files = d.listFiles();
+    if (files != null) {
+      for (final File file : files) {
+        try {
+          if (file.isDirectory()) {
+            final String subDir = dir + "/" + file.getName();
+            processPackage(subDir);
+          } else {
+            final String fileName = file.getName();
+            if (fileName.endsWith(".java")) {
+              // possibly a common mistake... mixing .java and .class
+              System.err.println("Expecting a .class file but got " + fileName + " ... ignoring");
 
-    File file = null;
-
-    try {
-      for (int i = 0; i < files.length; i++) {
-        file = files[i];
-        if (file.isDirectory()) {
-          String subDir = dir + "/" + file.getName();
-          processPackage(subDir);
-        } else {
-          String fileName = file.getName();
-          if (fileName.endsWith(".java")) {
-            // possibly a common mistake... mixing .java and .class
-            System.err.println("Expecting a .class file but got " + fileName + " ... ignoring");
-
-          } else if (fileName.endsWith(".class")) {
-            transformFile(file);
+            } else if (fileName.endsWith(".class")) {
+              transformFile(file);
+            }
           }
+        } catch (final Exception e) {
+          throw new RuntimeException("Error transforming file " + file.getName(), e);
         }
       }
-
-    } catch (Exception e) {
-      String fileName = file == null ? "null" : file.getName();
-      throw new RuntimeException("Error transforming file " + fileName, e);
+    } else {
+      throw new RuntimeException("Can't read directory " + d.getName());
     }
-
   }
 
   private void transformFile(File file) throws IOException, IllegalClassFormatException {
