@@ -650,7 +650,11 @@ class Frame {
         if (kind == LOCAL_KIND) {
           initializedType = dim + inputLocals[value];
         } else if (kind == STACK_KIND) {
-          initializedType = dim + inputStack[inputStack.length - value];
+          if (inputStack.length - value >= 0) {
+            initializedType = dim + inputStack[inputStack.length - value];
+          } else {
+            throw new RuntimeException("Can't find initialized type " + abstractType + " (IndexOutOfBoundsException)");
+          }
         }
         if (abstractType == initializedType) {
           if (abstractType == UNINITIALIZED_THIS) {
