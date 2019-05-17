@@ -101,13 +101,14 @@ public class ClassInfo implements Constants {
 
   /**
   * Check for the type query bean and type query user annotations.
-  */
-  public void checkTypeQueryAnnotation(String desc) {
+   */
+  public boolean checkTypeQueryAnnotation(String desc) {
     if (isTypeQueryBeanAnnotation(desc)) {
       typeQueryBean = true;
     } else if (isAlreadyEnhancedAnnotation(desc)) {
       alreadyEnhanced = true;
     }
+    return typeQueryBean;
   }
 
   /**

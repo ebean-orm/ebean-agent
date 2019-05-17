@@ -1,14 +1,16 @@
 package io.ebean.enhance.querybean;
 
-import io.ebean.enhance.common.AlreadyEnhancedException;
-import io.ebean.enhance.common.EnhanceContext;
-import io.ebean.enhance.common.NoEnhancementRequiredException;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.ClassWriter;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.AlreadyEnhancedException;
+import io.ebean.enhance.common.AnnotationInfo;
+import io.ebean.enhance.common.AnnotationInfoVisitor;
+import io.ebean.enhance.common.EnhanceContext;
+import io.ebean.enhance.common.NoEnhancementRequiredException;
 
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
 
@@ -23,6 +25,8 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   private String className;
   private String signature;
   private ClassInfo classInfo;
+
+  private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
 
   public TypeQueryClassAdapter(ClassWriter cw, EnhanceContext enhanceContext) {
     super(Opcodes.ASM7, cw);
@@ -40,8 +44,8 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   }
 
   /**
-  * Extract and return the associated entity bean class from the signature.
-  */
+   * Extract and return the associated entity bean class from the signature.
+   */
   protected String getDomainClass() {
     int posStart = signature.indexOf('<');
     int posEnd = signature.indexOf(';', posStart + 1);
@@ -49,12 +53,13 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   }
 
   /**
-  * Look for TypeQueryBean annotation.
-  */
+   * Look for TypeQueryBean annotation.
+   */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-    classInfo.checkTypeQueryAnnotation(desc);
-    return super.visitAnnotation(desc, visible);
+    boolean queryBean = classInfo.checkTypeQueryAnnotation(desc);
+    AnnotationVisitor av = super.visitAnnotation(desc, visible);
+    return (queryBean) ? new AnnotationInfoVisitor(null, annotationInfo, av) : av;
   }
 
   @Override
@@ -75,7 +80,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
     if (classInfo.isTypeQueryBean()) {
       if ((access & Opcodes.ACC_STATIC) != 0) {
         if (isLog(5)) {
-          log("ignore static methods on type query bean " +name + " " + desc);
+          log("ignore static methods on type query bean " + name + " " + desc);
         }
         return super.visitMethod(access, name, desc, signature, exceptions);
       }
@@ -83,15 +88,16 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
         addMarkerAnnotation();
       }
       if (name.equals(INIT)) {
-        if (!typeQueryRootBean) {
-          return handleAssocBeanConstructor(access, name, desc, signature, exceptions);
-        }
-        if (isLog(3)) {
-          log("replace constructor code <init> " + desc);
-        }
         if (desc.equals("(Z)V")) {
           // Constructor for alias initialises all the properties/fields
           return new TypeQueryConstructorForAlias(classInfo, cv);
+        }
+        if (hasVersion()) {
+          // no enhancement on constructors required
+          return super.visitMethod(access, name, desc, signature, exceptions);
+        }
+        if (!typeQueryRootBean) {
+          return handleAssocBeanConstructor(access, name, desc, signature, exceptions);
         }
         return new TypeQueryConstructorAdapter(classInfo, getDomainClass(), cv, desc, signature);
       }
@@ -118,8 +124,16 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   }
 
   /**
-  * Handle the constructors for assoc type query beans.
-  */
+   * Return true if the TypeQueryBean has a value attribute with version description.
+   * True means we are using 11.39+ query bean generation.
+   */
+  private boolean hasVersion() {
+    return annotationInfo.getValue("value") != null;
+  }
+
+  /**
+   * Handle the constructors for assoc type query beans.
+   */
   private MethodVisitor handleAssocBeanConstructor(int access, String name, String desc, String signature, String[] exceptions) {
 
     if (desc.equals(ASSOC_BEAN_BASIC_CONSTRUCTOR_DESC)) {
@@ -159,8 +173,8 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   }
 
   /**
-  * Add the marker annotation so that we don't enhance the type query bean twice.
-  */
+   * Add the marker annotation so that we don't enhance the type query bean twice.
+   */
   private void addMarkerAnnotation() {
 
     if (isLog(4)) {
