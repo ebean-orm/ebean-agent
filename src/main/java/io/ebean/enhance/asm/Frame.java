@@ -27,6 +27,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm;
 
+import java.util.Objects;
+
 /**
  * The input and output stack map frames of a basic block.
  *
@@ -734,7 +736,7 @@ class Frame {
         push(TOP);
         break;
       case Opcodes.LDC:
-        switch (argSymbol.tag) {
+        switch (Objects.requireNonNull(argSymbol).tag) {
           case Symbol.CONSTANT_INTEGER_TAG:
             push(INTEGER);
             break;
