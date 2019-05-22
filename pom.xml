@@ -46,7 +46,7 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean-querybean</artifactId>
-      <version>11.39.1-SNAPSHOT</version>
+      <version>11.38.1</version>
       <scope>test</scope>
     </dependency>
 
