@@ -17,7 +17,7 @@ public class InterceptField implements Opcodes, EnhanceConstants {
   */
   public static void addField(ClassVisitor cv, boolean transientInternalFields) {
 
-    int access = ACC_PROTECTED + (transientInternalFields ? ACC_TRANSIENT : 0);
+    int access = ACC_PROTECTED + (transientInternalFields ? ACC_TRANSIENT : 0) + ACC_SYNTHETIC;
     FieldVisitor f1 = cv.visitField(access, INTERCEPT_FIELD, L_INTERCEPT, null, null);
     f1.visitEnd();
   }

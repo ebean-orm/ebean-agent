@@ -28,7 +28,7 @@ public class MarkerField implements Opcodes, EnhanceConstants {
 
     String cn = className.replace('/', '.');
 
-    FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC, _EBEAN_MARKER, "Ljava/lang/String;", null, cn);
+    FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, _EBEAN_MARKER, "Ljava/lang/String;", null, cn);
     fv.visitEnd();
 
     return cn;

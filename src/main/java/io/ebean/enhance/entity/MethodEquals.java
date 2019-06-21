@@ -60,7 +60,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
   */
   public static void addIdentityField(ClassVisitor cv) {
 
-      int access = ACC_PROTECTED + ACC_TRANSIENT;
+      int access = ACC_PROTECTED + ACC_TRANSIENT + ACC_SYNTHETIC;
     FieldVisitor f0 = cv.visitField(access, IDENTITY_FIELD, "Ljava/lang/Object;", null, null);
     f0.visitEnd();
   }

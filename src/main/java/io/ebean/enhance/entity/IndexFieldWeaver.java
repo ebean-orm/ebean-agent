@@ -25,7 +25,7 @@ public class IndexFieldWeaver implements Opcodes {
   private static final String _EBEAN_PROPS = "_ebean_props";
 
   public static void addPropertiesField(ClassVisitor cv) {
-    FieldVisitor fv = cv.visitField(ACC_PUBLIC + ACC_STATIC, _EBEAN_PROPS, "[Ljava/lang/String;", null, null);
+    FieldVisitor fv = cv.visitField(ACC_PUBLIC + ACC_STATIC + ACC_SYNTHETIC, _EBEAN_PROPS, "[Ljava/lang/String;", null, null);
     fv.visitEnd();
   }
 
