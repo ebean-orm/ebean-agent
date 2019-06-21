@@ -63,7 +63,7 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
 
   @Override
   public void visitCode() {
-    finallyVisitCode();;
+    finallyVisitCode();
   }
 
   @Override
