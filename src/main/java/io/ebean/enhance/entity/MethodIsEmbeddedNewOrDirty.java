@@ -36,7 +36,7 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 
     MethodVisitor mv;
 
-    mv = cv.visitMethod(ACC_PUBLIC, "_ebean_isEmbeddedNewOrDirty", "()Z", null, null);
+    mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_isEmbeddedNewOrDirty", "()Z", null, null);
     mv.visitCode();
 
     Label labelBegin = null;

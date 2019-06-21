@@ -48,7 +48,7 @@ public class MarkerField implements Opcodes, EnhanceConstants {
 
     MethodVisitor mv;
 
-    mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getMarker", "()Ljava/lang/String;", null, null);
+    mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getMarker", "()Ljava/lang/String;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);

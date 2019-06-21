@@ -363,7 +363,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       classMeta.log(getMethodName + " " + getMethodDesc + " intercept:" + isInterceptGet() + " " + annotations);
     }
 
-    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED, getMethodName, getMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, getMethodName, getMethodDesc, null, null);
     mv.visitCode();
 
     if (isInterceptMany()) {
@@ -500,7 +500,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       classMeta.log(getNoInterceptMethodName + " " + getMethodDesc);
     }
 
-    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED, getNoInterceptMethodName, getMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, getNoInterceptMethodName, getMethodDesc, null, null);
     mv.visitCode();
 
     Label l0 = new Label();
@@ -545,7 +545,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
           + " opCode:" + iLoadOpcode + "," + iPosition + " preSetterArgTypes" + preSetterArgTypes);
     }
 
-    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED, setMethodName, setMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, setMethodName, setMethodDesc, null, null);
     mv.visitCode();
 
     Label l0 = new Label();
@@ -610,7 +610,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       classMeta.log(setNoInterceptMethodName + " " + setMethodDesc + " opCode:" + iLoadOpcode + "," + iPosition);
     }
 
-    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED, setNoInterceptMethodName, setMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, setNoInterceptMethodName, setMethodDesc, null, null);
     mv.visitCode();
     Label l0 = new Label();
 
