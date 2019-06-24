@@ -17,7 +17,7 @@ public class InterceptField implements Opcodes, EnhanceConstants {
   */
   public static void addField(ClassVisitor cv, boolean transientInternalFields) {
 
-    int access = ACC_PROTECTED + (transientInternalFields ? ACC_TRANSIENT : 0);
+    int access = ACC_PROTECTED + (transientInternalFields ? ACC_TRANSIENT : 0) + ACC_SYNTHETIC;
     FieldVisitor f1 = cv.visitField(access, INTERCEPT_FIELD, L_INTERCEPT, null, null);
     f1.visitEnd();
   }
@@ -38,7 +38,7 @@ public class InterceptField implements Opcodes, EnhanceConstants {
     MethodVisitor mv;
     Label l0, l1;
 
-    mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getIntercept", "()" + L_INTERCEPT, null, null);
+    mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getIntercept", "()" + L_INTERCEPT, null, null);
     mv.visitCode();
     l0 = new Label();
     mv.visitLabel(l0);
@@ -75,7 +75,7 @@ public class InterceptField implements Opcodes, EnhanceConstants {
   */
   private static void addInitInterceptMethod(ClassVisitor cv, String className) {
 
-    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_intercept", "()" + L_INTERCEPT, null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_intercept", "()" + L_INTERCEPT, null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
