@@ -25,10 +25,14 @@ import java.util.logging.Logger;
 
 import static io.ebean.enhance.asm.Opcodes.ACC_PRIVATE;
 import static io.ebean.enhance.asm.Opcodes.ACC_STATIC;
+import static io.ebean.enhance.asm.Opcodes.ACC_SYNTHETIC;
 import static io.ebean.enhance.asm.Opcodes.BIPUSH;
 import static io.ebean.enhance.asm.Opcodes.INVOKESTATIC;
 import static io.ebean.enhance.asm.Opcodes.PUTSTATIC;
 import static io.ebean.enhance.asm.Opcodes.RETURN;
+import static io.ebean.enhance.common.EnhanceConstants.CLINIT;
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 
 /**
  * ClassAdapter used to add transactional support.
@@ -41,7 +45,14 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   static final String TX_FIELD_PREFIX = "_$ebpt";
 
-  static final String IO_EBEAN_FINDER = "io/ebean/Finder";
+  private static final String IO_EBEAN_FINDER = "io/ebean/Finder";
+
+  private static final String $_COMPANION = "$Companion";
+
+  private static final String INIT_PROFILE_LOCATIONS = "_$initProfileLocations";
+  private static final String LKOTLIN_METADATA = "Lkotlin/Metadata;";
+  private static final String _$EBP = "_$ebp";
+  private static final String LIO_EBEAN_PROFILE_LOCATION = "Lio/ebean/ProfileLocation;";
 
   private final Set<String> transactionalMethods = new LinkedHashSet<>();
 
@@ -54,11 +65,13 @@ public class ClassAdapterTransactional extends ClassVisitor {
   private ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<>();
 
   /**
-  * Class level annotation information.
-  */
+   * Class level annotation information.
+   */
   private AnnotationInfo classAnnotationInfo;
 
   private String className;
+
+  private boolean markAsKotlin;
 
   private boolean existingStaticInitialiser;
 
@@ -68,7 +81,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   private int transactionProfileCount;
 
-  private Map<Integer,String> txLabels = new LinkedHashMap<>();
+  private Map<Integer, String> txLabels = new LinkedHashMap<>();
 
   public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
     super(Opcodes.ASM7, cv);
@@ -88,16 +101,20 @@ public class ClassAdapterTransactional extends ClassVisitor {
     enhanceContext.log(className, msg);
   }
 
+  public boolean isQueryBean(String owner) {
+    return enhanceContext.isQueryBean(owner);
+  }
+
   public AnnotationInfo getClassAnnotationInfo() {
     return classAnnotationInfo;
   }
 
   /**
-  * Returns Transactional information from a matching interface method.
-  * <p>
-  * Returns null if no matching (transactional) interface method was found.
-  * </p>
-  */
+   * Returns Transactional information from a matching interface method.
+   * <p>
+   * Returns null if no matching (transactional) interface method was found.
+   * </p>
+   */
   public AnnotationInfo getInterfaceTransactionalInfo(String methodName, String methodDesc) {
 
     AnnotationInfo interfaceAnnotationInfo = null;
@@ -108,16 +125,15 @@ public class ClassAdapterTransactional extends ClassVisitor {
       if (ai != null) {
         if (interfaceAnnotationInfo != null) {
           String msg = "Error in [" + className + "] searching the transactional interfaces ["
-              + transactionalInterfaces + "] found more than one match for the transactional method:"
-              + methodName + " " + methodDesc;
+            + transactionalInterfaces + "] found more than one match for the transactional method:"
+            + methodName + " " + methodDesc;
 
           logger.log(Level.SEVERE, msg);
 
         } else {
           interfaceAnnotationInfo = ai;
           if (isLog(2)) {
-            log("inherit transactional from interface [" + interfaceMeta + "] method[" + methodName + " "
-                + methodDesc + "]");
+            log("inherit transactional from interface [" + interfaceMeta + "] method[" + methodName + " " + methodDesc + "]");
           }
         }
       }
@@ -127,8 +143,8 @@ public class ClassAdapterTransactional extends ClassVisitor {
   }
 
   /**
-  * Visit the class with interfaces.
-  */
+   * Visit the class with interfaces.
+   */
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
@@ -162,10 +178,14 @@ public class ClassAdapterTransactional extends ClassVisitor {
   }
 
   /**
-  * Visit class level annotations.
-  */
+   * Visit class level annotations.
+   */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+
+    if (LKOTLIN_METADATA.equals(desc)) {
+      markAsKotlin = true;
+    }
 
     AnnotationVisitor av = super.visitAnnotation(desc, visible);
 
@@ -182,28 +202,34 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   @Override
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-    if (name.startsWith("_$ebp") && desc.equals("Lio/ebean/ProfileLocation;")) {
+    if (name.startsWith(_$EBP) && desc.equals(LIO_EBEAN_PROFILE_LOCATION)) {
       throw new AlreadyEnhancedException(className);
     }
     return super.visitField(access, name, desc, signature, value);
   }
 
   /**
-  * Visit the methods specifically looking for method level transactional
-  * annotations.
-  */
+   * Visit the methods specifically looking for method level transactional
+   * annotations.
+   */
   @Override
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-    if (name.equals("_$initProfileLocations")) {
+    if (name.equals(INIT_PROFILE_LOCATIONS)) {
       throw new AlreadyEnhancedException(className);
     }
-    if (name.equals("<init>")) {
-      // not enhancing constructors
+    if (name.equals(INIT)) {
+      if (!kotlinCompanion() && enhanceContext.isEnableProfileLocation()) {
+        // enhance constructors containing query bean queries with profile location
+        if (isLog(4)) {
+          log("enhance constructor with profile location on className:" + className);
+        }
+        return new ConstructorMethodAdapter(this, mv, access, name, desc);
+      }
       return mv;
     }
-    if (name.equals("<clinit>")) {
+    if (name.equals(CLINIT)) {
       if (!enhanceContext.isEnableProfileLocation()) {
         // not enhancing class static initialiser
         return mv;
@@ -216,7 +242,11 @@ public class ClassAdapterTransactional extends ClassVisitor {
       }
     }
 
-    return new ScopeTransAdapter(this, mv, access, name, desc);
+    return new MethodAdapter(this, mv, access, name, desc);
+  }
+
+  private boolean kotlinCompanion() {
+    return markAsKotlin && className.endsWith($_COMPANION);
   }
 
   @Override
@@ -242,17 +272,17 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   private void addStaticFieldDefinitions() {
     for (int i = 0; i < queryProfileCount; i++) {
-      FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC, QP_FIELD_PREFIX+i, "Lio/ebean/ProfileLocation;", null, null);
+      FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, QP_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;", null, null);
       fv.visitEnd();
     }
     for (int i = 0; i < transactionProfileCount; i++) {
-      FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC, TX_FIELD_PREFIX+i, "Lio/ebean/ProfileLocation;", null, null);
+      FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, TX_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;", null, null);
       fv.visitEnd();
     }
   }
 
   private void addStaticFieldInitialisers() {
-    MethodVisitor mv = cv.visitMethod(ACC_PRIVATE + ACC_STATIC, "_$initProfileLocations", "()V", null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, "_$initProfileLocations", NOARG_VOID, null, null);
     mv.visitCode();
 
     for (int i = 0; i < queryProfileCount; i++) {
@@ -260,7 +290,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
       mv.visitLabel(l0);
       mv.visitLineNumber(1, l0);
       mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", "create", "()Lio/ebean/ProfileLocation;", true);
-      mv.visitFieldInsn(PUTSTATIC, className, QP_FIELD_PREFIX+i, "Lio/ebean/ProfileLocation;");
+      mv.visitFieldInsn(PUTSTATIC, className, QP_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;");
     }
 
     boolean withLineNumbers = (transactionProfileCount == transactionalLineNumbers.size());
@@ -297,16 +327,16 @@ public class ClassAdapterTransactional extends ClassVisitor {
   }
 
   /**
-  * Add a static initialization block when there was not one on the class.
-  */
+   * Add a static initialization block when there was not one on the class.
+   */
   private void addStaticInitialiser() {
 
-    MethodVisitor mv = cv.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_STATIC, CLINIT, NOARG_VOID, null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(4, l0);
-    mv.visitMethodInsn(INVOKESTATIC, className, "_$initProfileLocations", "()V", false);
+    mv.visitMethodInsn(INVOKESTATIC, className, INIT_PROFILE_LOCATIONS, NOARG_VOID, false);
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(5, l1);
@@ -325,45 +355,45 @@ public class ClassAdapterTransactional extends ClassVisitor {
   }
 
   /**
-  * Create and return the TransactionalMethodKey.
-  *
-  * Takes into account the profiling mode (as per manifest) and explicit profileId.
-  */
+   * Create and return the TransactionalMethodKey.
+   * <p>
+   * Takes into account the profiling mode (as per manifest) and explicit profileId.
+   */
   public TransactionalMethodKey createMethodKey(String methodName, String methodDesc, int profId) {
     return enhanceContext.createMethodKey(className, methodName, methodDesc, profId);
   }
 
   /**
-  * Return true if profile location enhancement is on.
-  */
+   * Return true if profile location enhancement is on.
+   */
   public boolean isEnableProfileLocation() {
     return enhanceContext.isEnableProfileLocation();
   }
 
   /**
-  * Return the next index for query profile location.
-  */
+   * Return the next index for query profile location.
+   */
   int nextQueryProfileLocation() {
     return queryProfileCount++;
   }
 
   /**
-  * Return the next index for transaction profile location.
-  */
+   * Return the next index for transaction profile location.
+   */
   int nextTransactionLocation() {
     return transactionProfileCount++;
   }
 
   /**
-  * Return true if this enhancing class extends Ebean Finder and we have profile location enabled.
-  */
-  public boolean isFinderProfileLocation() {
-    return finder && isEnableProfileLocation();
+   * Return true if this enhancing class extends Ebean Finder.
+   */
+  public boolean isFinder() {
+    return finder;
   }
 
   /**
-  * Set the transaction label for a given index.
-  */
+   * Set the transaction label for a given index.
+   */
   public void putTxnLabel(int locationField, String txLabel) {
     txLabels.put(locationField, txLabel);
   }

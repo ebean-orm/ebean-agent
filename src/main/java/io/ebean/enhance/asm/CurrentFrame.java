@@ -41,10 +41,10 @@ final class CurrentFrame extends Frame {
   }
 
   /**
-  * Sets this CurrentFrame to the input stack map frame of the next "current" instruction, i.e. the
-  * instruction just after the given one. It is assumed that the value of this object when this
-  * method is called is the stack map frame status just before the given instruction is executed.
-  */
+   * Sets this CurrentFrame to the input stack map frame of the next "current" instruction, i.e. the
+   * instruction just after the given one. It is assumed that the value of this object when this
+   * method is called is the stack map frame status just before the given instruction is executed.
+   */
   @Override
   void execute(
       final int opcode, final int arg, final Symbol symbolArg, final SymbolTable symbolTable) {

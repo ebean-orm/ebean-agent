@@ -53,26 +53,26 @@ public class StaticInitMerger extends ClassVisitor {
   private MethodVisitor mergedClinitVisitor;
 
   /**
-  * Constructs a new {@link StaticInitMerger}. <i>Subclasses must not use this constructor</i>.
-  * Instead, they must use the {@link #StaticInitMerger(int, String, ClassVisitor)} version.
-  *
-  * @param prefix the prefix to use to rename the existing &lt;clinit&gt; methods.
-  * @param classVisitor the class visitor to which this visitor must delegate method calls. May be
-  *     null.
-  */
+   * Constructs a new {@link StaticInitMerger}. <i>Subclasses must not use this constructor</i>.
+   * Instead, they must use the {@link #StaticInitMerger(int, String, ClassVisitor)} version.
+   *
+   * @param prefix the prefix to use to rename the existing &lt;clinit&gt; methods.
+   * @param classVisitor the class visitor to which this visitor must delegate method calls. May be
+   *     null.
+   */
   public StaticInitMerger(final String prefix, final ClassVisitor classVisitor) {
     this(Opcodes.ASM7, prefix, classVisitor);
   }
 
   /**
-  * Constructs a new {@link StaticInitMerger}.
-  *
-  * @param api the ASM API version implemented by this visitor. Must be one of {@link
-  *     Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
-  * @param prefix the prefix to use to rename the existing &lt;clinit&gt; methods.
-  * @param classVisitor the class visitor to which this visitor must delegate method calls. May be
-  *     null.
-  */
+   * Constructs a new {@link StaticInitMerger}.
+   *
+   * @param api the ASM API version implemented by this visitor. Must be one of {@link
+   *     Opcodes#ASM4}, {@link Opcodes#ASM5} or {@link Opcodes#ASM6}.
+   * @param prefix the prefix to use to rename the existing &lt;clinit&gt; methods.
+   * @param classVisitor the class visitor to which this visitor must delegate method calls. May be
+   *     null.
+   */
   protected StaticInitMerger(final int api, final String prefix, final ClassVisitor classVisitor) {
     super(api, classVisitor);
     this.renamedClinitMethodPrefix = prefix;

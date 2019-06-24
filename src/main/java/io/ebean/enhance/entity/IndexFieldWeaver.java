@@ -10,6 +10,11 @@ import io.ebean.enhance.common.VisitUtil;
 
 import java.util.List;
 
+import static io.ebean.enhance.common.EnhanceConstants.CLINIT;
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
+import static io.ebean.enhance.common.EnhanceConstants.L_OBJECT;
+
 /**
  * Generate the methods based on the list of fields.
  * <p>
@@ -18,13 +23,15 @@ import java.util.List;
  */
 public class IndexFieldWeaver implements Opcodes {
 
+  private static final String _EBEAN_PROPS = "_ebean_props";
+
   public static void addPropertiesField(ClassVisitor cv) {
-    FieldVisitor fv = cv.visitField(ACC_PUBLIC + ACC_STATIC, "_ebean_props", "[Ljava/lang/String;", null, null);
+    FieldVisitor fv = cv.visitField(ACC_PUBLIC + ACC_STATIC + ACC_SYNTHETIC, _EBEAN_PROPS, "[Ljava/lang/String;", null, null);
     fv.visitEnd();
   }
 
   public static void addPropertiesInit(ClassVisitor cv, ClassMeta classMeta) {
-    MethodVisitor mv = cv.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_STATIC, CLINIT, NOARG_VOID, null, null);
     mv.visitCode();
     addPropertiesInit(mv, classMeta);
 
@@ -61,18 +68,18 @@ public class IndexFieldWeaver implements Opcodes {
       }
     }
 
-    mv.visitFieldInsn(PUTSTATIC, classMeta.getClassName(), "_ebean_props", "[Ljava/lang/String;");
+    mv.visitFieldInsn(PUTSTATIC, classMeta.getClassName(), _EBEAN_PROPS, "[Ljava/lang/String;");
   }
 
 
   public static void addGetPropertyNames(ClassVisitor cv, ClassMeta classMeta) {
 
-    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getPropertyNames", "()[Ljava/lang/String;", null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getPropertyNames", "()[Ljava/lang/String;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(13, l0);
-    mv.visitFieldInsn(GETSTATIC, classMeta.getClassName(), "_ebean_props", "[Ljava/lang/String;");
+    mv.visitFieldInsn(GETSTATIC, classMeta.getClassName(), _EBEAN_PROPS, "[Ljava/lang/String;");
     mv.visitInsn(ARETURN);
     Label l1 = new Label();
     mv.visitLabel(l1);
@@ -82,12 +89,12 @@ public class IndexFieldWeaver implements Opcodes {
   }
 
   public static void addGetPropertyName(ClassVisitor cv, ClassMeta classMeta) {
-    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getPropertyName", "(I)Ljava/lang/String;", null, null);
+    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getPropertyName", "(I)Ljava/lang/String;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(16, l0);
-    mv.visitFieldInsn(GETSTATIC, classMeta.getClassName(), "_ebean_props", "[Ljava/lang/String;");
+    mv.visitFieldInsn(GETSTATIC, classMeta.getClassName(), _EBEAN_PROPS, "[Ljava/lang/String;");
     mv.visitVarInsn(ILOAD, 1);
     mv.visitInsn(AALOAD);
     mv.visitInsn(ARETURN);
@@ -170,9 +177,9 @@ public class IndexFieldWeaver implements Opcodes {
 
     MethodVisitor mv;
     if (intercept) {
-      mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getFieldIntercept", "(I)Ljava/lang/Object;",null, null);
+      mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getFieldIntercept", "(I)Ljava/lang/Object;",null, null);
     } else {
-      mv = cv.visitMethod(ACC_PUBLIC, "_ebean_getField", "(I)Ljava/lang/Object;", null, null);
+      mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getField", "(I)Ljava/lang/Object;", null, null);
     }
 
     mv.visitCode();
@@ -213,11 +220,11 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
     mv.visitInsn(DUP);
     mv.visitLdcInsn("Invalid index ");
-    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", INIT, "(Ljava/lang/String;)V", false);
     mv.visitVarInsn(ILOAD, 1);
     mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
     mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
-    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", INIT, "(Ljava/lang/String;)V", false);
     mv.visitInsn(ATHROW);
 
     Label l5 = new Label();
@@ -243,10 +250,10 @@ public class IndexFieldWeaver implements Opcodes {
 
     MethodVisitor mv;
     if (intercept) {
-      mv = cv.visitMethod(ACC_PUBLIC, "_ebean_setFieldIntercept", "(ILjava/lang/Object;)V",
+      mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_setFieldIntercept", "(ILjava/lang/Object;)V",
         null, null);
     } else {
-      mv = cv.visitMethod(ACC_PUBLIC, "_ebean_setField", "(ILjava/lang/Object;)V", null, null);
+      mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_setField", "(ILjava/lang/Object;)V", null, null);
     }
 
     mv.visitCode();
@@ -297,18 +304,18 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
     mv.visitInsn(DUP);
     mv.visitLdcInsn("Invalid index ");
-    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "(Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", INIT, "(Ljava/lang/String;)V", false);
     mv.visitVarInsn(ILOAD, 1);
     mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false);
     mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
-    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", INIT, "(Ljava/lang/String;)V", false);
     mv.visitInsn(ATHROW);
     Label l9 = new Label();
     mv.visitLabel(l9);
     mv.visitLocalVariable("this", "L" + className + ";", null, l0, l9, 0);
     mv.visitLocalVariable("index", "I", null, l0, l9, 1);
-    mv.visitLocalVariable("o", "Ljava/lang/Object;", null, l0, l9, 2);
-    mv.visitLocalVariable("arg", "Ljava/lang/Object;", null, l0, l9, 3);
+    mv.visitLocalVariable("o", L_OBJECT, null, l0, l9, 2);
+    mv.visitLocalVariable("arg", L_OBJECT, null, l0, l9, 3);
     mv.visitLocalVariable("p", "L" + className + ";", null, l1, l9, 4);
     mv.visitMaxs(5, 5);
     mv.visitEnd();

@@ -39,49 +39,49 @@ package io.ebean.enhance.asm;
 public class ClassWriter extends ClassVisitor {
 
   /**
-  * A flag to automatically compute the maximum stack size and the maximum number of local
-  * variables of methods. If this flag is set, then the arguments of the {@link
-  * MethodVisitor#visitMaxs} method of the {@link MethodVisitor} returned by the {@link
-  * #visitMethod} method will be ignored, and computed automatically from the signature and the
-  * bytecode of each method.
-  *
-  * <p><b>Note:</b> for classes whose version is {@link Opcodes#V1_7} of more, this option requires
-  * valid stack map frames. The maximum stack size is then computed from these frames, and from the
-  * bytecode instructions in between. If stack map frames are not present or must be recomputed,
-  * used {@link #COMPUTE_FRAMES} instead.
-  *
-  * @see #ClassWriter(int)
-  */
+   * A flag to automatically compute the maximum stack size and the maximum number of local
+   * variables of methods. If this flag is set, then the arguments of the {@link
+   * MethodVisitor#visitMaxs} method of the {@link MethodVisitor} returned by the {@link
+   * #visitMethod} method will be ignored, and computed automatically from the signature and the
+   * bytecode of each method.
+   *
+   * <p><b>Note:</b> for classes whose version is {@link Opcodes#V1_7} of more, this option requires
+   * valid stack map frames. The maximum stack size is then computed from these frames, and from the
+   * bytecode instructions in between. If stack map frames are not present or must be recomputed,
+   * used {@link #COMPUTE_FRAMES} instead.
+   *
+   * @see #ClassWriter(int)
+   */
   public static final int COMPUTE_MAXS = 1;
 
   /**
-  * A flag to automatically compute the stack map frames of methods from scratch. If this flag is
-  * set, then the calls to the {@link MethodVisitor#visitFrame} method are ignored, and the stack
-  * map frames are recomputed from the methods bytecode. The arguments of the {@link
-  * MethodVisitor#visitMaxs} method are also ignored and recomputed from the bytecode. In other
-  * words, {@link #COMPUTE_FRAMES} implies {@link #COMPUTE_MAXS}.
-  *
-  * @see #ClassWriter(int)
-  */
+   * A flag to automatically compute the stack map frames of methods from scratch. If this flag is
+   * set, then the calls to the {@link MethodVisitor#visitFrame} method are ignored, and the stack
+   * map frames are recomputed from the methods bytecode. The arguments of the {@link
+   * MethodVisitor#visitMaxs} method are also ignored and recomputed from the bytecode. In other
+   * words, {@link #COMPUTE_FRAMES} implies {@link #COMPUTE_MAXS}.
+   *
+   * @see #ClassWriter(int)
+   */
   public static final int COMPUTE_FRAMES = 2;
 
   // Note: fields are ordered as in the ClassFile structure, and those related to attributes are
   // ordered as in Section 4.7 of the JVMS.
 
   /**
-  * The minor_version and major_version fields of the JVMS ClassFile structure. minor_version is
-  * stored in the 16 most significant bits, and major_version in the 16 least significant bits.
-  */
+   * The minor_version and major_version fields of the JVMS ClassFile structure. minor_version is
+   * stored in the 16 most significant bits, and major_version in the 16 least significant bits.
+   */
   private int version;
 
   /** The symbol table for this class (contains the constant_pool and the BootstrapMethods). */
   private final SymbolTable symbolTable;
 
   /**
-  * The access_flags field of the JVMS ClassFile structure. This field can contain ASM specific
-  * access flags, such as {@link Opcodes#ACC_DEPRECATED}, which are removed when generating the
-  * ClassFile structure.
-  */
+   * The access_flags field of the JVMS ClassFile structure. This field can contain ASM specific
+   * access flags, such as {@link Opcodes#ACC_DEPRECATED}, which are removed when generating the
+   * ClassFile structure.
+   */
   private int accessFlags;
 
   /** The this_class field of the JVMS ClassFile structure. */
@@ -97,27 +97,27 @@ public class ClassWriter extends ClassVisitor {
   private int[] interfaces;
 
   /**
-  * The fields of this class, stored in a linked list of {@link FieldWriter} linked via their
-  * {@link FieldWriter#fv} field. This field stores the first element of this list.
-  */
+   * The fields of this class, stored in a linked list of {@link FieldWriter} linked via their
+   * {@link FieldWriter#fv} field. This field stores the first element of this list.
+   */
   private FieldWriter firstField;
 
   /**
-  * The fields of this class, stored in a linked list of {@link FieldWriter} linked via their
-  * {@link FieldWriter#fv} field. This field stores the last element of this list.
-  */
+   * The fields of this class, stored in a linked list of {@link FieldWriter} linked via their
+   * {@link FieldWriter#fv} field. This field stores the last element of this list.
+   */
   private FieldWriter lastField;
 
   /**
-  * The methods of this class, stored in a linked list of {@link MethodWriter} linked via their
-  * {@link MethodWriter#mv} field. This field stores the first element of this list.
-  */
+   * The methods of this class, stored in a linked list of {@link MethodWriter} linked via their
+   * {@link MethodWriter#mv} field. This field stores the first element of this list.
+   */
   private MethodWriter firstMethod;
 
   /**
-  * The methods of this class, stored in a linked list of {@link MethodWriter} linked via their
-  * {@link MethodWriter#mv} field. This field stores the last element of this list.
-  */
+   * The methods of this class, stored in a linked list of {@link MethodWriter} linked via their
+   * {@link MethodWriter#mv} field. This field stores the last element of this list.
+   */
   private MethodWriter lastMethod;
 
   /** The number_of_classes field of the InnerClasses attribute, or 0. */
@@ -142,27 +142,27 @@ public class ClassWriter extends ClassVisitor {
   private ByteVector debugExtension;
 
   /**
-  * The last runtime visible annotation of this class. The previous ones can be accessed with the
-  * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
-  */
+   * The last runtime visible annotation of this class. The previous ones can be accessed with the
+   * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   */
   private AnnotationWriter lastRuntimeVisibleAnnotation;
 
   /**
-  * The last runtime invisible annotation of this class. The previous ones can be accessed with the
-  * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
-  */
+   * The last runtime invisible annotation of this class. The previous ones can be accessed with the
+   * {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   */
   private AnnotationWriter lastRuntimeInvisibleAnnotation;
 
   /**
-  * The last runtime visible type annotation of this class. The previous ones can be accessed with
-  * the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
-  */
+   * The last runtime visible type annotation of this class. The previous ones can be accessed with
+   * the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   */
   private AnnotationWriter lastRuntimeVisibleTypeAnnotation;
 
   /**
-  * The last runtime invisible type annotation of this class. The previous ones can be accessed
-  * with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
-  */
+   * The last runtime invisible type annotation of this class. The previous ones can be accessed
+   * with the {@link AnnotationWriter#previousAnnotation} field. May be {@literal null}.
+   */
   private AnnotationWriter lastRuntimeInvisibleTypeAnnotation;
 
   /** The Module attribute of this class, or {@literal null}. */
@@ -178,21 +178,21 @@ public class ClassWriter extends ClassVisitor {
   private ByteVector nestMemberClasses;
 
   /**
-  * The first non standard attribute of this class. The next ones can be accessed with the {@link
-  * Attribute#nextAttribute} field. May be {@literal null}.
-  *
-  * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
-  * firstAttribute is actually the last attribute visited in {@link #visitAttribute}. The {@link
-  * #toByteArray} method writes the attributes in the order defined by this list, i.e. in the
-  * reverse order specified by the user.
-  */
+   * The first non standard attribute of this class. The next ones can be accessed with the {@link
+   * Attribute#nextAttribute} field. May be {@literal null}.
+   *
+   * <p><b>WARNING</b>: this list stores the attributes in the <i>reverse</i> order of their visit.
+   * firstAttribute is actually the last attribute visited in {@link #visitAttribute}. The {@link
+   * #toByteArray} method writes the attributes in the order defined by this list, i.e. in the
+   * reverse order specified by the user.
+   */
   private Attribute firstAttribute;
 
   /**
-  * Indicates what must be automatically computed in {@link MethodWriter}. Must be one of {@link
-  * MethodWriter#COMPUTE_NOTHING}, {@link MethodWriter#COMPUTE_MAX_STACK_AND_LOCAL}, {@link
-  * MethodWriter#COMPUTE_INSERTED_FRAMES}, or {@link MethodWriter#COMPUTE_ALL_FRAMES}.
-  */
+   * Indicates what must be automatically computed in {@link MethodWriter}. Must be one of {@link
+   * MethodWriter#COMPUTE_NOTHING}, {@link MethodWriter#COMPUTE_MAX_STACK_AND_LOCAL}, {@link
+   * MethodWriter#COMPUTE_INSERTED_FRAMES}, or {@link MethodWriter#COMPUTE_ALL_FRAMES}.
+   */
   private int compute;
 
   // -----------------------------------------------------------------------------------------------
@@ -200,39 +200,39 @@ public class ClassWriter extends ClassVisitor {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Constructs a new {@link ClassWriter} object.
-  *
-  * @param flags option flags that can be used to modify the default behavior of this class. Must
-  *     be zero or more of {@link #COMPUTE_MAXS} and {@link #COMPUTE_FRAMES}.
-  */
+   * Constructs a new {@link ClassWriter} object.
+   *
+   * @param flags option flags that can be used to modify the default behavior of this class. Must
+   *     be zero or more of {@link #COMPUTE_MAXS} and {@link #COMPUTE_FRAMES}.
+   */
   public ClassWriter(final int flags) {
     this(null, flags);
   }
 
   /**
-  * Constructs a new {@link ClassWriter} object and enables optimizations for "mostly add" bytecode
-  * transformations. These optimizations are the following:
-  *
-  * <ul>
-  *   <li>The constant pool and bootstrap methods from the original class are copied as is in the
-  *       new class, which saves time. New constant pool entries and new bootstrap methods will be
-  *       added at the end if necessary, but unused constant pool entries or bootstrap methods
-  *       <i>won't be removed</i>.
-  *   <li>Methods that are not transformed are copied as is in the new class, directly from the
-  *       original class bytecode (i.e. without emitting visit events for all the method
-  *       instructions), which saves a <i>lot</i> of time. Untransformed methods are detected by
-  *       the fact that the {@link ClassReader} receives {@link MethodVisitor} objects that come
-  *       from a {@link ClassWriter} (and not from any other {@link ClassVisitor} instance).
-  * </ul>
-  *
-  * @param classReader the {@link ClassReader} used to read the original class. It will be used to
-  *     copy the entire constant pool and bootstrap methods from the original class and also to
-  *     copy other fragments of original bytecode where applicable.
-  * @param flags option flags that can be used to modify the default behavior of this class.Must be
-  *     zero or more of {@link #COMPUTE_MAXS} and {@link #COMPUTE_FRAMES}. <i>These option flags do
-  *     not affect methods that are copied as is in the new class. This means that neither the
-  *     maximum stack size nor the stack frames will be computed for these methods</i>.
-  */
+   * Constructs a new {@link ClassWriter} object and enables optimizations for "mostly add" bytecode
+   * transformations. These optimizations are the following:
+   *
+   * <ul>
+   *   <li>The constant pool and bootstrap methods from the original class are copied as is in the
+   *       new class, which saves time. New constant pool entries and new bootstrap methods will be
+   *       added at the end if necessary, but unused constant pool entries or bootstrap methods
+   *       <i>won't be removed</i>.
+   *   <li>Methods that are not transformed are copied as is in the new class, directly from the
+   *       original class bytecode (i.e. without emitting visit events for all the method
+   *       instructions), which saves a <i>lot</i> of time. Untransformed methods are detected by
+   *       the fact that the {@link ClassReader} receives {@link MethodVisitor} objects that come
+   *       from a {@link ClassWriter} (and not from any other {@link ClassVisitor} instance).
+   * </ul>
+   *
+   * @param classReader the {@link ClassReader} used to read the original class. It will be used to
+   *     copy the entire constant pool and bootstrap methods from the original class and also to
+   *     copy other fragments of original bytecode where applicable.
+   * @param flags option flags that can be used to modify the default behavior of this class.Must be
+   *     zero or more of {@link #COMPUTE_MAXS} and {@link #COMPUTE_FRAMES}. <i>These option flags do
+   *     not affect methods that are copied as is in the new class. This means that neither the
+   *     maximum stack size nor the stack frames will be computed for these methods</i>.
+   */
   public ClassWriter(final ClassReader classReader, final int flags) {
     super(Opcodes.ASM7);
     symbolTable = classReader == null ? new SymbolTable(this) : new SymbolTable(this, classReader);
@@ -313,37 +313,26 @@ public class ClassWriter extends ClassVisitor {
 
   @Override
   public final AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
-    // Create a ByteVector to hold an 'annotation' JVMS structure.
-    // See https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.16.
-    ByteVector annotation = new ByteVector();
-    // Write type_index and reserve space for num_element_value_pairs.
-    annotation.putShort(symbolTable.addConstantUtf8(descriptor)).putShort(0);
     if (visible) {
       return lastRuntimeVisibleAnnotation =
-          new AnnotationWriter(symbolTable, annotation, lastRuntimeVisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeVisibleAnnotation);
     } else {
       return lastRuntimeInvisibleAnnotation =
-          new AnnotationWriter(symbolTable, annotation, lastRuntimeInvisibleAnnotation);
+          AnnotationWriter.create(symbolTable, descriptor, lastRuntimeInvisibleAnnotation);
     }
   }
 
   @Override
   public final AnnotationVisitor visitTypeAnnotation(
-      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
-    // Create a ByteVector to hold a 'type_annotation' JVMS structure.
-    // See https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.20.
-    ByteVector typeAnnotation = new ByteVector();
-    // Write target_type, target_info, and target_path.
-    TypeReference.putTarget(typeRef, typeAnnotation);
-    TypePath.put(typePath, typeAnnotation);
-    // Write type_index and reserve space for num_element_value_pairs.
-    typeAnnotation.putShort(symbolTable.addConstantUtf8(descriptor)).putShort(0);
+    final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleTypeAnnotation =
-          new AnnotationWriter(symbolTable, typeAnnotation, lastRuntimeVisibleTypeAnnotation);
+          AnnotationWriter.create(
+              symbolTable, typeRef, typePath, descriptor, lastRuntimeVisibleTypeAnnotation);
     } else {
       return lastRuntimeInvisibleTypeAnnotation =
-          new AnnotationWriter(symbolTable, typeAnnotation, lastRuntimeInvisibleTypeAnnotation);
+          AnnotationWriter.create(
+              symbolTable, typeRef, typePath, descriptor, lastRuntimeInvisibleTypeAnnotation);
     }
   }
 
@@ -432,13 +421,13 @@ public class ClassWriter extends ClassVisitor {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Returns the content of the class file that was built by this ClassWriter.
-  *
-  * @return the binary content of the JVMS ClassFile structure that was built by this ClassWriter.
-  * @throws ClassTooLargeException if the constant pool of the class is too large.
-  * @throws MethodTooLargeException if the Code attribute of a method is too large.
-  */
-  public byte[] toByteArray() throws ClassTooLargeException, MethodTooLargeException {
+   * Returns the content of the class file that was built by this ClassWriter.
+   *
+   * @return the binary content of the JVMS ClassFile structure that was built by this ClassWriter.
+   * @throws ClassTooLargeException if the constant pool of the class is too large.
+   * @throws MethodTooLargeException if the Code attribute of a method is too large.
+   */
+  public byte[] toByteArray() {
     // First step: compute the size in bytes of the ClassFile structure.
     // The magic field uses 4 bytes, 10 mandatory fields (minor_version, major_version,
     // constant_pool_count, access_flags, this_class, super_class, interfaces_count, fields_count,
@@ -617,22 +606,13 @@ public class ClassWriter extends ClassVisitor {
     if ((accessFlags & Opcodes.ACC_DEPRECATED) != 0) {
       result.putShort(symbolTable.addConstantUtf8(Constants.DEPRECATED)).putInt(0);
     }
-    if (lastRuntimeVisibleAnnotation != null) {
-      lastRuntimeVisibleAnnotation.putAnnotations(
-          symbolTable.addConstantUtf8(Constants.RUNTIME_VISIBLE_ANNOTATIONS), result);
-    }
-    if (lastRuntimeInvisibleAnnotation != null) {
-      lastRuntimeInvisibleAnnotation.putAnnotations(
-          symbolTable.addConstantUtf8(Constants.RUNTIME_INVISIBLE_ANNOTATIONS), result);
-    }
-    if (lastRuntimeVisibleTypeAnnotation != null) {
-      lastRuntimeVisibleTypeAnnotation.putAnnotations(
-          symbolTable.addConstantUtf8(Constants.RUNTIME_VISIBLE_TYPE_ANNOTATIONS), result);
-    }
-    if (lastRuntimeInvisibleTypeAnnotation != null) {
-      lastRuntimeInvisibleTypeAnnotation.putAnnotations(
-          symbolTable.addConstantUtf8(Constants.RUNTIME_INVISIBLE_TYPE_ANNOTATIONS), result);
-    }
+    AnnotationWriter.putAnnotations(
+        symbolTable,
+        lastRuntimeVisibleAnnotation,
+        lastRuntimeInvisibleAnnotation,
+        lastRuntimeVisibleTypeAnnotation,
+        lastRuntimeInvisibleTypeAnnotation,
+        result);
     symbolTable.putBootstrapMethods(result);
     if (moduleWriter != null) {
       moduleWriter.putAttributes(result);
@@ -663,15 +643,15 @@ public class ClassWriter extends ClassVisitor {
   }
 
   /**
-  * Returns the equivalent of the given class file, with the ASM specific instructions replaced
-  * with standard ones. This is done with a ClassReader -&gt; ClassWriter round trip.
-  *
-  * @param classFile a class file containing ASM specific instructions, generated by this
-  *     ClassWriter.
-  * @param hasFrames whether there is at least one stack map frames in 'classFile'.
-  * @return an equivalent of 'classFile', with the ASM specific instructions replaced with standard
-  *     ones.
-  */
+   * Returns the equivalent of the given class file, with the ASM specific instructions replaced
+   * with standard ones. This is done with a ClassReader -&gt; ClassWriter round trip.
+   *
+   * @param classFile a class file containing ASM specific instructions, generated by this
+   *     ClassWriter.
+   * @param hasFrames whether there is at least one stack map frames in 'classFile'.
+   * @return an equivalent of 'classFile', with the ASM specific instructions replaced with standard
+   *     ones.
+   */
   private byte[] replaceAsmInstructions(final byte[] classFile, final boolean hasFrames) {
     final Attribute[] attributes = getAttributePrototypes();
     firstField = null;
@@ -697,10 +677,10 @@ public class ClassWriter extends ClassVisitor {
   }
 
   /**
-  * Returns the prototypes of the attributes used by this class, its fields and its methods.
-  *
-  * @return the prototypes of the attributes used by this class, its fields and its methods.
-  */
+   * Returns the prototypes of the attributes used by this class, its fields and its methods.
+   *
+   * @return the prototypes of the attributes used by this class, its fields and its methods.
+   */
   private Attribute[] getAttributePrototypes() {
     Attribute.Set attributePrototypes = new Attribute.Set();
     attributePrototypes.addAttributes(firstAttribute);
@@ -722,95 +702,95 @@ public class ClassWriter extends ClassVisitor {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Adds a number or string constant to the constant pool of the class being build. Does nothing if
-  * the constant pool already contains a similar item. <i>This method is intended for {@link
-  * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param value the value of the constant to be added to the constant pool. This parameter must be
-  *     an {@link Integer}, a {@link Float}, a {@link Long}, a {@link Double} or a {@link String}.
-  * @return the index of a new or already existing constant item with the given value.
-  */
+   * Adds a number or string constant to the constant pool of the class being build. Does nothing if
+   * the constant pool already contains a similar item. <i>This method is intended for {@link
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param value the value of the constant to be added to the constant pool. This parameter must be
+   *     an {@link Integer}, a {@link Float}, a {@link Long}, a {@link Double} or a {@link String}.
+   * @return the index of a new or already existing constant item with the given value.
+   */
   public int newConst(final Object value) {
     return symbolTable.addConstant(value).index;
   }
 
   /**
-  * Adds an UTF8 string to the constant pool of the class being build. Does nothing if the constant
-  * pool already contains a similar item. <i>This method is intended for {@link Attribute} sub
-  * classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param value the String value.
-  * @return the index of a new or already existing UTF8 item.
-  */
+   * Adds an UTF8 string to the constant pool of the class being build. Does nothing if the constant
+   * pool already contains a similar item. <i>This method is intended for {@link Attribute} sub
+   * classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param value the String value.
+   * @return the index of a new or already existing UTF8 item.
+   */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   public int newUTF8(final String value) {
     return symbolTable.addConstantUtf8(value);
   }
 
   /**
-  * Adds a class reference to the constant pool of the class being build. Does nothing if the
-  * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
-  * sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param value the internal name of the class.
-  * @return the index of a new or already existing class reference item.
-  */
+   * Adds a class reference to the constant pool of the class being build. Does nothing if the
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
+   * sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param value the internal name of the class.
+   * @return the index of a new or already existing class reference item.
+   */
   public int newClass(final String value) {
     return symbolTable.addConstantClass(value).index;
   }
 
   /**
-  * Adds a method type reference to the constant pool of the class being build. Does nothing if the
-  * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
-  * sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param methodDescriptor method descriptor of the method type.
-  * @return the index of a new or already existing method type reference item.
-  */
+   * Adds a method type reference to the constant pool of the class being build. Does nothing if the
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
+   * sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param methodDescriptor method descriptor of the method type.
+   * @return the index of a new or already existing method type reference item.
+   */
   public int newMethodType(final String methodDescriptor) {
     return symbolTable.addConstantMethodType(methodDescriptor).index;
   }
 
   /**
-  * Adds a module reference to the constant pool of the class being build. Does nothing if the
-  * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
-  * sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param moduleName name of the module.
-  * @return the index of a new or already existing module reference item.
-  */
+   * Adds a module reference to the constant pool of the class being build. Does nothing if the
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
+   * sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param moduleName name of the module.
+   * @return the index of a new or already existing module reference item.
+   */
   public int newModule(final String moduleName) {
     return symbolTable.addConstantModule(moduleName).index;
   }
 
   /**
-  * Adds a package reference to the constant pool of the class being build. Does nothing if the
-  * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
-  * sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param packageName name of the package in its internal form.
-  * @return the index of a new or already existing module reference item.
-  */
+   * Adds a package reference to the constant pool of the class being build. Does nothing if the
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
+   * sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param packageName name of the package in its internal form.
+   * @return the index of a new or already existing module reference item.
+   */
   public int newPackage(final String packageName) {
     return symbolTable.addConstantPackage(packageName).index;
   }
 
   /**
-  * Adds a handle to the constant pool of the class being build. Does nothing if the constant pool
-  * already contains a similar item. <i>This method is intended for {@link Attribute} sub classes,
-  * and is normally not needed by class generators or adapters.</i>
-  *
-  * @param tag the kind of this handle. Must be {@link Opcodes#H_GETFIELD}, {@link
-  *     Opcodes#H_GETSTATIC}, {@link Opcodes#H_PUTFIELD}, {@link Opcodes#H_PUTSTATIC}, {@link
-  *     Opcodes#H_INVOKEVIRTUAL}, {@link Opcodes#H_INVOKESTATIC}, {@link Opcodes#H_INVOKESPECIAL},
-  *     {@link Opcodes#H_NEWINVOKESPECIAL} or {@link Opcodes#H_INVOKEINTERFACE}.
-  * @param owner the internal name of the field or method owner class.
-  * @param name the name of the field or method.
-  * @param descriptor the descriptor of the field or method.
-  * @return the index of a new or already existing method type reference item.
-  * @deprecated this method is superseded by {@link #newHandle(int, String, String, String,
-  *     boolean)}.
-  */
+   * Adds a handle to the constant pool of the class being build. Does nothing if the constant pool
+   * already contains a similar item. <i>This method is intended for {@link Attribute} sub classes,
+   * and is normally not needed by class generators or adapters.</i>
+   *
+   * @param tag the kind of this handle. Must be {@link Opcodes#H_GETFIELD}, {@link
+   *     Opcodes#H_GETSTATIC}, {@link Opcodes#H_PUTFIELD}, {@link Opcodes#H_PUTSTATIC}, {@link
+   *     Opcodes#H_INVOKEVIRTUAL}, {@link Opcodes#H_INVOKESTATIC}, {@link Opcodes#H_INVOKESPECIAL},
+   *     {@link Opcodes#H_NEWINVOKESPECIAL} or {@link Opcodes#H_INVOKEINTERFACE}.
+   * @param owner the internal name of the field or method owner class.
+   * @param name the name of the field or method.
+   * @param descriptor the descriptor of the field or method.
+   * @return the index of a new or already existing method type reference item.
+   * @deprecated this method is superseded by {@link #newHandle(int, String, String, String,
+   *     boolean)}.
+   */
   @Deprecated
   public int newHandle(
       final int tag, final String owner, final String name, final String descriptor) {
@@ -818,20 +798,20 @@ public class ClassWriter extends ClassVisitor {
   }
 
   /**
-  * Adds a handle to the constant pool of the class being build. Does nothing if the constant pool
-  * already contains a similar item. <i>This method is intended for {@link Attribute} sub classes,
-  * and is normally not needed by class generators or adapters.</i>
-  *
-  * @param tag the kind of this handle. Must be {@link Opcodes#H_GETFIELD}, {@link
-  *     Opcodes#H_GETSTATIC}, {@link Opcodes#H_PUTFIELD}, {@link Opcodes#H_PUTSTATIC}, {@link
-  *     Opcodes#H_INVOKEVIRTUAL}, {@link Opcodes#H_INVOKESTATIC}, {@link Opcodes#H_INVOKESPECIAL},
-  *     {@link Opcodes#H_NEWINVOKESPECIAL} or {@link Opcodes#H_INVOKEINTERFACE}.
-  * @param owner the internal name of the field or method owner class.
-  * @param name the name of the field or method.
-  * @param descriptor the descriptor of the field or method.
-  * @param isInterface true if the owner is an interface.
-  * @return the index of a new or already existing method type reference item.
-  */
+   * Adds a handle to the constant pool of the class being build. Does nothing if the constant pool
+   * already contains a similar item. <i>This method is intended for {@link Attribute} sub classes,
+   * and is normally not needed by class generators or adapters.</i>
+   *
+   * @param tag the kind of this handle. Must be {@link Opcodes#H_GETFIELD}, {@link
+   *     Opcodes#H_GETSTATIC}, {@link Opcodes#H_PUTFIELD}, {@link Opcodes#H_PUTSTATIC}, {@link
+   *     Opcodes#H_INVOKEVIRTUAL}, {@link Opcodes#H_INVOKESTATIC}, {@link Opcodes#H_INVOKESPECIAL},
+   *     {@link Opcodes#H_NEWINVOKESPECIAL} or {@link Opcodes#H_INVOKEINTERFACE}.
+   * @param owner the internal name of the field or method owner class.
+   * @param name the name of the field or method.
+   * @param descriptor the descriptor of the field or method.
+   * @param isInterface true if the owner is an interface.
+   * @return the index of a new or already existing method type reference item.
+   */
   public int newHandle(
       final int tag,
       final String owner,
@@ -842,16 +822,16 @@ public class ClassWriter extends ClassVisitor {
   }
 
   /**
-  * Adds a dynamic constant reference to the constant pool of the class being build. Does nothing
-  * if the constant pool already contains a similar item. <i>This method is intended for {@link
-  * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param name name of the invoked method.
-  * @param descriptor field descriptor of the constant type.
-  * @param bootstrapMethodHandle the bootstrap method.
-  * @param bootstrapMethodArguments the bootstrap method constant arguments.
-  * @return the index of a new or already existing dynamic constant reference item.
-  */
+   * Adds a dynamic constant reference to the constant pool of the class being build. Does nothing
+   * if the constant pool already contains a similar item. <i>This method is intended for {@link
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param name name of the invoked method.
+   * @param descriptor field descriptor of the constant type.
+   * @param bootstrapMethodHandle the bootstrap method.
+   * @param bootstrapMethodArguments the bootstrap method constant arguments.
+   * @return the index of a new or already existing dynamic constant reference item.
+   */
   public int newConstantDynamic(
       final String name,
       final String descriptor,
@@ -863,16 +843,16 @@ public class ClassWriter extends ClassVisitor {
   }
 
   /**
-  * Adds an invokedynamic reference to the constant pool of the class being build. Does nothing if
-  * the constant pool already contains a similar item. <i>This method is intended for {@link
-  * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param name name of the invoked method.
-  * @param descriptor descriptor of the invoke method.
-  * @param bootstrapMethodHandle the bootstrap method.
-  * @param bootstrapMethodArguments the bootstrap method constant arguments.
-  * @return the index of a new or already existing invokedynamic reference item.
-  */
+   * Adds an invokedynamic reference to the constant pool of the class being build. Does nothing if
+   * the constant pool already contains a similar item. <i>This method is intended for {@link
+   * Attribute} sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param name name of the invoked method.
+   * @param descriptor descriptor of the invoke method.
+   * @param bootstrapMethodHandle the bootstrap method.
+   * @param bootstrapMethodArguments the bootstrap method constant arguments.
+   * @return the index of a new or already existing invokedynamic reference item.
+   */
   public int newInvokeDynamic(
       final String name,
       final String descriptor,
@@ -884,44 +864,44 @@ public class ClassWriter extends ClassVisitor {
   }
 
   /**
-  * Adds a field reference to the constant pool of the class being build. Does nothing if the
-  * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
-  * sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param owner the internal name of the field's owner class.
-  * @param name the field's name.
-  * @param descriptor the field's descriptor.
-  * @return the index of a new or already existing field reference item.
-  */
+   * Adds a field reference to the constant pool of the class being build. Does nothing if the
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
+   * sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param owner the internal name of the field's owner class.
+   * @param name the field's name.
+   * @param descriptor the field's descriptor.
+   * @return the index of a new or already existing field reference item.
+   */
   public int newField(final String owner, final String name, final String descriptor) {
     return symbolTable.addConstantFieldref(owner, name, descriptor).index;
   }
 
   /**
-  * Adds a method reference to the constant pool of the class being build. Does nothing if the
-  * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
-  * sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param owner the internal name of the method's owner class.
-  * @param name the method's name.
-  * @param descriptor the method's descriptor.
-  * @param isInterface {@literal true} if {@code owner} is an interface.
-  * @return the index of a new or already existing method reference item.
-  */
+   * Adds a method reference to the constant pool of the class being build. Does nothing if the
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
+   * sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param owner the internal name of the method's owner class.
+   * @param name the method's name.
+   * @param descriptor the method's descriptor.
+   * @param isInterface {@literal true} if {@code owner} is an interface.
+   * @return the index of a new or already existing method reference item.
+   */
   public int newMethod(
       final String owner, final String name, final String descriptor, final boolean isInterface) {
     return symbolTable.addConstantMethodref(owner, name, descriptor, isInterface).index;
   }
 
   /**
-  * Adds a name and type to the constant pool of the class being build. Does nothing if the
-  * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
-  * sub classes, and is normally not needed by class generators or adapters.</i>
-  *
-  * @param name a name.
-  * @param descriptor a type descriptor.
-  * @return the index of a new or already existing name and type item.
-  */
+   * Adds a name and type to the constant pool of the class being build. Does nothing if the
+   * constant pool already contains a similar item. <i>This method is intended for {@link Attribute}
+   * sub classes, and is normally not needed by class generators or adapters.</i>
+   *
+   * @param name a name.
+   * @param descriptor a type descriptor.
+   * @return the index of a new or already existing name and type item.
+   */
   public int newNameType(final String name, final String descriptor) {
     return symbolTable.addConstantNameAndType(name, descriptor);
   }
@@ -931,17 +911,17 @@ public class ClassWriter extends ClassVisitor {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Returns the common super type of the two given types. The default implementation of this method
-  * <i>loads</i> the two given classes and uses the java.lang.Class methods to find the common
-  * super class. It can be overridden to compute this common super type in other ways, in
-  * particular without actually loading any class, or to take into account the class that is
-  * currently being generated by this ClassWriter, which can of course not be loaded since it is
-  * under construction.
-  *
-  * @param type1 the internal name of a class.
-  * @param type2 the internal name of another class.
-  * @return the internal name of the common super class of the two given classes.
-  */
+   * Returns the common super type of the two given types. The default implementation of this method
+   * <i>loads</i> the two given classes and uses the java.lang.Class methods to find the common
+   * super class. It can be overridden to compute this common super type in other ways, in
+   * particular without actually loading any class, or to take into account the class that is
+   * currently being generated by this ClassWriter, which can of course not be loaded since it is
+   * under construction.
+   *
+   * @param type1 the internal name of a class.
+   * @param type2 the internal name of another class.
+   * @return the internal name of the common super class of the two given classes.
+   */
   protected String getCommonSuperClass(final String type1, final String type2) {
     ClassLoader classLoader = getClassLoader();
     Class<?> class1;
@@ -973,12 +953,12 @@ public class ClassWriter extends ClassVisitor {
   }
 
   /**
-  * Returns the {@link ClassLoader} to be used by the default implementation of {@link
-  * #getCommonSuperClass(String, String)}, that of this {@link ClassWriter}'s runtime type by
-  * default.
-  *
-  * @return ClassLoader
-  */
+   * Returns the {@link ClassLoader} to be used by the default implementation of {@link
+   * #getCommonSuperClass(String, String)}, that of this {@link ClassWriter}'s runtime type by
+   * default.
+   *
+   * @return ClassLoader
+   */
   protected ClassLoader getClassLoader() {
     return getClass().getClassLoader();
   }

@@ -6,6 +6,9 @@ import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.ClassMeta;
 
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
+
 /**
  * Adds a default constructor for the cases when there is not one already defined.
  */
@@ -20,16 +23,16 @@ public class DefaultConstructor {
             classMeta.log("... adding default constructor, super class: "+classMeta.getSuperClassName());
         }
 
-        MethodVisitor underlyingMV = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
+        MethodVisitor underlyingMV = cw.visitMethod(Opcodes.ACC_PUBLIC, INIT, NOARG_VOID, null, null);
 
-        ConstructorAdapter mv = new ConstructorAdapter(underlyingMV, classMeta, "()V");
+        ConstructorAdapter mv = new ConstructorAdapter(underlyingMV, classMeta, NOARG_VOID);
 
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);
         mv.visitLineNumber(1, l0);
         mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, classMeta.getSuperClassName(), "<init>", "()V", false);
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, classMeta.getSuperClassName(), INIT, NOARG_VOID, false);
         Label l1 = new Label();
         mv.visitLabel(l1);
         mv.visitLineNumber(2, l1);

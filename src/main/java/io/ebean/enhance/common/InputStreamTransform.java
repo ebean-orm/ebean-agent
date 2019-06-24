@@ -67,7 +67,9 @@ public class InputStreamTransform {
   * Helper method to write bytes to a file.
   */
   public static void writeBytes(byte[] bytes, File file) throws IOException {
-    writeBytes(bytes, new FileOutputStream(file));
+    try (final FileOutputStream fos = new FileOutputStream(file)) {
+      writeBytes(bytes, fos);
+    }
   }
 
   /**

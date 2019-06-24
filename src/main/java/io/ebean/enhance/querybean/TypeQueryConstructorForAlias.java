@@ -6,6 +6,8 @@ import io.ebean.enhance.asm.Opcodes;
 
 import java.util.List;
 
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+
 /**
  * Overrides the constructor to initialise all the fields (for use with 'Alias' select()/fetch() use).
  */
@@ -30,14 +32,14 @@ public class TypeQueryConstructorForAlias extends BaseConstructorAdapter impleme
   @Override
   public void visitCode() {
 
-    mv = cv.visitMethod(ACC_PRIVATE, "<init>", "(Z)V", null, null);
+    mv = cv.visitMethod(ACC_PRIVATE, INIT, "(Z)V", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitVarInsn(ILOAD, 1);
-    mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, "<init>", "(Z)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, INIT, "(Z)V", false);
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(2, l1);

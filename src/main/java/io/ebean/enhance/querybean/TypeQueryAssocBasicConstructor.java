@@ -4,6 +4,10 @@ import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.Opcodes;
 
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+import static io.ebean.enhance.common.EnhanceConstants.L_OBJECT;
+import static io.ebean.enhance.common.EnhanceConstants.L_STRING;
+
 /**
  * Changes the existing constructor to remove all the field initialisation as these are going to be
  * initialised lazily by calls to our generated methods.
@@ -33,7 +37,7 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
   @Override
   public void visitCode() {
 
-    mv = cv.visitMethod(ACC_PUBLIC, "<init>", desc, signature, null);
+    mv = cv.visitMethod(ACC_PUBLIC, INIT, desc, signature, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
@@ -42,7 +46,7 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
     mv.visitVarInsn(ALOAD, 1);
     mv.visitVarInsn(ALOAD, 2);
     mv.visitInsn(ACONST_NULL);
-    mv.visitMethodInsn(INVOKESPECIAL, TQ_ASSOC_BEAN, "<init>", "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, TQ_ASSOC_BEAN, INIT, "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(2, l1);
@@ -50,8 +54,8 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
     Label l2 = new Label();
     mv.visitLabel(l2);
     mv.visitLocalVariable("this", "L"+classInfo.getClassName()+";", "L"+classInfo.getClassName()+"<TR;>;", l0, l2, 0);
-    mv.visitLocalVariable("name", "Ljava/lang/String;", null, l0, l2, 1);
-    mv.visitLocalVariable("root", "Ljava/lang/Object;", "TR;", l0, l2, 2);
+    mv.visitLocalVariable("name", L_STRING, null, l0, l2, 1);
+    mv.visitLocalVariable("root", L_OBJECT, "TR;", l0, l2, 2);
     mv.visitLocalVariable("depth", "I", null, l0, l2, 3);
     mv.visitMaxs(4, 4);
     mv.visitEnd();

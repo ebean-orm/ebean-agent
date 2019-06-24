@@ -124,7 +124,12 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
   */
   public void addInitialisationIfRequired(int opcode, String owner, String name, String desc) {
 
-    if (opcode == INVOKESPECIAL && name.equals("<init>") && desc.equals("()V")) {
+    if (C_MODEL.equals(owner) && INIT.equals(name)) {
+      addConstructorInit(owner);
+      return;
+    }
+
+    if (opcode == INVOKESPECIAL && name.equals(INIT) && desc.equals(NOARG_VOID)) {
       if (meta.isSuperClassEntity()) {
         if (meta.isLog(3)) {
           meta.log("... skipping intercept <init> ... handled by super class... CONSTRUCTOR: owner:" + owner + " " + constructorDesc);
@@ -134,38 +139,42 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
           meta.log("... skipping intercept <init> ... handled by other constructor... CONSTRUCTOR: owner:" + owner + " " + constructorDesc);
         }
       } else if (owner.equals(meta.getSuperClassName())){
-        if (meta.isLog(2)) {
-          meta.log("... adding intercept <init> in CONSTRUCTOR:" + constructorDesc + " OWNER/SUPER:" + owner);
-        }
-
-        if (constructorInitializationDone) {
-          // hopefully this is never called but put it in here to be
-          // on the safe side.
-          String msg = "Error in Enhancement. Only expecting to add <init> of intercept object"
-              + " once but it is trying to add it twice for " + meta.getClassName() + " CONSTRUCTOR:"
-              + constructorDesc+ " OWNER:" + owner;
-          System.err.println(msg);
-
-        } else {
-          // add the initialisation of the intercept object
-          super.visitVarInsn(ALOAD, 0);
-          super.visitTypeInsn(NEW, C_INTERCEPT);
-          super.visitInsn(DUP);
-          super.visitVarInsn(ALOAD, 0);
-
-          super.visitMethodInsn(INVOKESPECIAL, C_INTERCEPT, "<init>", "(Ljava/lang/Object;)V", false);
-          super.visitFieldInsn(PUTFIELD, className, INTERCEPT_FIELD, EnhanceConstants.L_INTERCEPT);
-
-          if (meta.isLog(8)) {
-            meta.log("... constructorInitializationDone " + owner);
-          }
-          constructorInitializationDone = true;
-        }
+        addConstructorInit(owner);
       } else {
         if (meta.isLog(3)) {
           meta.log("... skipping intercept <init> ... incorrect type "+owner);
         }
       }
+    }
+  }
+
+  private void addConstructorInit(String owner) {
+
+    if (meta.isLog(2)) {
+      meta.log("... adding intercept <init> in CONSTRUCTOR:" + constructorDesc + " OWNER/SUPER:" + owner);
+    }
+
+    if (constructorInitializationDone) {
+      // hopefully this is never called but put it in here to be on the safe side.
+      String msg = "Error in Enhancement. Only expecting to add <init> of intercept object"
+          + " once but it is trying to add it twice for " + meta.getClassName() + " CONSTRUCTOR:"
+          + constructorDesc+ " OWNER:" + owner;
+      System.err.println(msg);
+
+    } else {
+      // add the initialisation of the intercept object
+      super.visitVarInsn(ALOAD, 0);
+      super.visitTypeInsn(NEW, C_INTERCEPT);
+      super.visitInsn(DUP);
+      super.visitVarInsn(ALOAD, 0);
+
+      super.visitMethodInsn(INVOKESPECIAL, C_INTERCEPT, INIT, "(Ljava/lang/Object;)V", false);
+      super.visitFieldInsn(PUTFIELD, className, INTERCEPT_FIELD, EnhanceConstants.L_INTERCEPT);
+
+      if (meta.isLog(8)) {
+        meta.log("... constructorInitializationDone " + owner);
+      }
+      constructorInitializationDone = true;
     }
   }
 

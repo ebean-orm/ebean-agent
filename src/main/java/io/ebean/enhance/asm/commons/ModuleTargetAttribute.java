@@ -46,19 +46,19 @@ public final class ModuleTargetAttribute extends Attribute {
   public String platform;
 
   /**
-  * Constructs a new {@link ModuleTargetAttribute}.
-  *
-  * @param platform the name of the platform on which the module can run.
-  */
+   * Constructs a new {@link ModuleTargetAttribute}.
+   *
+   * @param platform the name of the platform on which the module can run.
+   */
   public ModuleTargetAttribute(final String platform) {
     super("ModuleTarget");
     this.platform = platform;
   }
 
   /**
-  * Constructs an empty {@link ModuleTargetAttribute}. This object can be passed as a prototype to
-  * the {@link ClassReader#accept(ClassVisitor, Attribute[], int)} method.
-  */
+   * Constructs an empty {@link ModuleTargetAttribute}. This object can be passed as a prototype to
+   * the {@link ClassReader#accept(ClassVisitor, Attribute[], int)} method.
+   */
   public ModuleTargetAttribute() {
     this(null);
   }

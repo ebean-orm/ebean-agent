@@ -24,6 +24,8 @@ public class OfflineFileTransform {
 
   protected  TransformationListener listener;
 
+  private int logLevel;
+
   /**
   * Enhance the class file and replace the file with the the enhanced
   * version of the class.
@@ -37,6 +39,7 @@ public class OfflineFileTransform {
   */
   public OfflineFileTransform(Transformer transformer, ClassLoader classLoader, String inDir) {
     this.inputStreamTransform = new InputStreamTransform(transformer, classLoader);
+    logLevel = transformer.getLogLevel();
     inDir = trimSlash(inDir);
     this.inDir = inDir;
   }
@@ -113,33 +116,30 @@ public class OfflineFileTransform {
       throw new RuntimeException("File not found " + dirPath + "  currentDir:" + new File(".").getAbsolutePath());
     }
 
-    File[] files = d.listFiles();
+    final File[] files = d.listFiles();
+    if (files != null) {
+      for (final File file : files) {
+        try {
+          if (file.isDirectory()) {
+            final String subDir = dir + "/" + file.getName();
+            processPackage(subDir);
+          } else {
+            final String fileName = file.getName();
+            if (fileName.endsWith(".java")) {
+              // possibly a common mistake... mixing .java and .class
+              System.err.println("Expecting a .class file but got " + fileName + " ... ignoring");
 
-    File file = null;
-
-    try {
-      for (int i = 0; i < files.length; i++) {
-        file = files[i];
-        if (file.isDirectory()) {
-          String subDir = dir + "/" + file.getName();
-          processPackage(subDir);
-        } else {
-          String fileName = file.getName();
-          if (fileName.endsWith(".java")) {
-            // possibly a common mistake... mixing .java and .class
-            System.err.println("Expecting a .class file but got " + fileName + " ... ignoring");
-
-          } else if (fileName.endsWith(".class")) {
-            transformFile(file);
+            } else if (fileName.endsWith(".class")) {
+              transformFile(file);
+            }
           }
+        } catch (final Exception e) {
+          throw new RuntimeException("Error transforming file " + file.getName(), e);
         }
       }
-
-    } catch (Exception e) {
-      String fileName = file == null ? "null" : file.getName();
-      throw new RuntimeException("Error transforming file " + fileName, e);
+    } else {
+      throw new RuntimeException("Can't read directory " + d.getName());
     }
-
   }
 
   private void transformFile(File file) throws IOException, IllegalClassFormatException {
@@ -150,7 +150,7 @@ public class OfflineFileTransform {
 
     if (result != null) {
       InputStreamTransform.writeBytes(result, file);
-      if(listener!=null) {
+      if(listener!=null && logLevel > 0) {
         listener.logEvent("Enhanced "+file);
       }
     }

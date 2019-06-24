@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static io.ebean.enhance.common.EnhanceConstants.C_MODEL;
+import static io.ebean.enhance.common.EnhanceConstants.C_OBJECT;
+
 /**
  * Cache of ClassMeta.
  *
@@ -18,6 +21,11 @@ public class ClassMetaCache {
   private final Map<String, ClassMeta> fallbackCache = new HashMap<>();
 
   private int fallbackHits;
+
+  public ClassMetaCache() {
+    // add meta for Model (so we never load it)
+    cache.put(C_MODEL, new ModelMeta());
+  }
 
   public ClassMeta get(String name) {
     return cache.get(name);
@@ -62,5 +70,26 @@ public class ClassMetaCache {
 
   public int getFallbackHits() {
     return fallbackHits;
+  }
+
+  /**
+   * Class meta data for io.ebean.Model.
+   */
+  static class ModelMeta extends ClassMeta {
+
+    ModelMeta() {
+      super(null, 0, null);
+      setClassName(C_MODEL, C_OBJECT);
+    }
+
+    @Override
+    public boolean isCheckSuperClassForEntity() {
+      return false;
+    }
+
+    @Override
+    public boolean isSuperClassEntity() {
+      return false;
+    }
   }
 }

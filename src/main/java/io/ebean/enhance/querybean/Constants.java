@@ -60,5 +60,7 @@ public interface Constants {
   * EbeanServer as constructor argument.
   */
   String WITH_EBEANSERVER_ARGUMENT = "(Lio/ebean/EbeanServer;)V";
+  String WITH_DATABASE_ARGUMENT = "(Lio/ebean/Database;)V";
 
+  String SET_LABEL = "setLabel";
 }

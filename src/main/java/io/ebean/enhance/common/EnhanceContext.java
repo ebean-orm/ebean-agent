@@ -54,6 +54,8 @@ public class EnhanceContext {
 
   private boolean enableProfileLocation;
 
+  private boolean enableQueryAutoLabel;
+
   /**
   * Mapping of profileId to transactional method descriptions (for decoding profiling).
   */
@@ -70,6 +72,7 @@ public class EnhanceContext {
 
     this.autoProfileId = manifest.transactionProfilingStart();
     this.enableProfileLocation = manifest.isEnableProfileLocation();
+    this.enableQueryAutoLabel = manifest.isEnableQueryAutoLabel();
 
     this.agentArgsMap = ArgParser.parse(agentArgs);
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
@@ -84,6 +87,10 @@ public class EnhanceContext {
     this.logout = new SysoutMessageOutput(System.out);
     this.classBytesReader = classBytesReader;
     this.reader = new ClassMetaReader(this, metaCache);
+
+    if (manifest.getDebugLevel() > -1) {
+      logLevel = manifest.getDebugLevel();
+    }
 
     String debugValue = agentArgsMap.get("debug");
     if (debugValue != null) {
@@ -137,6 +144,13 @@ public class EnhanceContext {
   */
   public boolean isEnableProfileLocation() {
     return enableProfileLocation;
+  }
+
+  /**
+   * Return true if enhancement should automatically set labels on queries.
+   */
+  public boolean isEnableQueryAutoLabel() {
+    return enableQueryAutoLabel;
   }
 
   /**

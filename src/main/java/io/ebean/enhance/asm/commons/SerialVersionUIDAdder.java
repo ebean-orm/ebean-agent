@@ -41,7 +41,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 
 /**
  * A {@link ClassVisitor} that adds a serial version unique identifier to a class if missing. A
@@ -144,13 +143,13 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   private Collection<Item> svuidMethods;
 
   /**
-  * Constructs a new {@link SerialVersionUIDAdder}. <i>Subclasses must not use this
-  * constructor</i>. Instead, they must use the {@link #SerialVersionUIDAdder(int, ClassVisitor)}
-  * version.
-  *
-  * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
-  * @throws IllegalStateException If a subclass calls this constructor.
-  */
+   * Constructs a new {@link SerialVersionUIDAdder}. <i>Subclasses must not use this
+   * constructor</i>. Instead, they must use the {@link #SerialVersionUIDAdder(int, ClassVisitor)}
+   * version.
+   *
+   * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
+   * @throws IllegalStateException If a subclass calls this constructor.
+   */
   public SerialVersionUIDAdder(final ClassVisitor classVisitor) {
     this(Opcodes.ASM7, classVisitor);
     if (getClass() != SerialVersionUIDAdder.class) {
@@ -159,12 +158,12 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   }
 
   /**
-  * Constructs a new {@link SerialVersionUIDAdder}.
-  *
-  * @param api the ASM API version implemented by this visitor. Must be one of {@link
-  *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
-  * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
-  */
+   * Constructs a new {@link SerialVersionUIDAdder}.
+   *
+   * @param api the ASM API version implemented by this visitor. Must be one of {@link
+   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
+   * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
+   */
   protected SerialVersionUIDAdder(final int api, final ClassVisitor classVisitor) {
     super(api, classVisitor);
   }
@@ -189,9 +188,9 @@ public class SerialVersionUIDAdder extends ClassVisitor {
       this.name = name;
       this.access = access;
       this.interfaces = new String[interfaces.length];
-      this.svuidFields = new ArrayList<Item>();
-      this.svuidConstructors = new ArrayList<Item>();
-      this.svuidMethods = new ArrayList<Item>();
+      this.svuidFields = new ArrayList<>();
+      this.svuidConstructors = new ArrayList<>();
+      this.svuidMethods = new ArrayList<>();
       System.arraycopy(interfaces, 0, this.interfaces, 0, interfaces.length);
     }
 
@@ -309,21 +308,21 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   // -----------------------------------------------------------------------------------------------
 
   /**
-  * Returns true if the class already has a SVUID field. The result of this method is only valid
-  * when visitEnd has been called.
-  *
-  * @return true if the class already has a SVUID field.
-  */
+   * Returns true if the class already has a SVUID field. The result of this method is only valid
+   * when visitEnd has been called.
+   *
+   * @return true if the class already has a SVUID field.
+   */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   public boolean hasSVUID() {
     return hasSvuid;
   }
 
   /**
-  * Adds a final static serialVersionUID field to the class, with the given value.
-  *
-  * @param svuid the serialVersionUID field value.
-  */
+   * Adds a final static serialVersionUID field to the class, with the given value.
+   *
+   * @param svuid the serialVersionUID field value.
+   */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   protected void addSVUID(final long svuid) {
     FieldVisitor fieldVisitor =
@@ -335,20 +334,17 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   }
 
   /**
-  * Computes and returns the value of SVUID.
-  *
-  * @return the serial version UID.
-  * @throws IOException if an I/O error occurs.
-  */
+   * Computes and returns the value of SVUID.
+   *
+   * @return the serial version UID.
+   * @throws IOException if an I/O error occurs.
+   */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   protected long computeSVUID() throws IOException {
-    ByteArrayOutputStream byteArrayOutputStream = null;
-    DataOutputStream dataOutputStream = null;
     long svuid = 0;
 
-    try {
-      byteArrayOutputStream = new ByteArrayOutputStream();
-      dataOutputStream = new DataOutputStream(byteArrayOutputStream);
+    try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream)) {
 
       // 1. The class name written using UTF encoding.
       dataOutputStream.writeUTF(name.replace('/', '.'));
@@ -415,21 +411,17 @@ public class SerialVersionUIDAdder extends ClassVisitor {
       for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
         svuid = (svuid << 8) | (hashBytes[i] & 0xFF);
       }
-    } finally {
-      if (dataOutputStream != null) {
-        dataOutputStream.close();
-      }
     }
 
     return svuid;
   }
 
   /**
-  * Returns the SHA-1 message digest of the given value.
-  *
-  * @param value the value whose SHA message digest must be computed.
-  * @return the SHA-1 message digest of the given value.
-  */
+   * Returns the SHA-1 message digest of the given value.
+   *
+   * @param value the value whose SHA message digest must be computed.
+   * @return the SHA-1 message digest of the given value.
+   */
   // DontCheck(AbbreviationAsWordInName): can't be renamed (for backward binary compatibility).
   protected byte[] computeSHAdigest(final byte[] value) {
     try {
@@ -440,31 +432,20 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   }
 
   /**
-  * Sorts the items in the collection and writes it to the given output stream.
-  *
-  * @param itemCollection a collection of items.
-  * @param dataOutputStream where the items must be written.
-  * @param dotted whether package names must use dots, instead of slashes.
-  * @exception IOException if an error occurs.
-  */
+   * Sorts the items in the collection and writes it to the given output stream.
+   *
+   * @param itemCollection a collection of items.
+   * @param dataOutputStream where the items must be written.
+   * @param dotted whether package names must use dots, instead of slashes.
+   * @exception IOException if an error occurs.
+   */
   private static void writeItems(
       final Collection<Item> itemCollection,
       final DataOutput dataOutputStream,
       final boolean dotted)
       throws IOException {
     Item[] items = itemCollection.toArray(new Item[0]);
-    Arrays.sort(
-        items,
-        new Comparator<Item>() {
-          @Override
-          public int compare(final Item item1, final Item item2) {
-            int result = item1.name.compareTo(item2.name);
-            if (result == 0) {
-              result = item1.descriptor.compareTo(item2.descriptor);
-            }
-            return result;
-          }
-        });
+    Arrays.sort(items);
     for (Item item : items) {
       dataOutputStream.writeUTF(item.name);
       dataOutputStream.writeInt(item.access);
@@ -476,7 +457,7 @@ public class SerialVersionUIDAdder extends ClassVisitor {
   // Inner classes
   // -----------------------------------------------------------------------------------------------
 
-  private static final class Item {
+  private static final class Item implements Comparable<Item> {
 
     final String name;
     final int access;
@@ -486,6 +467,28 @@ public class SerialVersionUIDAdder extends ClassVisitor {
       this.name = name;
       this.access = access;
       this.descriptor = descriptor;
+    }
+
+    @Override
+    public int compareTo(final Item item) {
+      int result = name.compareTo(item.name);
+      if (result == 0) {
+        result = descriptor.compareTo(item.descriptor);
+      }
+      return result;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+      if (other instanceof Item) {
+        return compareTo((Item) other) == 0;
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return name.hashCode() ^ descriptor.hashCode();
     }
   }
 }

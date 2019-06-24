@@ -103,8 +103,8 @@ abstract class Symbol {
   static final int TYPE_TAG = 128;
 
   /**
-  * The tag value of an {@link Frame#ITEM_UNINITIALIZED} type entry in the type table of a class.
-  */
+   * The tag value of an {@link Frame#ITEM_UNINITIALIZED} type entry in the type table of a class.
+   */
   static final int UNINITIALIZED_TYPE_TAG = 129;
 
   /** The tag value of a merged type entry in the (ASM specific) type table of a class. */
@@ -113,104 +113,104 @@ abstract class Symbol {
   // Instance fields.
 
   /**
-  * The index of this symbol in the constant pool, in the BootstrapMethods attribute, or in the
-  * (ASM specific) type table of a class (depending on the {@link #tag} value).
-  */
+   * The index of this symbol in the constant pool, in the BootstrapMethods attribute, or in the
+   * (ASM specific) type table of a class (depending on the {@link #tag} value).
+   */
   final int index;
 
   /**
-  * A tag indicating the type of this symbol. Must be one of the static tag values defined in this
-  * class.
-  */
+   * A tag indicating the type of this symbol. Must be one of the static tag values defined in this
+   * class.
+   */
   final int tag;
 
   /**
-  * The internal name of the owner class of this symbol. Only used for {@link
-  * #CONSTANT_FIELDREF_TAG}, {@link #CONSTANT_METHODREF_TAG}, {@link
-  * #CONSTANT_INTERFACE_METHODREF_TAG}, and {@link #CONSTANT_METHOD_HANDLE_TAG} symbols.
-  */
+   * The internal name of the owner class of this symbol. Only used for {@link
+   * #CONSTANT_FIELDREF_TAG}, {@link #CONSTANT_METHODREF_TAG}, {@link
+   * #CONSTANT_INTERFACE_METHODREF_TAG}, and {@link #CONSTANT_METHOD_HANDLE_TAG} symbols.
+   */
   final String owner;
 
   /**
-  * The name of the class field or method corresponding to this symbol. Only used for {@link
-  * #CONSTANT_FIELDREF_TAG}, {@link #CONSTANT_METHODREF_TAG}, {@link
-  * #CONSTANT_INTERFACE_METHODREF_TAG}, {@link #CONSTANT_NAME_AND_TYPE_TAG}, {@link
-  * #CONSTANT_METHOD_HANDLE_TAG}, {@link #CONSTANT_DYNAMIC_TAG} and {@link
-  * #CONSTANT_INVOKE_DYNAMIC_TAG} symbols.
-  */
+   * The name of the class field or method corresponding to this symbol. Only used for {@link
+   * #CONSTANT_FIELDREF_TAG}, {@link #CONSTANT_METHODREF_TAG}, {@link
+   * #CONSTANT_INTERFACE_METHODREF_TAG}, {@link #CONSTANT_NAME_AND_TYPE_TAG}, {@link
+   * #CONSTANT_METHOD_HANDLE_TAG}, {@link #CONSTANT_DYNAMIC_TAG} and {@link
+   * #CONSTANT_INVOKE_DYNAMIC_TAG} symbols.
+   */
   final String name;
 
   /**
-  * The string value of this symbol. This is:
-  *
-  * <ul>
-  *   <li>a field or method descriptor for {@link #CONSTANT_FIELDREF_TAG}, {@link
-  *       #CONSTANT_METHODREF_TAG}, {@link #CONSTANT_INTERFACE_METHODREF_TAG}, {@link
-  *       #CONSTANT_NAME_AND_TYPE_TAG}, {@link #CONSTANT_METHOD_HANDLE_TAG}, {@link
-  *       #CONSTANT_METHOD_TYPE_TAG}, {@link #CONSTANT_DYNAMIC_TAG} and {@link
-  *       #CONSTANT_INVOKE_DYNAMIC_TAG} symbols,
-  *   <li>an arbitrary string for {@link #CONSTANT_UTF8_TAG} and {@link #CONSTANT_STRING_TAG}
-  *       symbols,
-  *   <li>an internal class name for {@link #CONSTANT_CLASS_TAG}, {@link #TYPE_TAG} and {@link
-  *       #UNINITIALIZED_TYPE_TAG} symbols,
-  *   <li>{@literal null} for the other types of symbol.
-  * </ul>
-  */
+   * The string value of this symbol. This is:
+   *
+   * <ul>
+   *   <li>a field or method descriptor for {@link #CONSTANT_FIELDREF_TAG}, {@link
+   *       #CONSTANT_METHODREF_TAG}, {@link #CONSTANT_INTERFACE_METHODREF_TAG}, {@link
+   *       #CONSTANT_NAME_AND_TYPE_TAG}, {@link #CONSTANT_METHOD_HANDLE_TAG}, {@link
+   *       #CONSTANT_METHOD_TYPE_TAG}, {@link #CONSTANT_DYNAMIC_TAG} and {@link
+   *       #CONSTANT_INVOKE_DYNAMIC_TAG} symbols,
+   *   <li>an arbitrary string for {@link #CONSTANT_UTF8_TAG} and {@link #CONSTANT_STRING_TAG}
+   *       symbols,
+   *   <li>an internal class name for {@link #CONSTANT_CLASS_TAG}, {@link #TYPE_TAG} and {@link
+   *       #UNINITIALIZED_TYPE_TAG} symbols,
+   *   <li>{@literal null} for the other types of symbol.
+   * </ul>
+   */
   final String value;
 
   /**
-  * The numeric value of this symbol. This is:
-  *
-  * <ul>
-  *   <li>the symbol's value for {@link #CONSTANT_INTEGER_TAG},{@link #CONSTANT_FLOAT_TAG}, {@link
-  *       #CONSTANT_LONG_TAG}, {@link #CONSTANT_DOUBLE_TAG},
-  *   <li>the CONSTANT_MethodHandle_info reference_kind field value for {@link
-  *       #CONSTANT_METHOD_HANDLE_TAG} symbols,
-  *   <li>the CONSTANT_InvokeDynamic_info bootstrap_method_attr_index field value for {@link
-  *       #CONSTANT_INVOKE_DYNAMIC_TAG} symbols,
-  *   <li>the offset of a bootstrap method in the BootstrapMethods boostrap_methods array, for
-  *       {@link #CONSTANT_DYNAMIC_TAG} or {@link #BOOTSTRAP_METHOD_TAG} symbols,
-  *   <li>the bytecode offset of the NEW instruction that created an {@link
-  *       Frame#ITEM_UNINITIALIZED} type for {@link #UNINITIALIZED_TYPE_TAG} symbols,
-  *   <li>the indices (in the class' type table) of two {@link #TYPE_TAG} source types for {@link
-  *       #MERGED_TYPE_TAG} symbols,
-  *   <li>0 for the other types of symbol.
-  * </ul>
-  */
+   * The numeric value of this symbol. This is:
+   *
+   * <ul>
+   *   <li>the symbol's value for {@link #CONSTANT_INTEGER_TAG},{@link #CONSTANT_FLOAT_TAG}, {@link
+   *       #CONSTANT_LONG_TAG}, {@link #CONSTANT_DOUBLE_TAG},
+   *   <li>the CONSTANT_MethodHandle_info reference_kind field value for {@link
+   *       #CONSTANT_METHOD_HANDLE_TAG} symbols,
+   *   <li>the CONSTANT_InvokeDynamic_info bootstrap_method_attr_index field value for {@link
+   *       #CONSTANT_INVOKE_DYNAMIC_TAG} symbols,
+   *   <li>the offset of a bootstrap method in the BootstrapMethods boostrap_methods array, for
+   *       {@link #CONSTANT_DYNAMIC_TAG} or {@link #BOOTSTRAP_METHOD_TAG} symbols,
+   *   <li>the bytecode offset of the NEW instruction that created an {@link
+   *       Frame#ITEM_UNINITIALIZED} type for {@link #UNINITIALIZED_TYPE_TAG} symbols,
+   *   <li>the indices (in the class' type table) of two {@link #TYPE_TAG} source types for {@link
+   *       #MERGED_TYPE_TAG} symbols,
+   *   <li>0 for the other types of symbol.
+   * </ul>
+   */
   final long data;
 
   /**
-  * Additional information about this symbol, generally computed lazily. <i>Warning: the value of
-  * this field is ignored when comparing Symbol instances</i> (to avoid duplicate entries in a
-  * SymbolTable). Therefore, this field should only contain data that can be computed from the
-  * other fields of this class. It contains:
-  *
-  * <ul>
-  *   <li>the {@link Type#getArgumentsAndReturnSizes} of the symbol's method descriptor for {@link
-  *       #CONSTANT_METHODREF_TAG}, {@link #CONSTANT_INTERFACE_METHODREF_TAG} and {@link
-  *       #CONSTANT_INVOKE_DYNAMIC_TAG} symbols,
-  *   <li>the index in the InnerClasses_attribute 'classes' array (plus one) corresponding to this
-  *       class, for {@link #CONSTANT_CLASS_TAG} symbols,
-  *   <li>the index (in the class' type table) of the merged type of the two source types for
-  *       {@link #MERGED_TYPE_TAG} symbols,
-  *   <li>0 for the other types of symbol, or if this field has not been computed yet.
-  * </ul>
-  */
+   * Additional information about this symbol, generally computed lazily. <i>Warning: the value of
+   * this field is ignored when comparing Symbol instances</i> (to avoid duplicate entries in a
+   * SymbolTable). Therefore, this field should only contain data that can be computed from the
+   * other fields of this class. It contains:
+   *
+   * <ul>
+   *   <li>the {@link Type#getArgumentsAndReturnSizes} of the symbol's method descriptor for {@link
+   *       #CONSTANT_METHODREF_TAG}, {@link #CONSTANT_INTERFACE_METHODREF_TAG} and {@link
+   *       #CONSTANT_INVOKE_DYNAMIC_TAG} symbols,
+   *   <li>the index in the InnerClasses_attribute 'classes' array (plus one) corresponding to this
+   *       class, for {@link #CONSTANT_CLASS_TAG} symbols,
+   *   <li>the index (in the class' type table) of the merged type of the two source types for
+   *       {@link #MERGED_TYPE_TAG} symbols,
+   *   <li>0 for the other types of symbol, or if this field has not been computed yet.
+   * </ul>
+   */
   int info;
 
   /**
-  * Constructs a new Symbol. This constructor can't be used directly because the Symbol class is
-  * abstract. Instead, use the factory methods of the {@link SymbolTable} class.
-  *
-  * @param index the symbol index in the constant pool, in the BootstrapMethods attribute, or in
-  *     the (ASM specific) type table of a class (depending on 'tag').
-  * @param tag the symbol type. Must be one of the static tag values defined in this class.
-  * @param owner The internal name of the symbol's owner class. Maybe {@literal null}.
-  * @param name The name of the symbol's corresponding class field or method. Maybe {@literal
-  *     null}.
-  * @param value The string value of this symbol. Maybe {@literal null}.
-  * @param data The numeric value of this symbol.
-  */
+   * Constructs a new Symbol. This constructor can't be used directly because the Symbol class is
+   * abstract. Instead, use the factory methods of the {@link SymbolTable} class.
+   *
+   * @param index the symbol index in the constant pool, in the BootstrapMethods attribute, or in
+   *     the (ASM specific) type table of a class (depending on 'tag').
+   * @param tag the symbol type. Must be one of the static tag values defined in this class.
+   * @param owner The internal name of the symbol's owner class. Maybe {@literal null}.
+   * @param name The name of the symbol's corresponding class field or method. Maybe {@literal
+   *     null}.
+   * @param value The string value of this symbol. Maybe {@literal null}.
+   * @param data The numeric value of this symbol.
+   */
   Symbol(
       final int index,
       final int tag,
@@ -227,13 +227,13 @@ abstract class Symbol {
   }
 
   /**
-  * Returns the result {@link Type#getArgumentsAndReturnSizes} on {@link #value}.
-  *
-  * @return the result {@link Type#getArgumentsAndReturnSizes} on {@link #value} (memoized in
-  *     {@link #info} for efficiency). This should only be used for {@link
-  *     #CONSTANT_METHODREF_TAG}, {@link #CONSTANT_INTERFACE_METHODREF_TAG} and {@link
-  *     #CONSTANT_INVOKE_DYNAMIC_TAG} symbols.
-  */
+   * Returns the result {@link Type#getArgumentsAndReturnSizes} on {@link #value}.
+   *
+   * @return the result {@link Type#getArgumentsAndReturnSizes} on {@link #value} (memoized in
+   *     {@link #info} for efficiency). This should only be used for {@link
+   *     #CONSTANT_METHODREF_TAG}, {@link #CONSTANT_INTERFACE_METHODREF_TAG} and {@link
+   *     #CONSTANT_INVOKE_DYNAMIC_TAG} symbols.
+   */
   int getArgumentsAndReturnSizes() {
     if (info == 0) {
       info = Type.getArgumentsAndReturnSizes(value);

@@ -56,6 +56,14 @@ public class ClassInfo implements Constants {
   }
 
   /**
+   * Return the short name of the class.
+   */
+  public String getShortName() {
+    int pos = className.lastIndexOf("/");
+    return className.substring(pos + 1);
+  }
+
+  /**
   * Return true if the bean is already enhanced.
   */
   public boolean isAlreadyEnhanced() {
@@ -85,14 +93,22 @@ public class ClassInfo implements Constants {
   }
 
   /**
+   * Mark this class as having enhancement for query beans.
+   */
+  public void markTypeQueryEnhanced() {
+    typeQueryUser = true;
+  }
+
+  /**
   * Check for the type query bean and type query user annotations.
-  */
-  public void checkTypeQueryAnnotation(String desc) {
+   */
+  public boolean checkTypeQueryAnnotation(String desc) {
     if (isTypeQueryBeanAnnotation(desc)) {
       typeQueryBean = true;
     } else if (isAlreadyEnhancedAnnotation(desc)) {
       alreadyEnhanced = true;
     }
+    return typeQueryBean;
   }
 
   /**

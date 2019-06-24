@@ -7,6 +7,9 @@ import io.ebean.enhance.common.ClassMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.ebean.enhance.common.EnhanceConstants.INIT;
+import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
+
 /**
  * This is a class that 'defers' bytecode instructions in the default constructor initialisation
  * such that code that initialises persistent many properties (Lists, Sets and Maps) is removed.
@@ -101,7 +104,7 @@ public class ConstructorDeferredCode implements Opcodes {
   * Return true if this is an init of a ArrayList, HashSet, LinkedHashSet.
   */
   private boolean isCollectionInit(String owner, String name, String desc) {
-    return name.equals("<init>") && desc.equals("()V") && isCollection(owner);
+    return name.equals(INIT) && desc.equals(NOARG_VOID) && isCollection(owner);
   }
 
   /**

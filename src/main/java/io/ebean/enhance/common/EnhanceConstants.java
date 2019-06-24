@@ -5,6 +5,12 @@ package io.ebean.enhance.common;
  */
 public interface EnhanceConstants {
 
+  String INIT = "<init>";
+
+  String CLINIT = "<clinit>";
+
+  String NOARG_VOID = "()V";
+
   String AVAJE_TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
 
   String JAVAX_PERSISTENCE = "Ljavax/persistence/";
@@ -21,6 +27,10 @@ public interface EnhanceConstants {
 
   String INTERCEPT_FIELD = "_ebean_intercept";
 
+  String C_OBJECT = "java/lang/Object";
+
+  String C_MODEL = "io/ebean/Model";
+
   String C_ENHANCEDTRANSACTIONAL = "io/ebean/bean/EnhancedTransactional";
 
   String C_ENTITYBEAN = "io/ebean/bean/EntityBean";
@@ -32,6 +42,10 @@ public interface EnhanceConstants {
   String C_INTERCEPT = "io/ebean/bean/EntityBeanIntercept";
 
   String C_BEANCOLLECTION = "io/ebean/bean/BeanCollection";
+
+  String L_STRING = "Ljava/lang/String;";
+
+  String L_OBJECT = "Ljava/lang/Object;";
 
   String L_INTERCEPT = "Lio/ebean/bean/EntityBeanIntercept;";
 

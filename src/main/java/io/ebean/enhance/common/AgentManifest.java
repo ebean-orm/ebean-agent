@@ -34,11 +34,15 @@ public class AgentManifest {
   */
   private int transactionProfilingStart = 1000;
 
+  private int debugLevel = -1;
+
   private boolean transientInternalFields;
 
   private boolean checkNullManyFields = true;
 
   private boolean enableProfileLocation;
+
+  private boolean enableQueryAutoLabel;
 
   public static AgentManifest read(ClassLoader classLoader, Set<String> initialPackages) {
 
@@ -85,6 +89,13 @@ public class AgentManifest {
   }
 
   /**
+   * Return true if enhancement should add labels to query bean queries.
+   */
+  public boolean isEnableQueryAutoLabel() {
+    return enableQueryAutoLabel;
+  }
+
+  /**
   * Return the initial starting profileId when automatically assigned.
   */
   int transactionProfilingStart() {
@@ -99,6 +110,13 @@ public class AgentManifest {
         return transactionProfilingStart;
       }
     }
+  }
+
+  /**
+   * Return the debug level read from ebean.mf
+   */
+  public int getDebugLevel() {
+    return debugLevel;
   }
 
   /**
@@ -160,7 +178,7 @@ public class AgentManifest {
     while (resources.hasMoreElements()) {
       URL url = resources.nextElement();
       try {
-        addResource(url.openStream());
+        addResource(UrlHelper.openNoCache(url));
       } catch (IOException e) {
         System.err.println("Error reading manifest resources " + url);
         e.printStackTrace();
@@ -187,9 +205,19 @@ public class AgentManifest {
 
   void readProfilingMode(Attributes attributes) {
 
+    String debug = attributes.getValue("debug");
+    if (debug != null) {
+      debugLevel = Integer.parseInt(debug);
+    }
+
     String locationMode = attributes.getValue("profile-location");
     if (locationMode != null) {
       enableProfileLocation = Boolean.parseBoolean(locationMode);
+    }
+
+    String queryLabelMode = attributes.getValue("query-labels");
+    if (queryLabelMode != null) {
+      enableQueryAutoLabel = Boolean.parseBoolean(queryLabelMode);
     }
 
     String mode = attributes.getValue("transaction-profiling");

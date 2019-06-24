@@ -32,6 +32,10 @@ public abstract class BaseModel extends Model {
   //@UpdatedTimestamp
   Timestamp whenUpdated;
 
+  public BaseModel() {
+    super();
+  }
+
   public Long getId() {
     return id;
   }
