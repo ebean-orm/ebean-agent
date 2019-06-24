@@ -43,6 +43,10 @@ public interface EnhanceConstants {
 
   String C_BEANCOLLECTION = "io/ebean/bean/BeanCollection";
 
+  String L_STRING = "Ljava/lang/String;";
+
+  String L_OBJECT = "Ljava/lang/Object;";
+
   String L_INTERCEPT = "Lio/ebean/bean/EntityBeanIntercept;";
 
   String L_SCOPETRANS = "Lio/ebeaninternal/api/ScopeTrans;";

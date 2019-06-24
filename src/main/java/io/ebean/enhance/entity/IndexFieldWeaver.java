@@ -13,6 +13,7 @@ import java.util.List;
 import static io.ebean.enhance.common.EnhanceConstants.CLINIT;
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
 import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
+import static io.ebean.enhance.common.EnhanceConstants.L_OBJECT;
 
 /**
  * Generate the methods based on the list of fields.
@@ -313,8 +314,8 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitLabel(l9);
     mv.visitLocalVariable("this", "L" + className + ";", null, l0, l9, 0);
     mv.visitLocalVariable("index", "I", null, l0, l9, 1);
-    mv.visitLocalVariable("o", "Ljava/lang/Object;", null, l0, l9, 2);
-    mv.visitLocalVariable("arg", "Ljava/lang/Object;", null, l0, l9, 3);
+    mv.visitLocalVariable("o", L_OBJECT, null, l0, l9, 2);
+    mv.visitLocalVariable("arg", L_OBJECT, null, l0, l9, 3);
     mv.visitLocalVariable("p", "L" + className + ";", null, l1, l9, 4);
     mv.visitMaxs(5, 5);
     mv.visitEnd();
