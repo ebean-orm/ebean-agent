@@ -40,22 +40,23 @@ import java.util.Properties;
  */
 public class Transformer implements ClassFileTransformer {
 
-  private static String version = "unknown";
-  static {
-    try {
-      Properties prop = new Properties();
-      InputStream in = Transformer.class.getResourceAsStream("/META-INF/maven/io.ebean/ebean-agent/pom.properties");
-      if (in != null) {
-        prop.load(in);
-        in.close();
-        version = prop.getProperty("version");
-      }
-    } catch (IOException e) {
-      System.err.println("Could not determine ebean version: " +e.getMessage());
-    }
-  }
+  private static String version;
 
-  public static String getVersion() {
+  public static synchronized String getVersion() {
+    if (version == null) {
+      try (InputStream in = Transformer.class.getResourceAsStream("/META-INF/maven/io.ebean/ebean-agent/pom.properties")) {
+        if (in != null) {
+          Properties prop = new Properties();
+          prop.load(in);
+          version = prop.getProperty("version");
+        }
+      } catch (IOException e) {
+        System.err.println("Could not determine ebean-agent version: " +e.getMessage());
+      }
+      if (version == null) {
+        version = "unknown";
+      }
+    }
     return version;
   }
 
