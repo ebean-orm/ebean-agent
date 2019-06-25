@@ -42,6 +42,9 @@ public class Transformer implements ClassFileTransformer {
 
   private static String version;
 
+  /**
+   * Return the version of the ebean-agent or "unknown" if the version can not be determined.
+   */
   public static synchronized String getVersion() {
     if (version == null) {
       try (InputStream in = Transformer.class.getResourceAsStream("/META-INF/maven/io.ebean/ebean-agent/pom.properties")) {
@@ -128,7 +131,7 @@ public class Transformer implements ClassFileTransformer {
   */
   public static void verifyInitialization() {
     if (instrumentation == null) {
-      if (!AgentLoader.loadAgentFromClasspath("ebean-agent", "debug=1")) {
+      if (!AgentLoader.loadAgentFromClasspath("ebean-agent", "debug=0")) {
         throw new IllegalStateException("ebean-agent not found in classpath - not dynamically loaded");
       }
     }
