@@ -2,6 +2,7 @@ package io.ebean.enhance.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Collects the annotation information.
@@ -35,20 +36,20 @@ public class AnnotationInfo {
   }
 
   /**
+   * Gets or creates a list for the given prefix, it will hold the array values.
+   */
+  public List<Object> getArrayEntry(String prefix) {
+    return (List<Object>) valueMap.computeIfAbsent(prefix, k -> new ArrayList<>());
+  }
+  
+  /**
   * Add a annotation value.
   */
   @SuppressWarnings("unchecked")
   public void add(String prefix, String name, Object value){
     if (name == null){
       // this is an array value...
-      ArrayList<Object> list = (ArrayList<Object>)valueMap.get(prefix);
-      if (list == null){
-        list = new ArrayList<>();
-        valueMap.put(prefix, list);
-      }
-      //System.out.println("addArrayValue "+prefix+" value:"+value);
-      list.add(value);
-
+      getArrayEntry(prefix).add(value);
     } else {
       String key = getKey(prefix, name);
       //System.out.println("addValue "+key+" value:"+value);

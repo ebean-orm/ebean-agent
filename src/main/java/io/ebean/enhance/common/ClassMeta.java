@@ -411,10 +411,10 @@ public class ClassMeta {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-      if (mv == null) {
-        return null;
+      AnnotationVisitor av = null;
+      if (mv != null) {
+        av = mv.visitAnnotation(desc, visible);
       }
-      AnnotationVisitor av = mv.visitAnnotation(desc, visible);
       return new AnnotationInfoVisitor(null, methodMeta.getAnnotationInfo(), av);
     }
 
