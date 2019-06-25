@@ -83,7 +83,7 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     AnnotationVisitor av = super.visitAnnotation(desc, visible);
-    if (desc.equals(AVAJE_TRANSACTIONAL_ANNOTATION)) {
+    if (desc.equals(TRANSACTIONAL_ANNOTATION)) {
       transactional = true;
       return new AnnotationInfoVisitor(null, annotationInfo, av);
     } else {

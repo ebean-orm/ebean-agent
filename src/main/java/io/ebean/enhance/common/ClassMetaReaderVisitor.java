@@ -55,7 +55,7 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 
     AnnotationVisitor av = super.visitAnnotation(desc, visible);
 
-    if (desc.equals(AVAJE_TRANSACTIONAL_ANNOTATION)) {
+    if (desc.equals(TRANSACTIONAL_ANNOTATION)) {
       // we have class level Transactional annotation
       // which will act as default for all methods in this class
       return new AnnotationInfoVisitor(null, classMeta.getAnnotationInfo(), av);

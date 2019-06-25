@@ -33,6 +33,7 @@ import static io.ebean.enhance.asm.Opcodes.RETURN;
 import static io.ebean.enhance.common.EnhanceConstants.CLINIT;
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
 import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
+import static io.ebean.enhance.common.EnhanceConstants.TRANSACTIONAL_ANNOTATION;
 
 /**
  * ClassAdapter used to add transactional support.
@@ -189,7 +190,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
     AnnotationVisitor av = super.visitAnnotation(desc, visible);
 
-    if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
+    if (desc.equals(TRANSACTIONAL_ANNOTATION)) {
       // we have class level Transactional annotation
       // which will act as default for all methods in this class
       classAnnotationInfo = new AnnotationInfo(null);

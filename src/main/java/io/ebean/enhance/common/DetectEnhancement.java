@@ -5,6 +5,8 @@ import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 
+import static io.ebean.enhance.common.EnhanceConstants.TRANSACTIONAL_ANNOTATION;
+
 /**
  * ClassAdapter used to detect if this class needs enhancement for entity or
  * transactional support.
@@ -117,7 +119,7 @@ public class DetectEnhancement extends ClassVisitor {
       }
       entity = true;
 
-    } else if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
+    } else if (desc.equals(TRANSACTIONAL_ANNOTATION)) {
       if (isLog(5)) {
         log("found transactional annotation " + desc);
       }
@@ -153,7 +155,7 @@ public class DetectEnhancement extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-      if (desc.equals(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION)) {
+      if (desc.equals(TRANSACTIONAL_ANNOTATION)) {
         transactional = true;
       }
       return null;

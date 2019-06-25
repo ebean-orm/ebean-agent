@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static io.ebean.enhance.common.EnhanceConstants.C_OBJECT;
+import static io.ebean.enhance.common.EnhanceConstants.TRANSACTIONAL_ANNOTATION;
 
 /**
  * Holds the meta data for an entity bean class that is being enhanced.
@@ -134,7 +135,7 @@ public class ClassMeta {
   }
 
   public boolean isTransactional() {
-    return classAnnotation.contains(EnhanceConstants.AVAJE_TRANSACTIONAL_ANNOTATION);
+    return classAnnotation.contains(TRANSACTIONAL_ANNOTATION);
   }
 
   public void setClassName(String className, String superClassName) {
