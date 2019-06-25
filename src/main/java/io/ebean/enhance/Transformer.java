@@ -20,6 +20,8 @@ import io.ebean.enhance.transactional.ClassAdapterTransactional;
 import io.ebean.enhance.transactional.TransactionalMethodKey;
 import org.avaje.agentloader.AgentLoader;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
@@ -27,6 +29,7 @@ import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * A Class file Transformer that performs Ebean enhancement of entity beans,
@@ -36,6 +39,26 @@ import java.util.List;
  * </p>
  */
 public class Transformer implements ClassFileTransformer {
+
+  private static String version;
+
+  public static synchronized String getVersion() {
+    if (version == null) {
+      try (InputStream in = Transformer.class.getResourceAsStream("/META-INF/maven/io.ebean/ebean-agent/pom.properties")) {
+        if (in != null) {
+          Properties prop = new Properties();
+          prop.load(in);
+          version = prop.getProperty("version");
+        }
+      } catch (IOException e) {
+        System.err.println("Could not determine ebean-agent version: " +e.getMessage());
+      }
+      if (version == null) {
+        version = "unknown";
+      }
+    }
+    return version;
+  }
 
   public static void agentmain(String agentArgs, Instrumentation inst) {
     premain(agentArgs, inst);
