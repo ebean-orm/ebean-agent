@@ -21,15 +21,14 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
   private static final String _EBEAN_GET_IDENTITY = "_ebean_getIdentity";
 
   /**
-  * Adds equals(), hashCode() and _ebean_getIdentity() methods.
-  * <p>
-  * If the class already has a equals() or hashCode() method defined then
-  * these methods are not added (its a noop).
-  * </p>
-  *
-  * @param idFieldIndex
-  *            the index of the id field
-  */
+   * Adds equals(), hashCode() and _ebean_getIdentity() methods.
+   * <p>
+   * If the class already has a equals() or hashCode() method defined then
+   * these methods are not added (its a noop).
+   * </p>
+   *
+   * @param idFieldIndex the index of the id field
+   */
   public static void addMethods(ClassVisitor cv, ClassMeta meta, int idFieldIndex, FieldMeta idFieldMeta) {
 
     if (meta.hasEqualsOrHashCode()) {
@@ -41,9 +40,9 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     } else {
       if (meta.isLog(2)) {
         meta.log("adding equals() hashCode() and _ebean_getIdentity() with Id field "
-          + idFieldMeta.getName()+ " index:" + idFieldIndex+" primitive:"+idFieldMeta.isPrimitiveType());
+          + idFieldMeta.getName() + " index:" + idFieldIndex + " primitive:" + idFieldMeta.isPrimitiveType());
       }
-      if (idFieldMeta.isPrimitiveType()){
+      if (idFieldMeta.isPrimitiveType()) {
         addGetIdentityPrimitive(cv, meta, idFieldMeta);
       } else {
         addGetIdentityObject(cv, meta, idFieldIndex);
@@ -55,43 +54,43 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
   }
 
   /**
-  * The identity field used for implementing equals via the
-  * _ebean_getIdentity() method.
-  */
+   * The identity field used for implementing equals via the
+   * _ebean_getIdentity() method.
+   */
   public static void addIdentityField(ClassVisitor cv) {
 
-      int access = ACC_PROTECTED + ACC_TRANSIENT + ACC_SYNTHETIC;
+    int access = ACC_PROTECTED + ACC_TRANSIENT + ACC_SYNTHETIC;
     FieldVisitor f0 = cv.visitField(access, IDENTITY_FIELD, L_OBJECT, null, null);
     f0.visitEnd();
   }
 
   /**
-  * Generate the _ebean_getIdentity method for primitive id types.
-  * <p>
-  * For primitives we need to check for == 0 rather than null.
-  * <p>
-  * <p>
-  * This is used for implementing equals().
-  * <p>
-  *
-  * <pre>
-  * private Object _ebean_getIdentity() {
-  * 	synchronized (this) {
-  * 		if (_ebean_identity != null) {
-  * 			return _ebean_identity;
-  * 		}
-  *
-  * 		if (0 != getId()) {
-  * 			_ebean_identity = Integer.valueOf(getId());
-  * 		} else {
-  * 			_ebean_identity = new Object();
-  * 		}
-  *
-  * 		return _ebean_identity;
-  * 	}
-  * }
-  * </pre>
-  */
+   * Generate the _ebean_getIdentity method for primitive id types.
+   * <p>
+   * For primitives we need to check for == 0 rather than null.
+   * <p>
+   * <p>
+   * This is used for implementing equals().
+   * <p>
+   *
+   * <pre>
+   * private Object _ebean_getIdentity() {
+   * 	synchronized (this) {
+   * 		if (_ebean_identity != null) {
+   * 			return _ebean_identity;
+   *    }
+   *
+   * 		if (0 != getId()) {
+   * 			_ebean_identity = Integer.valueOf(getId());
+   *    } else {
+   * 			_ebean_identity = new Object();
+   *    }
+   *
+   * 		return _ebean_identity;
+   *  }
+   * }
+   * </pre>
+   */
   private static void addGetIdentityPrimitive(ClassVisitor cv, ClassMeta classMeta, FieldMeta idFieldMeta) {
 
     String className = classMeta.getClassName();
@@ -177,33 +176,33 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitInsn(ATHROW);
     Label l11 = new Label();
     mv.visitLabel(l11);
-    mv.visitLocalVariable("this", "L"+className+";", null, l6, l11, 0);
+    mv.visitLocalVariable("this", "L" + className + ";", null, l6, l11, 0);
     mv.visitMaxs(4, 3);
     mv.visitEnd();
   }
 
   /**
-  * Generate the _ebean_getIdentity method for used with equals().
-  *
-  * <pre>
-  * private Object _ebean_getIdentity() {
-  * 	synchronized (this) {
-  * 		if (_ebean_identity != null) {
-  * 			return _ebean_identity;
-  * 		}
-  *
-  * 		Object id = getId();
-  * 		if (id != null) {
-  * 			_ebean_identity = id;
-  * 		} else {
-  * 			_ebean_identity = new Object();
-  * 		}
-  *
-  * 		return _ebean_identity;
-  * 	}
-  * }
-  * </pre>
-  */
+   * Generate the _ebean_getIdentity method for used with equals().
+   *
+   * <pre>
+   * private Object _ebean_getIdentity() {
+   * 	synchronized (this) {
+   * 		if (_ebean_identity != null) {
+   * 			return _ebean_identity;
+   *    }
+   *
+   * 		Object id = getId();
+   * 		if (id != null) {
+   * 			_ebean_identity = id;
+   *    } else {
+   * 			_ebean_identity = new Object();
+   *    }
+   *
+   * 		return _ebean_identity;
+   *  }
+   * }
+   * </pre>
+   */
   private static void addGetIdentityObject(ClassVisitor cv, ClassMeta classMeta, int idFieldIndex) {
 
     String className = classMeta.getClassName();
@@ -291,30 +290,30 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitInsn(ATHROW);
     Label l12 = new Label();
     mv.visitLabel(l12);
-    mv.visitLocalVariable("this", "L"+className+";", null, l6, l12, 0);
+    mv.visitLocalVariable("this", "L" + className + ";", null, l6, l12, 0);
     mv.visitLocalVariable("tmpId", L_OBJECT, null, l8, l2, 2);
     mv.visitMaxs(3, 4);
     mv.visitEnd();
   }
 
-    /**
-    * Generate the equals method.
-    *
-    * <pre>
-    * public boolean equals(Object o) {
-    *     if (o == null) {
-    *         return false;
-    *     }
-    *     if (!this.getClass().equals(o.getClass())) {
-    *         return false;
-    *     }
-    *     if (o == this) {
-    *         return true;
-    *     }
-    *     return _ebean_getIdentity().equals(((FooEntity)o)._ebean_getIdentity());
-    * }
-    * </pre>
-    */
+  /**
+   * Generate the equals method.
+   *
+   * <pre>
+   * public boolean equals(Object o) {
+   *     if (o == null) {
+   *         return false;
+   *     }
+   *     if (!this.getClass().equals(o.getClass())) {
+   *         return false;
+   *     }
+   *     if (o == this) {
+   *         return true;
+   *     }
+   *     return _ebean_getIdentity().equals(((FooEntity)o)._ebean_getIdentity());
+   * }
+   * </pre>
+   */
   private static void addEquals(ClassVisitor cv, ClassMeta classMeta) {
 
     MethodVisitor mv;
@@ -371,21 +370,21 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitInsn(IRETURN);
     Label l7 = new Label();
     mv.visitLabel(l7);
-    mv.visitLocalVariable("this", "L"+classMeta.getClassName()+";", null, l0, l7, 0);
+    mv.visitLocalVariable("this", "L" + classMeta.getClassName() + ";", null, l0, l7, 0);
     mv.visitLocalVariable("obj", L_OBJECT, null, l0, l7, 1);
     mv.visitMaxs(2, 2);
     mv.visitEnd();
   }
 
   /**
-  * Generate a hashCode method used to go with MethodEquals.
-  *
-  * <pre><code>
-  * public int hashCode() {
-  * 	return ebeanGetIdentity().hashCode();
-  * }
-  * </code></pre>
-  */
+   * Generate a hashCode method used to go with MethodEquals.
+   *
+   * <pre><code>
+   * public int hashCode() {
+   * 	return ebeanGetIdentity().hashCode();
+   * }
+   * </code></pre>
+   */
   private static void addHashCode(ClassVisitor cv, ClassMeta meta) {
 
     MethodVisitor mv;

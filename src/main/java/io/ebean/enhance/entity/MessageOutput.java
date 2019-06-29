@@ -6,7 +6,7 @@ package io.ebean.enhance.entity;
 public interface MessageOutput {
 
   /**
-  * Log the debug message.
-  */
+   * Log the debug message.
+   */
   void println(String message);
 }

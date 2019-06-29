@@ -32,7 +32,7 @@ class TypeQueryGetterAdapter extends BaseConstructorAdapter {
     mv.visitInsn(ARETURN);
     Label l1 = new Label();
     mv.visitLabel(l1);
-    mv.visitLocalVariable("this", "L"+classInfo.getClassName()+";", null, l0, l1, 0);
+    mv.visitLocalVariable("this", "L" + classInfo.getClassName() + ";", null, l0, l1, 0);
     mv.visitMaxs(1, 1);
     mv.visitEnd();
   }

@@ -9,7 +9,7 @@ public class MethodMeta {
 
   private final AnnotationInfo annotationInfo;
 
-  public MethodMeta(AnnotationInfo classAnnotationInfo, int access, String name, String desc){
+  public MethodMeta(AnnotationInfo classAnnotationInfo, int access, String name, String desc) {
     this.annotationInfo = new AnnotationInfo(classAnnotationInfo);
     this.name = name;
     this.desc = desc;
@@ -17,11 +17,11 @@ public class MethodMeta {
 
   @Override
   public String toString() {
-    return name+" "+desc;
+    return name + " " + desc;
   }
 
-  public boolean isMatch(String methodName,String methodDesc){
-    if (name.equals(methodName) && desc.equals(methodDesc)){
+  public boolean isMatch(String methodName, String methodDesc) {
+    if (name.equals(methodName) && desc.equals(methodDesc)) {
       return true;
     }
     return false;

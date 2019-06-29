@@ -45,8 +45,8 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Return true if this is an ALOAD 0 which we defer.
-  */
+   * Return true if this is an ALOAD 0 which we defer.
+   */
   public boolean deferVisitVarInsn(int opcode, int var) {
     flush();
     if (opcode == ALOAD && var == 0) {
@@ -57,9 +57,9 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Return true if we defer this based on it being a NEW or CHECKCAST on persistent many
-  * and was proceeded by a deferred ALOAD (for NEW) or Collection init (for CHECKCAST).
-  */
+   * Return true if we defer this based on it being a NEW or CHECKCAST on persistent many
+   * and was proceeded by a deferred ALOAD (for NEW) or Collection init (for CHECKCAST).
+   */
   public boolean deferVisitTypeInsn(int opcode, String type) {
     if (opcode == NEW && isCollection(type) && stateAload()) {
       codes.add(new NewCollection(type));
@@ -74,9 +74,9 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Return true if we defer this based on it being a DUP and was proceeded
-  * by a deferred ALOAD and NEW.
-  */
+   * Return true if we defer this based on it being a DUP and was proceeded
+   * by a deferred ALOAD and NEW.
+   */
   public boolean deferVisitInsn(int opcode) {
     if (opcode == DUP && stateNewCollection()) {
       codes.add(DUP_INSTRUCTION);
@@ -87,9 +87,9 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Return true if we defer this based on it being an init of a collection
-  * and was proceeded by a deferred DUP.
-  */
+   * Return true if we defer this based on it being an init of a collection
+   * and was proceeded by a deferred DUP.
+   */
   public boolean deferVisitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
 
     if (opcode == INVOKESPECIAL && stateDup() && isCollectionInit(owner, name, desc)) {
@@ -101,15 +101,15 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Return true if this is an init of a ArrayList, HashSet, LinkedHashSet.
-  */
+   * Return true if this is an init of a ArrayList, HashSet, LinkedHashSet.
+   */
   private boolean isCollectionInit(String owner, String name, String desc) {
     return name.equals(INIT) && desc.equals(NOARG_VOID) && isCollection(owner);
   }
 
   /**
-  * Return true if we have consumed all the deferred code that initialises a persistent collection.
-  */
+   * Return true if we have consumed all the deferred code that initialises a persistent collection.
+   */
   public boolean consumeVisitFieldInsn(int opcode, String owner, String name, String desc) {
     if (opcode == PUTFIELD && stateConsumeDeferred() && meta.isFieldPersistentMany(name)) {
       if (meta.isLog(2)) {
@@ -124,8 +124,8 @@ public class ConstructorDeferredCode implements Opcodes {
 
 
   /**
-  * Flush all deferred instructions.
-  */
+   * Flush all deferred instructions.
+   */
   protected void flush() {
     if (!codes.isEmpty()) {
       for (DeferredCode code : codes) {
@@ -165,17 +165,17 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Return true if this is a collection type used to initialise persistent collections.
-  */
+   * Return true if this is a collection type used to initialise persistent collections.
+   */
   private boolean isCollection(String type) {
     return ("java/util/ArrayList".equals(type)
-        || "java/util/LinkedHashSet".equals(type)
-        || "java/util/HashSet".equals(type));
+      || "java/util/LinkedHashSet".equals(type)
+      || "java/util/HashSet".equals(type));
   }
 
   /**
-  * ALOAD 0
-  */
+   * ALOAD 0
+   */
   static class ALoad implements DeferredCode {
     @Override
     public void write(MethodVisitor mv) {
@@ -189,8 +189,8 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * DUP
-  */
+   * DUP
+   */
   static class Dup implements DeferredCode {
     @Override
     public void write(MethodVisitor mv) {
@@ -204,8 +204,8 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Typically NEW java/util/ArrayList
-  */
+   * Typically NEW java/util/ArrayList
+   */
   static class NewCollection implements DeferredCode {
 
     final String type;
@@ -226,8 +226,8 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Typically CHECKCAST java/util/List
-  */
+   * Typically CHECKCAST java/util/List
+   */
   static class CheckCastCollection implements DeferredCode {
 
     final String type;
@@ -248,8 +248,8 @@ public class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-  * Typically INVOKESPECIAL java/util/ArrayList.<init> ()V
-  */
+   * Typically INVOKESPECIAL java/util/ArrayList.<init> ()V
+   */
   static class CollectionInit implements DeferredCode {
 
     final int opcode;

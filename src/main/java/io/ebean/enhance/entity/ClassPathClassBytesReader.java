@@ -18,7 +18,7 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
   private final URL[] urls;
 
   public ClassPathClassBytesReader(URL[] urls) {
-    this.urls = urls == null ? new URL[0]: urls;
+    this.urls = urls == null ? new URL[0] : urls;
   }
 
   @Override
@@ -40,20 +40,20 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
         is = UrlHelper.openNoCache(url);
         return InputStreamTransform.readBytes(is);
 
-      } catch (IOException e){
-        throw new RuntimeException("IOException reading bytes for "+className, e);
+      } catch (IOException e) {
+        throw new RuntimeException("IOException reading bytes for " + className, e);
 
       } finally {
-        if (is != null){
+        if (is != null) {
           try {
             is.close();
           } catch (IOException e) {
-            throw new RuntimeException("Error closing InputStream for "+className, e);
+            throw new RuntimeException("Error closing InputStream for " + className, e);
           }
         }
       }
     } catch (IOException e) {
-      throw new RuntimeException("Error closing URLClassLoader for "+className, e);
+      throw new RuntimeException("Error closing URLClassLoader for " + className, e);
     }
   }
 

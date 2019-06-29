@@ -15,15 +15,15 @@ import java.util.List;
 public class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
 
   /**
-  * Generate the _ebean_setEmbeddedLoaded() method.
-  *
-  * <pre>
-  * public void _ebean_setEmbeddedLoaded() {
-  *  // for each embedded bean field...
-  * 	entityBeanIntercept.setEmbeddedLoaded(embeddedBeanField);
-  * }
-  * </pre>
-  */
+   * Generate the _ebean_setEmbeddedLoaded() method.
+   *
+   * <pre>
+   * public void _ebean_setEmbeddedLoaded() {
+   *  // for each embedded bean field...
+   * 	entityBeanIntercept.setEmbeddedLoaded(embeddedBeanField);
+   * }
+   * </pre>
+   */
   public static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
 
     String className = classMeta.getClassName();
@@ -37,10 +37,10 @@ public class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
     List<FieldMeta> allFields = classMeta.getAllFields();
     for (int i = 0; i < allFields.size(); i++) {
       FieldMeta fieldMeta = allFields.get(i);
-      if (fieldMeta.isEmbedded()){
+      if (fieldMeta.isEmbedded()) {
 
         Label l0 = new Label();
-        if (labelBegin == null){
+        if (labelBegin == null) {
           labelBegin = l0;
         }
 
@@ -55,7 +55,7 @@ public class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
     }
 
     Label l2 = new Label();
-    if (labelBegin == null){
+    if (labelBegin == null) {
       labelBegin = l2;
     }
     mv.visitLabel(l2);
@@ -63,7 +63,7 @@ public class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
     mv.visitInsn(RETURN);
     Label l3 = new Label();
     mv.visitLabel(l3);
-    mv.visitLocalVariable("this", "L"+className+";", null, labelBegin, l3, 0);
+    mv.visitLocalVariable("this", "L" + className + ";", null, labelBegin, l3, 0);
     mv.visitMaxs(2, 1);
     mv.visitEnd();
   }

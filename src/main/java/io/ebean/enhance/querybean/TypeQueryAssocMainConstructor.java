@@ -23,8 +23,8 @@ public class TypeQueryAssocMainConstructor extends BaseConstructorAdapter implem
   private final String signature;
 
   /**
-  * Construct for a query bean class given its associated entity bean domain class and a class visitor.
-  */
+   * Construct for a query bean class given its associated entity bean domain class and a class visitor.
+   */
   public TypeQueryAssocMainConstructor(ClassInfo classInfo, ClassVisitor cv, String desc, String signature) {
     super();
     this.cv = cv;
@@ -52,7 +52,7 @@ public class TypeQueryAssocMainConstructor extends BaseConstructorAdapter implem
     mv.visitInsn(RETURN);
     Label l2 = new Label();
     mv.visitLabel(l2);
-    mv.visitLocalVariable("this", "L"+classInfo.getClassName()+";", "L"+classInfo.getClassName()+"<TR;>;", l0, l2, 0);
+    mv.visitLocalVariable("this", "L" + classInfo.getClassName() + ";", "L" + classInfo.getClassName() + "<TR;>;", l0, l2, 0);
     mv.visitLocalVariable("name", L_STRING, null, l0, l2, 1);
     mv.visitLocalVariable("root", L_OBJECT, "TR;", l0, l2, 2);
     mv.visitLocalVariable("prefix", L_STRING, null, l0, l2, 3);

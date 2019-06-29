@@ -11,9 +11,9 @@ import java.util.List;
 public class TypeQueryAddMethods implements Opcodes {
 
   /**
-  * Add the generated 'property access' methods.
-  */
-  public static void add(ClassVisitor  cw, ClassInfo classInfo, boolean typeQueryRootBean) {
+   * Add the generated 'property access' methods.
+   */
+  public static void add(ClassVisitor cw, ClassInfo classInfo, boolean typeQueryRootBean) {
 
     List<FieldInfo> fields = classInfo.getFields();
 

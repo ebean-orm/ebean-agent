@@ -24,8 +24,8 @@ public class TypeQueryConstructorAdapter extends BaseConstructorAdapter implemen
   private final String signature;
 
   /**
-  * Construct for a query bean class given its associated entity bean domain class and a class visitor.
-  */
+   * Construct for a query bean class given its associated entity bean domain class and a class visitor.
+   */
   public TypeQueryConstructorAdapter(ClassInfo classInfo, String domainClass, ClassVisitor cv, String desc, String signature) {
     super();
     this.cv = cv;

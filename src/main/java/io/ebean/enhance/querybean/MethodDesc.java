@@ -24,8 +24,8 @@ class MethodDesc {
   }
 
   /**
-  * Return true if this is a getter for a property.
-  */
+   * Return true if this is a getter for a property.
+   */
   boolean isGetter() {
     return name.length() > 3
       && name.startsWith("get")
@@ -34,22 +34,22 @@ class MethodDesc {
   }
 
   /**
-  * Start the method visit.
-  */
+   * Start the method visit.
+   */
   MethodVisitor visitMethod(ClassVisitor cv) {
     return cv.visitMethod(access, name, desc, signature, exceptions);
   }
 
   /**
-  * Return the method description.
-  */
+   * Return the method description.
+   */
   String getDesc() {
     return desc;
   }
 
   /**
-  * Return the name of the generated method the 'getter' is effectively a proxy for.
-  */
+   * Return the name of the generated method the 'getter' is effectively a proxy for.
+   */
   String proxyMethodName() {
     return "_" + Character.toLowerCase(name.charAt(3)) + name.substring(4);
   }

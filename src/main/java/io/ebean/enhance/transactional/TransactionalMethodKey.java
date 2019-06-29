@@ -19,7 +19,7 @@ public class TransactionalMethodKey {
 
   @Override
   public String toString() {
-    return "profileId:"+profileId+" method:"+className+"."+methodName+methodDesc+":"+lineNumber;
+    return "profileId:" + profileId + " method:" + className + "." + methodName + methodDesc + ":" + lineNumber;
   }
 
   int getProfileId() {

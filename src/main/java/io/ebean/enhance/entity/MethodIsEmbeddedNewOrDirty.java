@@ -19,17 +19,17 @@ import java.util.List;
 public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 
   /**
-  * Generate the _ebean_isEmbeddedNewOrDirty() method.
-  *
-  * <pre>
-  * public boolean _ebean_isEmbeddedNewOrDirty() {
-  *  // for each embedded bean field...
-  * 	if (entityBeanIntercept.isEmbeddedNewOrDirty(embeddedBeanField)) return true;
-  *  ...
-  *  return false;
-  * }
-  * </pre>
-  */
+   * Generate the _ebean_isEmbeddedNewOrDirty() method.
+   *
+   * <pre>
+   * public boolean _ebean_isEmbeddedNewOrDirty() {
+   *  // for each embedded bean field...
+   * 	if (entityBeanIntercept.isEmbeddedNewOrDirty(embeddedBeanField)) return true;
+   *  ...
+   *  return false;
+   * }
+   * </pre>
+   */
   public static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
 
     String className = classMeta.getClassName();
@@ -46,13 +46,13 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
     List<FieldMeta> allFields = classMeta.getAllFields();
     for (int i = 0; i < allFields.size(); i++) {
       FieldMeta fieldMeta = allFields.get(i);
-      if (fieldMeta.isEmbedded()){
+      if (fieldMeta.isEmbedded()) {
 
         Label l0 = labelNext;
         if (l0 == null) {
           l0 = new Label();
         }
-        if (labelBegin == null){
+        if (labelBegin == null) {
           labelBegin = l0;
         }
 
@@ -75,10 +75,10 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
       }
     }
 
-    if (labelNext == null){
+    if (labelNext == null) {
       labelNext = new Label();
     }
-    if (labelBegin == null){
+    if (labelBegin == null) {
       labelBegin = labelNext;
     }
     mv.visitLabel(labelNext);
@@ -89,7 +89,7 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 
     Label l3 = new Label();
     mv.visitLabel(l3);
-    mv.visitLocalVariable("this", "L"+className+";", null, labelBegin, l3, 0);
+    mv.visitLocalVariable("this", "L" + className + ";", null, labelBegin, l3, 0);
     mv.visitMaxs(2, 1);
     mv.visitEnd();
 

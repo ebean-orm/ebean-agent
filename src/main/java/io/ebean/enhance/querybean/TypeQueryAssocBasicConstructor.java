@@ -24,8 +24,8 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
   private final String signature;
 
   /**
-  * Construct for a query bean class given its associated entity bean domain class and a class visitor.
-  */
+   * Construct for a query bean class given its associated entity bean domain class and a class visitor.
+   */
   public TypeQueryAssocBasicConstructor(ClassInfo classInfo, ClassVisitor cv, String desc, String signature) {
     super();
     this.cv = cv;
@@ -53,7 +53,7 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
     mv.visitInsn(RETURN);
     Label l2 = new Label();
     mv.visitLabel(l2);
-    mv.visitLocalVariable("this", "L"+classInfo.getClassName()+";", "L"+classInfo.getClassName()+"<TR;>;", l0, l2, 0);
+    mv.visitLocalVariable("this", "L" + classInfo.getClassName() + ";", "L" + classInfo.getClassName() + "<TR;>;", l0, l2, 0);
     mv.visitLocalVariable("name", L_STRING, null, l0, l2, 1);
     mv.visitLocalVariable("root", L_OBJECT, "TR;", l0, l2, 2);
     mv.visitLocalVariable("depth", "I", null, l0, l2, 3);

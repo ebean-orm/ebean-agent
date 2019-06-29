@@ -32,12 +32,12 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
   }
 
   /**
-  * Checks for the javax/persistence/Transient annotation.
-  * <p>
-  * If this annotation is on the method then field interception is not
-  * applied (Aka the method is not transformed).
-  * </p>
-  */
+   * Checks for the javax/persistence/Transient annotation.
+   * <p>
+   * If this annotation is on the method then field interception is not
+   * applied (Aka the method is not transformed).
+   * </p>
+   */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     if (desc.equals("Ljavax/persistence/Transient;")) {
@@ -67,9 +67,9 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
       return;
     }
 
-    if (opcode == Opcodes.GETSTATIC || opcode == Opcodes.PUTSTATIC){
+    if (opcode == Opcodes.GETSTATIC || opcode == Opcodes.PUTSTATIC) {
       if (meta.isLog(3)) {
-        meta.log(" ... info: skip static field "+owner+" "+name+" in "+methodDescription);
+        meta.log(" ... info: skip static field " + owner + " " + name + " in " + methodDescription);
       }
       super.visitFieldInsn(opcode, owner, name, desc);
       return;
@@ -77,7 +77,7 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 
     if (isNonPersistentField(owner, name)) {
       if (meta.isLog(3)) {
-        meta.log(" ... info: non-persistent field "+owner+" "+name+" in "+methodDescription);
+        meta.log(" ... info: non-persistent field " + owner + " " + name + " in " + methodDescription);
       }
       super.visitFieldInsn(opcode, owner, name, desc);
       return;
@@ -89,7 +89,7 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
       String methodDesc = "()" + desc;
       if (meta.isLog(4)) {
         meta.log("GETFIELD method:" + methodDescription
-          + " field:" + name + " > " + methodName + " "+ methodDesc);
+          + " field:" + name + " > " + methodName + " " + methodDesc);
       }
       super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
 
@@ -98,29 +98,29 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
       String methodDesc = "(" + desc + ")V";
       if (meta.isLog(4)) {
         meta.log("PUTFIELD method:" + methodDescription
-          + " field:" + name + " > " + methodName + " "+ methodDesc);
+          + " field:" + name + " > " + methodName + " " + methodDesc);
       }
       super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
 
     } else {
       meta.log("Warning adapting method:" + methodDescription
         + "; unexpected static access to a persistent field?? " + name
-        +" opCode not GETFIELD or PUTFIELD??  opCode:"+opcode+"");
+        + " opCode not GETFIELD or PUTFIELD??  opCode:" + opcode + "");
 
       super.visitFieldInsn(opcode, owner, name, desc);
     }
   }
 
   /**
-  * Return true if the field is non-persistent and hence should not be intercepted.
-  */
+   * Return true if the field is non-persistent and hence should not be intercepted.
+   */
   private boolean isNonPersistentField(String owner, String name) {
     return !isSameOwner(owner) || !meta.isFieldPersistent(name);
   }
 
   /**
-  * Return true if the owner type is the same as this class being enhanced.
-  */
+   * Return true if the owner type is the same as this class being enhanced.
+   */
   private boolean isSameOwner(String owner) {
     return className.equals(owner);
   }
