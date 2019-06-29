@@ -10,7 +10,7 @@ import java.util.TreeSet;
  */
 class DistillPackages {
 
-  private TreeSet<String> treeSet = new TreeSet<>();
+  private final TreeSet<String> treeSet = new TreeSet<>();
 
   /**
   * Add packages that we want to distill.
@@ -27,9 +27,8 @@ class DistillPackages {
   */
   DistillPackages addRaw(String packages) {
     if (packages != null) {
-      String[] split = packages.split(",|;| ");
-      for (int i = 0; i < split.length; i++) {
-        String pkg = split[i].trim();
+      for (String s : packages.split(",|;| ")) {
+        String pkg = s.trim();
         if (!pkg.isEmpty()) {
           treeSet.add(pkg);
         }
@@ -69,7 +68,7 @@ class DistillPackages {
   */
   private String[] convertToArray(Collection<String> packages) {
 
-    String[] asArray = packages.toArray(new String[packages.size()]);
+    String[] asArray = packages.toArray(new String[0]);
     for (int i = 0; i < asArray.length; i++) {
       asArray[i] = convert(asArray[i]);
     }

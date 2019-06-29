@@ -61,15 +61,13 @@ public class ClassMeta {
 
   private boolean hasStaticInit;
 
-  private HashSet<String> existingMethods = new HashSet<>();
+  private final LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<>();
 
-  private LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<>();
+  private final HashSet<String> classAnnotation = new HashSet<>();
 
-  private HashSet<String> classAnnotation = new HashSet<>();
+  private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
 
-  private AnnotationInfo annotationInfo = new AnnotationInfo(null);
-
-  private ArrayList<MethodMeta> methodMetaList = new ArrayList<>();
+  private final ArrayList<MethodMeta> methodMetaList = new ArrayList<>();
 
   private final EnhanceContext enhanceContext;
 
@@ -373,14 +371,7 @@ public class ClassMeta {
     classAnnotation.add(desc);
   }
 
-  /**
-  * Add an existing method.
-  */
-  public void addExistingMethod(String methodName, String methodDesc) {
-    existingMethods.add(methodName + methodDesc);
-  }
-
-  MethodVisitor createMethodVisitor(MethodVisitor mv, int access, String name, String desc) {
+  MethodVisitor createMethodVisitor(MethodVisitor mv, String name, String desc) {
 
     MethodMeta methodMeta = new MethodMeta(annotationInfo, name, desc);
     methodMetaList.add(methodMeta);

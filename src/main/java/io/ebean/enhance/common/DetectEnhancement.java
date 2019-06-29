@@ -35,11 +35,11 @@ public class DetectEnhancement extends ClassVisitor {
     this.enhanceContext = context;
   }
 
-  public boolean isLog(int level) {
+  private boolean isLog(int level) {
     return enhanceContext.isLog(level);
   }
 
-  public void log(String msg) {
+  private void log(String msg) {
     enhanceContext.log(className, msg);
   }
 
@@ -82,18 +82,16 @@ public class DetectEnhancement extends ClassVisitor {
     }
 
     this.className = name;
-
-    for (int i = 0; i < interfaces.length; i++) {
-
-      if (interfaces[i].equals(EnhanceConstants.C_ENTITYBEAN)) {
+    for (String anInterface : interfaces) {
+      if (anInterface.equals(EnhanceConstants.C_ENTITYBEAN)) {
         enhancedEntity = true;
         entity = true;
 
-      } else if (interfaces[i].equals(EnhanceConstants.C_ENHANCEDTRANSACTIONAL)) {
+      } else if (anInterface.equals(EnhanceConstants.C_ENHANCEDTRANSACTIONAL)) {
         enhancedTransactional = true;
 
       } else {
-        ClassMeta interfaceMeta = enhanceContext.getInterfaceMeta(interfaces[i], classLoader);
+        ClassMeta interfaceMeta = enhanceContext.getInterfaceMeta(anInterface, classLoader);
         if (interfaceMeta != null && interfaceMeta.isTransactional()) {
           transactional = true;
           if (isLog(9)) {

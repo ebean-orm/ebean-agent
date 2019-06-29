@@ -41,7 +41,6 @@ public class AnnotationInfo {
   /**
   * Add a annotation value.
   */
-  @SuppressWarnings("unchecked")
   public void add(String prefix, String name, Object value){
     if (name == null){
       // this is an array value...
@@ -56,8 +55,7 @@ public class AnnotationInfo {
   /**
   * Add a enum annotation value.
   */
-  public void addEnum(String prefix, String name, String desc, String value){
-
+  void addEnum(String prefix, String name, String value){
     add(prefix, name, value);
   }
 

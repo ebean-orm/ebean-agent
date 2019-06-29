@@ -220,9 +220,6 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       firstMethod = false;
     }
 
-
-    classMeta.addExistingMethod(name, desc);
-
     if (isLog(4)) {
       log("--- #### method name[" + name + "] desc[" + desc + "] sig[" + signature + "]");
     }

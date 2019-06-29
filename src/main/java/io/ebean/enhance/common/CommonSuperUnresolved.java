@@ -6,9 +6,9 @@ package io.ebean.enhance.common;
  */
 public class CommonSuperUnresolved {
 
-  final String type1;
-  final String type2;
-  final String error;
+  private final String type1;
+  private final String type2;
+  private final String error;
 
   public CommonSuperUnresolved(String type1, String type2, String error) {
     this.type1 = type1;

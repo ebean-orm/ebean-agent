@@ -14,13 +14,13 @@ import io.ebean.enhance.asm.Opcodes;
  * (silently ignored) if they are not in the class path.
  * </p>
  */
-public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
+class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
 
   private final ClassMeta classMeta;
 
   private final boolean readMethodMeta;
 
-  public ClassMetaReaderVisitor(boolean readMethodMeta, EnhanceContext context) {
+  ClassMetaReaderVisitor(boolean readMethodMeta, EnhanceContext context) {
     super(Opcodes.ASM7);
     this.readMethodMeta = readMethodMeta;
     this.classMeta = context.createClassMeta();
@@ -107,7 +107,7 @@ public class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConst
 
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
     if (!staticAccess && readMethodMeta){
-      return classMeta.createMethodVisitor(mv, access, name, desc);
+      return classMeta.createMethodVisitor(mv, name, desc);
 
     } else {
       // not interested in the methods...

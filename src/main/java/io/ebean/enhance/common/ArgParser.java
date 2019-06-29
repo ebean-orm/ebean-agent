@@ -5,14 +5,14 @@ import java.util.HashMap;
 /**
  * Helper to parse javaagent or ant string arguments.
  */
-public class ArgParser {
+class ArgParser {
 
   /**
   * Parse the args returning as name value pairs.
   */
-  public static HashMap<String,String> parse(String args){
+  static HashMap<String,String> parse(String args){
 
-    HashMap<String,String> map = new HashMap<String,String>();
+    HashMap<String,String> map = new HashMap<>();
 
     if (args != null){
       String[] split = args.split(";");

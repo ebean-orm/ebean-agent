@@ -72,7 +72,7 @@ public class AgentManifest {
   /**
   * Construct with no initial packages (to use with addRaw()).
   */
-  public AgentManifest() {
+  private AgentManifest() {
   }
 
   @Override
@@ -190,7 +190,7 @@ public class AgentManifest {
   /**
   * Add given the manifest InputStream.
   */
-  public void addResource(InputStream is) throws IOException {
+  private void addResource(InputStream is) throws IOException {
     try {
       addManifest(new Manifest(is));
     } finally {
@@ -203,7 +203,7 @@ public class AgentManifest {
     }
   }
 
-  void readProfilingMode(Attributes attributes) {
+  private void readProfilingMode(Attributes attributes) {
 
     String debug = attributes.getValue("debug");
     if (debug != null) {
@@ -234,14 +234,12 @@ public class AgentManifest {
         return TxProfileMode.ENABLED;
       case "manual":
         return TxProfileMode.MANUAL;
-      case "none":
-        return TxProfileMode.NONE;
       default:
         return TxProfileMode.NONE;
     }
   }
 
-  void readProfilingStart(Attributes attributes) {
+  private void readProfilingStart(Attributes attributes) {
     String start = attributes.getValue("transaction-profiling-startvalue");
     if (start != null) {
       try {

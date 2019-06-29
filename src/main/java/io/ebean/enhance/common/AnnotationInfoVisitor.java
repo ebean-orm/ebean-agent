@@ -43,14 +43,9 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
   }
 
   @Override
-  public void visitEnd() {
-    super.visitEnd();
-  }
-
-  @Override
   public void visitEnum(String name, String desc, String value) {
     super.visitEnum(name, desc, value);
-    info.addEnum(prefix, name, desc, value);
+    info.addEnum(prefix, name, value);
   }
 
 }

@@ -16,14 +16,14 @@ public class UrlPathHelper {
   * Convert string paths into URL class paths.
   */
   public static URL[] convertToUrl(String[] paths) {
-    ArrayList<URL> list = new ArrayList<URL>();
-    for (int i = 0; i < paths.length; i++) {
-      URL url = convertToUrl(paths[i]);
+    ArrayList<URL> list = new ArrayList<>();
+    for (String path : paths) {
+      URL url = convertToUrl(path);
       if (url != null) {
         list.add(url);
       }
     }
-    return list.toArray(new URL[list.size()]);
+    return list.toArray(new URL[0]);
   }
 
   /**

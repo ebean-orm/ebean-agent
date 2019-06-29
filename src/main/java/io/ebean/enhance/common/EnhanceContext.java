@@ -37,7 +37,7 @@ public class EnhanceContext {
 
   private int logLevel;
 
-  private HashMap<String, ClassMeta> map = new HashMap<>();
+  private final HashMap<String, ClassMeta> map = new HashMap<>();
 
   private final DetectQueryBean detectQueryBean;
 
@@ -52,9 +52,9 @@ public class EnhanceContext {
 
   private boolean throwOnError;
 
-  private boolean enableProfileLocation;
+  private final boolean enableProfileLocation;
 
-  private boolean enableQueryAutoLabel;
+  private final boolean enableQueryAutoLabel;
 
   /**
   * Mapping of profileId to transactional method descriptions (for decoding profiling).

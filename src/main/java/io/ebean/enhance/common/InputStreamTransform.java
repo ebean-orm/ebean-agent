@@ -81,7 +81,7 @@ public class InputStreamTransform {
       try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
         byte[] buf = new byte[1028];
 
-        int len = 0;
+        int len;
         while ((len = bis.read(buf, 0, buf.length)) > -1){
           bos.write(buf, 0, len);
         }
@@ -96,7 +96,7 @@ public class InputStreamTransform {
       try (ByteArrayOutputStream baos = new ByteArrayOutputStream(4096)) {
         byte[] buf = new byte[1028];
 
-        int len = 0;
+        int len;
         while ((len = bis.read(buf, 0, buf.length)) > -1){
           baos.write(buf, 0, len);
         }
