@@ -14,7 +14,7 @@ import io.ebean.enhance.common.ClassMeta;
  * Transient annotation then it is not transformed in this way.
  * </p>
  */
-public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
+class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 
   private final ClassMeta meta;
 
@@ -24,7 +24,7 @@ public class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 
   private boolean transientAnnotation;
 
-  public MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
+  MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
     super(Opcodes.ASM7, mv);
     this.meta = meta;
     this.className = meta.getClassName();

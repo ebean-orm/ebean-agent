@@ -94,7 +94,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   /**
    * Add a field annotation.
    */
-  protected void addAnnotationDesc(String desc) {
+  void addAnnotationDesc(String desc) {
     annotations.add(desc);
   }
 
@@ -103,13 +103,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    */
   public String getName() {
     return fieldName;
-  }
-
-  /**
-   * Return the field bytecode type description.
-   */
-  public String getDesc() {
-    return fieldDesc;
   }
 
   private boolean isInterceptGet() {
@@ -181,14 +174,14 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       || annotations.contains("Ljavax/persistence/ManyToMany;");
   }
 
-  public boolean isManyToMany() {
+  private boolean isManyToMany() {
     return annotations.contains("Ljavax/persistence/ManyToMany;");
   }
 
   /**
    * Return true if this is an Embedded field.
    */
-  public boolean isEmbedded() {
+  boolean isEmbedded() {
     return annotations.contains("Ljavax/persistence/Embedded;");
   }
 
@@ -196,21 +189,21 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * Return true if the field is local to this class. Returns false if the field
    * is actually on a super class.
    */
-  public boolean isLocalField(ClassMeta classMeta) {
+  boolean isLocalField(ClassMeta classMeta) {
     return fieldClass.equals(classMeta.getClassName());
   }
 
   /**
    * Append byte code to return the Id value (for primitives).
    */
-  public void appendGetPrimitiveIdValue(MethodVisitor mv, ClassMeta classMeta) {
+  void appendGetPrimitiveIdValue(MethodVisitor mv, ClassMeta classMeta) {
     mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc, false);
   }
 
   /**
    * Append compare instructions if its a long, float or double.
    */
-  public void appendCompare(MethodVisitor mv, ClassMeta classMeta) {
+  void appendCompare(MethodVisitor mv, ClassMeta classMeta) {
     if (primitiveType) {
       if (classMeta.isLog(4)) {
         classMeta.log(" ... getIdentity compare primitive field[" + fieldName + "] type[" + fieldDesc + "]");
@@ -242,7 +235,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * This becomes a Integer.valueOf(someInt); or similar.
    * </p>
    */
-  public void appendValueOf(MethodVisitor mv) {
+  void appendValueOf(MethodVisitor mv) {
     if (primitiveType) {
       // use valueOf methods to return primitives as objects
       Type objectWrapperType = PrimitiveHelper.getObjectWrapper(asmType);
@@ -257,7 +250,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   /**
    * As part of the switch statement to read the fields generate the get code.
    */
-  public void appendSwitchGet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
+  void appendSwitchGet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
 
     if (intercept) {
       // use the special get method with interception...
@@ -276,7 +269,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     }
   }
 
-  public void appendSwitchSet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
+  void appendSwitchSet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
 
     if (primitiveType) {
       // convert Object to primitive first...

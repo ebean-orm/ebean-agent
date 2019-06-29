@@ -37,7 +37,7 @@ public class ConstructorDeferredCode implements Opcodes {
   private final ClassMeta meta;
   private final MethodVisitor mv;
 
-  private final List<DeferredCode> codes = new ArrayList<DeferredCode>();
+  private final List<DeferredCode> codes = new ArrayList<>();
 
   ConstructorDeferredCode(ClassMeta meta, MethodVisitor mv) {
     this.meta = meta;
@@ -110,7 +110,7 @@ public class ConstructorDeferredCode implements Opcodes {
   /**
    * Return true if we have consumed all the deferred code that initialises a persistent collection.
    */
-  public boolean consumeVisitFieldInsn(int opcode, String owner, String name, String desc) {
+  boolean consumeVisitFieldInsn(int opcode, String name) {
     if (opcode == PUTFIELD && stateConsumeDeferred() && meta.isFieldPersistentMany(name)) {
       if (meta.isLog(2)) {
         meta.log("... consumed init of many: " + name);
@@ -126,7 +126,7 @@ public class ConstructorDeferredCode implements Opcodes {
   /**
    * Flush all deferred instructions.
    */
-  protected void flush() {
+  void flush() {
     if (!codes.isEmpty()) {
       for (DeferredCode code : codes) {
         if (meta.isLog(4)) {
@@ -258,7 +258,7 @@ public class ConstructorDeferredCode implements Opcodes {
     final String desc;
     final boolean itf;
 
-    public CollectionInit(int opcode, String owner, String name, String desc, boolean itf) {
+    CollectionInit(int opcode, String owner, String name, String desc, boolean itf) {
       this.opcode = opcode;
       this.owner = owner;
       this.name = name;

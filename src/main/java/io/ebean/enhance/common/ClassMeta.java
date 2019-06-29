@@ -382,7 +382,7 @@ public class ClassMeta {
 
   MethodVisitor createMethodVisitor(MethodVisitor mv, int access, String name, String desc) {
 
-    MethodMeta methodMeta = new MethodMeta(annotationInfo, access, name, desc);
+    MethodMeta methodMeta = new MethodMeta(annotationInfo, name, desc);
     methodMetaList.add(methodMeta);
     return new MethodReader(mv, methodMeta);
   }

@@ -19,7 +19,7 @@ import io.ebean.enhance.common.EnhanceConstants;
  * _ebean_intercept = new EntityBeanIntercept(this);
  * </pre>
  */
-public class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opcodes {
+class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opcodes {
 
   private final ClassMeta meta;
 
@@ -34,7 +34,7 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
    */
   private final ConstructorDeferredCode deferredCode;
 
-  public ConstructorAdapter(MethodVisitor mv, ClassMeta meta, String constructorDesc) {
+  ConstructorAdapter(MethodVisitor mv, ClassMeta meta, String constructorDesc) {
     super(Opcodes.ASM7, mv);
     this.meta = meta;
     this.className = meta.getClassName();
@@ -74,7 +74,7 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
   @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 
-    if (deferredCode.consumeVisitFieldInsn(opcode, owner, name, desc)) {
+    if (deferredCode.consumeVisitFieldInsn(opcode, name)) {
       // we have removed all the instructions initialising the many property
       return;
     }
@@ -122,7 +122,7 @@ public class ConstructorAdapter extends MethodVisitor implements EnhanceConstant
    * _ebean_intercept = new EntityBeanIntercept(this);
    * </pre>
    */
-  public void addInitialisationIfRequired(int opcode, String owner, String name, String desc) {
+  private void addInitialisationIfRequired(int opcode, String owner, String name, String desc) {
 
     if (C_MODEL.equals(owner) && INIT.equals(name)) {
       addConstructorInit(owner);

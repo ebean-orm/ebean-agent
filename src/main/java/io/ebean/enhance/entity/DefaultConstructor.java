@@ -12,7 +12,7 @@ import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 /**
  * Adds a default constructor for the cases when there is not one already defined.
  */
-public class DefaultConstructor {
+class DefaultConstructor {
 
   /**
    * Adds a default constructor.

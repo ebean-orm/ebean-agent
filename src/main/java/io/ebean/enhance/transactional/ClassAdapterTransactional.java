@@ -63,7 +63,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   private final ClassLoader classLoader;
 
-  private ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<>();
+  private final ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<>();
 
   /**
    * Class level annotation information.
@@ -82,7 +82,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   private int transactionProfileCount;
 
-  private Map<Integer, String> txLabels = new LinkedHashMap<>();
+  private final Map<Integer, String> txLabels = new LinkedHashMap<>();
 
   public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
     super(Opcodes.ASM7, cv);

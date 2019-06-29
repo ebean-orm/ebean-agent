@@ -11,12 +11,12 @@ import io.ebean.enhance.asm.TypePath;
 /**
  * Changes the existing constructor removing all the existing code to be replaced via visitCode() implementation.
  */
-public abstract class BaseConstructorAdapter extends MethodVisitor implements Opcodes {
+abstract class BaseConstructorAdapter extends MethodVisitor implements Opcodes {
 
   /**
    * Construct for a query bean class given its associated entity bean domain class and a class visitor.
    */
-  public BaseConstructorAdapter() {
+  BaseConstructorAdapter() {
     super(Opcodes.ASM7, null);
   }
 

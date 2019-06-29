@@ -5,18 +5,7 @@ import io.ebean.enhance.common.EnhanceConstants;
 /**
  * Set of most interesting constants used by the entity.
  */
-public interface Constants {
-
-  /**
-   * Entity beans can be ignored for this enhancement.
-   */
-  String C_ENTITYBEAN = "io/ebean/bean/EntityBean";
-
-  String ENTITY_ANNOTATION = "Ljavax/persistence/Entity;";
-
-  String EMBEDDABLE_ANNOTATION = "Ljavax/persistence/Embeddable;";
-
-  String MAPPEDSUPERCLASS_ANNOTATION = "Ljavax/persistence/MappedSuperclass;";
+interface Constants {
 
   /**
    * Annotation used to mark beans that are already enhanced.
@@ -34,11 +23,6 @@ public interface Constants {
    * The TQRootBean object class name.
    */
   String TQ_ROOT_BEAN = "io/ebean/typequery/TQRootBean";
-
-  /**
-   * The TQPath object class name.
-   */
-  String TQ_PATH = "io/ebean/typequery/TQPath";
 
   String ASSOC_BEAN_BASIC_CONSTRUCTOR_DESC = "(Ljava/lang/String;Ljava/lang/Object;I)V";
 

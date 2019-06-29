@@ -10,12 +10,12 @@ import io.ebean.enhance.common.EnhanceConstants;
 /**
  * Generate the _ebean_getIntercept() method and field.
  */
-public class InterceptField implements Opcodes, EnhanceConstants {
+class InterceptField implements Opcodes, EnhanceConstants {
 
   /**
    * Add the _ebean_intercept field.
    */
-  public static void addField(ClassVisitor cv, boolean transientInternalFields) {
+  static void addField(ClassVisitor cv, boolean transientInternalFields) {
 
     int access = ACC_PROTECTED + (transientInternalFields ? ACC_TRANSIENT : 0) + ACC_SYNTHETIC;
     FieldVisitor f1 = cv.visitField(access, INTERCEPT_FIELD, L_INTERCEPT, null, null);
@@ -31,7 +31,7 @@ public class InterceptField implements Opcodes, EnhanceConstants {
    * }
    * </pre>
    */
-  public static void addGetterSetter(ClassVisitor cv, String className) {
+  static void addGetterSetter(ClassVisitor cv, String className) {
 
     String lClassName = "L" + className + ";";
 

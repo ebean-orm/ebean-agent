@@ -10,7 +10,7 @@ import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
  * Enhance an existing static initialisation block with a call to our static
  * _$initProfileLocations() method.
  */
-public class StaticInitAdapter extends AdviceAdapter {
+class StaticInitAdapter extends AdviceAdapter {
 
   private final String className;
 

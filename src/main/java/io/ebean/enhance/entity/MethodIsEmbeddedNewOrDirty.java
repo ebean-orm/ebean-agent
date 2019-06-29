@@ -16,7 +16,7 @@ import java.util.List;
  * to make the enhancement more robust.
  * </p>
  */
-public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
+class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 
   /**
    * Generate the _ebean_isEmbeddedNewOrDirty() method.
@@ -30,7 +30,7 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
    * }
    * </pre>
    */
-  public static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
+  static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
 
     String className = classMeta.getClassName();
 
@@ -92,6 +92,5 @@ public class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
     mv.visitLocalVariable("this", "L" + className + ";", null, labelBegin, l3, 0);
     mv.visitMaxs(2, 1);
     mv.visitEnd();
-
   }
 }

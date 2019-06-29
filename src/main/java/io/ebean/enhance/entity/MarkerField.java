@@ -14,17 +14,17 @@ import io.ebean.enhance.common.EnhanceConstants;
  * to make the enhancement more robust.
  * </p>
  */
-public class MarkerField implements Opcodes, EnhanceConstants {
+class MarkerField implements Opcodes, EnhanceConstants {
 
   /**
    * The name of the static field added. Its value is the class being enhanced.
    */
-  public static final String _EBEAN_MARKER = "_EBEAN_MARKER";
+  static final String _EBEAN_MARKER = "_EBEAN_MARKER";
 
   /**
    * Add the _EBEAN_MARKER field.
    */
-  public static String addField(ClassVisitor cv, String className) {
+  static String addField(ClassVisitor cv, String className) {
 
     String cn = className.replace('/', '.');
 
@@ -43,8 +43,7 @@ public class MarkerField implements Opcodes, EnhanceConstants {
    * }
    * </pre>
    */
-  public static void addGetMarker(ClassVisitor cv, String className) {
-
+  static void addGetMarker(ClassVisitor cv, String className) {
 
     MethodVisitor mv;
 

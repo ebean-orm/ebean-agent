@@ -12,12 +12,12 @@ import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 /**
  * Adds the _ebean_newInstance() method.
  */
-public class MethodNewInstance {
+class MethodNewInstance {
 
   /**
    * Add the _ebean_newInstance() method.
    */
-  public static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
+  static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
 
     MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_SYNTHETIC, "_ebean_newInstance", "()Ljava/lang/Object;", null, null);
     mv.visitCode();

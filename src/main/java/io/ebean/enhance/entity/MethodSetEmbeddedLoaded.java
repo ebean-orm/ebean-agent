@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Generate the _ebean_setEmbeddedLoaded() method.
  */
-public class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
+class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
 
   /**
    * Generate the _ebean_setEmbeddedLoaded() method.
@@ -24,7 +24,7 @@ public class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
    * }
    * </pre>
    */
-  public static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
+  static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
 
     String className = classMeta.getClassName();
 
@@ -35,8 +35,7 @@ public class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
 
     Label labelBegin = null;
     List<FieldMeta> allFields = classMeta.getAllFields();
-    for (int i = 0; i < allFields.size(); i++) {
-      FieldMeta fieldMeta = allFields.get(i);
+    for (FieldMeta fieldMeta : allFields) {
       if (fieldMeta.isEmbedded()) {
 
         Label l0 = new Label();

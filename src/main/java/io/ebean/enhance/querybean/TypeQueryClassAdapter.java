@@ -46,7 +46,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   /**
    * Extract and return the associated entity bean class from the signature.
    */
-  protected String getDomainClass() {
+  private String getDomainClass() {
     int posStart = signature.indexOf('<');
     int posEnd = signature.indexOf(';', posStart + 1);
     return signature.substring(posStart + 2, posEnd);

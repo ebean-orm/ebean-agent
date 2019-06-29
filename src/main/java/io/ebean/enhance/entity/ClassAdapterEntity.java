@@ -348,12 +348,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       return true;
     }
 
-    if (name.equals("toString") && desc.equals("()Ljava/lang/String;")) {
-      // don't intercept toString as its is used
-      // during debugging etc
-      return false;
-    }
-
-    return true;
+    // don't intercept toString as its is used during debugging etc
+    return !name.equals("toString") || !desc.equals("()Ljava/lang/String;");
   }
 }

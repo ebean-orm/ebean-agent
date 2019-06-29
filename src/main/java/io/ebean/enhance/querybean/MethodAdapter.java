@@ -13,9 +13,9 @@ import static io.ebean.enhance.querybean.Constants.SET_LABEL;
  * Adapter that changes GETFIELD calls to type query beans to instead use the generated
  * 'property access' methods.
  */
-public class MethodAdapter extends MethodVisitor implements Opcodes {
+class MethodAdapter extends MethodVisitor implements Opcodes {
 
-  private static Set<String> FINDER_METHODS = new HashSet<>();
+  private static final Set<String> FINDER_METHODS = new HashSet<>();
 
   static {
     // exclude findEach, findEachWhile which take closures
@@ -39,7 +39,7 @@ public class MethodAdapter extends MethodVisitor implements Opcodes {
 
   private boolean labelSet;
 
-  public MethodAdapter(MethodVisitor mv, EnhanceContext enhanceContext, ClassInfo classInfo, String methodName) {
+  MethodAdapter(MethodVisitor mv, EnhanceContext enhanceContext, ClassInfo classInfo, String methodName) {
     super(ASM7, mv);
     this.enhanceContext = enhanceContext;
     this.classInfo = classInfo;

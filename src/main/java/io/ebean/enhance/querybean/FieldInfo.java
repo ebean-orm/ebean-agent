@@ -10,7 +10,7 @@ import io.ebean.enhance.common.EnhanceConstants;
 /**
  * Field information.
  */
-public class FieldInfo implements Opcodes, Constants, EnhanceConstants {
+class FieldInfo implements Opcodes, Constants, EnhanceConstants {
 
   private final ClassInfo classInfo;
   private final String name;
@@ -18,7 +18,7 @@ public class FieldInfo implements Opcodes, Constants, EnhanceConstants {
   private final String internalName;
   private final String signature;
 
-  public FieldInfo(ClassInfo classInfo, String name, String desc, String signature) {
+  FieldInfo(ClassInfo classInfo, String name, String desc, String signature) {
     this.classInfo = classInfo;
     this.name = name;
     this.desc = desc;
@@ -34,7 +34,7 @@ public class FieldInfo implements Opcodes, Constants, EnhanceConstants {
   /**
    * Add the 'property access method' that callers should use (instead of get field).
    */
-  public void writeMethod(ClassVisitor cw, boolean typeQueryRootBean) {
+  void writeMethod(ClassVisitor cw, boolean typeQueryRootBean) {
 
     // simple why to determine the property is an associated bean type
     boolean assocProperty = desc.contains("/QAssoc");
@@ -113,7 +113,7 @@ public class FieldInfo implements Opcodes, Constants, EnhanceConstants {
   /**
    * Initialise the field (used by 'Alias' constructor).
    */
-  public void writeFieldInit(MethodVisitor mv) {
+  void writeFieldInit(MethodVisitor mv) {
     Label l10 = new Label();
     mv.visitLabel(l10);
     mv.visitLineNumber(3, l10);

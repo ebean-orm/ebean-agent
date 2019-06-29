@@ -21,16 +21,16 @@ import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
  * This includes the createCopy, getField and setField methods etc.
  * </p>
  */
-public class IndexFieldWeaver implements Opcodes {
+class IndexFieldWeaver implements Opcodes {
 
   private static final String _EBEAN_PROPS = "_ebean_props";
 
-  public static void addPropertiesField(ClassVisitor cv) {
+  static void addPropertiesField(ClassVisitor cv) {
     FieldVisitor fv = cv.visitField(ACC_PUBLIC + ACC_STATIC + ACC_SYNTHETIC, _EBEAN_PROPS, "[Ljava/lang/String;", null, null);
     fv.visitEnd();
   }
 
-  public static void addPropertiesInit(ClassVisitor cv, ClassMeta classMeta) {
+  static void addPropertiesInit(ClassVisitor cv, ClassMeta classMeta) {
     MethodVisitor mv = cv.visitMethod(ACC_STATIC, CLINIT, NOARG_VOID, null, null);
     mv.visitCode();
     addPropertiesInit(mv, classMeta);
@@ -43,7 +43,7 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitEnd();
   }
 
-  public static void addPropertiesInit(MethodVisitor mv, ClassMeta classMeta) {
+  static void addPropertiesInit(MethodVisitor mv, ClassMeta classMeta) {
 
     List<FieldMeta> fields = classMeta.getAllFields();
 
@@ -72,7 +72,7 @@ public class IndexFieldWeaver implements Opcodes {
   }
 
 
-  public static void addGetPropertyNames(ClassVisitor cv, ClassMeta classMeta) {
+  static void addGetPropertyNames(ClassVisitor cv, ClassMeta classMeta) {
 
     MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getPropertyNames", "()[Ljava/lang/String;", null, null);
     mv.visitCode();
@@ -88,7 +88,7 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitEnd();
   }
 
-  public static void addGetPropertyName(ClassVisitor cv, ClassMeta classMeta) {
+  static void addGetPropertyName(ClassVisitor cv, ClassMeta classMeta) {
     MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getPropertyName", "(I)Ljava/lang/String;", null, null);
     mv.visitCode();
     Label l0 = new Label();
@@ -106,7 +106,7 @@ public class IndexFieldWeaver implements Opcodes {
     mv.visitEnd();
   }
 
-  public static void addMethods(ClassVisitor cv, ClassMeta classMeta) {
+  static void addMethods(ClassVisitor cv, ClassMeta classMeta) {
 
     List<FieldMeta> fields = classMeta.getAllFields();
     if (fields.isEmpty()) {

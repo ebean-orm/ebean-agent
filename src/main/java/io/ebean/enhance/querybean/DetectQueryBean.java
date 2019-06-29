@@ -30,14 +30,6 @@ public class DetectQueryBean {
   }
 
   /**
-   * Return the packages that entity beans are expected.
-   * Query beans are expected to be in a query sub-package.
-   */
-  String[] getEntityPackages() {
-    return entityPackages;
-  }
-
-  /**
    * Return true if this class is a query bean using naming conventions for query beans.
    */
   public boolean isQueryBean(String owner) {

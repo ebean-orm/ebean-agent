@@ -16,7 +16,7 @@ import io.ebean.enhance.common.VisitUtil;
  * having a single ID property and no existing equals() or hashCode() methods.
  * </p>
  */
-public class MethodEquals implements Opcodes, EnhanceConstants {
+class MethodEquals implements Opcodes, EnhanceConstants {
 
   private static final String _EBEAN_GET_IDENTITY = "_ebean_getIdentity";
 
@@ -29,7 +29,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
    *
    * @param idFieldIndex the index of the id field
    */
-  public static void addMethods(ClassVisitor cv, ClassMeta meta, int idFieldIndex, FieldMeta idFieldMeta) {
+  static void addMethods(ClassVisitor cv, ClassMeta meta, int idFieldIndex, FieldMeta idFieldMeta) {
 
     if (meta.hasEqualsOrHashCode()) {
       // already has a equals or hashcode method...
@@ -57,7 +57,7 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
    * The identity field used for implementing equals via the
    * _ebean_getIdentity() method.
    */
-  public static void addIdentityField(ClassVisitor cv) {
+  static void addIdentityField(ClassVisitor cv) {
 
     int access = ACC_PROTECTED + ACC_TRANSIENT + ACC_SYNTHETIC;
     FieldVisitor f0 = cv.visitField(access, IDENTITY_FIELD, L_OBJECT, null, null);
@@ -403,7 +403,6 @@ public class MethodEquals implements Opcodes, EnhanceConstants {
     mv.visitLocalVariable("this", "L" + meta.getClassName() + ";", null, l0, l1, 0);
     mv.visitMaxs(1, 1);
     mv.visitEnd();
-
   }
 
 }

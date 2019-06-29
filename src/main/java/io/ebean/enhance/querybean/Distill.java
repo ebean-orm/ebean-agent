@@ -14,7 +14,7 @@ public class Distill {
    */
   public static DetectQueryBean convert(Collection<String> packages) {
 
-    String[] asArray = packages.toArray(new String[packages.size()]);
+    String[] asArray = packages.toArray(new String[0]);
     for (int i = 0; i < asArray.length; i++) {
       asArray[i] = convert(asArray[i]);
     }
