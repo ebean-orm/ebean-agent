@@ -1,7 +1,7 @@
 package io.ebean.enhance.ant;
 
-import io.ebean.enhance.common.InputStreamTransform;
 import io.ebean.enhance.Transformer;
+import io.ebean.enhance.common.InputStreamTransform;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,21 +22,18 @@ public class OfflineFileTransform {
 
   protected final String inDir;
 
-  protected  TransformationListener listener;
+  protected TransformationListener listener;
 
-  private int logLevel;
+  private final int logLevel;
 
   /**
-  * Enhance the class file and replace the file with the the enhanced
-  * version of the class.
-  *
-  * @param transformer
-  *            object that actually transforms the class bytes
-  * @param classLoader
-  *            the ClassLoader used as part of the transformation
-  * @param inDir
-  *            the root directory where the class files are located
-  */
+   * Enhance the class file and replace the file with the the enhanced
+   * version of the class.
+   *
+   * @param transformer object that actually transforms the class bytes
+   * @param classLoader the ClassLoader used as part of the transformation
+   * @param inDir       the root directory where the class files are located
+   */
   public OfflineFileTransform(Transformer transformer, ClassLoader classLoader, String inDir) {
     this.inputStreamTransform = new InputStreamTransform(transformer, classLoader);
     logLevel = transformer.getLogLevel();
@@ -44,22 +41,24 @@ public class OfflineFileTransform {
     this.inDir = inDir;
   }
 
-  /** Register a listener to receive event notification */
+  /**
+   * Register a listener to receive event notification
+   */
   public void setListener(TransformationListener v) {
     this.listener = v;
   }
 
   private String trimSlash(String dir) {
-    if (dir.endsWith("/")){
-      return dir.substring(0, dir.length()-1);
+    if (dir.endsWith("/")) {
+      return dir.substring(0, dir.length() - 1);
     } else {
       return dir;
     }
   }
 
   /**
-  * Process the packageNames as comma delimited string.
-  */
+   * Process the packageNames as comma delimited string.
+   */
   public void process(String packageNames) {
 
     if (packageNames == null) {
@@ -68,19 +67,19 @@ public class OfflineFileTransform {
       return;
     }
 
-    Set<String> pkgNames = new LinkedHashSet<String>();
+    Set<String> pkgNames = new LinkedHashSet<>();
     Collections.addAll(pkgNames, packageNames.split(","));
 
     process(pkgNames);
   }
 
   /**
-  * Process all the comma delimited list of packages.
-  * <p>
-  * Package names are effectively converted into a directory on the file
-  * system, and the class files are found and processed.
-  * </p>
-  */
+   * Process all the comma delimited list of packages.
+   * <p>
+   * Package names are effectively converted into a directory on the file
+   * system, and the class files are found and processed.
+   * </p>
+   */
   public void process(Set<String> packageNames) {
 
     if (packageNames == null || packageNames.isEmpty()) {
@@ -150,8 +149,8 @@ public class OfflineFileTransform {
 
     if (result != null) {
       InputStreamTransform.writeBytes(result, file);
-      if(listener!=null && logLevel > 0) {
-        listener.logEvent("Enhanced "+file);
+      if (listener != null && logLevel > 0) {
+        listener.logEvent("Enhanced " + file);
       }
     }
   }
@@ -161,6 +160,6 @@ public class OfflineFileTransform {
     path = path.substring(inDir.length() + 1);
     path = path.substring(0, path.length() - ".class".length());
     // for windows... replace the
-    return StringReplace.replace(path,"\\", "/");
+    return StringReplace.replace(path, "\\", "/");
   }
 }

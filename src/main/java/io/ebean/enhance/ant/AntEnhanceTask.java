@@ -40,30 +40,27 @@ import java.io.File;
  */
 public class AntEnhanceTask extends Task {
 
-  String classpath;
+  private String classpath;
 
-  String classSource;
+  private String classSource;
 
-  String transformArgs;
+  private String transformArgs;
 
-  String packages;
+  private String packages;
 
   @Override
   public void execute() throws BuildException {
 
-    File f = new File("");
-    System.out.println("Current Directory: "+f.getAbsolutePath());
-
-    StringBuilder extraClassPath = new StringBuilder();
-    extraClassPath.append(classSource);
-    if (classpath != null)
-    {
-      if (!extraClassPath.toString().endsWith(";"))
-      {
-        extraClassPath.append(";");
-      }
-      extraClassPath.append(classpath);
-    }
+//    StringBuilder extraClassPath = new StringBuilder();
+//    extraClassPath.append(classSource);
+//    if (classpath != null)
+//    {
+//      if (!extraClassPath.toString().endsWith(";"))
+//      {
+//        extraClassPath.append(";");
+//      }
+//      extraClassPath.append(classpath);
+//    }
     Transformer t = new Transformer(null, transformArgs);//extraClassPath.toString(),
 
     ClassLoader cl = AntEnhanceTask.class.getClassLoader();
@@ -73,40 +70,40 @@ public class AntEnhanceTask extends Task {
   }
 
   /**
-  * the classpath used to search for e.g. inerited classes
-  */
+   * the classpath used to search for e.g. inerited classes
+   */
   public String getClasspath() {
     return classpath;
   }
 
   /**
-  * the classpath used to search for e.g. inerited classes
-  */
+   * the classpath used to search for e.g. inerited classes
+   */
   public void setClasspath(String classpath) {
     this.classpath = classpath;
   }
 
   /**
-  * Set the directory holding the class files we want to transform.
-  */
+   * Set the directory holding the class files we want to transform.
+   */
   public void setClassSource(String source) {
     this.classSource = source;
   }
 
   /**
-  * Set the arguments passed to the transformer.
-  */
+   * Set the arguments passed to the transformer.
+   */
   public void setTransformArgs(String transformArgs) {
     this.transformArgs = transformArgs;
   }
 
   /**
-  * Set the package name to search for classes to transform.
-  * <p>
-  * If the package name ends in "/**" then this recursively transforms all
-  * sub packages as well.
-  * </p>
-  */
+   * Set the package name to search for classes to transform.
+   * <p>
+   * If the package name ends in "/**" then this recursively transforms all
+   * sub packages as well.
+   * </p>
+   */
   public void setPackages(String packages) {
     this.packages = packages;
   }

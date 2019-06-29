@@ -8,28 +8,25 @@ public class StringReplace {
 
 
   /**
-  * This method takes a String and will replace all occurrences of the match
-  * String with that of the replace String.
-  *
-  * @param source
-  *            the source string
-  * @param match
-  *            the string used to find a match
-  * @param replace
-  *            the string used to replace match with
-  * @return the source string after the search and replace
-  */
+   * This method takes a String and will replace all occurrences of the match
+   * String with that of the replace String.
+   *
+   * @param source  the source string
+   * @param match   the string used to find a match
+   * @param replace the string used to replace match with
+   * @return the source string after the search and replace
+   */
   public static String replace(String source, String match, String replace) {
     return replaceString(source, match, replace, 30, 0, source.length());
   }
 
   /**
-  * Additionally specify the additionalSize to add to the buffer. This will
-  * make the buffer bigger so that it doesn't have to grow when replacement
-  * occurs.
-  */
+   * Additionally specify the additionalSize to add to the buffer. This will
+   * make the buffer bigger so that it doesn't have to grow when replacement
+   * occurs.
+   */
   private static String replaceString(String source, String match, String replace,
-      int additionalSize, int startPos, int endPos) {
+                                      int additionalSize, int startPos, int endPos) {
 
     char match0 = match.charAt(0);
 
@@ -50,7 +47,7 @@ public class StringReplace {
     StringBuilder sb = new StringBuilder(sourceLength + additionalSize);
 
     if (startPos > 0) {
-      sb.append(source.substring(0, startPos));
+      sb.append(source, 0, startPos);
     }
 
     char sourceChar;

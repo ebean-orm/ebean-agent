@@ -44,11 +44,11 @@ public class MainTransform {
   }
 
   private static boolean isHelp(String[] args) {
-    for (int i = 0; i < args.length; i++) {
-      if (args[i].equalsIgnoreCase("help")) {
+    for (String arg : args) {
+      if (arg.equalsIgnoreCase("help")) {
         return true;
       }
-      if (args[i].equalsIgnoreCase("-h")) {
+      if (arg.equalsIgnoreCase("-h")) {
         return true;
       }
     }
