@@ -26,11 +26,6 @@ public class AnnotationInfo {
     return valueMap.toString();
   }
 
-
-  public AnnotationInfo getParent() {
-    return parent;
-  }
-
   public void setParent(AnnotationInfo parent) {
     this.parent = parent;
   }
@@ -38,10 +33,11 @@ public class AnnotationInfo {
   /**
    * Gets or creates a list for the given prefix, it will hold the array values.
    */
+  @SuppressWarnings("unchecked")
   public List<Object> getArrayEntry(String prefix) {
     return (List<Object>) valueMap.computeIfAbsent(prefix, k -> new ArrayList<>());
   }
-  
+
   /**
   * Add a annotation value.
   */

@@ -15,7 +15,7 @@ public class SomeTransactionalService {
 
     System.out.println("--- in someMethod");
 
-    SpiTransaction tdTransaction = (SpiTransaction)Ebean.currentTransaction();
+    SpiTransaction tdTransaction = (SpiTransaction) Ebean.currentTransaction();
     getGeneratedKeys = tdTransaction.getBatchGetGeneratedKeys();
   }
 

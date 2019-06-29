@@ -1,5 +1,7 @@
 package io.ebean.enhance.querybean;
 
+import io.ebean.enhance.common.EnhanceConstants;
+
 /**
  * Set of most interesting constants used by the entity.
  */
@@ -24,7 +26,7 @@ public interface Constants {
   /**
   * The TypeQueryBean annotation.
   */
-  String ANNOTATION_TYPE_QUERY_BEAN = "Lio/ebean/typequery/TypeQueryBean;";
+  String ANNOTATION_TYPE_QUERY_BEAN = EnhanceConstants.TYPEQUERYBEAN_ANNOTATION;
 
   String TQ_ASSOC_BEAN = "io/ebean/typequery/TQAssocBean";
 

@@ -12,6 +12,7 @@ public interface EnhanceConstants {
   String NOARG_VOID = "()V";
 
   String TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
+  String TYPEQUERYBEAN_ANNOTATION = "Lio/ebean/typequery/TypeQueryBean;";
 
   String JAVAX_PERSISTENCE = "Ljavax/persistence/";
 
