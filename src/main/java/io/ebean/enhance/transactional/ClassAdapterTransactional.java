@@ -102,11 +102,11 @@ public class ClassAdapterTransactional extends ClassVisitor {
     enhanceContext.log(className, msg);
   }
 
-  public boolean isQueryBean(String owner) {
+  boolean isQueryBean(String owner) {
     return enhanceContext.isQueryBean(owner);
   }
 
-  public AnnotationInfo getClassAnnotationInfo() {
+  AnnotationInfo getClassAnnotationInfo() {
     return classAnnotationInfo;
   }
 
@@ -116,7 +116,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
    * Returns null if no matching (transactional) interface method was found.
    * </p>
    */
-  public AnnotationInfo getInterfaceTransactionalInfo(String methodName, String methodDesc) {
+  AnnotationInfo getInterfaceTransactionalInfo(String methodName, String methodDesc) {
 
     AnnotationInfo interfaceAnnotationInfo = null;
 
@@ -360,14 +360,14 @@ public class ClassAdapterTransactional extends ClassVisitor {
    * <p>
    * Takes into account the profiling mode (as per manifest) and explicit profileId.
    */
-  public TransactionalMethodKey createMethodKey(String methodName, String methodDesc, int profId) {
+  TransactionalMethodKey createMethodKey(String methodName, String methodDesc, int profId) {
     return enhanceContext.createMethodKey(className, methodName, methodDesc, profId);
   }
 
   /**
    * Return true if profile location enhancement is on.
    */
-  public boolean isEnableProfileLocation() {
+  boolean isEnableProfileLocation() {
     return enhanceContext.isEnableProfileLocation();
   }
 
@@ -388,14 +388,14 @@ public class ClassAdapterTransactional extends ClassVisitor {
   /**
    * Return true if this enhancing class extends Ebean Finder.
    */
-  public boolean isFinder() {
+  boolean isFinder() {
     return finder;
   }
 
   /**
    * Set the transaction label for a given index.
    */
-  public void putTxnLabel(int locationField, String txLabel) {
+  void putTxnLabel(int locationField, String txLabel) {
     txLabels.put(locationField, txLabel);
   }
 }

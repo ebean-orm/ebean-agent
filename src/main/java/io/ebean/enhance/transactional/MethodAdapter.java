@@ -36,7 +36,6 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
   private int posTxScope;
   private int lineNumber;
   private TransactionalMethodKey methodKey;
-  private int locationField;
 
   MethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
     super(classAdapter, mv, access, name, desc);
@@ -270,7 +269,7 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
       return;
     }
 
-    locationField = classAdapter.nextTransactionLocation();
+    int locationField = classAdapter.nextTransactionLocation();
 
     methodKey = classAdapter.createMethodKey(methodName, methodDesc, annotationProfileId());
     posTxScope = newLocal(txScopeType);

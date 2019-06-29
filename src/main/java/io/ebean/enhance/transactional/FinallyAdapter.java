@@ -10,9 +10,9 @@ import io.ebean.enhance.asm.commons.AdviceAdapter;
  */
 public abstract class FinallyAdapter extends AdviceAdapter {
 
-  protected Label startFinally = new Label();
+  private Label startFinally = new Label();
 
-  public FinallyAdapter(final int api, MethodVisitor mv, int acc, String name, String desc) {
+  FinallyAdapter(final int api, MethodVisitor mv, int acc, String name, String desc) {
     super(api, mv, acc, name, desc);
   }
 
@@ -26,12 +26,12 @@ public abstract class FinallyAdapter extends AdviceAdapter {
     super.visitMaxs(maxStack, maxLocals);
   }
 
-  protected void finallyVisitCode() {
+  void finallyVisitCode() {
     super.visitCode();
     mv.visitLabel(startFinally);
   }
 
-  protected void finallyVisitMaxs(int maxStack, int maxLocals) {
+  void finallyVisitMaxs(int maxStack, int maxLocals) {
 
     Label endFinally = new Label();
     mv.visitTryCatchBlock(startFinally, endFinally, endFinally, null);

@@ -71,10 +71,7 @@ class ConstructorMethodAdapter extends FinallyAdapter implements EnhanceConstant
     if (name.equals("query") && (desc.equals("()Lio/ebean/Query;") || desc.equals("(Ljava/lang/String;)Lio/ebean/Query;"))) {
       return true;
     }
-    if (name.equals("nativeSql") && desc.equals("(Ljava/lang/String;)Lio/ebean/Query;")) {
-      return true;
-    }
-    return false;
+    return name.equals("nativeSql") && desc.equals("(Ljava/lang/String;)Lio/ebean/Query;");
   }
 
 }
