@@ -78,7 +78,10 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
       // we have removed all the instructions initialising the many property
       return;
     }
-
+    if (!className.equals(owner)) {
+      super.visitFieldInsn(opcode, owner, name, desc);
+      return;
+    }
     FieldMeta fieldMeta = meta.getFieldPersistent(name);
     if (fieldMeta == null || !fieldMeta.isPersistent()) {
       // leave transient fields in constructor alone
