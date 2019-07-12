@@ -5,6 +5,8 @@
     <groupId>org.avaje</groupId>
     <artifactId>java8-parent</artifactId>
     <version>1.3</version>
+<!--    <artifactId>java11-parent</artifactId>-->
+<!--    <version>1.2-SNAPSHOT</version>-->
   </parent>
 
   <groupId>io.ebean</groupId>
@@ -39,7 +41,7 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.38.1</version>
+      <version>11.41.1</version>
       <scope>provided</scope>
     </dependency>
 
@@ -60,14 +62,14 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean-querybean</artifactId>
-      <version>11.38.1</version>
+      <version>11.41.1</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>querybean-generator</artifactId>
-      <version>11.38.1</version>
+      <version>11.41.1</version>
       <scope>test</scope>
     </dependency>
 

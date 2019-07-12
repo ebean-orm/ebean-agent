@@ -19,7 +19,6 @@ public class PrivateConstructorTest extends BaseTest {
     final DbGroup group = new DbGroup.Builder()
       .adminGroup(true)
       .name("foo")
-      .whoCreated(person)
       .build();
 
     DB.save(group);
