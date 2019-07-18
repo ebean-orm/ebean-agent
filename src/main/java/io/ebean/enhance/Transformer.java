@@ -273,6 +273,7 @@ public class Transformer implements ClassFileTransformer {
 
       if (ca.isLog(1)) {
         ca.logEnhanced();
+        unresolved.addAll(cw.getUnresolved());
       }
 
       request.enhancedEntity(cw.toByteArray());
@@ -287,8 +288,6 @@ public class Transformer implements ClassFileTransformer {
       if (ca.isLog(3)) {
         ca.log("skipping... no enhancement required");
       }
-    } finally {
-      unresolved.addAll(cw.getUnresolved());
     }
   }
 

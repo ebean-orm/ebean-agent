@@ -57,6 +57,7 @@ class IgnoreClassHelper {
     ignoreTwoLevel.add("org/objectweb");
     ignoreTwoLevel.add("org/jboss");
     ignoreTwoLevel.add("org/testng");
+    ignoreTwoLevel.add("org/springframework");
     ignoreTwoLevel.add("com/sun");
     ignoreTwoLevel.add("com/mysql");
     ignoreTwoLevel.add("com/h2database");
