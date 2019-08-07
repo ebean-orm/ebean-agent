@@ -11,6 +11,8 @@ public interface EnhanceConstants {
 
   String NOARG_VOID = "()V";
 
+  String MOCKITO_INTERCEPTOR = "mockitoInterceptor";
+
   String TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
   String TYPEQUERYBEAN_ANNOTATION = "Lio/ebean/typequery/TypeQueryBean;";
 
