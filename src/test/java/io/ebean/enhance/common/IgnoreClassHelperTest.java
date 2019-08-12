@@ -34,7 +34,6 @@ public class IgnoreClassHelperTest {
     assertTrue(ignoreClassHelper.isIgnoreClass("org/junit/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("org/apache/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("org/eclipse/Something"));
-    assertTrue(ignoreClassHelper.isIgnoreClass("org/jetbrains/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("org/joda/Something"));
 
     assertTrue(ignoreClassHelper.isIgnoreClass("io/ebeaninternal/Something"));
