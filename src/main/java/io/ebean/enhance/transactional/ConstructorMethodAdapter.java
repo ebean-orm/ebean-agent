@@ -30,14 +30,15 @@ class ConstructorMethodAdapter extends FinallyAdapter implements EnhanceConstant
 
     } else if (INIT.equals(name) && classAdapter.isQueryBean(owner)) {
       super.visitMethodInsn(opcode, owner, name, desc, itf);
-
-      int fieldIdx = classAdapter.nextQueryProfileLocation();
-      if (classAdapter.isLog(2)) {
-        classAdapter.log("add profile location " + fieldIdx);
+      if (!isAssocQueryBean(owner)) {
+        int fieldIdx = classAdapter.nextQueryProfileLocation();
+        if (classAdapter.isLog(2)) {
+          classAdapter.log("add profile location " + fieldIdx);
+        }
+        mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
+        mv.visitMethodInsn(INVOKEVIRTUAL, owner, "setProfileLocation", "(Lio/ebean/ProfileLocation;)Ljava/lang/Object;", false);
+        mv.visitTypeInsn(CHECKCAST, owner);
       }
-      mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
-      mv.visitMethodInsn(INVOKEVIRTUAL, owner, "setProfileLocation", "(Lio/ebean/ProfileLocation;)Ljava/lang/Object;", false);
-      mv.visitTypeInsn(CHECKCAST, owner);
 
     } else if (!classAdapter.isFinder()) {
       super.visitMethodInsn(opcode, owner, name, desc, itf);
@@ -60,6 +61,10 @@ class ConstructorMethodAdapter extends FinallyAdapter implements EnhanceConstant
         super.visitMethodInsn(opcode, owner, name, desc, itf);
       }
     }
+  }
+
+  private boolean isAssocQueryBean(String owner) {
+    return owner.contains("/query/assoc/QAssoc");
   }
 
   private boolean isNewUpdateQuery(String name, String desc) {
