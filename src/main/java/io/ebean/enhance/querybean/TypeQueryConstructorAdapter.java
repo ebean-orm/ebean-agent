@@ -11,7 +11,7 @@ import static io.ebean.enhance.common.EnhanceConstants.INIT;
  * Changes the existing constructor to remove all the field initialisation as these are going to be
  * initialised lazily by calls to our generated methods.
  */
-public class TypeQueryConstructorAdapter extends BaseConstructorAdapter implements Opcodes, Constants {
+class TypeQueryConstructorAdapter extends BaseConstructorAdapter implements Opcodes, Constants {
 
   private final ClassInfo classInfo;
 
@@ -26,7 +26,7 @@ public class TypeQueryConstructorAdapter extends BaseConstructorAdapter implemen
   /**
    * Construct for a query bean class given its associated entity bean domain class and a class visitor.
    */
-  public TypeQueryConstructorAdapter(ClassInfo classInfo, String domainClass, ClassVisitor cv, String desc, String signature) {
+  TypeQueryConstructorAdapter(ClassInfo classInfo, String domainClass, ClassVisitor cv, String desc, String signature) {
     super();
     this.cv = cv;
     this.classInfo = classInfo;

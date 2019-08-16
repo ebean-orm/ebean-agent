@@ -11,7 +11,7 @@ import static io.ebean.enhance.common.EnhanceConstants.INIT;
 /**
  * Overrides the constructor to initialise all the fields (for use with 'Alias' select()/fetch() use).
  */
-public class TypeQueryConstructorForAlias extends BaseConstructorAdapter implements Opcodes, Constants {
+class TypeQueryConstructorForAlias extends BaseConstructorAdapter implements Opcodes, Constants {
 
   private final ClassInfo classInfo;
 
@@ -20,7 +20,7 @@ public class TypeQueryConstructorForAlias extends BaseConstructorAdapter impleme
   /**
    * Construct for a query bean class and a class visitor.
    */
-  public TypeQueryConstructorForAlias(ClassInfo classInfo, ClassVisitor cv) {
+  TypeQueryConstructorForAlias(ClassInfo classInfo, ClassVisitor cv) {
     super();
     this.cv = cv;
     this.classInfo = classInfo;

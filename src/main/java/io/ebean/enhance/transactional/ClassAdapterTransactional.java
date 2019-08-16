@@ -221,10 +221,10 @@ public class ClassAdapterTransactional extends ClassVisitor {
       throw new AlreadyEnhancedException(className);
     }
     if (name.equals(INIT)) {
-      if (!kotlinCompanion() && enhanceContext.isEnableProfileLocation()) {
-        // enhance constructors containing query bean queries with profile location
-        if (isLog(4)) {
-          log("enhance constructor with profile location on className:" + className);
+      if (checkConstructorForProfileLocation(desc)) {
+        // check constructor, it might contain query bean queries needing profile location
+        if (isLog(7)) {
+          log("checking constructor, maybe add profile location for queries in className:" + className + " " + name + " [" + desc + "]");
         }
         return new ConstructorMethodAdapter(this, mv, access, name, desc);
       }
@@ -244,6 +244,12 @@ public class ClassAdapterTransactional extends ClassVisitor {
     }
 
     return new MethodAdapter(this, mv, access, name, desc);
+  }
+
+  private boolean checkConstructorForProfileLocation(String desc) {
+    return enhanceContext.isEnableProfileLocation()
+      && !desc.startsWith("(Lio/ebean/Query;")
+      && !kotlinCompanion();
   }
 
   private boolean kotlinCompanion() {

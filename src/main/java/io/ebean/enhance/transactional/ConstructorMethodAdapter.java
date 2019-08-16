@@ -50,13 +50,17 @@ class ConstructorMethodAdapter extends FinallyAdapter implements EnhanceConstant
         mv.visitMethodInsn(opcode, owner, name, desc, itf);
         mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
         mv.visitMethodInsn(INVOKEINTERFACE, "io/ebean/Query", "setProfileLocation", "(Lio/ebean/ProfileLocation;)Lio/ebean/Query;", true);
-
+        if (classAdapter.isLog(2)) {
+          classAdapter.log("add profile location " + fieldIdx);
+        }
       } else if (isNewUpdateQuery(name, desc)) {
         int fieldIdx = classAdapter.nextQueryProfileLocation();
         mv.visitMethodInsn(opcode, owner, name, desc, itf);
         mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
         mv.visitMethodInsn(INVOKEINTERFACE, "io/ebean/UpdateQuery", "setProfileLocation", "(Lio/ebean/ProfileLocation;)Lio/ebean/UpdateQuery;", true);
-
+        if (classAdapter.isLog(2)) {
+          classAdapter.log("add profile location " + fieldIdx);
+        }
       } else {
         super.visitMethodInsn(opcode, owner, name, desc, itf);
       }

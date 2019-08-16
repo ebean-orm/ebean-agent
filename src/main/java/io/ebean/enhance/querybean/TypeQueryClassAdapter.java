@@ -87,6 +87,10 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
       if (classInfo.addMarkerAnnotation()) {
         addMarkerAnnotation();
       }
+      if (name.equals(INIT) && desc.startsWith("(Lio/ebean/Query;")) {
+        // skip query bean constructor that takes Query (as used only for building FetchGroup)
+        return super.visitMethod(access, name, desc, signature, exceptions);
+      }
       if (name.equals(INIT)) {
         if (desc.equals("(Z)V")) {
           // Constructor for alias initialises all the properties/fields
