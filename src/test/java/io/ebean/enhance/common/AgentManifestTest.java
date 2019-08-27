@@ -185,4 +185,16 @@ public class AgentManifestTest {
     assertThat(context.isCheckNullManyFields()).isTrue();
   }
 
+  @Test
+  public void testRead_EnhanceContext_topPackages() throws IOException {
+
+    AgentManifest manifest =
+      new AgentManifest(null)
+        .readManifests(this.getClass().getClassLoader(), "META-INF/test_top.mf");
+
+    assertThat(manifest.getEntityPackages()).containsOnly("org.one.myapp.domain");
+    assertThat(manifest.getTransactionalPackages()).containsOnly("org.one.myapp");
+    assertThat(manifest.getQuerybeanPackages()).containsOnly("org.one.myapp");
+  }
+
 }

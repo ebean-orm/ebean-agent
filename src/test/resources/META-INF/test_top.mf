@@ -1,0 +1,2 @@
+entity-packages: org.one.myapp.domain
+top-packages: org.one.myapp

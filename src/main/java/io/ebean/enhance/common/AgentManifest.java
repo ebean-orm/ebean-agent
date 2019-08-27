@@ -260,6 +260,12 @@ public class AgentManifest {
     add(entityPackages, attributes.getValue("entity-packages"));
     add(transactionalPackages, attributes.getValue("transactional-packages"));
     add(querybeanPackages, attributes.getValue("querybean-packages"));
+
+    final String topPackages = attributes.getValue("top-packages");
+    if (topPackages != null) {
+      add(transactionalPackages, topPackages);
+      add(querybeanPackages, topPackages);
+    }
   }
 
   private void readOptions(Attributes attributes) {
