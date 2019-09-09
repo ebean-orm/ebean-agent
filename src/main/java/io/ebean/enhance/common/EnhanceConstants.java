@@ -52,8 +52,6 @@ public interface EnhanceConstants {
 
   String L_INTERCEPT = "Lio/ebean/bean/EntityBeanIntercept;";
 
-  String L_SCOPETRANS = "Lio/ebeaninternal/api/ScopeTrans;";
-
   String L_HELPSCOPETRANS = "Lio/ebeaninternal/api/HelpScopeTrans;";
 
   String L_DRAFT = "Lio/ebean/annotation/Draft;";

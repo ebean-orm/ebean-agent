@@ -103,7 +103,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
   }
 
   boolean isQueryBean(String owner) {
-    return enhanceContext.isQueryBean(owner);
+    return enhanceContext.isQueryBean(owner, classLoader);
   }
 
   AnnotationInfo getClassAnnotationInfo() {

@@ -311,8 +311,15 @@ public class ClassMeta {
   }
 
   /**
-  * Return true if the class has an Entity, Embeddable, MappedSuperclass (with persistent fields).
-  */
+   * Return true if this is a query bean.
+   */
+  public boolean isQueryBean() {
+    return classAnnotation.contains(EnhanceConstants.TYPEQUERYBEAN_ANNOTATION);
+  }
+
+  /**
+   * Return true if the class has an Entity, Embeddable, MappedSuperclass (with persistent fields).
+   */
   public boolean isEntity() {
     if (!EntityCheck.hasEntityAnnotation(classAnnotation)) {
       return false;

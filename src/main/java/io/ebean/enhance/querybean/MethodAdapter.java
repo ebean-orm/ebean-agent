@@ -32,24 +32,26 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
   }
 
   private final EnhanceContext enhanceContext;
-
   private final ClassInfo classInfo;
-
   private final String methodName;
-
+  private final ClassLoader loader;
   private boolean labelSet;
 
-  MethodAdapter(MethodVisitor mv, EnhanceContext enhanceContext, ClassInfo classInfo, String methodName) {
+  MethodAdapter(MethodVisitor mv, EnhanceContext enhanceContext, ClassInfo classInfo, String methodName, ClassLoader loader) {
     super(ASM7, mv);
     this.enhanceContext = enhanceContext;
     this.classInfo = classInfo;
     this.methodName = methodName;
+    this.loader = loader;
+  }
+
+  private boolean isQueryBean(String owner) {
+    return enhanceContext.isQueryBean(owner, loader);
   }
 
   @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
-
-    if (opcode == GETFIELD && enhanceContext.isQueryBean(owner)) {
+    if (opcode == GETFIELD && isQueryBean(owner)) {
       classInfo.addGetFieldIntercept(owner, name);
       mv.visitMethodInsn(INVOKEVIRTUAL, owner, "_" + name, "()" + desc, false);
     } else {
@@ -59,13 +61,12 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
 
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-
     if (!isInterface && enhanceContext.isEnableQueryAutoLabel()) {
-      if (SET_LABEL.equals(name) && enhanceContext.isQueryBean(owner)) {
+      if (SET_LABEL.equals(name) && isQueryBean(owner)) {
         // label set explicitly in code so don't auto set it
         labelSet = true;
       }
-      if (!labelSet && isFinderMethod(name) && enhanceContext.isQueryBean(owner)) {
+      if (!labelSet && isFinderMethod(name) && isQueryBean(owner)) {
         // set a label on the query
         classInfo.markTypeQueryEnhanced();
         mv.visitLdcInsn(classInfo.getShortName() + "." + methodName);

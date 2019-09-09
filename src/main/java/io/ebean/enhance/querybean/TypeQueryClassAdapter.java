@@ -20,6 +20,7 @@ import static io.ebean.enhance.common.EnhanceConstants.INIT;
 public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
 
   private final EnhanceContext enhanceContext;
+  private final ClassLoader loader;
 
   private boolean typeQueryRootBean;
   private String className;
@@ -28,9 +29,10 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
 
   private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
 
-  public TypeQueryClassAdapter(ClassWriter cw, EnhanceContext enhanceContext) {
+  public TypeQueryClassAdapter(ClassWriter cw, EnhanceContext enhanceContext, ClassLoader loader) {
     super(Opcodes.ASM7, cw);
     this.enhanceContext = enhanceContext;
+    this.loader = loader;
   }
 
   @Override
@@ -124,7 +126,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
       log("... checking method " + name + " " + desc);
     }
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-    return new MethodAdapter(mv, enhanceContext, classInfo, name);
+    return new MethodAdapter(mv, enhanceContext, classInfo, name, loader);
   }
 
   /**

@@ -168,7 +168,7 @@ public class Transformer implements ClassFileTransformer {
 
     try {
       // ignore JDK and JDBC classes etc
-      if (enhanceContext.isIgnoreClass(className) || isQueryBeanCompanion(className)) {
+      if (enhanceContext.isIgnoreClass(className) || isQueryBeanCompanion(className, loader)) {
         log(9, className, "ignore class");
         return null;
       }
@@ -205,8 +205,8 @@ public class Transformer implements ClassFileTransformer {
     }
   }
 
-  private boolean isQueryBeanCompanion(String className) {
-    return className.endsWith("$Companion") && enhanceContext.isQueryBean(className);
+  private boolean isQueryBeanCompanion(String className, ClassLoader classLoader) {
+    return className.endsWith("$Companion") && enhanceContext.isQueryBean(className, classLoader);
   }
 
   /**
@@ -335,7 +335,7 @@ public class Transformer implements ClassFileTransformer {
 
     ClassReader cr = new ClassReader(request.getBytes());
     ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
-    TypeQueryClassAdapter ca = new TypeQueryClassAdapter(cw, enhanceContext);
+    TypeQueryClassAdapter ca = new TypeQueryClassAdapter(cw, enhanceContext, loader);
 
     try {
       cr.accept(ca, ClassReader.EXPAND_FRAMES);

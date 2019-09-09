@@ -119,8 +119,16 @@ public class EnhanceContext {
   * 'property access' methods.
   * </p>
   */
-  public boolean isQueryBean(String owner) {
-    return detectQueryBean.isQueryBean(owner);
+  public boolean isQueryBean(String owner, ClassLoader classLoader) {
+    if (detectQueryBean.isQueryBean(owner)) {
+      try {
+        final ClassMeta classMeta = reader.get(true, owner, classLoader);
+        return classMeta.isQueryBean();
+      } catch (ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return false;
   }
 
   /**
