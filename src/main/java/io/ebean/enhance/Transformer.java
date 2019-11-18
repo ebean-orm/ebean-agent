@@ -311,7 +311,7 @@ public class Transformer implements ClassFileTransformer {
     try {
       cr.accept(ca, ClassReader.EXPAND_FRAMES);
       if (ca.isLog(1)) {
-        ca.log("enhanced transactional");
+        ca.logEnhanced();
       }
 
       request.enhancedTransactional(cw.toByteArray());

@@ -282,6 +282,14 @@ public class ClassAdapterTransactional extends ClassVisitor {
     super.visitEnd();
   }
 
+  public void logEnhanced() {
+    if (transactionProfileCount > 0) {
+      log("enhanced transactional");
+    } else {
+      log("enhanced query bean caller");
+    }
+  }
+
   private void addStaticFieldDefinitions() {
     for (int i = 0; i < queryProfileCount; i++) {
       FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, QP_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;", null, null);
