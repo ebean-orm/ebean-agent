@@ -167,7 +167,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
       }
       TypeQueryAddMethods.add(cv, classInfo, typeQueryRootBean);
       if (isLog(2)) {
-        classInfo.log("enhanced as type query bean");
+        classInfo.log("enhanced as query bean");
       }
     } else if (classInfo.isTypeQueryUser()) {
       if (isLog(4)) {

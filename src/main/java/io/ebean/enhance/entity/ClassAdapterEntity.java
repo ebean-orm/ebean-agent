@@ -146,7 +146,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
     }
 
     if (isPropertyChangeListenerField(desc)) {
-      if (isLog(2)) {
+      if (isLog(4)) {
         classMeta.log("Found existing PropertyChangeSupport field " + name);
       }
       // no interception on PropertyChangeSupport field

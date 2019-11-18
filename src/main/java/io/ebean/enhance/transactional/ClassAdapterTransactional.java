@@ -133,7 +133,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
         } else {
           interfaceAnnotationInfo = ai;
-          if (isLog(2)) {
+          if (isLog(4)) {
             log("inherit transactional from interface [" + interfaceMeta + "] method[" + methodName + " " + methodDesc + "]");
           }
         }
@@ -261,7 +261,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
     if (queryProfileCount == 0 && transactionProfileCount == 0) {
       throw new NoEnhancementRequiredException(className);
     }
-    if (isLog(2)) {
+    if (isLog(4)) {
       log("methods:" + transactionalMethods + " qp:" + queryProfileCount + " tp:" + transactionProfileCount + " profileLocation:" + isEnableProfileLocation());
     }
     if (enhanceContext.isEnableProfileLocation()) {

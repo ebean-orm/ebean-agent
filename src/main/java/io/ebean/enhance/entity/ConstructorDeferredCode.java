@@ -112,7 +112,7 @@ public class ConstructorDeferredCode implements Opcodes {
    */
   boolean consumeVisitFieldInsn(int opcode, String name) {
     if (opcode == PUTFIELD && stateConsumeDeferred() && meta.isFieldPersistentMany(name)) {
-      if (meta.isLog(2)) {
+      if (meta.isLog(3)) {
         meta.log("... consumed init of many: " + name);
       }
       codes.clear();

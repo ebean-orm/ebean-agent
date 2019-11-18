@@ -50,7 +50,7 @@ public class ClassMetaReader {
 
     byte[] classBytes = enhanceContext.getClassBytes(className, classLoader);
     if (classBytes == null){
-      if (enhanceContext.isLog(2)) {
+      if (enhanceContext.isLog(3)) {
         enhanceContext.log(null, "Could not read meta data for class ["+className+"].");
       }
       return null;

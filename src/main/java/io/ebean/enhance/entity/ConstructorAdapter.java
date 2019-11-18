@@ -153,7 +153,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
 
   private void addConstructorInit(String owner) {
 
-    if (meta.isLog(2)) {
+    if (meta.isLog(4)) {
       meta.log("... adding intercept <init> in CONSTRUCTOR:" + constructorDesc + " OWNER/SUPER:" + owner);
     }
 
