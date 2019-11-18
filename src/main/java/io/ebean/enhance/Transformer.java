@@ -279,7 +279,7 @@ public class Transformer implements ClassFileTransformer {
 
       cr.accept(ca, ClassReader.EXPAND_FRAMES);
 
-      if (ca.isLog(1)) {
+      if (ca.isLog(2)) {
         ca.logEnhanced();
         unresolved.addAll(cw.getUnresolved());
       }
@@ -310,7 +310,7 @@ public class Transformer implements ClassFileTransformer {
 
     try {
       cr.accept(ca, ClassReader.EXPAND_FRAMES);
-      if (ca.isLog(1)) {
+      if (ca.isLog(2)) {
         ca.logEnhanced();
       }
 
@@ -341,13 +341,10 @@ public class Transformer implements ClassFileTransformer {
 
     try {
       cr.accept(ca, ClassReader.EXPAND_FRAMES);
-      if (ca.isLog(9)) {
-        ca.log("... completed");
-      }
       request.enhancedQueryBean(cw.toByteArray());
 
     } catch (AlreadyEnhancedException e) {
-      if (ca.isLog(1)) {
+      if (ca.isLog(3)) {
         ca.log("already query bean enhanced");
       }
 
