@@ -1,6 +1,7 @@
 package io.ebean.enhance.ant;
 
 import io.ebean.enhance.Transformer;
+import io.ebean.enhance.common.EnhanceContext;
 
 /**
  * A utility object to run transformation from a main method.
@@ -34,9 +35,12 @@ public class MainTransform {
     Transformer t = new Transformer(cl, transformArgs);
 
     OfflineFileTransform ft = new OfflineFileTransform(t, cl, inDir);
+    final EnhanceContext enhanceContext = t.getEnhanceContext();
+    if (enhanceContext.getLogLevel() > 0) {
+      System.out.println(enhanceContext.getPackagesSummary());
+    }
 
     ft.process(pkg);
-
   }
 
   private static void printHelp() {

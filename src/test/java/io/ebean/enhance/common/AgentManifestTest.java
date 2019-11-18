@@ -169,8 +169,27 @@ public class AgentManifestTest {
             .readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
 
     EnhanceContext context = new EnhanceContext(null, null, manifest);
+    context.setLogLevel(5);
+
     assertThat(context.isTransientInternalFields()).isTrue();
     assertThat(context.isCheckNullManyFields()).isFalse();
+    assertThat(context.getLogLevel()).isEqualTo(5);
+
+    assertThat(context.getEntityPackages()).containsOnly("org.foo.some.domain", "org.foo.domain");
+    assertThat(context.getTransactionalPackages()).containsOnly("org.foo");
+    assertThat(context.getQuerybeanPackages()).containsOnly("org.foo");
+
+    assertThat(context.getPackagesSummary()).isEqualTo("packages entity:[org.foo.some.domain, org.foo.domain]  transactional:[org.foo]  querybean:[org.foo]  profileLocation:false");
+
+    context.collectSummary();
+    SummaryInfo emptySummary = context.getSummaryInfo();
+    assertThat(emptySummary.entities()).isEqualTo("     Entities (0)  pkgs[] beans[]");
+
+    context.collectSummary();
+    context.summaryEntity("org/foo/domain/Customer");
+
+    SummaryInfo summary = context.getSummaryInfo();
+    assertThat(summary.entities()).isEqualTo("     Entities (1)  pkgs[org/foo/domain] beans[Customer]");
   }
 
   @Test
@@ -183,6 +202,10 @@ public class AgentManifestTest {
     EnhanceContext context = new EnhanceContext(null, null, manifest);
     assertThat(context.isTransientInternalFields()).isFalse();
     assertThat(context.isCheckNullManyFields()).isTrue();
+
+    assertThat(context.getEntityPackages()).containsOnly("btwo.domain", "aone.domain", "cthree.other");
+    assertThat(context.getTransactionalPackages()).isEmpty();
+    assertThat(context.getQuerybeanPackages()).isEmpty();
   }
 
   @Test

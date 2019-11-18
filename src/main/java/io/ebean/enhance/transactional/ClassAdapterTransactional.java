@@ -274,6 +274,11 @@ public class ClassAdapterTransactional extends ClassVisitor {
         addStaticInitialiser();
       }
     }
+    if (transactionProfileCount > 0) {
+      enhanceContext.summaryTransactional(className);
+    } else {
+      enhanceContext.summaryQueryBeanCaller(className);
+    }
     super.visitEnd();
   }
 

@@ -159,17 +159,18 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
     if (classInfo.isAlreadyEnhanced()) {
       throw new AlreadyEnhancedException(className);
     }
-
     if (classInfo.isTypeQueryBean()) {
       if (!typeQueryRootBean) {
         classInfo.addAssocBeanExtras(cv);
+      } else {
+        enhanceContext.summaryQueryBean(className);
       }
       TypeQueryAddMethods.add(cv, classInfo, typeQueryRootBean);
       if (isLog(2)) {
         classInfo.log("enhanced as type query bean");
       }
     } else if (classInfo.isTypeQueryUser()) {
-      if (isLog(1)) {
+      if (isLog(3)) {
         classInfo.log("enhanced - getfield calls replaced");
       }
     } else {

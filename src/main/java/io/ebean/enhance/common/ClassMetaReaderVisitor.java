@@ -74,13 +74,13 @@ class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
 
     if ((access & Opcodes.ACC_STATIC) != 0) {
       // no interception of static fields
-      if (isLog(2)) {
+      if (isLog(3)) {
         log("Skip static field " + name);
       }
       return super.visitField(access, name, desc, signature, value);
     }
     if ((access & Opcodes.ACC_TRANSIENT) != 0) {
-      if (isLog(2)) {
+      if (isLog(3)) {
         log("Skip transient field " + name);
       }
       // no interception of transient fields

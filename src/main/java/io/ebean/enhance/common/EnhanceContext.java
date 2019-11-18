@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +21,8 @@ import java.util.logging.Logger;
 public class EnhanceContext {
 
   private static final Logger logger = Logger.getLogger(EnhanceContext.class.getName());
+
+  private final AgentManifest manifest;
 
   private final IgnoreClassHelper ignoreClassHelper;
 
@@ -46,8 +49,8 @@ public class EnhanceContext {
   private final FilterQueryBean filterQueryBean;
 
   /**
-  * Current profileId when automatically assigned.
-  */
+   * Current profileId when automatically assigned.
+   */
   private int autoProfileId;
 
   private boolean throwOnError;
@@ -57,19 +60,21 @@ public class EnhanceContext {
   private final boolean enableQueryAutoLabel;
 
   /**
-  * Mapping of profileId to transactional method descriptions (for decoding profiling).
-  */
+   * Mapping of profileId to transactional method descriptions (for decoding profiling).
+   */
   private final List<TransactionalMethodKey> profilingKeys = new ArrayList<>();
+
+  private SummaryInfo summaryInfo;
 
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest) {
     this(classBytesReader, agentArgs, manifest, new ClassMetaCache());
   }
 
   /**
-  * Construct a context for enhancement.
-  */
+   * Construct a context for enhancement.
+   */
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest, ClassMetaCache metaCache) {
-
+    this.manifest = manifest;
     this.autoProfileId = manifest.transactionProfilingStart();
     this.enableProfileLocation = manifest.isEnableProfileLocation();
     this.enableQueryAutoLabel = manifest.isEnableQueryAutoLabel();
@@ -108,17 +113,43 @@ public class EnhanceContext {
     }
   }
 
+  public void setLogLevel(int logLevel) {
+    this.logLevel = logLevel;
+  }
+
+  /**
+   * Return the summary of the packages controlling enhancement.
+   */
+  public String getPackagesSummary() {
+    return "packages entity:" + getEntityPackages()
+      + "  transactional:" + getTransactionalPackages()
+      + "  querybean:" + getQuerybeanPackages()
+      + "  profileLocation:" + enableProfileLocation;
+  }
+
+  public Set<String> getEntityPackages() {
+    return manifest.getEntityPackages();
+  }
+
+  public Set<String> getTransactionalPackages() {
+    return manifest.getTransactionalPackages();
+  }
+
+  public Set<String> getQuerybeanPackages() {
+    return manifest.getQuerybeanPackages();
+  }
+
   public byte[] getClassBytes(String className, ClassLoader classLoader) {
     return classBytesReader.getClassBytes(className, classLoader);
   }
 
   /**
-  * Return true if the owner class is a type query bean.
-  * <p>
-  * If true typically means the caller needs to change GETFIELD calls to instead invoke the generated
-  * 'property access' methods.
-  * </p>
-  */
+   * Return true if the owner class is a type query bean.
+   * <p>
+   * If true typically means the caller needs to change GETFIELD calls to instead invoke the generated
+   * 'property access' methods.
+   * </p>
+   */
   public boolean isQueryBean(String owner, ClassLoader classLoader) {
     if (detectQueryBean.isQueryBean(owner)) {
       try {
@@ -132,8 +163,8 @@ public class EnhanceContext {
   }
 
   /**
-  * Return a value from the entity arguments using its key.
-  */
+   * Return a value from the entity arguments using its key.
+   */
   private String getProperty(String key) {
     return agentArgsMap.get(key.toLowerCase());
   }
@@ -148,8 +179,8 @@ public class EnhanceContext {
   }
 
   /**
-  * Return true if profile location enhancement is on.
-  */
+   * Return true if profile location enhancement is on.
+   */
   public boolean isEnableProfileLocation() {
     return enableProfileLocation;
   }
@@ -162,47 +193,47 @@ public class EnhanceContext {
   }
 
   /**
-  * Return true if this class should be scanned for transactional enhancement.
-  */
+   * Return true if this class should be scanned for transactional enhancement.
+   */
   public boolean detectEntityTransactionalEnhancement(String className) {
     return filterEntityTransactional.detectEnhancement(className);
   }
 
   /**
-  * Return true if this class should be scanned for query bean enhancement.
-  */
+   * Return true if this class should be scanned for query bean enhancement.
+   */
   public boolean detectQueryBeanEnhancement(String className) {
     return filterQueryBean.detectEnhancement(className);
   }
 
   /**
-  * Return true if this class should be ignored. That is JDK classes and
-  * known libraries JDBC drivers etc can be skipped.
-  */
+   * Return true if this class should be ignored. That is JDK classes and
+   * known libraries JDBC drivers etc can be skipped.
+   */
   public boolean isIgnoreClass(String className) {
     return ignoreClassHelper.isIgnoreClass(className);
   }
 
   /**
-  * Change the logout to something other than system out.
-  */
+   * Change the logout to something other than system out.
+   */
   public void setLogout(MessageOutput logout) {
     this.logout = logout;
   }
 
   /**
-  * Create a new meta object for enhancing a class.
-  */
+   * Create a new meta object for enhancing a class.
+   */
   public ClassMeta createClassMeta() {
     return new ClassMeta(this, logLevel, logout);
   }
 
   /**
-  * Read the class meta data for a super class.
-  * <p>
-  * Typically used to read meta data for inheritance hierarchy.
-  * </p>
-  */
+   * Read the class meta data for a super class.
+   * <p>
+   * Typically used to read meta data for inheritance hierarchy.
+   * </p>
+   */
   public ClassMeta getSuperMeta(String superClassName, ClassLoader classLoader) {
 
     try {
@@ -217,11 +248,11 @@ public class EnhanceContext {
   }
 
   /**
-  * Read the class meta data for an interface.
-  * <p>
-  * Typically used to check the interface to see if it is transactional.
-  * </p>
-  */
+   * Read the class meta data for an interface.
+   * <p>
+   * Typically used to check the interface to see if it is transactional.
+   * </p>
+   */
   public ClassMeta getInterfaceMeta(String interfaceClassName, ClassLoader classLoader) {
 
     try {
@@ -244,8 +275,8 @@ public class EnhanceContext {
   }
 
   /**
-  * Log some debug output.
-  */
+   * Log some debug output.
+   */
   public void log(int level, String className, String msg) {
     if (logLevel >= level) {
       log(className, msg);
@@ -264,52 +295,52 @@ public class EnhanceContext {
   }
 
   /**
-  * Log an error.
-  */
+   * Log an error.
+   */
   public void log(Throwable e) {
     e.printStackTrace(
-        new PrintStream(new ByteArrayOutputStream()) {
-          @Override
-          public void print(String message) {
-            logout.println(message);
-          }
+      new PrintStream(new ByteArrayOutputStream()) {
+        @Override
+        public void print(String message) {
+          logout.println(message);
+        }
 
-          @Override
-          public void println(String message) {
-            logout.println(message);
-          }
-        });
+        @Override
+        public void println(String message) {
+          logout.println(message);
+        }
+      });
   }
 
 
   /**
-  * Return the log level.
-  */
+   * Return the log level.
+   */
   public int getLogLevel() {
     return logLevel;
   }
 
   /**
-  * Return true if internal ebean fields in entity classes should be transient.
-  */
+   * Return true if internal ebean fields in entity classes should be transient.
+   */
   public boolean isTransientInternalFields() {
     return transientInternalFields;
   }
 
   /**
-  * Return true if we should add null checking on *ToMany fields.
-  * <p>
-  * On getting a many that is null Ebean will create an empty List, Set or Map. If it is a
-  * ManyToMany it will turn on Modify listening.
-  * </p>
-  */
+   * Return true if we should add null checking on *ToMany fields.
+   * <p>
+   * On getting a many that is null Ebean will create an empty List, Set or Map. If it is a
+   * ManyToMany it will turn on Modify listening.
+   * </p>
+   */
   public boolean isCheckNullManyFields() {
     return checkNullManyFields;
   }
 
   /**
-  * Create a TransactionalMethodKey with (maybe) a profileId.
-  */
+   * Create a TransactionalMethodKey with (maybe) a profileId.
+   */
   public TransactionalMethodKey createMethodKey(String className, String methodName, String methodDesc, int profileId) {
 
     TransactionalMethodKey key = new TransactionalMethodKey(className, methodName, methodDesc);
@@ -333,23 +364,77 @@ public class EnhanceContext {
   }
 
   /**
-  * Return the profiling transaction keys.
-  */
+   * Return the profiling transaction keys.
+   */
   public List<TransactionalMethodKey> getTransactionProfilingKeys() {
     return profilingKeys;
   }
 
   /**
-  * Return true if transform should throw exception rather than log and return null.
-  */
+   * Return true if transform should throw exception rather than log and return null.
+   */
   public boolean isThrowOnError() {
     return throwOnError;
   }
 
   /**
-  * Set to true if you want transform to throw exceptions rather than return null.
-  */
+   * Set to true if you want transform to throw exceptions rather than return null.
+   */
   public void setThrowOnError(boolean throwOnError) {
     this.throwOnError = throwOnError;
   }
+
+  /**
+   * Turn on the summary collection of the enhancement.
+   */
+  public void collectSummary() {
+    this.summaryInfo = new SummaryInfo();
+  }
+
+  /**
+   * Add the transactional enhanced class to summary information.
+   */
+  public void summaryTransactional(String className) {
+    if (summaryInfo != null) {
+      summaryInfo.addTransactional(className);
+    }
+  }
+
+  /**
+   * Add the entity enhanced class to summary information.
+   */
+  public void summaryEntity(String className) {
+    if (summaryInfo != null) {
+      summaryInfo.addEntity(className);
+    }
+  }
+
+  /**
+   * Add the query bean enhanced class to summary information.
+   */
+  public void summaryQueryBean(String className) {
+    if (summaryInfo != null) {
+      summaryInfo.addQueryBean(className);
+    }
+  }
+
+  /**
+   * Add the query bean caller enhanced class to summary information.
+   */
+  public void summaryQueryBeanCaller(String className) {
+    if (summaryInfo != null) {
+      summaryInfo.addQueryBeanCaller(className);
+    }
+  }
+
+  /**
+   * Return the summary of the enhancement.
+   *
+   * Note that <code>collectSummary()</code> must be called in order for summary
+   * information to be collected and returned here.
+   */
+  public SummaryInfo getSummaryInfo() {
+    return summaryInfo.prepare();
+  }
+
 }
