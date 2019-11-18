@@ -115,7 +115,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
       }
       MethodDesc methodDesc = new MethodDesc(access, name, desc, signature, exceptions);
       if (methodDesc.isGetter()) {
-        if (isLog(3)) {
+        if (isLog(4)) {
           log("overwrite getter method - " + name + " " + desc + " " + signature);
         }
         return new TypeQueryGetterAdapter(cv, classInfo, methodDesc);
@@ -170,7 +170,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
         classInfo.log("enhanced as type query bean");
       }
     } else if (classInfo.isTypeQueryUser()) {
-      if (isLog(3)) {
+      if (isLog(4)) {
         classInfo.log("enhanced - getfield calls replaced");
       }
     } else {

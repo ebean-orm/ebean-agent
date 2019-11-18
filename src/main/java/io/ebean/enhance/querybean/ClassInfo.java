@@ -156,9 +156,6 @@ class ClassInfo implements Constants {
    * There is a basic constructor on the assoc bean which is being overwritten (so don't need to add later).
    */
   void setHasBasicConstructor() {
-    if (isLog(3)) {
-      log("replace assoc bean basic constructor");
-    }
     hasBasicConstructor = true;
   }
 
@@ -166,9 +163,6 @@ class ClassInfo implements Constants {
    * There is a main constructor on the assoc bean which is being overwritten (so don't need to add later).
    */
   void setHasMainConstructor() {
-    if (isLog(3)) {
-      log("replace assoc bean main constructor");
-    }
     hasMainConstructor = true;
   }
 
@@ -177,7 +171,7 @@ class ClassInfo implements Constants {
    */
   void addAssocBeanExtras(ClassVisitor cv) {
 
-    if (isLog(3)) {
+    if (isLog(4)) {
       String msg = "... add fields";
       if (!hasBasicConstructor) {
         msg += ", basic constructor";

@@ -235,7 +235,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
         // not enhancing class static initialiser
         return mv;
       } else {
-        if (isLog(3)) {
+        if (isLog(4)) {
           log("... <clinit> exists - adding call to _$initProfileLocations()");
         }
         existingStaticInitialiser = true;
@@ -361,7 +361,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
     transactionalLineNumbers.add(methodKey.getLineNumber());
     transactionalMethods.add(methodKey.getMethodName());
-    if (isLog(3)) {
+    if (isLog(4)) {
       log("method - " + methodKey);
     }
   }

@@ -353,10 +353,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    */
   private void addGet(ClassVisitor cw, ClassMeta classMeta) {
 
-    if (classMeta.isLog(3)) {
-      classMeta.log(getMethodName + " " + getMethodDesc + " intercept:" + isInterceptGet() + " " + annotations);
-    }
-
     MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, getMethodName, getMethodDesc, null, null);
     mv.visitCode();
 
@@ -423,10 +419,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     Label l4 = new Label();
     if (classMeta.getEnhanceContext().isCheckNullManyFields()) {
 
-      if (classMeta.isLog(3)) {
-        classMeta.log("... add Many null check on " + fieldName + " ebtype:" + ebCollection);
-      }
-
       Label l3 = new Label();
       mv.visitLabel(l3);
       mv.visitLineNumber(2, l3);
@@ -450,10 +442,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
       if (isManyToMany()) {
         // turn on modify listening for ManyToMany
-        if (classMeta.isLog(3)) {
-          classMeta.log("... add ManyToMany modify listening to " + fieldName);
-        }
-
         Label l6 = new Label();
         mv.visitLabel(l6);
         mv.visitLineNumber(4, l6);
@@ -489,10 +477,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
     // ARETURN or IRETURN
     int iReturnOpcode = asmType.getOpcode(Opcodes.IRETURN);
-
-    if (classMeta.isLog(3)) {
-      classMeta.log(getNoInterceptMethodName + " " + getMethodDesc);
-    }
 
     MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, getNoInterceptMethodName, getMethodDesc, null, null);
     mv.visitCode();
@@ -533,11 +517,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
     // double and long have a size of 2
     int iPosition = asmType.getSize();
-
-    if (classMeta.isLog(3)) {
-      classMeta.log(setMethodName + " " + setMethodDesc + " intercept:" + isInterceptSet()
-        + " opCode:" + iLoadOpcode + "," + iPosition + " preSetterArgTypes" + preSetterArgTypes);
-    }
 
     MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, setMethodName, setMethodDesc, null, null);
     mv.visitCode();
@@ -599,10 +578,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
     // double and long have a size of 2
     int iPosition = asmType.getSize();
-
-    if (classMeta.isLog(3)) {
-      classMeta.log(setNoInterceptMethodName + " " + setMethodDesc + " opCode:" + iLoadOpcode + "," + iPosition);
-    }
 
     MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, setNoInterceptMethodName, setMethodDesc, null, null);
     mv.visitCode();

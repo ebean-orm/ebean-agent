@@ -54,10 +54,9 @@ class IndexFieldWeaver implements Opcodes {
     mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
 
     if (fields.isEmpty()) {
-      if (classMeta.isLog(3)) {
+      if (classMeta.isLog(4)) {
         classMeta.log("Has no fields?");
       }
-
     } else {
       for (int i = 0; i < fields.size(); i++) {
         FieldMeta field = fields.get(i);
@@ -113,10 +112,6 @@ class IndexFieldWeaver implements Opcodes {
       return;
     }
 
-    if (classMeta.isLog(3)) {
-      classMeta.log("fields size:" + fields.size() + " " + fields.toString());
-    }
-
     generateGetField(cv, classMeta, fields, false);
     generateGetField(cv, classMeta, fields, true);
 
@@ -125,7 +120,7 @@ class IndexFieldWeaver implements Opcodes {
 
     if (classMeta.hasEqualsOrHashCode()) {
       // equals or hashCode is already implemented
-      if (classMeta.isLog(3)) {
+      if (classMeta.isLog(4)) {
         classMeta.log("... skipping add equals() ... already has equals() hashcode() methods");
       }
       return;
@@ -152,13 +147,13 @@ class IndexFieldWeaver implements Opcodes {
 
     if (idIndex == -2) {
       // there are 2 or more id fields?
-      if (classMeta.isLog(1)) {
+      if (classMeta.isLog(2)) {
         classMeta.log("has 2 or more id fields. Not adding equals() method.");
       }
 
     } else if (idIndex == -1) {
       // there are no id fields local to this type
-      if (classMeta.isLog(3)) {
+      if (classMeta.isLog(4)) {
         classMeta.log("has no id fields on this type. Not adding equals() method. Expected when Id property on superclass.");
       }
 

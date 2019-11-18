@@ -95,7 +95,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
         // intercept persistent PUTFIELD in the constructor
         String methodName = "_ebean_set_" + name;
         String methodDesc = "(" + desc + ")V";
-        if (meta.isLog(3)) {
+        if (meta.isLog(4)) {
           meta.log("... Constructor PUTFIELD replaced with:" + methodName + methodDesc);
         }
         super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
@@ -104,13 +104,13 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
         // intercept persistent many GETFIELD in the constructor to initialise the collection
         String methodName = "_ebean_get_" + name;
         String methodDesc = "()" + desc;
-        if (meta.isLog(3)) {
+        if (meta.isLog(4)) {
           meta.log("... Constructor GETFIELD:" + name + " replaced with: " + methodName + methodDesc);
         }
         super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
 
       } else {
-        if (meta.isLog(3)) {
+        if (meta.isLog(4)) {
           meta.log("... visitFieldInsn (unaltered in constructor)- " + opcode + " owner:" + owner + ":" + name + ":" + desc);
         }
         super.visitFieldInsn(opcode, owner, name, desc);
@@ -134,17 +134,17 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
 
     if (opcode == INVOKESPECIAL && name.equals(INIT) && desc.equals(NOARG_VOID)) {
       if (meta.isSuperClassEntity()) {
-        if (meta.isLog(3)) {
+        if (meta.isLog(4)) {
           meta.log("... skipping intercept <init> ... handled by super class... CONSTRUCTOR: owner:" + owner + " " + constructorDesc);
         }
       } else if (owner.equals(meta.getClassName())) {
-        if (meta.isLog(3)) {
+        if (meta.isLog(4)) {
           meta.log("... skipping intercept <init> ... handled by other constructor... CONSTRUCTOR: owner:" + owner + " " + constructorDesc);
         }
       } else if (owner.equals(meta.getSuperClassName())) {
         addConstructorInit(owner);
       } else {
-        if (meta.isLog(3)) {
+        if (meta.isLog(4)) {
           meta.log("... skipping intercept <init> ... incorrect type " + owner);
         }
       }

@@ -68,15 +68,12 @@ class MethodFieldAdapter extends MethodVisitor implements Opcodes {
     }
 
     if (opcode == Opcodes.GETSTATIC || opcode == Opcodes.PUTSTATIC) {
-      if (meta.isLog(3)) {
-        meta.log(" ... info: skip static field " + owner + " " + name + " in " + methodDescription);
-      }
       super.visitFieldInsn(opcode, owner, name, desc);
       return;
     }
 
     if (isNonPersistentField(owner, name)) {
-      if (meta.isLog(3)) {
+      if (meta.isLog(4)) {
         meta.log(" ... info: non-persistent field " + owner + " " + name + " in " + methodDescription);
       }
       super.visitFieldInsn(opcode, owner, name, desc);
