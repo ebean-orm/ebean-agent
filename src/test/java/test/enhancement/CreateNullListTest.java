@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertFalse;
@@ -43,6 +44,10 @@ public class CreateNullListTest extends BaseTest {
     List<String> codesList2 = customer.getCodesList2();
     assertNotNull(codesList2);
     assertThat(codesList2).isInstanceOf(ArrayList.class);
+
+    Set<String> codesTree = customer.getCodesTree();
+    assertNotNull(codesTree);
+    assertThat(codesTree).isInstanceOf(TreeSet.class);
 
     // contacts created automatically when "checkNullManyFields" is set
     List<Contact> contacts = customer.getContacts();

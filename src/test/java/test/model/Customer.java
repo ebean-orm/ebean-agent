@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 public class Customer extends BaseEntity {
@@ -35,6 +36,9 @@ public class Customer extends BaseEntity {
 
   @DbArray
   List<String> codesList3 = new ArrayList<>();
+
+  @DbArray
+  Set<String> codesTree = new TreeSet<>();
 
   public Customer() {
     codesList3.add("foo");
@@ -87,5 +91,9 @@ public class Customer extends BaseEntity {
 
   public List<String> getCodesList2() {
     return codesList2;
+  }
+
+  public Set<String> getCodesTree() {
+    return codesTree;
   }
 }
