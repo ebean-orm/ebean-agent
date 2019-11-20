@@ -100,7 +100,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
         }
         super.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false);
 
-      } else if (opcode == GETFIELD && fieldMeta.isMany()) {
+      } else if (opcode == GETFIELD && fieldMeta.isInitMany()) {
         // intercept persistent many GETFIELD in the constructor to initialise the collection
         String methodName = "_ebean_get_" + name;
         String methodDesc = "()" + desc;

@@ -70,6 +70,12 @@ public interface EnhanceConstants {
 
   String BEANMAP = "io/ebean/common/BeanMap";
 
+  String ARRAYLIST = "java/util/ArrayList";
+
+  String LINKEDHASHSET = "java/util/LinkedHashSet";
+
+  String LINKEDHASHMAP = "java/util/LinkedHashMap";
+
   String L_JETBRAINS_NOTNULL = "Lorg/jetbrains/annotations/NotNull;";
 
   String L_EBEAN_NOTNULL = "Lio/ebean/annotation/NotNull;";

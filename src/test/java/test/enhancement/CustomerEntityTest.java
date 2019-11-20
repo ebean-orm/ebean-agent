@@ -15,8 +15,7 @@ import static org.testng.Assert.assertNotNull;
 
 public class CustomerEntityTest extends BaseTest {
 
-  private static final int PROPERTY_COUNT = 6;
-
+  private static final int PROPERTY_COUNT = 11;
 
   @Test
   public void testBasic() {
@@ -52,6 +51,11 @@ public class CustomerEntityTest extends BaseTest {
     assertEquals("name", custFieldNames[3]);
     assertEquals("whenStart", custFieldNames[4]);
     assertEquals("contacts", custFieldNames[5]);
+    assertEquals("codes", custFieldNames[6]);
+    assertEquals("codesList", custFieldNames[7]);
+    assertEquals("codes2", custFieldNames[8]);
+    assertEquals("codesList2", custFieldNames[9]);
+    assertEquals("codesList3", custFieldNames[10]);
 
     assertEquals("id", custEb._ebean_getPropertyName(0));
     assertEquals("version", custEb._ebean_getPropertyName(1));
@@ -59,6 +63,11 @@ public class CustomerEntityTest extends BaseTest {
     assertEquals("name", custEb._ebean_getPropertyName(3));
     assertEquals("whenStart", custEb._ebean_getPropertyName(4));
     assertEquals("contacts", custEb._ebean_getPropertyName(5));
+    assertEquals("codes", custEb._ebean_getPropertyName(6));
+    assertEquals("codesList", custEb._ebean_getPropertyName(7));
+    assertEquals("codes2", custEb._ebean_getPropertyName(8));
+    assertEquals("codesList2", custEb._ebean_getPropertyName(9));
+    assertEquals("codesList3", custEb._ebean_getPropertyName(10));
 
     EntityBeanIntercept customerIntercept = custEb._ebean_getIntercept();
 

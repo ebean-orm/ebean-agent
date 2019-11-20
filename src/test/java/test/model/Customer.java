@@ -1,11 +1,15 @@
 package test.model;
 
 
-import java.util.Date;
-import java.util.List;
+import io.ebean.annotation.DbArray;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Customer extends BaseEntity {
@@ -16,6 +20,25 @@ public class Customer extends BaseEntity {
 
   @OneToMany(mappedBy="customer")
   List<Contact> contacts;
+
+  @DbArray
+  Set<String> codes;
+
+  @DbArray
+  List<String> codesList;
+
+  @DbArray
+  Set<String> codes2 = new HashSet<>();
+
+  @DbArray
+  List<String> codesList2 = new ArrayList<>();
+
+  @DbArray
+  List<String> codesList3 = new ArrayList<>();
+
+  public Customer() {
+    codesList3.add("foo");
+  }
 
   @Override
   public String toString() {
@@ -46,4 +69,23 @@ public class Customer extends BaseEntity {
     this.contacts = contacts;
   }
 
+  public Set<String> getCodes() {
+    return codes;
+  }
+
+  public void setCodes(Set<String> codes) {
+    this.codes = codes;
+  }
+
+  public List<String> getCodesList() {
+    return codesList;
+  }
+
+  public Set<String> getCodes2() {
+    return codes2;
+  }
+
+  public List<String> getCodesList2() {
+    return codesList2;
+  }
 }

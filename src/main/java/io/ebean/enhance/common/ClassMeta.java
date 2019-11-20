@@ -200,11 +200,11 @@ public class ClassMeta {
   }
 
   /**
-  * Return true if the field is a persistent many field.
+  * Return true if the field is a persistent many field that we want to consume the init on.
   */
-  public boolean isFieldPersistentMany(String fieldName) {
+  public boolean isConsumeInitMany(String fieldName) {
     FieldMeta f = getFieldPersistent(fieldName);
-    return (f != null && f.isPersistent() && f.isMany());
+    return (f != null && f.isPersistent() && f.isInitMany());
   }
 
   /**

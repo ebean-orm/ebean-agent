@@ -28,7 +28,7 @@ import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
  *
  * </pre>
  */
-public class ConstructorDeferredCode implements Opcodes {
+class ConstructorDeferredCode implements Opcodes {
 
   private static final ALoad ALOAD_INSTRUCTION = new ALoad();
 
@@ -47,7 +47,7 @@ public class ConstructorDeferredCode implements Opcodes {
   /**
    * Return true if this is an ALOAD 0 which we defer.
    */
-  public boolean deferVisitVarInsn(int opcode, int var) {
+  boolean deferVisitVarInsn(int opcode, int var) {
     flush();
     if (opcode == ALOAD && var == 0) {
       codes.add(ALOAD_INSTRUCTION);
@@ -60,7 +60,7 @@ public class ConstructorDeferredCode implements Opcodes {
    * Return true if we defer this based on it being a NEW or CHECKCAST on persistent many
    * and was proceeded by a deferred ALOAD (for NEW) or Collection init (for CHECKCAST).
    */
-  public boolean deferVisitTypeInsn(int opcode, String type) {
+  boolean deferVisitTypeInsn(int opcode, String type) {
     if (opcode == NEW && isCollection(type) && stateAload()) {
       codes.add(new NewCollection(type));
       return true;
@@ -77,7 +77,7 @@ public class ConstructorDeferredCode implements Opcodes {
    * Return true if we defer this based on it being a DUP and was proceeded
    * by a deferred ALOAD and NEW.
    */
-  public boolean deferVisitInsn(int opcode) {
+  boolean deferVisitInsn(int opcode) {
     if (opcode == DUP && stateNewCollection()) {
       codes.add(DUP_INSTRUCTION);
       return true;
@@ -90,7 +90,7 @@ public class ConstructorDeferredCode implements Opcodes {
    * Return true if we defer this based on it being an init of a collection
    * and was proceeded by a deferred DUP.
    */
-  public boolean deferVisitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+  boolean deferVisitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
 
     if (opcode == INVOKESPECIAL && stateDup() && isCollectionInit(owner, name, desc)) {
       codes.add(new CollectionInit(opcode, owner, name, desc, itf));
@@ -111,7 +111,7 @@ public class ConstructorDeferredCode implements Opcodes {
    * Return true if we have consumed all the deferred code that initialises a persistent collection.
    */
   boolean consumeVisitFieldInsn(int opcode, String name) {
-    if (opcode == PUTFIELD && stateConsumeDeferred() && meta.isFieldPersistentMany(name)) {
+    if (opcode == PUTFIELD && stateConsumeDeferred() && meta.isConsumeInitMany(name)) {
       if (meta.isLog(3)) {
         meta.log("... consumed init of many: " + name);
       }

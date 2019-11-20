@@ -106,20 +106,11 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   }
 
   private boolean isInterceptGet() {
-    if (isId()) {
-      return false;
-    }
-    if (isTransient()) {
-      return false;
-    }
-    if (isMany()) {
-      return true;
-    }
-    return true;
+    return !isId() && !isTransient();
   }
 
   private boolean isInterceptSet() {
-    return !isId() && !isTransient() && !isMany();
+    return !isId() && !isTransient() && !isToMany();
   }
 
   /**
@@ -170,13 +161,25 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   /**
    * Return true if this is a OneToMany or ManyToMany field.
    */
-  public boolean isMany() {
+  public boolean isToMany() {
     return annotations.contains("Ljavax/persistence/OneToMany;")
       || annotations.contains("Ljavax/persistence/ManyToMany;");
   }
 
   private boolean isManyToMany() {
     return annotations.contains("Ljavax/persistence/ManyToMany;");
+  }
+
+  /**
+   * Control initialisation of ToMany and DbArray collection properties.
+   * This means these properties are lazy initialised on demand.
+   */
+  public boolean isInitMany() {
+    return isToMany() || isDbArray();
+  }
+
+  private boolean isDbArray() {
+    return annotations.contains("Lio/ebean/annotation/DbArray;");
   }
 
   /**
@@ -318,34 +321,18 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     addSetNoIntercept(cv, classMeta);
   }
 
-  private String getEbeanCollectionClass() {
+  private String getInitCollectionClass() {
+    final boolean dbArray = isDbArray();
     if (fieldDesc.equals("Ljava/util/List;")) {
-      return BEANLIST;
+      return dbArray ? ARRAYLIST : BEANLIST;
     }
     if (fieldDesc.equals("Ljava/util/Set;")) {
-      return BEANSET;
+      return dbArray ? LINKEDHASHSET : BEANSET;
     }
     if (fieldDesc.equals("Ljava/util/Map;")) {
-      return BEANMAP;
+      return dbArray ? LINKEDHASHMAP : BEANMAP;
     }
     return null;
-  }
-
-  /**
-   * Return true if null check should be added to this many field.
-   */
-  private boolean isInterceptMany() {
-
-    if (isMany() && !isTransient()) {
-
-      String ebCollection = getEbeanCollectionClass();
-      if (ebCollection != null) {
-        return true;
-      } else {
-        classMeta.log("Error unexpected many type " + fieldDesc);
-      }
-    }
-    return false;
   }
 
   /**
@@ -356,7 +343,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, getMethodName, getMethodDesc, null, null);
     mv.visitCode();
 
-    if (isInterceptMany()) {
+    if (isInitMany()) {
       addGetForMany(mv);
       return;
     }
@@ -406,7 +393,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   private void addGetForMany(MethodVisitor mv) {
 
     String className = classMeta.getClassName();
-    String ebCollection = getEbeanCollectionClass();
+    String ebCollection = getInitCollectionClass();
 
     Label l0 = new Label();
     mv.visitLabel(l0);
@@ -542,7 +529,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     }
     mv.visitVarInsn(iLoadOpcode, 1);
     String preSetterMethod = "preSetter";
-    if (isMany()) {
+    if (isToMany()) {
       preSetterMethod = "preSetterMany";
     }
     mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, preSetterMethod, "(ZI" + preSetterArgTypes + ")V", false);
