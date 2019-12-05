@@ -90,7 +90,7 @@ class IgnoreClassHelper {
   */
   boolean isIgnoreClass(String className) {
 
-    if (className == null) {
+    if (className == null || "bsh/Interpreter".equals(className)) {
       return true;
     }
 
