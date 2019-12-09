@@ -14,7 +14,6 @@ import java.net.URLClassLoader;
  */
 public class ClassPathClassBytesReader implements ClassBytesReader {
 
-
   private final URL[] urls;
 
   public ClassPathClassBytesReader(URL[] urls) {
