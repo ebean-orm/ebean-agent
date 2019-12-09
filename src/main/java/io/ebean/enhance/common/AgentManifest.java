@@ -44,10 +44,10 @@ public class AgentManifest {
 
   private boolean enableQueryAutoLabel;
 
-  public static AgentManifest read(ClassLoader classLoader, Set<String> initialPackages) {
+  public static AgentManifest read(ClassLoader classLoader) {
 
     try {
-      return new AgentManifest(initialPackages)
+      return new AgentManifest()
           .readManifests(classLoader, "META-INF/ebean-typequery.mf")
           .readManifests(classLoader, "META-INF/ebean.mf")
           .readManifests(classLoader, "ebean.mf");
@@ -60,19 +60,7 @@ public class AgentManifest {
     }
   }
 
-  /**
-  * Construct with some packages defined externally.
-  */
-  public AgentManifest(Set<String> initialPackages) {
-    if (initialPackages != null) {
-      entityPackages.addAll(initialPackages);
-    }
-  }
-
-  /**
-  * Construct with no initial packages (to use with addRaw()).
-  */
-  private AgentManifest() {
+  public AgentManifest() {
   }
 
   @Override
@@ -283,7 +271,7 @@ public class AgentManifest {
   */
   private void add(Set<String> addTo, String packages) {
     if (packages != null) {
-      String[] split = packages.split(",|;| ");
+      String[] split = packages.split("[,; ]");
       for (String aSplit : split) {
         String pkg = aSplit.trim();
         if (!pkg.isEmpty()) {

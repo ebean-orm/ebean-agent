@@ -89,7 +89,7 @@ public class Transformer implements ClassFileTransformer {
       classLoader = getClass().getClassLoader();
     }
     ClassBytesReader reader = new ClassPathClassBytesReader(null);
-    AgentManifest manifest = AgentManifest.read(classLoader, null);
+    AgentManifest manifest = AgentManifest.read(classLoader);
     this.enhanceContext = new EnhanceContext(reader, agentArgs, manifest);
   }
 

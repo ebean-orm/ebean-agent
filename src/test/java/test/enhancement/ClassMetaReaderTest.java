@@ -112,7 +112,7 @@ public class ClassMetaReaderTest {
 
 
   }
-  
+
   @Test
   public void checkClassOverrideMethod1() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
@@ -145,7 +145,6 @@ public class ClassMetaReaderTest {
     assertThat((List<Type>) (methodAi.getValue("rollbackFor"))).isEmpty();
   }
 
-  
   @Test
   public void checkClassOverrideMethod4() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
@@ -157,7 +156,6 @@ public class ClassMetaReaderTest {
       .containsExactly(Type.getType(IOException.class), Type.getType(IllegalStateException.class));
   }
 
-  
   @Test
   public void checkClassOverrideMethod5() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
@@ -178,25 +176,20 @@ public class ClassMetaReaderTest {
     assertThat(methodAi.getValue("batchSize")).isEqualTo(0);
     assertThat((List<Type>) (methodAi.getValue("rollbackFor"))).isEmpty();
   }
-  
+
   @Test
   public void testEnhanceContext() {
 
-    Set<String> initialPackages = new HashSet<>();
-    initialPackages.add("jim.bob");
-    initialPackages.add("jack.jones.fred");
-    initialPackages.add("line.foo");
-
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
-    AgentManifest manifest = AgentManifest.read(getClass().getClassLoader(), initialPackages);
+    AgentManifest manifest = AgentManifest.read(getClass().getClassLoader());
     EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9", manifest);
 
     assertFalse(enhanceContext.isIgnoreClass("jim.bob.Me"));
     assertFalse(enhanceContext.isIgnoreClass("jim.bob.other.Me"));
     assertFalse(enhanceContext.isIgnoreClass("jack.jones.Me"));
 
-    assertTrue(enhanceContext.detectEntityTransactionalEnhancement("jim/bob/Me"));
-    assertTrue(enhanceContext.detectEntityTransactionalEnhancement("jim/bob/other/Me"));
+    assertFalse(enhanceContext.detectEntityTransactionalEnhancement("jim/bob/Me"));
+    assertFalse(enhanceContext.detectEntityTransactionalEnhancement("jim/bob/other/Me"));
 
     assertFalse(enhanceContext.detectEntityTransactionalEnhancement("jim/Me"));
     assertFalse(enhanceContext.detectEntityTransactionalEnhancement("jack/jones/Me"));
@@ -206,13 +199,13 @@ public class ClassMetaReaderTest {
 
     assertFalse(enhanceContext.isIgnoreClass("line.foo.Me"));
     assertFalse(enhanceContext.isIgnoreClass("line.foo.other.Me"));
-    assertTrue(enhanceContext.detectEntityTransactionalEnhancement("line/foo/Me"));
+    assertFalse(enhanceContext.detectEntityTransactionalEnhancement("line/foo/Me"));
   }
 
   private ClassMetaReader createClassMetaReader() {
 
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
-    AgentManifest manifest = AgentManifest.read(getClass().getClassLoader(), null);
+    AgentManifest manifest = AgentManifest.read(getClass().getClassLoader());
 
     EnhanceContext enhanceContext = new EnhanceContext(reader, "debug=9", manifest);
     return new ClassMetaReader(enhanceContext, new ClassMetaCache());

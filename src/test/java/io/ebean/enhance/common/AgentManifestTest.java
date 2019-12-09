@@ -13,7 +13,7 @@ public class AgentManifestTest {
   @Test
   public void testRead() {
 
-    AgentManifest manifest = AgentManifest.read(this.getClass().getClassLoader(), null);
+    AgentManifest manifest = AgentManifest.read(this.getClass().getClassLoader());
 
     assertThat(manifest.getTransactionalPackages()).contains("test");
     assertThat(manifest.getEntityPackages()).contains("test.model.domain");
@@ -34,7 +34,7 @@ public class AgentManifestTest {
   public void testRead_basic() throws Exception {
 
     AgentManifest manifest =
-        new AgentManifest(null)
+        new AgentManifest()
             .readManifests(this.getClass().getClassLoader(), "META-INF/test_basic.mf");
 
     assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain");
@@ -60,7 +60,7 @@ public class AgentManifestTest {
   public void testRead_none() throws Exception {
 
     AgentManifest manifest =
-        new AgentManifest(null)
+        new AgentManifest()
             .readManifests(this.getClass().getClassLoader(), "META-INF/test_none.mf");
 
     assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain", "cthree.other");
@@ -95,7 +95,7 @@ public class AgentManifestTest {
   public void testRead_old() throws Exception {
 
     AgentManifest manifest =
-        new AgentManifest(null)
+        new AgentManifest()
             .readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
 
     assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain", "cthree.other");
@@ -135,7 +135,7 @@ public class AgentManifestTest {
   public void testRead_expected() throws Exception {
 
     AgentManifest manifest =
-        new AgentManifest(null)
+        new AgentManifest()
             .readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
 
     assertThat(manifest.getEntityPackages()).contains("org.foo.domain", "org.foo.some.domain");
@@ -165,7 +165,7 @@ public class AgentManifestTest {
   public void testRead_EnhanceContext() throws IOException {
 
     AgentManifest manifest =
-        new AgentManifest(null)
+        new AgentManifest()
             .readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
 
     EnhanceContext context = new EnhanceContext(null, null, manifest);
@@ -196,7 +196,7 @@ public class AgentManifestTest {
   public void testRead_EnhanceContext_notSet() throws IOException {
 
     AgentManifest manifest =
-        new AgentManifest(null)
+        new AgentManifest()
             .readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
 
     EnhanceContext context = new EnhanceContext(null, null, manifest);
@@ -212,7 +212,7 @@ public class AgentManifestTest {
   public void testRead_EnhanceContext_topPackages() throws IOException {
 
     AgentManifest manifest =
-      new AgentManifest(null)
+      new AgentManifest()
         .readManifests(this.getClass().getClassLoader(), "META-INF/test_top.mf");
 
     assertThat(manifest.getEntityPackages()).containsOnly("org.one.myapp.domain");
