@@ -89,7 +89,7 @@ public class Transformer implements ClassFileTransformer {
       classLoader = getClass().getClassLoader();
     }
     ClassBytesReader reader = new ClassPathClassBytesReader(null);
-    AgentManifest manifest = AgentManifest.read(classLoader);
+    AgentManifest manifest = new AgentManifest(classLoader);
     this.enhanceContext = new EnhanceContext(reader, agentArgs, manifest);
   }
 
@@ -169,8 +169,8 @@ public class Transformer implements ClassFileTransformer {
 
   @Override
   public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-
     try {
+      enhanceContext.withClassLoader(loader);
       // ignore JDK and JDBC classes etc
       if (enhanceContext.isIgnoreClass(className) || isQueryBeanCompanion(className, loader)) {
         log(9, className, "ignore class");

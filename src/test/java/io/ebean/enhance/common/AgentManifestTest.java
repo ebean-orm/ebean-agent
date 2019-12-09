@@ -13,7 +13,7 @@ public class AgentManifestTest {
   @Test
   public void testRead() {
 
-    AgentManifest manifest = AgentManifest.read(this.getClass().getClassLoader());
+    AgentManifest manifest = new AgentManifest(this.getClass().getClassLoader());
 
     assertThat(manifest.getTransactionalPackages()).contains("test");
     assertThat(manifest.getEntityPackages()).contains("test.model.domain");

@@ -1,6 +1,7 @@
 package io.ebean.enhance.querybean;
 
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Detects if a class is a query bean.
@@ -11,22 +12,45 @@ import java.util.Arrays;
  */
 public class DetectQueryBean {
 
-  private final String[] entityPackages;
+  private final Set<String> entityPackages = new HashSet<>();
 
-  DetectQueryBean(String[] entityPackages) {
-    this.entityPackages = entityPackages;
+  public DetectQueryBean() {
   }
+
+  public void addAll(Set<String> rawEntityPackages) {
+    for (String rawEntityPackage : rawEntityPackages) {
+      entityPackages.add(convert(rawEntityPackage));
+    }
+  }
+
+  /**
+   * Convert package to slash notation taking into account trailing wildcard.
+   */
+  private static String convert(String pkg) {
+
+    pkg = pkg.trim();
+    if (pkg.endsWith("*")) {
+      pkg = pkg.substring(0, pkg.length() - 1);
+    }
+    if (pkg.endsWith(".query")) {
+      // always work with entity bean packages so trim
+      pkg = pkg.substring(0, pkg.length() - 6);
+    }
+    pkg = pkg.replace('.', '/');
+    return pkg.endsWith("/") ? pkg : pkg + "/";
+  }
+
 
   @Override
   public String toString() {
-    return Arrays.toString(entityPackages);
+    return entityPackages.toString();
   }
 
   /**
    * Return true if there are no known packages.
    */
   public boolean isEmpty() {
-    return entityPackages.length == 0;
+    return entityPackages.isEmpty();
   }
 
   /**

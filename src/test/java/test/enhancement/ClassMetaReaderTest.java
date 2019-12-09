@@ -181,7 +181,7 @@ public class ClassMetaReaderTest {
   public void testEnhanceContext() {
 
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
-    AgentManifest manifest = AgentManifest.read(getClass().getClassLoader());
+    AgentManifest manifest = new AgentManifest(getClass().getClassLoader());
     EnhanceContext enhanceContext = new EnhanceContext(reader,"debug=9", manifest);
 
     assertFalse(enhanceContext.isIgnoreClass("jim.bob.Me"));
@@ -205,7 +205,7 @@ public class ClassMetaReaderTest {
   private ClassMetaReader createClassMetaReader() {
 
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
-    AgentManifest manifest = AgentManifest.read(getClass().getClassLoader());
+    AgentManifest manifest = new AgentManifest(getClass().getClassLoader());
 
     EnhanceContext enhanceContext = new EnhanceContext(reader, "debug=9", manifest);
     return new ClassMetaReader(enhanceContext, new ClassMetaCache());
