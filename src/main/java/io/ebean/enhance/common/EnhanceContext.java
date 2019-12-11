@@ -99,7 +99,11 @@ public class EnhanceContext {
   }
 
   public void withClassLoader(ClassLoader loader) {
-    manifest.readManifest(loader);
+    if (manifest.readManifest(loader)) {
+      if (logLevel > 1) {
+        log(null, "loaded entity packages: " + manifest.getEntityPackages());
+      }
+    }
   }
 
   public void setLogLevel(int logLevel) {
@@ -418,7 +422,7 @@ public class EnhanceContext {
 
   /**
    * Return the summary of the enhancement.
-   *
+   * <p>
    * Note that <code>collectSummary()</code> must be called in order for summary
    * information to be collected and returned here.
    */

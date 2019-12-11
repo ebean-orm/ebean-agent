@@ -47,7 +47,6 @@ public class AnnotationInfo {
       getArrayEntry(prefix).add(value);
     } else {
       String key = getKey(prefix, name);
-      //System.out.println("addValue "+key+" value:"+value);
       valueMap.put(key, value);
     }
   }

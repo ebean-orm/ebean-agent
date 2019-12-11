@@ -57,36 +57,34 @@ public class AgentManifest {
 
   public AgentManifest() {
     this.detectQueryBean = new DetectQueryBean();
-    System.out.println("NEW ebean-agent -----------");
-
   }
 
-  public void readManifest(ClassLoader classLoader) {
+  /**
+   * Return true if more entity packages were loaded.
+   */
+  public boolean readManifest(ClassLoader classLoader) {
     if (classLoader == null) {
-      return;
+      return false;
     }
     final int loaderIdentity = System.identityHashCode(classLoader);
-    if (!classLoaderIdentities.add(loaderIdentity)) {
-      return;
-    }
-    System.out.println("-----------------------------------------------------------");
-    System.out.println("ebean-agent loading manifests using classloader: " + loaderIdentity + " cl:" + classLoader);
-    try {
-      int beforeSize = entityPackages.size();
-      readManifests(classLoader, "META-INF/ebean-typequery.mf");
-      readManifests(classLoader, "META-INF/ebean.mf");
-      readManifests(classLoader, "ebean.mf");
-      int afterSize = entityPackages.size();
-      if (afterSize > beforeSize) {
-        System.out.println("ebean-agent loaded entityPackages via: " + loaderIdentity + " cl:" + classLoader + " " + entityPackages);
-        detectQueryBean.addAll(entityPackages);
+    if (classLoaderIdentities.add(loaderIdentity)) {
+      try {
+        int beforeSize = entityPackages.size();
+        readManifests(classLoader, "META-INF/ebean-typequery.mf");
+        readManifests(classLoader, "META-INF/ebean.mf");
+        readManifests(classLoader, "ebean.mf");
+        int afterSize = entityPackages.size();
+        if (afterSize > beforeSize) {
+          detectQueryBean.addAll(entityPackages);
+          return true;
+        }
+      } catch (IOException e) {
+        // log to standard error and return empty
+        System.err.println("Agent: error reading ebean manifest resources");
+        e.printStackTrace();
       }
-
-    } catch (IOException e) {
-      // log to standard error and return empty
-      System.err.println("Agent: error reading ebean manifest resources");
-      e.printStackTrace();
     }
+    return false;
   }
 
   public boolean isDetectQueryBean(String owner) {
