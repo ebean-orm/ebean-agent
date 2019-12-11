@@ -1,5 +1,7 @@
 package io.ebean.enhance.common;
 
+import io.ebean.enhance.querybean.DetectQueryBean;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,17 +23,21 @@ public class AgentManifest {
     MANUAL
   }
 
+  private final Set<Integer> classLoaderIdentities = new HashSet<>();
+
   private final Set<String> entityPackages = new HashSet<>();
 
   private final Set<String> transactionalPackages = new HashSet<>();
 
   private final Set<String> querybeanPackages = new HashSet<>();
 
+  private final DetectQueryBean detectQueryBean;
+
   private TxProfileMode transactionProfilingMode = TxProfileMode.NONE;
 
   /**
-  * Start profileId when automatically assigned by enhancement.
-  */
+   * Start profileId when automatically assigned by enhancement.
+   */
   private int transactionProfilingStart = 1000;
 
   private int debugLevel = -1;
@@ -44,35 +50,45 @@ public class AgentManifest {
 
   private boolean enableQueryAutoLabel;
 
-  public static AgentManifest read(ClassLoader classLoader, Set<String> initialPackages) {
+  public AgentManifest(ClassLoader classLoader) {
+    this.detectQueryBean = new DetectQueryBean();
+    readManifest(classLoader);
+  }
 
-    try {
-      return new AgentManifest(initialPackages)
-          .readManifests(classLoader, "META-INF/ebean-typequery.mf")
-          .readManifests(classLoader, "META-INF/ebean.mf")
-          .readManifests(classLoader, "ebean.mf");
-
-    } catch (IOException e) {
-      // log to standard error and return empty
-      System.err.println("Agent: error reading ebean manifest resources");
-      e.printStackTrace();
-      return new AgentManifest();
-    }
+  public AgentManifest() {
+    this.detectQueryBean = new DetectQueryBean();
   }
 
   /**
-  * Construct with some packages defined externally.
-  */
-  public AgentManifest(Set<String> initialPackages) {
-    if (initialPackages != null) {
-      entityPackages.addAll(initialPackages);
+   * Return true if more entity packages were loaded.
+   */
+  public boolean readManifest(ClassLoader classLoader) {
+    if (classLoader == null) {
+      return false;
     }
+    final int loaderIdentity = System.identityHashCode(classLoader);
+    if (classLoaderIdentities.add(loaderIdentity)) {
+      try {
+        int beforeSize = entityPackages.size();
+        readManifests(classLoader, "META-INF/ebean-typequery.mf");
+        readManifests(classLoader, "META-INF/ebean.mf");
+        readManifests(classLoader, "ebean.mf");
+        int afterSize = entityPackages.size();
+        if (afterSize > beforeSize) {
+          detectQueryBean.addAll(entityPackages);
+          return true;
+        }
+      } catch (IOException e) {
+        // log to standard error and return empty
+        System.err.println("Agent: error reading ebean manifest resources");
+        e.printStackTrace();
+      }
+    }
+    return false;
   }
 
-  /**
-  * Construct with no initial packages (to use with addRaw()).
-  */
-  private AgentManifest() {
+  public boolean isDetectQueryBean(String owner) {
+    return detectQueryBean.isQueryBean(owner);
   }
 
   @Override
@@ -82,8 +98,8 @@ public class AgentManifest {
   }
 
   /**
-  * Return true if enhancement of profileLocations should be added.
-  */
+   * Return true if enhancement of profileLocations should be added.
+   */
   public boolean isEnableProfileLocation() {
     return enableProfileLocation;
   }
@@ -96,8 +112,8 @@ public class AgentManifest {
   }
 
   /**
-  * Return the initial starting profileId when automatically assigned.
-  */
+   * Return the initial starting profileId when automatically assigned.
+   */
   int transactionProfilingStart() {
     switch (transactionProfilingMode) {
       case NONE:
@@ -120,59 +136,59 @@ public class AgentManifest {
   }
 
   /**
-  * Return the parsed set of packages that type query beans are in.
-  */
+   * Return the parsed set of packages that type query beans are in.
+   */
   public Set<String> getEntityPackages() {
     return entityPackages;
   }
 
   /**
-  * Return true if transactional enhancement is turned off.
-  */
+   * Return true if transactional enhancement is turned off.
+   */
   public boolean isTransactionalNone() {
     return transactionalPackages.contains("none") && transactionalPackages.size() == 1;
   }
 
   /**
-  * Return true if we should use transient internal fields.
-  */
+   * Return true if we should use transient internal fields.
+   */
   public boolean isTransientInternalFields() {
     return transientInternalFields;
   }
 
   /**
-  * Return false if enhancement should skip checking for null many fields.
-  */
+   * Return false if enhancement should skip checking for null many fields.
+   */
   public boolean isCheckNullManyFields() {
     return checkNullManyFields;
   }
 
   /**
-  * Return true if query bean enhancement is turned off.
-  */
+   * Return true if query bean enhancement is turned off.
+   */
   public boolean isQueryBeanNone() {
     return querybeanPackages.contains("none") && querybeanPackages.size() == 1;
   }
 
   /**
-  * Return the packages that should be enhanced for transactional.
-  * An empty set means all packages are scanned for transaction classes and methods.
-  */
+   * Return the packages that should be enhanced for transactional.
+   * An empty set means all packages are scanned for transaction classes and methods.
+   */
   public Set<String> getTransactionalPackages() {
     return transactionalPackages;
   }
 
   /**
-  * Return the packages that should be enhanced for query bean use.
-  * An empty set means all packages are scanned for transaction classes and methods.
-  */
+   * Return the packages that should be enhanced for query bean use.
+   * An empty set means all packages are scanned for transaction classes and methods.
+   */
   public Set<String> getQuerybeanPackages() {
     return querybeanPackages;
   }
 
   /**
-  * Read all the specific manifest files and return the set of packages containing type query beans.
-  */
+   * Read all the specific manifest files and return the set of packages containing type query beans.
+   */
   AgentManifest readManifests(ClassLoader classLoader, String path) throws IOException {
     Enumeration<URL> resources = classLoader.getResources(path);
     while (resources.hasMoreElements()) {
@@ -188,8 +204,8 @@ public class AgentManifest {
   }
 
   /**
-  * Add given the manifest InputStream.
-  */
+   * Add given the manifest InputStream.
+   */
   private void addResource(InputStream is) throws IOException {
     try {
       addManifest(new Manifest(is));
@@ -279,11 +295,11 @@ public class AgentManifest {
   }
 
   /**
-  * Collect each individual package splitting by delimiters.
-  */
+   * Collect each individual package splitting by delimiters.
+   */
   private void add(Set<String> addTo, String packages) {
     if (packages != null) {
-      String[] split = packages.split(",|;| ");
+      String[] split = packages.split("[,; ]");
       for (String aSplit : split) {
         String pkg = aSplit.trim();
         if (!pkg.isEmpty()) {

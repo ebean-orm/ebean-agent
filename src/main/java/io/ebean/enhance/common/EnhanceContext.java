@@ -2,8 +2,6 @@ package io.ebean.enhance.common;
 
 import io.ebean.enhance.Transformer;
 import io.ebean.enhance.entity.MessageOutput;
-import io.ebean.enhance.querybean.DetectQueryBean;
-import io.ebean.enhance.querybean.Distill;
 import io.ebean.enhance.transactional.TransactionalMethodKey;
 
 import java.io.ByteArrayOutputStream;
@@ -28,10 +26,6 @@ public class EnhanceContext {
 
   private final HashMap<String, String> agentArgsMap;
 
-  private final boolean transientInternalFields;
-
-  private final boolean checkNullManyFields;
-
   private final ClassMetaReader reader;
 
   private final ClassBytesReader classBytesReader;
@@ -41,8 +35,6 @@ public class EnhanceContext {
   private int logLevel;
 
   private final HashMap<String, ClassMeta> map = new HashMap<>();
-
-  private final DetectQueryBean detectQueryBean;
 
   private final FilterEntityTransactional filterEntityTransactional;
 
@@ -83,11 +75,6 @@ public class EnhanceContext {
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
     this.filterQueryBean = new FilterQueryBean(manifest);
 
-    this.detectQueryBean = Distill.convert(manifest.getEntityPackages());
-    if (detectQueryBean.isEmpty()) {
-      logger.log(Level.FINE, "No ebean.mf detected");
-    }
-
     this.ignoreClassHelper = new IgnoreClassHelper();
     this.logout = new SysoutMessageOutput(System.out);
     this.classBytesReader = classBytesReader;
@@ -106,10 +93,16 @@ public class EnhanceContext {
       }
     }
 
-    this.transientInternalFields = getPropertyBoolean("transientInternalFields", manifest.isTransientInternalFields());
-    this.checkNullManyFields = getPropertyBoolean("checkNullManyFields", manifest.isCheckNullManyFields());
     if (getPropertyBoolean("printversion", false)) {
       System.out.println("ebean agent version: " + Transformer.getVersion());
+    }
+  }
+
+  public void withClassLoader(ClassLoader loader) {
+    if (manifest.readManifest(loader)) {
+      if (logLevel > 1) {
+        log(null, "loaded entity packages: " + manifest.getEntityPackages());
+      }
     }
   }
 
@@ -151,7 +144,7 @@ public class EnhanceContext {
    * </p>
    */
   public boolean isQueryBean(String owner, ClassLoader classLoader) {
-    if (detectQueryBean.isQueryBean(owner)) {
+    if (manifest.isDetectQueryBean(owner)) {
       try {
         final ClassMeta classMeta = reader.get(true, owner, classLoader);
         return classMeta.isQueryBean();
@@ -324,7 +317,7 @@ public class EnhanceContext {
    * Return true if internal ebean fields in entity classes should be transient.
    */
   public boolean isTransientInternalFields() {
-    return transientInternalFields;
+    return manifest.isTransientInternalFields();
   }
 
   /**
@@ -335,7 +328,7 @@ public class EnhanceContext {
    * </p>
    */
   public boolean isCheckNullManyFields() {
-    return checkNullManyFields;
+    return manifest.isCheckNullManyFields();
   }
 
   /**
@@ -429,7 +422,7 @@ public class EnhanceContext {
 
   /**
    * Return the summary of the enhancement.
-   *
+   * <p>
    * Note that <code>collectSummary()</code> must be called in order for summary
    * information to be collected and returned here.
    */
