@@ -70,7 +70,7 @@ public class AgentManifest {
     if (classLoaderIdentities.add(loaderIdentity)) {
       try {
         int beforeSize = entityPackages.size();
-        readManifests(classLoader, "META-INF/ebean-typequery.mf");
+        readManifests(classLoader, "META-INF/ebean-info.mf");
         readManifests(classLoader, "META-INF/ebean.mf");
         readManifests(classLoader, "ebean.mf");
         int afterSize = entityPackages.size();
