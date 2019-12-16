@@ -12,7 +12,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 /**
- * Reads all the META-INF/ebean.mf and META-INF/ebean-typequery.mf resources with the locations
+ * Reads all the META-INF/ebean.mf and META-INF/ebean-generated-info.mf resources with the locations
  * of all the entity beans (and hence locations of query beans).
  */
 public class AgentManifest {
@@ -70,7 +70,7 @@ public class AgentManifest {
     if (classLoaderIdentities.add(loaderIdentity)) {
       try {
         int beforeSize = entityPackages.size();
-        readManifests(classLoader, "META-INF/ebean-info.mf");
+        readManifests(classLoader, "META-INF/ebean-generated-info.mf");
         readManifests(classLoader, "META-INF/ebean.mf");
         readManifests(classLoader, "ebean.mf");
         int afterSize = entityPackages.size();
