@@ -386,7 +386,7 @@ public class EnhanceContext {
    * Turn on the summary collection of the enhancement.
    */
   public void collectSummary() {
-    this.summaryInfo = new SummaryInfo();
+    this.summaryInfo = new SummaryInfo(manifest.getLoadedResources());
   }
 
   /**

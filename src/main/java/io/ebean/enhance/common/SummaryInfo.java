@@ -1,6 +1,7 @@
 package io.ebean.enhance.common;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.TreeSet;
@@ -10,12 +11,14 @@ import java.util.TreeSet;
  */
 public class SummaryInfo {
 
+  private final List<String> loadedResources;
   private final Set<String> entities = new HashSet<>();
   private final Set<String> queryBeans = new HashSet<>();
   private final Set<String> queryBeanCallers = new HashSet<>();
   private final Set<String> transactional = new HashSet<>();
 
-  SummaryInfo() {
+  SummaryInfo(List<String> loadedResources) {
+    this.loadedResources = loadedResources;
   }
 
   /**
@@ -77,6 +80,12 @@ public class SummaryInfo {
     return new SumOut(beans).summary(prefix);
   }
 
+  /**
+   * Return the manifest resource paths that were loaded.
+   */
+  public List<String> loadedResources() {
+    return loadedResources;
+  }
 
   /**
    * Return a summary of the entities enhanced.

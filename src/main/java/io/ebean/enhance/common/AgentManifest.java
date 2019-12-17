@@ -5,8 +5,10 @@ import io.ebean.enhance.querybean.DetectQueryBean;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -24,6 +26,8 @@ public class AgentManifest {
   }
 
   private final Set<Integer> classLoaderIdentities = new HashSet<>();
+
+  private final List<String> loadedResources = new ArrayList<>();
 
   private final Set<String> entityPackages = new HashSet<>();
 
@@ -136,6 +140,13 @@ public class AgentManifest {
   }
 
   /**
+   * Return the paths that manifests were loaded from.
+   */
+  public List<String> getLoadedResources() {
+    return loadedResources;
+  }
+
+  /**
    * Return the parsed set of packages that type query beans are in.
    */
   public Set<String> getEntityPackages() {
@@ -195,6 +206,7 @@ public class AgentManifest {
       URL url = resources.nextElement();
       try {
         addResource(UrlHelper.openNoCache(url));
+        loadedResources.add(path);
       } catch (IOException e) {
         System.err.println("Error reading manifest resources " + url);
         e.printStackTrace();

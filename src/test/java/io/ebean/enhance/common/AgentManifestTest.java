@@ -183,6 +183,8 @@ public class AgentManifestTest {
 
     context.collectSummary();
     SummaryInfo emptySummary = context.getSummaryInfo();
+    assertThat(emptySummary.loadedResources()).containsOnly("META-INF/test_expected.mf");
+
     assertThat(emptySummary.entities()).isEqualTo("     Entities (0)  pkgs[] beans[]");
 
     context.collectSummary();

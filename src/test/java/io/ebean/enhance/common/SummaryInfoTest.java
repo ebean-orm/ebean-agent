@@ -3,6 +3,7 @@ package io.ebean.enhance.common;
 
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ public class SummaryInfoTest {
   @Test
   public void prepare() {
 
-    SummaryInfo summaryInfo = new SummaryInfo();
+    SummaryInfo summaryInfo = new SummaryInfo(new ArrayList<>());
     summaryInfo.addQueryBean("org/foo/model/query/QCustomer");
     summaryInfo.addQueryBeanCaller("org/foo/model/query/QCustomer");
     summaryInfo.addQueryBean("org/foo/model/query/QOrder");
@@ -35,7 +36,7 @@ public class SummaryInfoTest {
   @Test
   public void prepare_companion() {
 
-    SummaryInfo summaryInfo = new SummaryInfo();
+    SummaryInfo summaryInfo = new SummaryInfo(new ArrayList<>());
     summaryInfo.addQueryBean("org/foo/model/query/QCustomer");
     summaryInfo.addQueryBeanCaller("org/foo/model/query/QCustomer");
     summaryInfo.addQueryBeanCaller("org/foo/model/query/QCustomer$Companion");
@@ -47,7 +48,7 @@ public class SummaryInfoTest {
   @Test
   public void summaryInfo() {
 
-    SummaryInfo summaryInfo = new SummaryInfo();
+    SummaryInfo summaryInfo = new SummaryInfo(new ArrayList<>());
     summaryInfo.addEntity("org/model/Customer");
     summaryInfo.addQueryBean("org/model/query/QCustomer");
     summaryInfo.addQueryBeanCaller("org/dao/MyDao");
@@ -69,7 +70,7 @@ public class SummaryInfoTest {
   @Test
   public void summaryInfo_empty() {
 
-    SummaryInfo summaryInfo = new SummaryInfo();
+    SummaryInfo summaryInfo = new SummaryInfo(new ArrayList<>());
     summaryInfo.prepare();
     assertTrue(summaryInfo.isEmpty());
     assertFalse(summaryInfo.hasEntities());
