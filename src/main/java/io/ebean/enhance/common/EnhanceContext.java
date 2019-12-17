@@ -147,6 +147,11 @@ public class EnhanceContext {
     if (manifest.isDetectQueryBean(owner)) {
       try {
         final ClassMeta classMeta = reader.get(true, owner, classLoader);
+        if (classMeta == null) {
+          // For Gradle Kotlin KAPT the generate query bean bytecode
+          // isn't available to the classLoader. Just returning true.
+          return true;
+        }
         return classMeta.isQueryBean();
       } catch (ClassNotFoundException e) {
         throw new RuntimeException(e);
