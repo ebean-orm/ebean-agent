@@ -37,7 +37,7 @@ public class AgentManifest {
 
   private boolean checkNullManyFields = true;
 
-  private boolean enableProfileLocation;
+  private boolean enableProfileLocation = true;
 
   public AgentManifest(ClassLoader classLoader) {
     this.detectQueryBean = new DetectQueryBean();
