@@ -41,8 +41,6 @@ public class EnhanceContext {
 
   private final boolean enableProfileLocation;
 
-  private final boolean enableQueryAutoLabel;
-
   private SummaryInfo summaryInfo;
 
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest) {
@@ -55,8 +53,6 @@ public class EnhanceContext {
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest, ClassMetaCache metaCache) {
     this.manifest = manifest;
     this.enableProfileLocation = manifest.isEnableProfileLocation();
-    this.enableQueryAutoLabel = manifest.isEnableQueryAutoLabel();
-
     this.agentArgsMap = ArgParser.parse(agentArgs);
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
     this.filterQueryBean = new FilterQueryBean(manifest);
@@ -167,13 +163,6 @@ public class EnhanceContext {
    */
   public boolean isEnableProfileLocation() {
     return enableProfileLocation;
-  }
-
-  /**
-   * Return true if enhancement should automatically set labels on queries.
-   */
-  public boolean isEnableQueryAutoLabel() {
-    return enableQueryAutoLabel;
   }
 
   /**

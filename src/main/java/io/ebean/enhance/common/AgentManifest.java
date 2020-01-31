@@ -39,8 +39,6 @@ public class AgentManifest {
 
   private boolean enableProfileLocation;
 
-  private boolean enableQueryAutoLabel;
-
   public AgentManifest(ClassLoader classLoader) {
     this.detectQueryBean = new DetectQueryBean();
     readManifest(classLoader);
@@ -95,12 +93,6 @@ public class AgentManifest {
     return enableProfileLocation;
   }
 
-  /**
-   * Return true if enhancement should add labels to query bean queries.
-   */
-  public boolean isEnableQueryAutoLabel() {
-    return enableQueryAutoLabel;
-  }
 
   /**
    * Return the debug level read from ebean.mf
@@ -211,11 +203,6 @@ public class AgentManifest {
     String locationMode = attributes.getValue("profile-location");
     if (locationMode != null) {
       enableProfileLocation = Boolean.parseBoolean(locationMode);
-    }
-
-    String queryLabelMode = attributes.getValue("query-labels");
-    if (queryLabelMode != null) {
-      enableQueryAutoLabel = Boolean.parseBoolean(queryLabelMode);
     }
   }
 
