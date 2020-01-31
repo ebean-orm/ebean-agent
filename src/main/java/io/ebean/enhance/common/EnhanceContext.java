@@ -2,13 +2,10 @@ package io.ebean.enhance.common;
 
 import io.ebean.enhance.Transformer;
 import io.ebean.enhance.entity.MessageOutput;
-import io.ebean.enhance.transactional.TransactionalMethodKey;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,21 +37,11 @@ public class EnhanceContext {
 
   private final FilterQueryBean filterQueryBean;
 
-  /**
-   * Current profileId when automatically assigned.
-   */
-  private int autoProfileId;
-
   private boolean throwOnError;
 
   private final boolean enableProfileLocation;
 
   private final boolean enableQueryAutoLabel;
-
-  /**
-   * Mapping of profileId to transactional method descriptions (for decoding profiling).
-   */
-  private final List<TransactionalMethodKey> profilingKeys = new ArrayList<>();
 
   private SummaryInfo summaryInfo;
 
@@ -67,7 +54,6 @@ public class EnhanceContext {
    */
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest, ClassMetaCache metaCache) {
     this.manifest = manifest;
-    this.autoProfileId = manifest.transactionProfilingStart();
     this.enableProfileLocation = manifest.isEnableProfileLocation();
     this.enableQueryAutoLabel = manifest.isEnableQueryAutoLabel();
 
@@ -334,38 +320,6 @@ public class EnhanceContext {
    */
   public boolean isCheckNullManyFields() {
     return manifest.isCheckNullManyFields();
-  }
-
-  /**
-   * Create a TransactionalMethodKey with (maybe) a profileId.
-   */
-  public TransactionalMethodKey createMethodKey(String className, String methodName, String methodDesc, int profileId) {
-
-    TransactionalMethodKey key = new TransactionalMethodKey(className, methodName, methodDesc);
-
-    if (autoProfileId == -1) {
-      // disabled (including disabling profileIds on @Transactional)
-      key.setProfileId(0);
-    } else {
-      if (profileId == 0 && autoProfileId > 0) {
-        // enabled mode automatically setting to the next profileId
-        profileId = ++autoProfileId;
-      }
-      key.setProfileId(profileId);
-      if (profileId > 0) {
-        // we are only interested in the profiling transactions
-        profilingKeys.add(key);
-      }
-    }
-
-    return key;
-  }
-
-  /**
-   * Return the profiling transaction keys.
-   */
-  public List<TransactionalMethodKey> getTransactionProfilingKeys() {
-    return profilingKeys;
   }
 
   /**

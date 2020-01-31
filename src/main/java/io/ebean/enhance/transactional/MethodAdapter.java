@@ -29,17 +29,12 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
 
   private final AnnotationInfo annotationInfo;
 
-  private final String methodName;
-
   private boolean transactional;
 
   private int posTxScope;
-  private int lineNumber;
-  private TransactionalMethodKey methodKey;
 
   MethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
     super(classAdapter, mv, access, name, desc);
-    this.methodName = name;
 
     // inherit from class level Transactional annotation
     AnnotationInfo parentInfo = classAdapter.getClassAnnotationInfo();
@@ -68,15 +63,6 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
   @Override
   public void visitMaxs(int maxStack, int maxLocals) {
     finallyVisitMaxs(maxStack, maxLocals);
-  }
-
-  @Override
-  public void visitLineNumber(int line, Label start) {
-    super.visitLineNumber(line, start);
-    if (lineNumber == 0 && methodKey != null) {
-      lineNumber = line;
-      methodKey.setLineNumber(lineNumber);
-    }
   }
 
   @Override
@@ -141,15 +127,6 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
     mv.visitLdcInsn(batch.toString());
     mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L" + C_PERSISTBATCH + ";", false);
     mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchOnCascade", "(L" + C_PERSISTBATCH + ";)L" + C_TXSCOPE + ";", false);
-    mv.visitInsn(POP);
-  }
-
-  private void setProfileId(int profileId) {
-
-    visitLabelLine();
-    mv.visitVarInsn(ALOAD, posTxScope);
-    VisitUtil.visitIntInsn(mv, profileId);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setProfileId", "(I)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
@@ -250,28 +227,12 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
     }
   }
 
-  /**
-   * Return the profileId from the transactional annotation.
-   */
-  private int annotationProfileId() {
-    Object value = annotationInfo.getValue("profileId");
-    if (value == null) {
-      return 0;
-    } else {
-      return (int) value;
-    }
-  }
-
   @Override
   protected void onMethodEnter() {
-
     if (!transactional) {
       return;
     }
-
     int locationField = classAdapter.nextTransactionLocation();
-
-    methodKey = classAdapter.createMethodKey(methodName, methodDesc, annotationProfileId());
     posTxScope = newLocal(txScopeType);
 
     mv.visitTypeInsn(NEW, txScopeType.getInternalName());
@@ -285,10 +246,6 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
     }
     if (classAdapter.isEnableProfileLocation()) {
       setTxProfileLocation(locationField);
-    }
-    int profileId = methodKey.getProfileId();
-    if (profileId > 0) {
-      setProfileId(profileId);
     }
     String txLabel = (String) annotationInfo.getValue("label");
     if (txLabel != null && !txLabel.isEmpty()) {
@@ -354,12 +311,10 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
 
   @Override
   protected void onFinally(int opcode) {
-
     if (!transactional) {
       return;
     }
 
-    classAdapter.transactionalMethod(methodKey);
     if (opcode == RETURN) {
       visitInsn(ACONST_NULL);
 

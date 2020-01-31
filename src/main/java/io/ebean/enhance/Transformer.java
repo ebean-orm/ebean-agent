@@ -17,7 +17,6 @@ import io.ebean.enhance.entity.ClassPathClassBytesReader;
 import io.ebean.enhance.entity.MessageOutput;
 import io.ebean.enhance.querybean.TypeQueryClassAdapter;
 import io.ebean.enhance.transactional.ClassAdapterTransactional;
-import io.ebean.enhance.transactional.TransactionalMethodKey;
 import org.avaje.agentloader.AgentLoader;
 
 import java.io.IOException;
@@ -236,15 +235,6 @@ public class Transformer implements ClassFileTransformer {
     } catch (NoEnhancementRequiredException e) {
       log(8, request.getClassName(), "No entity or transactional enhancement required " + e.getMessage());
     }
-  }
-
-  /**
-  * Return the transaction profiling keys.
-  *
-  * We use these to decode a the transaction profile.
-  */
-  public List<TransactionalMethodKey> getTransactionProfilingKeys() {
-    return enhanceContext.getTransactionProfilingKeys();
   }
 
   /**

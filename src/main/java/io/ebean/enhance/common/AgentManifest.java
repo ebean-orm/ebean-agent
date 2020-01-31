@@ -19,12 +19,6 @@ import java.util.jar.Manifest;
  */
 public class AgentManifest {
 
-  enum TxProfileMode {
-    NONE,
-    ENABLED,
-    MANUAL
-  }
-
   private final Set<Integer> classLoaderIdentities = new HashSet<>();
 
   private final List<String> loadedResources = new ArrayList<>();
@@ -36,13 +30,6 @@ public class AgentManifest {
   private final Set<String> querybeanPackages = new HashSet<>();
 
   private final DetectQueryBean detectQueryBean;
-
-  private TxProfileMode transactionProfilingMode = TxProfileMode.NONE;
-
-  /**
-   * Start profileId when automatically assigned by enhancement.
-   */
-  private int transactionProfilingStart = 1000;
 
   private int debugLevel = -1;
 
@@ -98,7 +85,7 @@ public class AgentManifest {
   @Override
   public String toString() {
     return "entityPackages:" + entityPackages + " querybeanPackages:" + querybeanPackages
-      + " transactionalPackages:" + transactionalPackages + " profilingMode:" + transactionProfilingMode;
+      + " transactionalPackages:" + transactionalPackages;
   }
 
   /**
@@ -113,23 +100,6 @@ public class AgentManifest {
    */
   public boolean isEnableQueryAutoLabel() {
     return enableQueryAutoLabel;
-  }
-
-  /**
-   * Return the initial starting profileId when automatically assigned.
-   */
-  int transactionProfilingStart() {
-    switch (transactionProfilingMode) {
-      case NONE:
-        return -1;
-      case MANUAL:
-        return 0;
-      case ENABLED:
-        return transactionProfilingStart;
-      default: {
-        return transactionProfilingStart;
-      }
-    }
   }
 
   /**
@@ -247,41 +217,11 @@ public class AgentManifest {
     if (queryLabelMode != null) {
       enableQueryAutoLabel = Boolean.parseBoolean(queryLabelMode);
     }
-
-    String mode = attributes.getValue("transaction-profiling");
-    if (mode != null) {
-      transactionProfilingMode = parseMode(mode);
-    }
-  }
-
-  private TxProfileMode parseMode(String mode) {
-    switch (mode.trim().toLowerCase()) {
-      case "enabled":
-      case "auto":
-      case "enable":
-        return TxProfileMode.ENABLED;
-      case "manual":
-        return TxProfileMode.MANUAL;
-      default:
-        return TxProfileMode.NONE;
-    }
-  }
-
-  private void readProfilingStart(Attributes attributes) {
-    String start = attributes.getValue("transaction-profiling-startvalue");
-    if (start != null) {
-      try {
-        transactionProfilingStart = Integer.parseInt(start);
-      } catch (NumberFormatException e) {
-        // ignore
-      }
-    }
   }
 
   private void addManifest(Manifest manifest) {
     Attributes attributes = manifest.getMainAttributes();
     readProfilingMode(attributes);
-    readProfilingStart(attributes);
     readOptions(attributes);
 
     add(entityPackages, attributes.getValue("packages"));

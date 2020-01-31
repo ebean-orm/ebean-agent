@@ -16,10 +16,7 @@ import io.ebean.enhance.common.NoEnhancementRequiredException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,10 +51,6 @@ public class ClassAdapterTransactional extends ClassVisitor {
   private static final String LKOTLIN_METADATA = "Lkotlin/Metadata;";
   private static final String _$EBP = "_$ebp";
   private static final String LIO_EBEAN_PROFILE_LOCATION = "Lio/ebean/ProfileLocation;";
-
-  private final Set<String> transactionalMethods = new LinkedHashSet<>();
-
-  private final Set<Integer> transactionalLineNumbers = new LinkedHashSet<>();
 
   private final EnhanceContext enhanceContext;
 
@@ -262,7 +255,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
       throw new NoEnhancementRequiredException(className);
     }
     if (isLog(4)) {
-      log("methods:" + transactionalMethods + " qp:" + queryProfileCount + " tp:" + transactionProfileCount + " profileLocation:" + isEnableProfileLocation());
+      log("queryCount:" + queryProfileCount + " txnCount:" + transactionProfileCount + " profileLocation:" + isEnableProfileLocation());
     }
     if (enhanceContext.isEnableProfileLocation()) {
       addStaticFieldDefinitions();
@@ -313,23 +306,14 @@ public class ClassAdapterTransactional extends ClassVisitor {
       mv.visitFieldInsn(PUTSTATIC, className, QP_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;");
     }
 
-    boolean withLineNumbers = (transactionProfileCount == transactionalLineNumbers.size());
-    List<Integer> lineNumbers = new ArrayList<>(transactionalLineNumbers);
-
     for (int i = 0; i < transactionProfileCount; i++) {
       Label l0 = new Label();
       mv.visitLabel(l0);
       mv.visitLineNumber(2, l0);
-      if (withLineNumbers) {
-        int txnLineNumber = lineNumbers.get(i);
-        mv.visitIntInsn(BIPUSH, txnLineNumber);
-        String label = getTxnLabel(i);
-        mv.visitLdcInsn(label);
-        mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", "create", "(ILjava/lang/String;)Lio/ebean/ProfileLocation;", true);
-
-      } else {
-        mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", "create", "()Lio/ebean/ProfileLocation;", true);
-      }
+      mv.visitIntInsn(BIPUSH, 0);
+      String label = getTxnLabel(i);
+      mv.visitLdcInsn(label);
+      mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", "create", "(ILjava/lang/String;)Lio/ebean/ProfileLocation;", true);
       mv.visitFieldInsn(PUTSTATIC, className, TX_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;");
     }
 
@@ -363,24 +347,6 @@ public class ClassAdapterTransactional extends ClassVisitor {
     mv.visitInsn(RETURN);
     mv.visitMaxs(0, 0);
     mv.visitEnd();
-  }
-
-  void transactionalMethod(TransactionalMethodKey methodKey) {
-
-    transactionalLineNumbers.add(methodKey.getLineNumber());
-    transactionalMethods.add(methodKey.getMethodName());
-    if (isLog(4)) {
-      log("method - " + methodKey);
-    }
-  }
-
-  /**
-   * Create and return the TransactionalMethodKey.
-   * <p>
-   * Takes into account the profiling mode (as per manifest) and explicit profileId.
-   */
-  TransactionalMethodKey createMethodKey(String methodName, String methodDesc, int profId) {
-    return enhanceContext.createMethodKey(className, methodName, methodDesc, profId);
   }
 
   /**
