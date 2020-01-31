@@ -1,4 +1,4 @@
-package io.ebean.enhance.asm;
+package io.ebean.enhance.common;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.ebean.enhance.common.CommonSuperUnresolved;
+import io.ebean.enhance.asm.ClassReader;
+import io.ebean.enhance.asm.ClassVisitor;
+import io.ebean.enhance.asm.ClassWriter;
+import io.ebean.enhance.asm.Opcodes;
 
 /**
  * ClassWriter without class loading. Fixes problems on dynamic enhancement mentioned here:

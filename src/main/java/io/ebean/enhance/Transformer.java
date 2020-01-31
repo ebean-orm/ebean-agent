@@ -2,10 +2,10 @@ package io.ebean.enhance;
 
 import io.ebean.enhance.asm.ClassReader;
 import io.ebean.enhance.asm.ClassWriter;
-import io.ebean.enhance.asm.ClassWriterWithoutClassLoading;
 import io.ebean.enhance.common.AgentManifest;
 import io.ebean.enhance.common.AlreadyEnhancedException;
 import io.ebean.enhance.common.ClassBytesReader;
+import io.ebean.enhance.common.ClassWriterWithoutClassLoading;
 import io.ebean.enhance.common.CommonSuperUnresolved;
 import io.ebean.enhance.common.DetectEnhancement;
 import io.ebean.enhance.common.EnhanceContext;
