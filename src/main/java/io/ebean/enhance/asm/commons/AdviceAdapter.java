@@ -27,17 +27,17 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm.commons;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.ConstantDynamic;
 import io.ebean.enhance.asm.Handle;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.Type;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A {@link MethodVisitor} to insert before, after and around advices in methods and constructors.
@@ -352,6 +352,8 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
           popValue();
           popValue();
           break;
+        case RET:
+          break;
         default:
           throw new IllegalArgumentException(INVALID_OPCODE + opcode);
       }
@@ -546,7 +548,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
 
   @Override
   public void visitTableSwitchInsn(
-    final int min, final int max, final Label dflt, final Label... labels) {
+      final int min, final int max, final Label dflt, final Label... labels) {
     super.visitTableSwitchInsn(min, max, dflt, labels);
     if (isConstructor && !superClassConstructorCalled) {
       popValue();
@@ -556,7 +558,7 @@ public abstract class AdviceAdapter extends GeneratorAdapter implements Opcodes 
 
   @Override
   public void visitTryCatchBlock(
-    final Label start, final Label end, final Label handler, final String type) {
+      final Label start, final Label end, final Label handler, final String type) {
     super.visitTryCatchBlock(start, end, handler, type);
     // By definition of 'forwardJumpStackFrames', 'handler' should be pushed only if there is an
     // instruction between 'start' and 'end' at which the super class constructor is not yet

@@ -27,11 +27,11 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm.commons;
 
+import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.TypePath;
 
 /**
@@ -81,7 +81,7 @@ public class LocalVariablesSorter extends MethodVisitor {
    */
   public LocalVariablesSorter(
       final int access, final String descriptor, final MethodVisitor methodVisitor) {
-    this(Opcodes.ASM7, access, descriptor, methodVisitor);
+    this(/* latest api = */ Opcodes.ASM7, access, descriptor, methodVisitor);
     if (getClass() != LocalVariablesSorter.class) {
       throw new IllegalStateException();
     }

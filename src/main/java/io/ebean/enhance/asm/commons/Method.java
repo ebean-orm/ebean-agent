@@ -27,10 +27,10 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.Type;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import io.ebean.enhance.asm.Type;
 
 /**
  * A named method descriptor.

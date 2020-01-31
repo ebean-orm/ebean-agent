@@ -592,7 +592,7 @@ final class MethodWriter extends MethodVisitor {
       final String signature,
       final String[] exceptions,
       final int compute) {
-    super(Opcodes.ASM7);
+    super(/* latest api = */ Opcodes.ASM7);
     this.symbolTable = symbolTable;
     this.accessFlags = "<init>".equals(name) ? access | Constants.ACC_CONSTRUCTOR : access;
     this.nameIndex = symbolTable.addConstantUtf8(name);
@@ -665,7 +665,7 @@ final class MethodWriter extends MethodVisitor {
 
   @Override
   public AnnotationVisitor visitTypeAnnotation(
-    final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastRuntimeVisibleTypeAnnotation =
           AnnotationWriter.create(
@@ -775,6 +775,9 @@ final class MethodWriter extends MethodVisitor {
       }
       visitFrameEnd();
     } else {
+      if (symbolTable.getMajorVersion() < Opcodes.V1_6) {
+        throw new IllegalArgumentException("Class versions V1_5 or less must use F_NEW frames.");
+      }
       int offsetDelta;
       if (stackMapTableEntries == null) {
         stackMapTableEntries = new ByteVector();
@@ -1400,7 +1403,7 @@ final class MethodWriter extends MethodVisitor {
 
   @Override
   public AnnotationVisitor visitInsnAnnotation(
-    final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastCodeRuntimeVisibleTypeAnnotation =
           AnnotationWriter.create(
@@ -1436,7 +1439,7 @@ final class MethodWriter extends MethodVisitor {
 
   @Override
   public AnnotationVisitor visitTryCatchAnnotation(
-    final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (visible) {
       return lastCodeRuntimeVisibleTypeAnnotation =
           AnnotationWriter.create(

@@ -56,7 +56,9 @@ public abstract class MethodVisitor {
    */
   protected final int api;
 
-  /** The method visitor to which this visitor must delegate method calls. May be null. */
+  /**
+   * The method visitor to which this visitor must delegate method calls. May be {@literal null}.
+   */
   protected MethodVisitor mv;
 
   /**
@@ -78,8 +80,15 @@ public abstract class MethodVisitor {
    *     be null.
    */
   public MethodVisitor(final int api, final MethodVisitor methodVisitor) {
-    if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4) {
+    if (api != Opcodes.ASM7
+        && api != Opcodes.ASM6
+        && api != Opcodes.ASM5
+        && api != Opcodes.ASM4
+        && api != Opcodes.ASM8_EXPERIMENTAL) {
       throw new IllegalArgumentException("Unsupported api " + api);
+    }
+    if (api == Opcodes.ASM8_EXPERIMENTAL) {
+      Constants.checkAsm8Experimental(this);
     }
     this.api = api;
     this.mv = methodVisitor;
@@ -92,7 +101,7 @@ public abstract class MethodVisitor {
   /**
    * Visits a parameter of this method.
    *
-   * @param name parameter name or null if none is provided.
+   * @param name parameter name or {@literal null} if none is provided.
    * @param access the parameter's access flags, only {@code ACC_FINAL}, {@code ACC_SYNTHETIC}
    *     or/and {@code ACC_MANDATED} are allowed (see {@link Opcodes}).
    */
@@ -152,7 +161,7 @@ public abstract class MethodVisitor {
    *     interested in visiting this annotation.
    */
   public AnnotationVisitor visitTypeAnnotation(
-    final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
     }
@@ -532,7 +541,7 @@ public abstract class MethodVisitor {
             || (value instanceof Type && ((Type) value).getSort() == Type.METHOD))) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
     }
-    if (api != Opcodes.ASM7 && value instanceof ConstantDynamic) {
+    if (api < Opcodes.ASM7 && value instanceof ConstantDynamic) {
       throw new UnsupportedOperationException("This feature requires ASM7");
     }
     if (mv != null) {
@@ -614,7 +623,7 @@ public abstract class MethodVisitor {
    *     interested in visiting this annotation.
    */
   public AnnotationVisitor visitInsnAnnotation(
-    final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
     }
@@ -662,7 +671,7 @@ public abstract class MethodVisitor {
    *     interested in visiting this annotation.
    */
   public AnnotationVisitor visitTryCatchAnnotation(
-    final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
+      final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     if (api < Opcodes.ASM5) {
       throw new UnsupportedOperationException(REQUIRES_ASM5);
     }
