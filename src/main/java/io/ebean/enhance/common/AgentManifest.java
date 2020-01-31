@@ -33,7 +33,7 @@ public class AgentManifest {
 
   private int debugLevel = -1;
 
-  private boolean transientInternalFields;
+  private boolean transientInternalFields = true;
 
   private boolean checkNullManyFields = true;
 
