@@ -80,6 +80,9 @@ public class DetectEnhancement extends ClassVisitor {
     if ((access & Opcodes.ACC_INTERFACE) != 0) {
       throw new NoEnhancementRequiredException("Interface type");
     }
+    if ((access & Opcodes.ACC_SYNTHETIC) != 0) {
+      throw new NoEnhancementRequiredException("Synthetic type");
+    }
 
     this.className = name;
     for (String anInterface : interfaces) {
