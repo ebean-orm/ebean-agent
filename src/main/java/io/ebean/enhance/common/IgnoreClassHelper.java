@@ -17,7 +17,7 @@ class IgnoreClassHelper {
 
   private static final Set<String> ignoreTwoLevel = new HashSet<>();
 
-  static  {
+  static {
     ignoreOneLevel.add("jdk");
     ignoreOneLevel.add("java");
     ignoreOneLevel.add("javax");
@@ -78,17 +78,16 @@ class IgnoreClassHelper {
   }
 
   /**
-  * Try to exclude JDK classes and known JDBC Drivers and Libraries.
-  * <p>
-  * We want to do this for performance reasons - that is skip checking for
-  * enhancement on classes that we know are not part of the application code
-  * and should not be enhanced.
-  * </p>
-  *
-  * @param className
-  *          the className of the class being defined.
-  * @return true if this class should not be processed.
-  */
+   * Try to exclude JDK classes and known JDBC Drivers and Libraries.
+   * <p>
+   * We want to do this for performance reasons - that is skip checking for
+   * enhancement on classes that we know are not part of the application code
+   * and should not be enhanced.
+   * </p>
+   *
+   * @param className the className of the class being defined.
+   * @return true if this class should not be processed.
+   */
   boolean isIgnoreClass(String className) {
 
     if (className == null || "bsh/Interpreter".equals(className)) {
@@ -114,10 +113,15 @@ class IgnoreClassHelper {
       return true;
     }
     int secondSlash = className.indexOf('/', firstSlash + 1);
-    if (secondSlash == -1) {
-      return false;
+    if (secondSlash > -1) {
+      String secondPackage = className.substring(0, secondSlash);
+      if (ignoreTwoLevel.contains(secondPackage)) {
+        return true;
+      }
     }
-    String secondPackage = className.substring(0, secondSlash);
-    return ignoreTwoLevel.contains(secondPackage);
+    if (className.contains("$ByteBuddy$")) {
+      return true;
+    }
+    return false;
   }
 }
