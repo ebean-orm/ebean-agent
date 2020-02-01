@@ -63,6 +63,7 @@ class IgnoreClassHelper {
     ignoreTwoLevel.add("com/h2database");
     ignoreTwoLevel.add("com/fasterxml");
     ignoreTwoLevel.add("com/intellij");
+    ignoreTwoLevel.add("com/jprofiler");
     ignoreTwoLevel.add("com/google");
     ignoreTwoLevel.add("com/squareup");
     ignoreTwoLevel.add("com/microsoft");
