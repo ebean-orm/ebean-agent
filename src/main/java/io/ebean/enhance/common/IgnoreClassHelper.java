@@ -119,9 +119,6 @@ class IgnoreClassHelper {
         return true;
       }
     }
-    if (className.contains("$ByteBuddy$")) {
-      return true;
-    }
-    return false;
+    return className.contains("$ByteBuddy$");
   }
 }
