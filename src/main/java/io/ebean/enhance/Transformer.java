@@ -176,15 +176,12 @@ public class Transformer implements ClassFileTransformer {
         return null;
       }
       TransformRequest request = new TransformRequest(className, classfileBuffer);
-
       if (enhanceContext.detectEntityTransactionalEnhancement(className)) {
         enhanceEntityAndTransactional(loader, request);
       }
-
       if (enhanceContext.detectQueryBeanEnhancement(className)) {
         enhanceQueryBean(loader, request);
       }
-
       if (request.isEnhanced()) {
         return request.getBytes();
       }
@@ -196,7 +193,9 @@ public class Transformer implements ClassFileTransformer {
       // the class is an interface
       log(8, className, "No Enhancement required " + e.getMessage());
       return null;
-
+    } catch (IllegalStateException e) {
+      log(1, className, "No enhancement on class due to " + e);
+      return null;
     } catch (Exception e) {
       if (enhanceContext.isThrowOnError()) {
         throw new IllegalStateException(e);
@@ -297,7 +296,6 @@ public class Transformer implements ClassFileTransformer {
     ClassReader cr = new ClassReader(request.getBytes());
     ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
-
     try {
       cr.accept(ca, ClassReader.EXPAND_FRAMES);
       if (ca.isLog(2)) {

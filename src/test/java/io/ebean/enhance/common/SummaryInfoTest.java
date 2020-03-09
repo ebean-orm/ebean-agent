@@ -97,6 +97,17 @@ public class SummaryInfoTest {
   }
 
   @Test
+  public void test_SumOut_when_subpackage() {
+
+    Set<String> beans = new HashSet<>(asList("org/foo/model/BeanA", "org/foo/model/subpack/BeanZ", "org/foo/model/subpack/BeanB"));
+    SummaryInfo.SumOut sumOut = new SummaryInfo.SumOut(beans);
+
+    assertEquals("org/foo/model", sumOut.commonPackage());
+    assertEquals("[BeanA, subpack/BeanB, subpack/BeanZ]", sumOut.beans());
+    assertEquals("Entities (3)  pkgs[org/foo/model] beans[BeanA, subpack/BeanB, subpack/BeanZ]", sumOut.summary("Entities"));
+  }
+
+  @Test
   public void test_SumOut_diff() {
 
     Set<String> beans = new HashSet<>(asList("org/foo/model/BeanA", "org/foo/modelb/BeanB"));

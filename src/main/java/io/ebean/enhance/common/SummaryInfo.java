@@ -157,33 +157,41 @@ public class SummaryInfo {
             commonPrefix = beanPrefix;
             commonAsArray = beanPrefix.split("/");
           } else {
-            commonPrefix = common(beanPrefix);
+            common(beanPrefix);
           }
         }
       }
     }
 
-    private String common(String beanPrefix) {
+    private void common(String beanPrefix) {
       if (beanPrefix.equals(commonPrefix)) {
-        return commonPrefix;
+        return;
       }
 
       final String[] elements = beanPrefix.split("/");
       int min = Math.min(commonAsArray.length, elements.length);
       for (int i = 0; i < min; i++) {
         if (!elements[i].equals(commonAsArray[i])) {
-          return commonFor(i);
+          commonFor(i);
+          return;
         }
       }
-      return commonPrefix;
+      if (commonAsArray.length != min) {
+        commonFor(min);
+      }
     }
 
-    private String commonFor(int pos) {
+    private void setCommonPrefix(String beanPrefix) {
+      commonPrefix = beanPrefix;
+      commonAsArray = beanPrefix.split("/");
+    }
+
+    private void commonFor(int pos) {
       StringJoiner joiner = new StringJoiner("/");
       for (int i = 0; i < pos; i++) {
         joiner.add(commonAsArray[i]);
       }
-      return joiner.toString();
+      setCommonPrefix(joiner.toString());
     }
 
     String prefix(String bean) {
@@ -201,7 +209,10 @@ public class SummaryInfo {
         trimLen = 0;
       }
       for (String bean : beans) {
-        temp.add(bean.substring(trimLen));
+        if (bean.length() > trimLen) {
+          bean = bean.substring(trimLen);
+        }
+        temp.add(bean);
       }
       return temp;
     }
