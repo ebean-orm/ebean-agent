@@ -200,6 +200,7 @@ public class Transformer implements ClassFileTransformer {
       if (enhanceContext.isThrowOnError()) {
         throw new IllegalStateException(e);
       }
+      enhanceContext.log(className, "Error during transform " + e);
       enhanceContext.log(e);
       return null;
     } finally {

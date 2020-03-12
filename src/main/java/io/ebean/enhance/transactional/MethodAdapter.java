@@ -3,6 +3,7 @@ package io.ebean.enhance.transactional;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.common.AnnotationInfo;
 import io.ebean.enhance.common.AnnotationInfoVisitor;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  * rollback or not.
  * </p>
  */
-class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants {
+class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes {
 
   private static final String TX_FIELD_PREFIX = ClassAdapterTransactional.TX_FIELD_PREFIX;
 
@@ -28,14 +29,17 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
   private static final Type helpScopeTrans = Type.getType(L_HELPSCOPETRANS);
 
   private final AnnotationInfo annotationInfo;
+  private final ClassAdapterTransactional classAdapter;
+  private final ProfileMethodInstruction profileMethod;
 
   private boolean transactional;
 
   private int posTxScope;
 
   MethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
-    super(classAdapter, mv, access, name, desc);
-
+    super(mv, access, name, desc);
+    this.classAdapter = classAdapter;
+    this.profileMethod = new ProfileMethodInstruction(classAdapter, mv);
     // inherit from class level Transactional annotation
     AnnotationInfo parentInfo = classAdapter.getClassAnnotationInfo();
 
@@ -57,12 +61,19 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
 
   @Override
   public void visitCode() {
-    finallyVisitCode();
+    super.visitCode();
+    if (transactional) {
+      finallyVisitStart();
+    }
   }
 
   @Override
   public void visitMaxs(int maxStack, int maxLocals) {
-    finallyVisitMaxs(maxStack, maxLocals);
+    if (transactional) {
+      finallyVisitMaxs(maxStack, maxLocals);
+    } else {
+      super.visitMaxs(maxStack, maxLocals);
+    }
   }
 
   @Override
@@ -74,6 +85,11 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
     } else {
       return av;
     }
+  }
+
+  @Override
+  public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+    profileMethod.visitMethodInsn(opcode, owner, name, desc, itf);
   }
 
   private void setTxType(Object txType) {
@@ -327,7 +343,7 @@ class MethodAdapter extends ConstructorMethodAdapter implements EnhanceConstants
       } else {
         dup();
       }
-      box(Type.getReturnType(this.methodDesc));
+      box(getReturnType());
     }
     visitIntInsn(SIPUSH, opcode);
     visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "exit", "(Ljava/lang/Object;I)V", false);

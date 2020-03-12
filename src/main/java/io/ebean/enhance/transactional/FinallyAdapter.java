@@ -6,8 +6,7 @@ import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.commons.AdviceAdapter;
 
 /**
- * FinallyAdapter adjusted to support both non-finally use (for ConstructorMethodAdapter)
- * and finally use (for MethodAdapter that also enhances transactional methods)
+ * FinallyAdapter for MethodAdapter that also enhances transactional methods)
  */
 abstract class FinallyAdapter extends AdviceAdapter {
 
@@ -17,18 +16,11 @@ abstract class FinallyAdapter extends AdviceAdapter {
     super(Opcodes.ASM7, mv, acc, name, desc);
   }
 
-  @Override
-  public void visitMaxs(int maxStack, int maxLocals) {
-    super.visitMaxs(maxStack, maxLocals);
-  }
-
-  void finallyVisitCode() {
-    super.visitCode();
+  void finallyVisitStart() {
     mv.visitLabel(startFinally);
   }
 
-  void finallyVisitMaxs(int maxStack, int maxLocals) {
-
+  protected void finallyVisitMaxs(int maxStack, int maxLocals) {
     Label endFinally = new Label();
     mv.visitTryCatchBlock(startFinally, endFinally, endFinally, null);
     mv.visitLabel(endFinally);
@@ -44,7 +36,6 @@ abstract class FinallyAdapter extends AdviceAdapter {
     }
   }
 
-  void onFinally(int opcode) {
-  }
+  abstract void onFinally(int opcode);
 
 }

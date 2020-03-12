@@ -219,7 +219,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
         if (isLog(7)) {
           log("checking constructor, maybe add profile location for queries in className:" + className + " " + name + " [" + desc + "]");
         }
-        return new ConstructorMethodAdapter(this, mv, access, name, desc);
+        return new ConstructorMethodAdapter(this, mv);
       }
       return mv;
     }
