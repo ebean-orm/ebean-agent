@@ -102,7 +102,7 @@ public class AgentManifestTest {
     assertThat(manifest.isTransactionalNone()).isFalse();
     assertThat(manifest.isQueryBeanNone()).isFalse();
 
-    assertThat(manifest.isTransientInternalFields()).isTrue();
+    assertThat(manifest.isTransientInternalFields()).isFalse();
     assertThat(manifest.isCheckNullManyFields()).isTrue();
 
     assertThat(manifest.getTransactionalPackages()).isEmpty();
@@ -202,7 +202,7 @@ public class AgentManifestTest {
             .readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
 
     EnhanceContext context = new EnhanceContext(null, null, manifest);
-    assertThat(context.isTransientInternalFields()).isTrue();
+    assertThat(context.isTransientInternalFields()).isFalse();
     assertThat(context.isCheckNullManyFields()).isTrue();
 
     assertThat(context.getEntityPackages()).containsOnly("btwo.domain", "aone.domain", "cthree.other");
