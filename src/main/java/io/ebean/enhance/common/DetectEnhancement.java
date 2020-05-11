@@ -5,6 +5,7 @@ import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 import static io.ebean.enhance.common.EnhanceConstants.TRANSACTIONAL_ANNOTATION;
 
 /**
@@ -30,7 +31,7 @@ public class DetectEnhancement extends ClassVisitor {
   private boolean enhancedTransactional;
 
   public DetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
-    super(Opcodes.ASM7);
+    super(EBEAN_ASM_VERSION);
     this.classLoader = classLoader;
     this.enhanceContext = context;
   }
@@ -151,7 +152,7 @@ public class DetectEnhancement extends ClassVisitor {
   private class DetectTransactionalMethod extends MethodVisitor {
 
     DetectTransactionalMethod() {
-      super(Opcodes.ASM7);
+      super(EBEAN_ASM_VERSION);
     }
 
     @Override

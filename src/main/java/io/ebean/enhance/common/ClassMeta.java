@@ -4,7 +4,6 @@ import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.entity.FieldMeta;
 import io.ebean.enhance.entity.LocalFieldVisitor;
 import io.ebean.enhance.entity.MessageOutput;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 import static io.ebean.enhance.common.EnhanceConstants.C_OBJECT;
 import static io.ebean.enhance.common.EnhanceConstants.TRANSACTIONAL_ANNOTATION;
 import static io.ebean.enhance.common.EnhanceConstants.TYPEQUERYBEAN_ANNOTATION;
@@ -390,7 +390,7 @@ public class ClassMeta {
     final MethodMeta methodMeta;
 
     MethodReader(MethodVisitor mv, MethodMeta methodMeta) {
-      super(Opcodes.ASM7, mv);
+      super(EBEAN_ASM_VERSION, mv);
       this.methodMeta = methodMeta;
     }
 

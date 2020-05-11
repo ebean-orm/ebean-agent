@@ -4,6 +4,8 @@ import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.EnhanceConstants;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
+
 /**
  * Adapts constructor method code with profile location for query beans and finders.
  */
@@ -12,7 +14,7 @@ class ConstructorMethodAdapter extends MethodVisitor implements EnhanceConstants
   private final ProfileMethodInstruction profileMethod;
 
   ConstructorMethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv) {
-    super(Opcodes.ASM7, mv);
+    super(EBEAN_ASM_VERSION, mv);
     this.profileMethod = new ProfileMethodInstruction(classAdapter, mv);
   }
 

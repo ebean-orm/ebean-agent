@@ -2,6 +2,7 @@ package io.ebean.enhance;
 
 import io.ebean.enhance.asm.ClassReader;
 import io.ebean.enhance.asm.ClassWriter;
+import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.AgentManifest;
 import io.ebean.enhance.common.AlreadyEnhancedException;
 import io.ebean.enhance.common.ClassBytesReader;
@@ -38,6 +39,8 @@ import java.util.Properties;
  * </p>
  */
 public class Transformer implements ClassFileTransformer {
+
+  public static final int EBEAN_ASM_VERSION = Opcodes.ASM8;
 
   private static String version;
 

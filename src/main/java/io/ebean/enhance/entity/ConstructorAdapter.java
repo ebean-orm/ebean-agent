@@ -10,6 +10,8 @@ import io.ebean.enhance.asm.TypePath;
 import io.ebean.enhance.common.ClassMeta;
 import io.ebean.enhance.common.EnhanceConstants;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
+
 /**
  * Modify the constructor to additionally initialise the entityBeanIntercept
  * field.
@@ -35,7 +37,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
   private final ConstructorDeferredCode deferredCode;
 
   ConstructorAdapter(MethodVisitor mv, ClassMeta meta, String constructorDesc) {
-    super(Opcodes.ASM7, mv);
+    super(EBEAN_ASM_VERSION, mv);
     this.meta = meta;
     this.className = meta.getClassName();
     this.constructorDesc = constructorDesc;

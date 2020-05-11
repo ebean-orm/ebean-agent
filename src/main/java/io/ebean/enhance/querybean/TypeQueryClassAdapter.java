@@ -12,6 +12,7 @@ import io.ebean.enhance.common.AnnotationInfoVisitor;
 import io.ebean.enhance.common.EnhanceContext;
 import io.ebean.enhance.common.NoEnhancementRequiredException;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
 
 /**
@@ -30,7 +31,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
 
   public TypeQueryClassAdapter(ClassWriter cw, EnhanceContext enhanceContext, ClassLoader loader) {
-    super(Opcodes.ASM7, cw);
+    super(EBEAN_ASM_VERSION, cw);
     this.enhanceContext = enhanceContext;
     this.loader = loader;
   }

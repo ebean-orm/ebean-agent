@@ -10,6 +10,8 @@ import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.EnhanceContext;
 import io.ebean.enhance.common.NoEnhancementRequiredException;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
+
 /**
  * ClassAdapter for enhancing entities.
  * <p>
@@ -30,7 +32,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
   private boolean firstMethod = true;
 
   public ClassAdapterEntity(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
-    super(Opcodes.ASM7, cv);
+    super(EBEAN_ASM_VERSION, cv);
     this.classLoader = classLoader;
     this.enhanceContext = context;
     this.classMeta = context.createClassMeta();

@@ -1,15 +1,16 @@
 package io.ebean.enhance.entity;
 
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.ClassMeta;
+
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
 class MethodStaticInitAdapter extends MethodVisitor {
 
   private final ClassMeta classMeta;
 
   MethodStaticInitAdapter(final MethodVisitor mv, ClassMeta classMeta) {
-    super(Opcodes.ASM7, mv);
+    super(EBEAN_ASM_VERSION, mv);
     this.classMeta = classMeta;
   }
 

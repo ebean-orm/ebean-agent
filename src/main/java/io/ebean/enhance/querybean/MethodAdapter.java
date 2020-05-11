@@ -4,6 +4,8 @@ import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.EnhanceContext;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
+
 /**
  * Adapter that changes GETFIELD calls to type query beans to instead use the generated
  * 'property access' methods.
@@ -15,7 +17,7 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
   private final ClassLoader loader;
 
   MethodAdapter(MethodVisitor mv, EnhanceContext enhanceContext, ClassInfo classInfo, ClassLoader loader) {
-    super(ASM7, mv);
+    super(EBEAN_ASM_VERSION, mv);
     this.enhanceContext = enhanceContext;
     this.classInfo = classInfo;
     this.loader = loader;
