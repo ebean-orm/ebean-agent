@@ -6,6 +6,8 @@ import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.ClassMeta;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
+
 /**
  * Changes the method code from using PUTFIELD and GETFIELD to calling our
  * special field interception methods.
@@ -25,7 +27,7 @@ class MethodFieldAdapter extends MethodVisitor implements Opcodes {
   private boolean transientAnnotation;
 
   MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
-    super(Opcodes.ASM7, mv);
+    super(EBEAN_ASM_VERSION, mv);
     this.meta = meta;
     this.className = meta.getClassName();
     this.methodDescription = methodDescription;

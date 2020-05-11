@@ -27,11 +27,11 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.asm.Type;
 import io.ebean.enhance.asm.TypePath;
 
 /**
@@ -81,7 +81,7 @@ public class LocalVariablesSorter extends MethodVisitor {
    */
   public LocalVariablesSorter(
       final int access, final String descriptor, final MethodVisitor methodVisitor) {
-    this(/* latest api = */ Opcodes.ASM7, access, descriptor, methodVisitor);
+    this(/* latest api = */ Opcodes.ASM8, access, descriptor, methodVisitor);
     if (getClass() != LocalVariablesSorter.class) {
       throw new IllegalStateException();
     }
@@ -91,7 +91,8 @@ public class LocalVariablesSorter extends MethodVisitor {
    * Constructs a new {@link LocalVariablesSorter}.
    *
    * @param api the ASM API version implemented by this visitor. Must be one of {@link
-   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
+   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6}, {@link Opcodes#ASM7} or {@link
+   *     Opcodes#ASM8}.
    * @param access access flags of the adapted method.
    * @param descriptor the method's descriptor (see {@link Type}).
    * @param methodVisitor the method visitor to which this adapter delegates calls.

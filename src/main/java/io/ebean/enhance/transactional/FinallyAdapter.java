@@ -13,7 +13,7 @@ abstract class FinallyAdapter extends AdviceAdapter {
   private final Label startFinally = new Label();
 
   FinallyAdapter(MethodVisitor mv, int acc, String name, String desc) {
-    super(Opcodes.ASM7, mv, acc, name, desc);
+    super(Opcodes.ASM8, mv, acc, name, desc);
   }
 
   void finallyVisitStart() {

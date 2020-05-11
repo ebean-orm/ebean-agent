@@ -1,7 +1,8 @@
 package io.ebean.enhance.common;
 
 import io.ebean.enhance.asm.AnnotationVisitor;
-import io.ebean.enhance.asm.Opcodes;
+
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
 /**
  * Reads the annotation information storing it in a AnnotationInfo.
@@ -13,7 +14,7 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
   private final String prefix;
 
   public AnnotationInfoVisitor(String prefix, AnnotationInfo info, AnnotationVisitor av) {
-    super(Opcodes.ASM7, av);
+    super(EBEAN_ASM_VERSION, av);
     this.info = info;
     this.prefix = prefix;
     if (prefix != null) {

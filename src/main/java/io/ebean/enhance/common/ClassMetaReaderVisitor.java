@@ -6,6 +6,8 @@ import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
+
 /**
  * Used by ClassMetaReader to read information about a class.
  * <p>
@@ -21,7 +23,7 @@ class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
   private final boolean readMethodMeta;
 
   ClassMetaReaderVisitor(boolean readMethodMeta, EnhanceContext context) {
-    super(Opcodes.ASM7);
+    super(EBEAN_ASM_VERSION);
     this.readMethodMeta = readMethodMeta;
     this.classMeta = context.createClassMeta();
   }

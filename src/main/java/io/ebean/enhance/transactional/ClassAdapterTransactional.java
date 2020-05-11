@@ -5,7 +5,6 @@ import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.AlreadyEnhancedException;
 import io.ebean.enhance.common.AnnotationInfo;
 import io.ebean.enhance.common.AnnotationInfoVisitor;
@@ -20,6 +19,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 import static io.ebean.enhance.asm.Opcodes.ACC_PRIVATE;
 import static io.ebean.enhance.asm.Opcodes.ACC_STATIC;
 import static io.ebean.enhance.asm.Opcodes.ACC_SYNTHETIC;
@@ -78,7 +78,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
   private final Map<Integer, String> txLabels = new LinkedHashMap<>();
 
   public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
-    super(Opcodes.ASM7, cv);
+    super(EBEAN_ASM_VERSION, cv);
     this.classLoader = classLoader;
     this.enhanceContext = context;
   }

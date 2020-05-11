@@ -3,8 +3,9 @@ package io.ebean.enhance.entity;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Attribute;
 import io.ebean.enhance.asm.FieldVisitor;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.EnhanceConstants;
+
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
 /**
  * Used to collect information about a field (specifically from field annotations).
@@ -20,7 +21,7 @@ public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants 
    * @param fieldMeta the fieldMeta data
    */
   public LocalFieldVisitor(FieldVisitor fv, FieldMeta fieldMeta) {
-    super(Opcodes.ASM7, fv);
+    super(EBEAN_ASM_VERSION, fv);
     this.fieldMeta = fieldMeta;
   }
 

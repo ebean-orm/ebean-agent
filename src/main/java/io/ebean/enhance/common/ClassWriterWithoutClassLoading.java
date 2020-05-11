@@ -1,5 +1,10 @@
 package io.ebean.enhance.common;
 
+import io.ebean.enhance.asm.ClassReader;
+import io.ebean.enhance.asm.ClassVisitor;
+import io.ebean.enhance.asm.ClassWriter;
+import io.ebean.enhance.asm.Opcodes;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -9,10 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.ebean.enhance.asm.ClassReader;
-import io.ebean.enhance.asm.ClassVisitor;
-import io.ebean.enhance.asm.ClassWriter;
-import io.ebean.enhance.asm.Opcodes;
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
 /**
  * ClassWriter without class loading. Fixes problems on dynamic enhancement mentioned here:
@@ -112,7 +114,7 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
     }
     try (InputStream classBytes = classLoader.getResourceAsStream(internalTypeName + ".class")){
       ClassReader classReader = new ClassReader(classBytes);
-      classReader.accept(new ClassVisitor(Opcodes.ASM7) {
+      classReader.accept(new ClassVisitor(EBEAN_ASM_VERSION) {
 
         @Override
         public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {

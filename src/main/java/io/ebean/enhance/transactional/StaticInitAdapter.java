@@ -4,6 +4,7 @@ import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.commons.AdviceAdapter;
 
+import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 
 /**
@@ -15,7 +16,7 @@ class StaticInitAdapter extends AdviceAdapter {
   private final String className;
 
   StaticInitAdapter(MethodVisitor mv, int access, String name, String desc, String className) {
-    super(ASM7, mv, access, name, desc);
+    super(EBEAN_ASM_VERSION, mv, access, name, desc);
     this.className = className;
   }
 
