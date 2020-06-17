@@ -70,7 +70,6 @@ public class Transformer implements ClassFileTransformer {
   }
 
   public static void premain(String agentArgs, Instrumentation inst) {
-
     instrumentation = inst;
     transformer = new Transformer(null, agentArgs);
     inst.addTransformer(transformer);
@@ -196,8 +195,8 @@ public class Transformer implements ClassFileTransformer {
       // the class is an interface
       log(8, className, "No Enhancement required " + e.getMessage());
       return null;
-    } catch (IllegalStateException e) {
-      log(1, className, "No enhancement on class due to " + e);
+    } catch (IllegalArgumentException | IllegalStateException e) {
+      log(2, className, "No enhancement on class due to " + e);
       return null;
     } catch (Exception e) {
       if (enhanceContext.isThrowOnError()) {
@@ -269,9 +268,7 @@ public class Transformer implements ClassFileTransformer {
     ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
     ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
     try {
-
       cr.accept(ca, ClassReader.EXPAND_FRAMES);
-
       if (ca.isLog(2)) {
         ca.logEnhanced();
         unresolved.addAll(cw.getUnresolved());
@@ -296,7 +293,6 @@ public class Transformer implements ClassFileTransformer {
   * Perform transactional enhancement and Finder profileLocation enhancement.
   */
   private void transactionalEnhancement(ClassLoader loader, TransformRequest request) {
-
     ClassReader cr = new ClassReader(request.getBytes());
     ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
     ClassAdapterTransactional ca = new ClassAdapterTransactional(cw, loader, enhanceContext);
@@ -321,16 +317,13 @@ public class Transformer implements ClassFileTransformer {
     }
   }
 
-
   /**
-  * Perform enhancement.
-  */
+   * Perform enhancement.
+   */
   private void enhanceQueryBean(ClassLoader loader, TransformRequest request) {
-
     ClassReader cr = new ClassReader(request.getBytes());
     ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
     TypeQueryClassAdapter ca = new TypeQueryClassAdapter(cw, enhanceContext, loader);
-
     try {
       cr.accept(ca, ClassReader.EXPAND_FRAMES);
       request.enhancedQueryBean(cw.toByteArray());
@@ -338,14 +331,9 @@ public class Transformer implements ClassFileTransformer {
       if (ca.isLog(3)) {
         ca.log("already query bean enhanced");
       }
-
     } catch (NoEnhancementRequiredException e) {
       if (ca.isLog(4)) {
         ca.log("skipped query bean enhancement");
-      }
-    } catch (IllegalArgumentException e) {
-      if (ca.isLog(1)) {
-        ca.log("skipped query bean enhancement due to " + e);
       }
     } finally {
       unresolved.addAll(cw.getUnresolved());
@@ -356,11 +344,9 @@ public class Transformer implements ClassFileTransformer {
   * Helper method to split semi-colon separated class paths into a URL array.
   */
   public static URL[] parseClassPaths(String extraClassPath) {
-
     if (extraClassPath == null) {
       return new URL[0];
     }
-
     return UrlPathHelper.convertToUrl(extraClassPath.split(";"));
   }
 
@@ -371,7 +357,6 @@ public class Transformer implements ClassFileTransformer {
   private DetectEnhancement detect(ClassLoader classLoader, byte[] classfileBuffer) {
 
     DetectEnhancement detect = new DetectEnhancement(classLoader, enhanceContext);
-
     ClassReader cr = new ClassReader(classfileBuffer);
     cr.accept(detect, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG + ClassReader.SKIP_FRAMES);
     return detect;
