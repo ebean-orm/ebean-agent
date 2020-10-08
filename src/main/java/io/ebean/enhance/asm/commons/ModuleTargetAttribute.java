@@ -29,9 +29,9 @@
 package io.ebean.enhance.asm.commons;
 
 import io.ebean.enhance.asm.Attribute;
+import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.ByteVector;
 import io.ebean.enhance.asm.ClassReader;
-import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.ClassWriter;
 import io.ebean.enhance.asm.Label;
 

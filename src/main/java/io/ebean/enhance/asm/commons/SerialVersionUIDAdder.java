@@ -36,7 +36,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
@@ -151,7 +150,7 @@ public class SerialVersionUIDAdder extends ClassVisitor {
    * @throws IllegalStateException If a subclass calls this constructor.
    */
   public SerialVersionUIDAdder(final ClassVisitor classVisitor) {
-    this(/* latest api = */ Opcodes.ASM8, classVisitor);
+    this(/* latest api = */ Opcodes.ASM9, classVisitor);
     if (getClass() != SerialVersionUIDAdder.class) {
       throw new IllegalStateException();
     }
@@ -161,8 +160,8 @@ public class SerialVersionUIDAdder extends ClassVisitor {
    * Constructs a new {@link SerialVersionUIDAdder}.
    *
    * @param api the ASM API version implemented by this visitor. Must be one of {@link
-   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6}, {@link Opcodes#ASM7} or {@link
-   *     Opcodes#ASM8}.
+   *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6}, {@link Opcodes#ASM7}, {@link
+   *     Opcodes#ASM8} or {@link Opcodes#ASM9}.
    * @param classVisitor a {@link ClassVisitor} to which this visitor will delegate calls.
    */
   protected SerialVersionUIDAdder(final int api, final ClassVisitor classVisitor) {
