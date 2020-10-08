@@ -40,7 +40,7 @@ import java.util.Properties;
  */
 public class Transformer implements ClassFileTransformer {
 
-  public static final int EBEAN_ASM_VERSION = Opcodes.ASM8;
+  public static final int EBEAN_ASM_VERSION = Opcodes.ASM9;
 
   private static String version;
 

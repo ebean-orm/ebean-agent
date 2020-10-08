@@ -1,8 +1,8 @@
 package io.ebean.enhance.transactional;
 
+import io.ebean.enhance.Transformer;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.commons.AdviceAdapter;
 
 /**
@@ -13,7 +13,7 @@ abstract class FinallyAdapter extends AdviceAdapter {
   private final Label startFinally = new Label();
 
   FinallyAdapter(MethodVisitor mv, int acc, String name, String desc) {
-    super(Opcodes.ASM8, mv, acc, name, desc);
+    super(Transformer.EBEAN_ASM_VERSION, mv, acc, name, desc);
   }
 
   void finallyVisitStart() {
