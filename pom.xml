@@ -9,7 +9,7 @@
 
   <groupId>io.ebean</groupId>
   <artifactId>ebean-agent</artifactId>
-  <version>12.6.6</version>
+  <version>12.6.7-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ebean-agent</name>
@@ -17,7 +17,7 @@
 
   <scm>
     <developerConnection>scm:git:git@github.com:ebean-orm/ebean-agent.git</developerConnection>
-    <tag>ebean-agent-12.6.6</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
