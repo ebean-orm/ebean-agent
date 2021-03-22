@@ -23,7 +23,7 @@ class DefaultConstructor {
       classMeta.log("... adding default constructor, super class: " + classMeta.getSuperClassName());
     }
 
-    MethodVisitor underlyingMV = cw.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, INIT, NOARG_VOID, null, null);
+    MethodVisitor underlyingMV = cw.visitMethod(classMeta.accPublic(), INIT, NOARG_VOID, null, null);
 
     ConstructorAdapter mv = new ConstructorAdapter(underlyingMV, classMeta, NOARG_VOID);
 

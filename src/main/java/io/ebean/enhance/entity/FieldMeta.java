@@ -340,7 +340,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    */
   private void addGet(ClassVisitor cw, ClassMeta classMeta) {
 
-    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, getMethodName, getMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), getMethodName, getMethodDesc, null, null);
     mv.visitCode();
 
     if (isInitMany()) {
@@ -465,7 +465,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     // ARETURN or IRETURN
     int iReturnOpcode = asmType.getOpcode(Opcodes.IRETURN);
 
-    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, getNoInterceptMethodName, getMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), getNoInterceptMethodName, getMethodDesc, null, null);
     mv.visitCode();
 
     Label l0 = new Label();
@@ -505,7 +505,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     // double and long have a size of 2
     int iPosition = asmType.getSize();
 
-    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, setMethodName, setMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), setMethodName, setMethodDesc, null, null);
     mv.visitCode();
 
     Label l0 = new Label();
@@ -566,7 +566,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     // double and long have a size of 2
     int iPosition = asmType.getSize();
 
-    MethodVisitor mv = cw.visitMethod(ACC_PROTECTED + ACC_SYNTHETIC, setNoInterceptMethodName, setMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), setNoInterceptMethodName, setMethodDesc, null, null);
     mv.visitCode();
     Label l0 = new Label();
 

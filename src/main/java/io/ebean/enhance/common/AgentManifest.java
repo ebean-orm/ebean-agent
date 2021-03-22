@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import static io.ebean.enhance.asm.Opcodes.*;
+
 /**
  * Reads all the META-INF/ebean.mf and META-INF/ebean-generated-info.mf resources with the locations
  * of all the entity beans (and hence locations of query beans).
@@ -34,10 +36,9 @@ public class AgentManifest {
   private int debugLevel = -1;
 
   private boolean transientInternalFields;
-
   private boolean checkNullManyFields = true;
-
   private boolean enableProfileLocation = true;
+  private boolean synthetic = true;
 
   public AgentManifest(ClassLoader classLoader) {
     this.detectQueryBean = new DetectQueryBean();
@@ -136,6 +137,18 @@ public class AgentManifest {
     return checkNullManyFields;
   }
 
+  public int accPublic() {
+    return synthetic ? (ACC_PUBLIC + ACC_SYNTHETIC) : ACC_PUBLIC;
+  }
+
+  public int accProtected() {
+    return synthetic ? (ACC_PROTECTED + ACC_SYNTHETIC) : ACC_PROTECTED;
+  }
+
+  public int accPrivate() {
+    return synthetic ? (ACC_PRIVATE + ACC_SYNTHETIC) : ACC_PRIVATE;
+  }
+
   /**
    * Return true if query bean enhancement is turned off.
    */
@@ -194,15 +207,17 @@ public class AgentManifest {
   }
 
   private void readProfilingMode(Attributes attributes) {
-
     String debug = attributes.getValue("debug");
     if (debug != null) {
       debugLevel = Integer.parseInt(debug);
     }
-
     String locationMode = attributes.getValue("profile-location");
     if (locationMode != null) {
       enableProfileLocation = Boolean.parseBoolean(locationMode);
+    }
+    String syntheticOption = attributes.getValue("synthetic");
+    if (syntheticOption != null) {
+      synthetic = Boolean.parseBoolean(syntheticOption);
     }
   }
 

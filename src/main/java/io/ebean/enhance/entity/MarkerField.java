@@ -5,6 +5,7 @@ import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.ClassMeta;
 import io.ebean.enhance.common.EnhanceConstants;
 
 /**
@@ -24,13 +25,10 @@ class MarkerField implements Opcodes, EnhanceConstants {
   /**
    * Add the _EBEAN_MARKER field.
    */
-  static String addField(ClassVisitor cv, String className) {
-
-    String cn = className.replace('/', '.');
-
-    FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, _EBEAN_MARKER, L_STRING, null, cn);
+  static String addField(ClassVisitor cv, ClassMeta meta) {
+    String cn = meta.getClassName().replace('/', '.');
+    FieldVisitor fv = cv.visitField(meta.accPrivate() + ACC_STATIC, _EBEAN_MARKER, L_STRING, null, cn);
     fv.visitEnd();
-
     return cn;
   }
 
@@ -43,20 +41,20 @@ class MarkerField implements Opcodes, EnhanceConstants {
    * }
    * </pre>
    */
-  static void addGetMarker(ClassVisitor cv, String className) {
+  static void addGetMarker(ClassVisitor cv, ClassMeta meta) {
 
     MethodVisitor mv;
 
-    mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getMarker", "()Ljava/lang/String;", null, null);
+    mv = cv.visitMethod(meta.accPublic(), "_ebean_getMarker", "()Ljava/lang/String;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
-    mv.visitFieldInsn(GETSTATIC, className, "_EBEAN_MARKER", L_STRING);
+    mv.visitFieldInsn(GETSTATIC, meta.getClassName(), "_EBEAN_MARKER", L_STRING);
     mv.visitInsn(ARETURN);
     Label l1 = new Label();
     mv.visitLabel(l1);
-    mv.visitLocalVariable("this", "L" + className + ";", null, l0, l1, 0);
+    mv.visitLocalVariable("this", "L" + meta.getClassName() + ";", null, l0, l1, 0);
     mv.visitMaxs(1, 1);
     mv.visitEnd();
   }

@@ -30,7 +30,7 @@ class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
 
     MethodVisitor mv;
 
-    mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_setEmbeddedLoaded", NOARG_VOID, null, null);
+    mv = cv.visitMethod(classMeta.accPublic(), "_ebean_setEmbeddedLoaded", NOARG_VOID, null, null);
     mv.visitCode();
 
     Label labelBegin = null;

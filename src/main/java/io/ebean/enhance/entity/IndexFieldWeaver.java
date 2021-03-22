@@ -25,8 +25,8 @@ class IndexFieldWeaver implements Opcodes {
 
   private static final String _EBEAN_PROPS = "_ebean_props";
 
-  static void addPropertiesField(ClassVisitor cv) {
-    FieldVisitor fv = cv.visitField(ACC_PUBLIC + ACC_STATIC + ACC_SYNTHETIC, _EBEAN_PROPS, "[Ljava/lang/String;", null, null);
+  static void addPropertiesField(ClassVisitor cv, ClassMeta meta) {
+    FieldVisitor fv = cv.visitField(meta.accPublic() + ACC_STATIC, _EBEAN_PROPS, "[Ljava/lang/String;", null, null);
     fv.visitEnd();
   }
 
@@ -73,7 +73,7 @@ class IndexFieldWeaver implements Opcodes {
 
   static void addGetPropertyNames(ClassVisitor cv, ClassMeta classMeta) {
 
-    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getPropertyNames", "()[Ljava/lang/String;", null, null);
+    MethodVisitor mv = cv.visitMethod(classMeta.accPublic(), "_ebean_getPropertyNames", "()[Ljava/lang/String;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
@@ -88,7 +88,7 @@ class IndexFieldWeaver implements Opcodes {
   }
 
   static void addGetPropertyName(ClassVisitor cv, ClassMeta classMeta) {
-    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getPropertyName", "(I)Ljava/lang/String;", null, null);
+    MethodVisitor mv = cv.visitMethod(classMeta.accPublic(), "_ebean_getPropertyName", "(I)Ljava/lang/String;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
@@ -172,9 +172,9 @@ class IndexFieldWeaver implements Opcodes {
 
     MethodVisitor mv;
     if (intercept) {
-      mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getFieldIntercept", "(I)Ljava/lang/Object;", null, null);
+      mv = cv.visitMethod(classMeta.accPublic(), "_ebean_getFieldIntercept", "(I)Ljava/lang/Object;", null, null);
     } else {
-      mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getField", "(I)Ljava/lang/Object;", null, null);
+      mv = cv.visitMethod(classMeta.accPublic(), "_ebean_getField", "(I)Ljava/lang/Object;", null, null);
     }
 
     mv.visitCode();
@@ -245,10 +245,10 @@ class IndexFieldWeaver implements Opcodes {
 
     MethodVisitor mv;
     if (intercept) {
-      mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_setFieldIntercept", "(ILjava/lang/Object;)V",
+      mv = cv.visitMethod(classMeta.accPublic(), "_ebean_setFieldIntercept", "(ILjava/lang/Object;)V",
         null, null);
     } else {
-      mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_setField", "(ILjava/lang/Object;)V", null, null);
+      mv = cv.visitMethod(classMeta.accPublic(), "_ebean_setField", "(ILjava/lang/Object;)V", null, null);
     }
 
     mv.visitCode();

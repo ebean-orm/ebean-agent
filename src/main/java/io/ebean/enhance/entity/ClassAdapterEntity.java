@@ -185,12 +185,12 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       }
 
       // always add the marker field on every enhanced class
-      String marker = MarkerField.addField(cv, classMeta.getClassName());
+      String marker = MarkerField.addField(cv, classMeta);
       if (isLog(4)) {
         log("... add marker field \"" + marker + "\"");
       }
 
-      IndexFieldWeaver.addPropertiesField(cv);
+      IndexFieldWeaver.addPropertiesField(cv, classMeta);
       if (isLog(4)) {
         log("... add _ebean_props field");
       }
@@ -201,8 +201,8 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
         if (isLog(4)) {
           log("... add intercept and identity fields");
         }
-        InterceptField.addField(cv, enhanceContext.isTransientInternalFields());
-        MethodEquals.addIdentityField(cv);
+        InterceptField.addField(cv, classMeta, enhanceContext.isTransientInternalFields());
+        MethodEquals.addIdentityField(cv, classMeta);
 
       }
       firstMethod = false;
@@ -260,7 +260,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       DefaultConstructor.add(cv, classMeta);
     }
 
-    MarkerField.addGetMarker(cv, classMeta.getClassName());
+    MarkerField.addGetMarker(cv, classMeta);
 
     if (isLog(4)) {
       log("... add _ebean_getPropertyNames() and _ebean_getPropertyName()");
@@ -272,7 +272,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       if (isLog(8)) {
         log("... add _ebean_getIntercept() and _ebean_setIntercept()");
       }
-      InterceptField.addGetterSetter(cv, classMeta.getClassName());
+      InterceptField.addGetterSetter(cv, classMeta);
     }
 
     // Add the field set/get methods which are used in place

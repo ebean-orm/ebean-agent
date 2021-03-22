@@ -40,6 +40,9 @@ public class EnhanceContext {
   private boolean throwOnError;
 
   private final boolean enableProfileLocation;
+  private final int accPublic;
+  private final int accProtected;
+  private final int accPrivate;
 
   private SummaryInfo summaryInfo;
 
@@ -53,6 +56,9 @@ public class EnhanceContext {
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest, ClassMetaCache metaCache) {
     this.manifest = manifest;
     this.enableProfileLocation = manifest.isEnableProfileLocation();
+    this.accPublic = manifest.accPublic();
+    this.accProtected = manifest.accProtected();
+    this.accPrivate = manifest.accPrivate();
     this.agentArgsMap = ArgParser.parse(agentArgs);
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
     this.filterQueryBean = new FilterQueryBean(manifest);
@@ -378,4 +384,15 @@ public class EnhanceContext {
     return summaryInfo.prepare();
   }
 
+  public int accPublic() {
+    return accPublic;
+  }
+
+  public int accProtected() {
+    return accProtected;
+  }
+
+  public int accPrivate() {
+    return accPrivate;
+  }
 }

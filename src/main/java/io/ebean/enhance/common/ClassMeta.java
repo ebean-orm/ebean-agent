@@ -385,6 +385,27 @@ public class ClassMeta {
     return new MethodReader(mv, methodMeta);
   }
 
+  /**
+   * ACC_PUBLIC with maybe ACC_SYNTHETIC.
+   */
+  public int accPublic() {
+    return enhanceContext.accPublic();
+  }
+
+  /**
+   * ACC_PROTECTED with maybe ACC_SYNTHETIC.
+   */
+  public int accProtected() {
+    return enhanceContext.accProtected();
+  }
+
+  /**
+   * ACC_PRIVATE with maybe ACC_SYNTHETIC.
+   */
+  public int accPrivate() {
+    return enhanceContext.accPrivate();
+  }
+
   private static final class MethodReader extends MethodVisitor {
 
     final MethodMeta methodMeta;

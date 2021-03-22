@@ -57,9 +57,8 @@ class MethodEquals implements Opcodes, EnhanceConstants {
    * The identity field used for implementing equals via the
    * _ebean_getIdentity() method.
    */
-  static void addIdentityField(ClassVisitor cv) {
-
-    int access = ACC_PROTECTED + ACC_TRANSIENT + ACC_SYNTHETIC;
+  static void addIdentityField(ClassVisitor cv, ClassMeta meta) {
+    int access = meta.accProtected() + ACC_TRANSIENT;
     FieldVisitor f0 = cv.visitField(access, IDENTITY_FIELD, L_OBJECT, null, null);
     f0.visitEnd();
   }
@@ -97,7 +96,7 @@ class MethodEquals implements Opcodes, EnhanceConstants {
 
     MethodVisitor mv;
 
-    mv = cv.visitMethod(ACC_PRIVATE + ACC_SYNTHETIC, _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", null, null);
+    mv = cv.visitMethod(classMeta.accPrivate(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     Label l1 = new Label();
@@ -209,7 +208,7 @@ class MethodEquals implements Opcodes, EnhanceConstants {
 
     MethodVisitor mv;
 
-    mv = cv.visitMethod(ACC_PRIVATE + ACC_SYNTHETIC, _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", null, null);
+    mv = cv.visitMethod(classMeta.accPrivate(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     Label l1 = new Label();
@@ -318,7 +317,7 @@ class MethodEquals implements Opcodes, EnhanceConstants {
 
     MethodVisitor mv;
 
-    mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "equals", "(Ljava/lang/Object;)Z", null, null);
+    mv = cv.visitMethod(classMeta.accPublic(), "equals", "(Ljava/lang/Object;)Z", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
@@ -389,7 +388,7 @@ class MethodEquals implements Opcodes, EnhanceConstants {
 
     MethodVisitor mv;
 
-    mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "hashCode", "()I", null, null);
+    mv = cv.visitMethod(meta.accPublic(), "hashCode", "()I", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);

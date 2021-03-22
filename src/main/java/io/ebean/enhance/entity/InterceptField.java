@@ -5,6 +5,7 @@ import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.common.ClassMeta;
 import io.ebean.enhance.common.EnhanceConstants;
 
 /**
@@ -15,9 +16,8 @@ class InterceptField implements Opcodes, EnhanceConstants {
   /**
    * Add the _ebean_intercept field.
    */
-  static void addField(ClassVisitor cv, boolean transientInternalFields) {
-
-    int access = ACC_PROTECTED + (transientInternalFields ? ACC_TRANSIENT : 0) + ACC_SYNTHETIC;
+  static void addField(ClassVisitor cv, ClassMeta meta, boolean transientInternalFields) {
+    int access = meta.accProtected() + (transientInternalFields ? ACC_TRANSIENT : 0);
     FieldVisitor f1 = cv.visitField(access, INTERCEPT_FIELD, L_INTERCEPT, null, null);
     f1.visitEnd();
   }
@@ -31,14 +31,14 @@ class InterceptField implements Opcodes, EnhanceConstants {
    * }
    * </pre>
    */
-  static void addGetterSetter(ClassVisitor cv, String className) {
-
+  static void addGetterSetter(ClassVisitor cv, ClassMeta meta) {
+    String className = meta.getClassName();
     String lClassName = "L" + className + ";";
 
     MethodVisitor mv;
     Label l0, l1;
 
-    mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_getIntercept", "()" + L_INTERCEPT, null, null);
+    mv = cv.visitMethod(meta.accPublic(), "_ebean_getIntercept", "()" + L_INTERCEPT, null, null);
     mv.visitCode();
     l0 = new Label();
     mv.visitLabel(l0);
@@ -52,7 +52,7 @@ class InterceptField implements Opcodes, EnhanceConstants {
     mv.visitMaxs(0, 0);
     mv.visitEnd();
 
-    addInitInterceptMethod(cv, className);
+    addInitInterceptMethod(cv, meta);
   }
 
   /**
@@ -73,9 +73,9 @@ class InterceptField implements Opcodes, EnhanceConstants {
    * }
    * </pre>
    */
-  private static void addInitInterceptMethod(ClassVisitor cv, String className) {
-
-    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_intercept", "()" + L_INTERCEPT, null, null);
+  private static void addInitInterceptMethod(ClassVisitor cv, ClassMeta meta) {
+    String className = meta.getClassName();
+    MethodVisitor mv = cv.visitMethod(meta.accPublic(), "_ebean_intercept", "()" + L_INTERCEPT, null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);

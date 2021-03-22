@@ -19,7 +19,7 @@ class MethodNewInstance {
    */
   static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
 
-    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, "_ebean_newInstance", "()Ljava/lang/Object;", null, null);
+    MethodVisitor mv = cv.visitMethod(classMeta.accPublic(), "_ebean_newInstance", "()Ljava/lang/Object;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
