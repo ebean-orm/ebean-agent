@@ -3,9 +3,9 @@ package io.ebean.enhance.entity;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.ClassMeta;
 
+import static io.ebean.enhance.asm.Opcodes.*;
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
 import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 
@@ -23,7 +23,7 @@ class DefaultConstructor {
       classMeta.log("... adding default constructor, super class: " + classMeta.getSuperClassName());
     }
 
-    MethodVisitor underlyingMV = cw.visitMethod(Opcodes.ACC_PUBLIC, INIT, NOARG_VOID, null, null);
+    MethodVisitor underlyingMV = cw.visitMethod(ACC_PUBLIC + ACC_SYNTHETIC, INIT, NOARG_VOID, null, null);
 
     ConstructorAdapter mv = new ConstructorAdapter(underlyingMV, classMeta, NOARG_VOID);
 
@@ -31,12 +31,12 @@ class DefaultConstructor {
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
-    mv.visitVarInsn(Opcodes.ALOAD, 0);
-    mv.visitMethodInsn(Opcodes.INVOKESPECIAL, classMeta.getSuperClassName(), INIT, NOARG_VOID, false);
+    mv.visitVarInsn(ALOAD, 0);
+    mv.visitMethodInsn(INVOKESPECIAL, classMeta.getSuperClassName(), INIT, NOARG_VOID, false);
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(2, l1);
-    mv.visitInsn(Opcodes.RETURN);
+    mv.visitInsn(RETURN);
 
     Label l2 = new Label();
     mv.visitLabel(l2);
