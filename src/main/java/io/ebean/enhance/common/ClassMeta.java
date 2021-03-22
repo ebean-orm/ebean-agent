@@ -39,18 +39,18 @@ public class ClassMeta {
   private ClassMeta superMeta;
 
   /**
-  * Set to true if the class implements th GroovyObject interface.
-  */
+   * Set to true if the class implements th GroovyObject interface.
+   */
   private boolean hasGroovyInterface;
 
   /**
-  * Set to true if the class implements the ScalaObject interface.
-  */
+   * Set to true if the class implements the ScalaObject interface.
+   */
   private boolean hasScalaInterface;
 
   /**
-  * Set to true if the class already implements the EntityBean interface.
-  */
+   * Set to true if the class already implements the EntityBean interface.
+   */
   private boolean hasEntityBeanInterface;
 
   private boolean alreadyEnhanced;
@@ -80,23 +80,23 @@ public class ClassMeta {
   }
 
   /**
-  * Return the enhance context which has options for enhancement.
-  */
+   * Return the enhance context which has options for enhancement.
+   */
   public EnhanceContext getEnhanceContext() {
-        return enhanceContext;
-    }
+    return enhanceContext;
+  }
 
   /**
-  * Return the AnnotationInfo collected on methods.
-  * Used to determine Transactional method enhancement.
-  */
+   * Return the AnnotationInfo collected on methods.
+   * Used to determine Transactional method enhancement.
+   */
   public AnnotationInfo getAnnotationInfo() {
     return annotationInfo;
   }
 
   /**
-  * Return the transactional annotation information for a matching interface method.
-  */
+   * Return the transactional annotation information for a matching interface method.
+   */
   public AnnotationInfo getInterfaceTransactionalInfo(String methodName, String methodDesc) {
 
     AnnotationInfo annotationInfo = null;
@@ -106,16 +106,16 @@ public class ClassMeta {
       if (meta.isMatch(methodName, methodDesc)) {
         if (annotationInfo != null) {
           String msg = "Error in [" + className + "] searching the transactional methods[" + methodMetaList
-              + "] found more than one match for the transactional method:" + methodName + " "
-              + methodDesc;
+            + "] found more than one match for the transactional method:" + methodName + " "
+            + methodDesc;
 
           logger.log(Level.SEVERE, msg);
           log(msg);
 
         } else {
           annotationInfo = meta.getAnnotationInfo();
-          if (isLog(9)){
-            log("... found transactional info from interface "+className+" "+methodName+" "+methodDesc);
+          if (isLog(9)) {
+            log("... found transactional info from interface " + className + " " + methodName + " " + methodDesc);
           }
         }
       }
@@ -159,10 +159,10 @@ public class ClassMeta {
 
   public void logEnhanced() {
     String m = "enhanced ";
-    if (hasScalaInterface()){
+    if (hasScalaInterface()) {
       m += " (scala)";
     }
-    if (hasGroovyInterface()){
+    if (hasGroovyInterface()) {
       m += " (groovy)";
     }
     log(m);
@@ -173,15 +173,15 @@ public class ClassMeta {
   }
 
   /**
-  * Set to true if the class has an existing equals() or hashcode() method.
-  */
+   * Set to true if the class has an existing equals() or hashcode() method.
+   */
   public void setHasEqualsOrHashcode(boolean hasEqualsOrHashcode) {
     this.hasEqualsOrHashcode = hasEqualsOrHashcode;
   }
 
   /**
-  * Return true if Equals/hashCode is implemented on this class or a super class.
-  */
+   * Return true if Equals/hashCode is implemented on this class or a super class.
+   */
   public boolean hasEqualsOrHashCode() {
     if (hasEqualsOrHashcode) {
       return true;
@@ -192,24 +192,24 @@ public class ClassMeta {
   }
 
   /**
-  * Return true if the field is a persistent field.
-  */
+   * Return true if the field is a persistent field.
+   */
   public boolean isFieldPersistent(String fieldName) {
     FieldMeta f = getFieldPersistent(fieldName);
     return (f != null) && f.isPersistent();
   }
 
   /**
-  * Return true if the field is a persistent many field that we want to consume the init on.
-  */
+   * Return true if the field is a persistent many field that we want to consume the init on.
+   */
   public boolean isConsumeInitMany(String fieldName) {
     FieldMeta f = getFieldPersistent(fieldName);
     return (f != null && f.isPersistent() && f.isInitMany());
   }
 
   /**
-  * Return the field - null when not found.
-  */
+   * Return the field - null when not found.
+   */
   public FieldMeta getFieldPersistent(String fieldName) {
 
     FieldMeta f = fields.get(fieldName);
@@ -220,8 +220,8 @@ public class ClassMeta {
   }
 
   /**
-  * Return the list of fields local to this type (not inherited).
-  */
+   * Return the list of fields local to this type (not inherited).
+   */
   private List<FieldMeta> getLocalFields() {
 
     List<FieldMeta> list = new ArrayList<>();
@@ -237,8 +237,8 @@ public class ClassMeta {
   }
 
   /**
-  * Return the list of fields inherited from super types that are entities.
-  */
+   * Return the list of fields inherited from super types that are entities.
+   */
   private void addInheritedFields(List<FieldMeta> list) {
     if (superMeta != null) {
       superMeta.addFieldsForInheritance(list);
@@ -246,8 +246,8 @@ public class ClassMeta {
   }
 
   /**
-  * Add all fields to the list.
-  */
+   * Add all fields to the list.
+   */
   private void addFieldsForInheritance(List<FieldMeta> list) {
     if (isEntity()) {
       list.addAll(0, fields.values());
@@ -258,8 +258,8 @@ public class ClassMeta {
   }
 
   /**
-  * Return true if the class contains persistent fields.
-  */
+   * Return true if the class contains persistent fields.
+   */
   public boolean hasPersistentFields() {
 
     for (FieldMeta fieldMeta : fields.values()) {
@@ -272,9 +272,9 @@ public class ClassMeta {
   }
 
   /**
-  * Return the list of all fields including ones inherited from entity super
-  * types and mappedSuperclasses.
-  */
+   * Return the list of all fields including ones inherited from entity super
+   * types and mappedSuperclasses.
+   */
   public List<FieldMeta> getAllFields() {
 
     if (allFields != null) {
@@ -284,7 +284,7 @@ public class ClassMeta {
     addInheritedFields(list);
 
     this.allFields = list;
-    for (int i=0; i<allFields.size(); i++) {
+    for (int i = 0; i < allFields.size(); i++) {
       allFields.get(i).setIndexPosition(i);
     }
 
@@ -292,8 +292,8 @@ public class ClassMeta {
   }
 
   /**
-  * Add field level get set methods for each field.
-  */
+   * Add field level get set methods for each field.
+   */
   public void addFieldGetSetMethods(ClassVisitor cv) {
 
     if (isEntityEnhancementRequired()) {
@@ -304,8 +304,8 @@ public class ClassMeta {
   }
 
   /**
-  * Return true if this is a mapped superclass.
-  */
+   * Return true if this is a mapped superclass.
+   */
   boolean isMappedSuper() {
     return classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION);
   }
@@ -329,7 +329,7 @@ public class ClassMeta {
       // Some MappedSuperclass like com.avaje.ebean.Model don't need any enhancement
       boolean shouldEnhance = hasEqualsOrHashCode() || hasPersistentFields();
       if (isLog(8)) {
-        log("mappedSuperClass with equals/hashCode or persistentFields: "+shouldEnhance);
+        log("mappedSuperClass with equals/hashCode or persistentFields: " + shouldEnhance);
       }
       return shouldEnhance;
     }
@@ -337,43 +337,43 @@ public class ClassMeta {
   }
 
   /**
-  * Return true if the class has an Entity, Embeddable, or MappedSuperclass.
-  */
+   * Return true if the class has an Entity, Embeddable, or MappedSuperclass.
+   */
   private boolean isCheckEntity() {
     return EntityCheck.hasEntityAnnotation(classAnnotation);
   }
 
   /**
-  * Return true for classes not already enhanced and yet annotated with entity, embeddable or mappedSuperclass.
-  */
+   * Return true for classes not already enhanced and yet annotated with entity, embeddable or mappedSuperclass.
+   */
   public boolean isEntityEnhancementRequired() {
     return !alreadyEnhanced && isEntity();
   }
 
   /**
-  * Return true if the bean is already enhanced.
-  */
+   * Return true if the bean is already enhanced.
+   */
   public boolean isAlreadyEnhanced() {
     return alreadyEnhanced;
   }
 
   /**
-  * Return the className of this entity class.
-  */
+   * Return the className of this entity class.
+   */
   public String getClassName() {
     return className;
   }
 
   /**
-  * Return true if this entity bean has a super class that is an entity.
-  */
+   * Return true if this entity bean has a super class that is an entity.
+   */
   public boolean isSuperClassEntity() {
     return superMeta != null && superMeta.isEntity();
   }
 
   /**
-  * Add a class annotation.
-  */
+   * Add a class annotation.
+   */
   public void addClassAnnotation(String desc) {
     classAnnotation.add(desc);
   }
@@ -413,15 +413,15 @@ public class ClassMeta {
   }
 
   /**
-  * Create and return a read only fieldVisitor for subclassing option.
-  */
+   * Create and return a read only fieldVisitor for subclassing option.
+   */
   FieldVisitor createLocalFieldVisitor(String name, String desc) {
     return createLocalFieldVisitor(null, name, desc);
   }
 
   /**
-  * Create and return a new fieldVisitor for use when enhancing a class.
-  */
+   * Create and return a new fieldVisitor for use when enhancing a class.
+   */
   public FieldVisitor createLocalFieldVisitor(FieldVisitor fv, String name, String desc) {
 
     FieldMeta fieldMeta = new FieldMeta(this, name, desc, className);
