@@ -20,9 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
-import static io.ebean.enhance.asm.Opcodes.ACC_PRIVATE;
 import static io.ebean.enhance.asm.Opcodes.ACC_STATIC;
-import static io.ebean.enhance.asm.Opcodes.ACC_SYNTHETIC;
 import static io.ebean.enhance.asm.Opcodes.BIPUSH;
 import static io.ebean.enhance.asm.Opcodes.INVOKESTATIC;
 import static io.ebean.enhance.asm.Opcodes.PUTSTATIC;
@@ -285,17 +283,17 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
   private void addStaticFieldDefinitions() {
     for (int i = 0; i < queryProfileCount; i++) {
-      FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, QP_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;", null, null);
+      FieldVisitor fv = cv.visitField(enhanceContext.accPrivate() + ACC_STATIC, QP_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;", null, null);
       fv.visitEnd();
     }
     for (int i = 0; i < transactionProfileCount; i++) {
-      FieldVisitor fv = cv.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, TX_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;", null, null);
+      FieldVisitor fv = cv.visitField(enhanceContext.accPrivate() + ACC_STATIC, TX_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;", null, null);
       fv.visitEnd();
     }
   }
 
   private void addStaticFieldInitialisers() {
-    MethodVisitor mv = cv.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC, "_$initProfileLocations", NOARG_VOID, null, null);
+    MethodVisitor mv = cv.visitMethod(enhanceContext.accPrivate() + ACC_STATIC, "_$initProfileLocations", NOARG_VOID, null, null);
     mv.visitCode();
 
     for (int i = 0; i < queryProfileCount; i++) {
