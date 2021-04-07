@@ -484,10 +484,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
     // ALOAD or ILOAD etc
     int iLoadOpcode = asmType.getOpcode(Opcodes.ILOAD);
-
-    // double and long have a size of 2
-    int iPosition = asmType.getSize();
-
     MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), setMethodName, setMethodDesc, null, null);
     mv.visitCode();
 
@@ -544,9 +540,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   private void addSetNoIntercept(ClassVisitor cw, ClassMeta classMeta) {
     // ALOAD or ILOAD etc
     int iLoadOpcode = asmType.getOpcode(Opcodes.ILOAD);
-    // double and long have a size of 2
-    int iPosition = asmType.getSize();
-
     MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), setNoInterceptMethodName, setMethodDesc, null, null);
     mv.visitCode();
     Label l0 = new Label();
