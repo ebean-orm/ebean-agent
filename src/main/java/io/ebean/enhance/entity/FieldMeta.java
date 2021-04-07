@@ -47,7 +47,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * </p>
    */
   public FieldMeta(ClassMeta classMeta, String name, String desc, String fieldClass) {
-
     this.classMeta = classMeta;
     this.fieldName = name;
     this.fieldDesc = desc;
@@ -57,13 +56,10 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     int sort = asmType.getSort();
     this.primitiveType = sort > Type.VOID && sort <= Type.DOUBLE;
     this.objectType = sort == Type.OBJECT;
-
     this.getMethodDesc = "()" + desc;
     this.setMethodDesc = "(" + desc + ")V";
-
     this.getMethodName = "_ebean_get_" + name;
     this.setMethodName = "_ebean_set_" + name;
-
     this.getNoInterceptMethodName = "_ebean_getni_" + name;
     this.setNoInterceptMethodName = "_ebean_setni_" + name;
   }
@@ -226,7 +222,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
         // float compare to 0
         mv.visitInsn(FCONST_0);
         mv.visitInsn(FCMPL);
-
       }
       // no extra instructions required for
       // int, short, byte, char
@@ -243,10 +238,8 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     if (primitiveType) {
       // use valueOf methods to return primitives as objects
       Type objectWrapperType = PrimitiveHelper.getObjectWrapper(asmType);
-
       String objDesc = objectWrapperType.getInternalName();
       String primDesc = asmType.getDescriptor();
-
       mv.visitMethodInsn(Opcodes.INVOKESTATIC, objDesc, "valueOf", "(" + primDesc + ")L" + objDesc + ";", false);
     }
   }
@@ -255,7 +248,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * As part of the switch statement to read the fields generate the get code.
    */
   void appendSwitchGet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
-
     if (intercept) {
       // use the special get method with interception...
       mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc, false);
@@ -267,23 +259,19 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
         mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc, false);
       }
     }
-
     if (primitiveType) {
       appendValueOf(mv);
     }
   }
 
   void appendSwitchSet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
-
     if (primitiveType) {
       // convert Object to primitive first...
       Type objectWrapperType = PrimitiveHelper.getObjectWrapper(asmType);
-
       String primDesc = asmType.getDescriptor();
       String primType = asmType.getClassName();
       String objInt = objectWrapperType.getInternalName();
       mv.visitTypeInsn(CHECKCAST, objInt);
-
       mv.visitMethodInsn(INVOKEVIRTUAL, objInt, primType + "Value", "()" + primDesc, false);
     } else {
       // check correct object type
@@ -293,18 +281,15 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     if (intercept) {
       // go through the set method to check for interception...
       mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setMethodName, setMethodDesc, false);
-
     } else {
       mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc, false);
     }
   }
 
-
   /**
    * Add get and set methods for field access/interception.
    */
   public void addGetSetMethods(ClassVisitor cv, ClassMeta classMeta) {
-
     if (!isLocalField(classMeta)) {
       String msg = "ERROR: " + fieldClass + " != " + classMeta.getClassName() + " for field "
         + fieldName + " " + fieldDesc;
@@ -339,7 +324,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * Add a get field method with interception.
    */
   private void addGet(ClassVisitor cw, ClassMeta classMeta) {
-
     MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), getMethodName, getMethodDesc, null, null);
     mv.visitCode();
 
@@ -391,7 +375,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   }
 
   private void addGetForMany(MethodVisitor mv) {
-
     String className = classMeta.getClassName();
     String ebCollection = getInitCollectionClass();
 
@@ -405,7 +388,11 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
     Label l4 = new Label();
     if (classMeta.getEnhanceContext().isCheckNullManyFields()) {
-
+      if (ebCollection == null) {
+        String msg = "Unexpected collection type [" + Type.getType(fieldDesc).getClassName() + "] for ["
+        + classMeta.getClassName() + "." + fieldName + "] expected either java.util.List, java.util.Set or java.util.Map ";
+        throw new RuntimeException(msg);
+      }
       Label l3 = new Label();
       mv.visitLabel(l3);
       mv.visitLineNumber(2, l3);
@@ -440,7 +427,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       }
     }
 
-
     mv.visitLabel(l4);
     mv.visitLineNumber(5, l4);
     mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
@@ -461,7 +447,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * </p>
    */
   private void addGetNoIntercept(ClassVisitor cw, ClassMeta classMeta) {
-
     // ARETURN or IRETURN
     int iReturnOpcode = asmType.getOpcode(Opcodes.IRETURN);
 
@@ -483,7 +468,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
   /**
    * Setter method with interception.
-   *
    * <pre>
    * public void _ebean_set_propname(String newValue) {
    *   ebi.preSetter(true, propertyIndex, _ebean_get_propname(), newValue);
@@ -492,7 +476,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * </pre>
    */
   private void addSet(ClassVisitor cw, ClassMeta classMeta) {
-
     String preSetterArgTypes = "Ljava/lang/Object;Ljava/lang/Object;";
     if (!objectType) {
       // preSetter method overloaded for primitive type comparison
@@ -559,10 +542,8 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    * </p>
    */
   private void addSetNoIntercept(ClassVisitor cw, ClassMeta classMeta) {
-
     // ALOAD or ILOAD etc
     int iLoadOpcode = asmType.getOpcode(Opcodes.ILOAD);
-
     // double and long have a size of 2
     int iPosition = asmType.getSize();
 
