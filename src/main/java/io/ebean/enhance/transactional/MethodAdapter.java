@@ -146,6 +146,14 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
     mv.visitInsn(POP);
   }
 
+  private void setAutoPersistUpdates(Object autoPersistUpdates) {
+    visitLabelLine();
+    mv.visitVarInsn(ALOAD, posTxScope);
+    mv.visitFieldInsn(GETSTATIC, C_TXOPTION, autoPersistUpdates.toString(), "L" + C_TXOPTION + ";");
+    mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setAutoPersistUpdates", "(L" + C_TXOPTION + ";)L" + C_TXSCOPE + ";", false);
+    mv.visitInsn(POP);
+  }
+
   private void setBatchSize(Object batchSize) {
 
     visitLabelLine();
@@ -272,6 +280,11 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
     Object txIsolation = annotationInfo.getValue("isolation");
     if (txIsolation != null) {
       setTxIsolation(txIsolation);
+    }
+
+    Object autoPersistUpdates = annotationInfo.getValue("autoPersistUpdates");
+    if (autoPersistUpdates != null && !"DEFAULT".equals(autoPersistUpdates.toString())) {
+      setAutoPersistUpdates(autoPersistUpdates);
     }
 
     Object batch = annotationInfo.getValue("batch");
