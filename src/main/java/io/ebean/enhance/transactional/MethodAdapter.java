@@ -93,21 +93,17 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
   }
 
   private void setTxType(Object txType) {
-
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
-    mv.visitLdcInsn(txType.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_TXTYPE, "valueOf", "(Ljava/lang/String;)L" + C_TXTYPE + ";", false);
+    mv.visitFieldInsn(GETSTATIC, C_TXTYPE, txType.toString(), "L" + C_TXTYPE + ";");
     mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setType", "(L" + C_TXTYPE + ";)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
 
   private void setTxIsolation(Object txIsolation) {
-
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
-    mv.visitLdcInsn(txIsolation.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_TXISOLATION, "valueOf", "(Ljava/lang/String;)L" + C_TXISOLATION + ";", false);
+    mv.visitFieldInsn(GETSTATIC, C_TXISOLATION, txIsolation.toString(), "L" + C_TXISOLATION + ";");
     mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setIsolation", "(L" + C_TXISOLATION + ";)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
@@ -121,11 +117,9 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
   }
 
   private void setBatch(Object batch) {
-
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
-    mv.visitLdcInsn(batch.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L" + C_PERSISTBATCH + ";", false);
+    mv.visitFieldInsn(GETSTATIC, C_PERSISTBATCH, batch.toString(), "L" + C_PERSISTBATCH + ";");
     mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatch", "(L" + C_PERSISTBATCH + ";)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
@@ -137,11 +131,9 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
   }
 
   private void setBatchOnCascade(Object batch) {
-
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
-    mv.visitLdcInsn(batch.toString());
-    mv.visitMethodInsn(INVOKESTATIC, C_PERSISTBATCH, "valueOf", "(Ljava/lang/String;)L" + C_PERSISTBATCH + ";", false);
+    mv.visitFieldInsn(GETSTATIC, C_PERSISTBATCH, batch.toString(), "L" + C_PERSISTBATCH + ";");
     mv.visitMethodInsn(INVOKEVIRTUAL, C_TXSCOPE, "setBatchOnCascade", "(L" + C_PERSISTBATCH + ";)L" + C_TXSCOPE + ";", false);
     mv.visitInsn(POP);
   }
@@ -155,7 +147,6 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
   }
 
   private void setBatchSize(Object batchSize) {
-
     visitLabelLine();
     mv.visitVarInsn(ALOAD, posTxScope);
     VisitUtil.visitIntInsn(mv, Integer.parseInt(batchSize.toString()));
@@ -174,7 +165,6 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
   }
 
   private void setReadOnly(Object readOnlyObj) {
-
     visitLabelLine();
     boolean readOnly = (Boolean) readOnlyObj;
     mv.visitVarInsn(ALOAD, posTxScope);
@@ -221,10 +211,7 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
    * Add bytecode to add the noRollbackFor throwable types to the TxScope.
    */
   private void setNoRollbackFor(Object noRollbackFor) {
-
-    ArrayList<?> list = (ArrayList<?>) noRollbackFor;
-
-    for (Object aList : list) {
+    for (Object aList : (ArrayList<?>) noRollbackFor) {
       visitLabelLine();
       Type throwType = (Type) aList;
       mv.visitVarInsn(ALOAD, posTxScope);
@@ -238,10 +225,7 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
    * Add bytecode to add the rollbackFor throwable types to the TxScope.
    */
   private void setRollbackFor(Object rollbackFor) {
-
-    ArrayList<?> list = (ArrayList<?>) rollbackFor;
-
-    for (Object aList : list) {
+    for (Object aList : (ArrayList<?>) rollbackFor) {
       visitLabelLine();
       Type throwType = (Type) aList;
       mv.visitVarInsn(ALOAD, posTxScope);
