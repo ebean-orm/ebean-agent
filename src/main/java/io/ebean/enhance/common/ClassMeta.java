@@ -406,6 +406,10 @@ public class ClassMeta {
     return enhanceContext.accPrivate();
   }
 
+  public boolean isToManyGetField() {
+    return enhanceContext.isToManyGetField();
+  }
+
   private static final class MethodReader extends MethodVisitor {
 
     final MethodMeta methodMeta;

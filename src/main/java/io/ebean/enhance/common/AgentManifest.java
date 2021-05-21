@@ -39,6 +39,7 @@ public class AgentManifest {
   private boolean checkNullManyFields = true;
   private boolean enableProfileLocation = true;
   private boolean synthetic = true;
+  private int ebeanInternalVersion;
 
   public AgentManifest(ClassLoader classLoader) {
     this.detectQueryBean = new DetectQueryBean();
@@ -60,6 +61,7 @@ public class AgentManifest {
     if (classLoaderIdentities.add(loaderIdentity)) {
       try {
         int beforeSize = entityPackages.size();
+        readEbeanVersion(classLoader, "META-INF/ebean-version.mf");
         readManifests(classLoader, "META-INF/ebean-generated-info.mf");
         readManifests(classLoader, "META-INF/ebean.mf");
         readManifests(classLoader, "ebean.mf");
@@ -77,14 +79,18 @@ public class AgentManifest {
     return false;
   }
 
-  public boolean isDetectQueryBean(String owner) {
-    return detectQueryBean.isQueryBean(owner);
-  }
-
   @Override
   public String toString() {
     return "entityPackages:" + entityPackages + " querybeanPackages:" + querybeanPackages
       + " transactionalPackages:" + transactionalPackages;
+  }
+
+  public boolean isDetectQueryBean(String owner) {
+    return detectQueryBean.isQueryBean(owner);
+  }
+
+  public int getEbeanInternalVersion() {
+    return ebeanInternalVersion;
   }
 
   /**
@@ -172,10 +178,28 @@ public class AgentManifest {
     return querybeanPackages;
   }
 
+  protected void readEbeanVersion(ClassLoader classLoader, String path) throws IOException {
+    Enumeration<URL> resources = classLoader.getResources(path);
+    while (resources.hasMoreElements()) {
+      URL url = resources.nextElement();
+      try {
+        final Manifest manifest = manifest(UrlHelper.openNoCache(url));
+        final String value = manifest.getMainAttributes().getValue("ebean-version");
+        if (value != null) {
+          ebeanInternalVersion = Integer.parseInt(value.trim());
+        }
+        loadedResources.add(path);
+      } catch (Exception e) {
+        System.err.println("Error reading manifest resources " + url);
+        e.printStackTrace();
+      }
+    }
+  }
+
   /**
    * Read all the specific manifest files and return the set of packages containing type query beans.
    */
-  AgentManifest readManifests(ClassLoader classLoader, String path) throws IOException {
+  void readManifests(ClassLoader classLoader, String path) throws IOException {
     Enumeration<URL> resources = classLoader.getResources(path);
     while (resources.hasMoreElements()) {
       URL url = resources.nextElement();
@@ -187,15 +211,18 @@ public class AgentManifest {
         e.printStackTrace();
       }
     }
-    return this;
   }
 
   /**
    * Add given the manifest InputStream.
    */
   private void addResource(InputStream is) throws IOException {
+    addManifest(manifest(is));
+  }
+
+  private Manifest manifest(InputStream is) throws IOException {
     try {
-      addManifest(new Manifest(is));
+      return new Manifest(is);
     } finally {
       try {
         is.close();

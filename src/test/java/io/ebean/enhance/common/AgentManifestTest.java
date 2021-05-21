@@ -29,13 +29,20 @@ public class AgentManifestTest {
     assertTrue(filterQueryBean.detectEnhancement("foo/Any"));
   }
 
+  @Test
+  public void readInternalVersion() throws IOException {
+
+    AgentManifest manifest = new AgentManifest();
+    manifest.readEbeanVersion(this.getClass().getClassLoader(), "META-INF/test_ebean-version.mf");
+
+    assertThat(manifest.getEbeanInternalVersion()).isEqualTo(129);
+  }
 
   @Test
   public void testRead_basic() throws Exception {
 
-    AgentManifest manifest =
-        new AgentManifest()
-            .readManifests(this.getClass().getClassLoader(), "META-INF/test_basic.mf");
+    AgentManifest manifest = new AgentManifest();
+    manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_basic.mf");
 
     assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain");
     assertThat(manifest.getTransactionalPackages()).contains("aone","btwo.services","cthree.other");
@@ -59,9 +66,8 @@ public class AgentManifestTest {
   @Test
   public void testRead_none() throws Exception {
 
-    AgentManifest manifest =
-        new AgentManifest()
-            .readManifests(this.getClass().getClassLoader(), "META-INF/test_none.mf");
+    AgentManifest manifest = new AgentManifest();
+    manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_none.mf");
 
     assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain", "cthree.other");
     assertThat(manifest.isTransactionalNone()).isTrue();
@@ -94,9 +100,8 @@ public class AgentManifestTest {
   @Test
   public void testRead_old() throws Exception {
 
-    AgentManifest manifest =
-        new AgentManifest()
-            .readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
+    AgentManifest manifest = new AgentManifest();
+    manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
 
     assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain", "cthree.other");
     assertThat(manifest.isTransactionalNone()).isFalse();
@@ -134,9 +139,8 @@ public class AgentManifestTest {
   @Test
   public void testRead_expected() throws Exception {
 
-    AgentManifest manifest =
-        new AgentManifest()
-            .readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
+    AgentManifest manifest = new AgentManifest();
+    manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
 
     assertThat(manifest.getEntityPackages()).contains("org.foo.domain", "org.foo.some.domain");
     assertThat(manifest.isTransactionalNone()).isFalse();
@@ -164,9 +168,8 @@ public class AgentManifestTest {
   @Test
   public void testRead_EnhanceContext() throws IOException {
 
-    AgentManifest manifest =
-        new AgentManifest()
-            .readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
+    AgentManifest manifest = new AgentManifest();
+    manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
 
     EnhanceContext context = new EnhanceContext(null, null, manifest);
     context.setLogLevel(5);
@@ -197,9 +200,8 @@ public class AgentManifestTest {
   @Test
   public void testRead_EnhanceContext_notSet() throws IOException {
 
-    AgentManifest manifest =
-        new AgentManifest()
-            .readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
+    AgentManifest manifest = new AgentManifest();
+    manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
 
     EnhanceContext context = new EnhanceContext(null, null, manifest);
     assertThat(context.isTransientInternalFields()).isFalse();
@@ -213,9 +215,8 @@ public class AgentManifestTest {
   @Test
   public void testRead_EnhanceContext_topPackages() throws IOException {
 
-    AgentManifest manifest =
-      new AgentManifest()
-        .readManifests(this.getClass().getClassLoader(), "META-INF/test_top.mf");
+    AgentManifest manifest = new AgentManifest();
+    manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_top.mf");
 
     assertThat(manifest.getEntityPackages()).containsOnly("org.one.myapp.domain");
     assertThat(manifest.getTransactionalPackages()).containsOnly("org.one.myapp");

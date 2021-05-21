@@ -43,6 +43,7 @@ public class EnhanceContext {
   private final int accPublic;
   private final int accProtected;
   private final int accPrivate;
+  private final int ebeanInternalVersion;
 
   private SummaryInfo summaryInfo;
 
@@ -59,6 +60,7 @@ public class EnhanceContext {
     this.accPublic = manifest.accPublic();
     this.accProtected = manifest.accProtected();
     this.accPrivate = manifest.accPrivate();
+    this.ebeanInternalVersion = manifest.getEbeanInternalVersion();
     this.agentArgsMap = ArgParser.parse(agentArgs);
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
     this.filterQueryBean = new FilterQueryBean(manifest);
@@ -394,5 +396,9 @@ public class EnhanceContext {
 
   public int accPrivate() {
     return accPrivate;
+  }
+
+  public boolean isToManyGetField() {
+    return ebeanInternalVersion > 128;
   }
 }

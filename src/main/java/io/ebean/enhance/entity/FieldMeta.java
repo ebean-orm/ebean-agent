@@ -500,7 +500,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     }
     VisitUtil.visitIntInsn(mv, indexPosition);
     mv.visitVarInsn(ALOAD, 0);
-    if (isId() || isToMany()) {
+    if (isId() || isToManyGetField(classMeta)) {
       // skip getter on Id as we now intercept that via preGetId() for automatic jdbc batch flushing
       mv.visitFieldInsn(GETFIELD, fieldClass, fieldName, fieldDesc);
     } else {
@@ -529,6 +529,10 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitLocalVariable("newValue", fieldDesc, null, l0, l4, 1);
     mv.visitMaxs(5, 2);
     mv.visitEnd();
+  }
+
+  private boolean isToManyGetField(ClassMeta meta) {
+    return isToMany() && meta.isToManyGetField();
   }
 
   /**
