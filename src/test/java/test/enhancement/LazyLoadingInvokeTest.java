@@ -9,6 +9,7 @@ import test.model.Contact;
 import test.model.Customer;
 
 import java.util.List;
+import java.util.concurrent.locks.*;
 
 public class LazyLoadingInvokeTest extends BaseTest {
 
@@ -131,6 +132,8 @@ public class LazyLoadingInvokeTest extends BaseTest {
 
     EntityBeanIntercept wasLoad;
 
+    final Lock lock = new ReentrantLock();
+
     @Override
     public String getName() {
       return null;
@@ -140,6 +143,12 @@ public class LazyLoadingInvokeTest extends BaseTest {
     public void loadBean(EntityBeanIntercept ebi) {
       this.count++;
       this.wasLoad = ebi;
+    }
+
+    @Override
+    public Lock lock() {
+      this.lock.lock();
+      return this.lock;
     }
 
   }
