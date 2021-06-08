@@ -14,13 +14,14 @@ import java.util.Set;
 class IgnoreClassHelper {
 
   private static final Set<String> ignoreOneLevel = new HashSet<>();
-
   private static final Set<String> ignoreTwoLevel = new HashSet<>();
+  private static final Set<String> ignoreThreeLevel = new HashSet<>();
 
   static {
     ignoreOneLevel.add("jdk");
     ignoreOneLevel.add("java");
     ignoreOneLevel.add("javax");
+    ignoreOneLevel.add("jakarta");
     ignoreOneLevel.add("play");
     ignoreOneLevel.add("sbt");
     ignoreOneLevel.add("scala");
@@ -68,10 +69,15 @@ class IgnoreClassHelper {
     ignoreTwoLevel.add("com/squareup");
     ignoreTwoLevel.add("com/microsoft");
     ignoreTwoLevel.add("com/oracle");
-    ignoreTwoLevel.add("org/avaje");
     ignoreTwoLevel.add("io/ebean");
     ignoreTwoLevel.add("io/ebeaninternal");
     ignoreTwoLevel.add("io/ebeanservice");
+
+    ignoreThreeLevel.add("io/avaje/config");
+    ignoreThreeLevel.add("io/avaje/classpath");
+    ignoreThreeLevel.add("io/avaje/http");
+    ignoreThreeLevel.add("io/avaje/inject");
+    ignoreThreeLevel.add("io/avaje/jex");
   }
 
   IgnoreClassHelper() {
@@ -89,21 +95,17 @@ class IgnoreClassHelper {
    * @return true if this class should not be processed.
    */
   boolean isIgnoreClass(String className) {
-
     if (className == null || "bsh/Interpreter".equals(className)) {
       return true;
     }
-
     className = className.replace('.', '/');
 
     // we will ignore packages that we know we don't want to
     // process (they won't contain entity beans etc).
-
-    // ignore $Proxy classes
     if (className.startsWith("$")) {
+      // ignore $Proxy classes
       return true;
     }
-
     int firstSlash = className.indexOf('/');
     if (firstSlash == -1) {
       return true;
@@ -117,6 +119,13 @@ class IgnoreClassHelper {
       String secondPackage = className.substring(0, secondSlash);
       if (ignoreTwoLevel.contains(secondPackage)) {
         return true;
+      }
+      int thirdSlash = className.indexOf('/', secondSlash + 1);
+      if (thirdSlash > -1) {
+        String thirdPackage = className.substring(0, thirdSlash);
+        if (ignoreThreeLevel.contains(thirdPackage)) {
+          return true;
+        }
       }
     }
     return className.contains("$ByteBuddy$");

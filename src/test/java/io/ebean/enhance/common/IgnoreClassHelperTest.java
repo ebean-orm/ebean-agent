@@ -22,6 +22,7 @@ public class IgnoreClassHelperTest {
     assertTrue(ignoreClassHelper.isIgnoreClass("org/apache/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("junit/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("javax/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("jakarta/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("play/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("sbt/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("scala/Something"));
@@ -38,9 +39,14 @@ public class IgnoreClassHelperTest {
 
     assertTrue(ignoreClassHelper.isIgnoreClass("io/ebeaninternal/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("io/ebean/Something"));
-    assertTrue(ignoreClassHelper.isIgnoreClass("org/avaje/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/config/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/classpath/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/inject/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/http/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/jex/Something"));
 
-
+    assertFalse(ignoreClassHelper.isIgnoreClass("org/avaje/Something"));
+    assertFalse(ignoreClassHelper.isIgnoreClass("io/avaje/Something"));
     assertFalse(ignoreClassHelper.isIgnoreClass("org/koda/Foo"));
     assertFalse(ignoreClassHelper.isIgnoreClass("foo/Foo"));
     assertFalse(ignoreClassHelper.isIgnoreClass("bar/pixie/Foo"));
