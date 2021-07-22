@@ -318,22 +318,10 @@ public class ClassMeta {
   }
 
   /**
-   * Return true if the class has an Entity, Embeddable, MappedSuperclass (with persistent fields).
+   * Return true if the class has an Entity, Embeddable or MappedSuperclass.
    */
   public boolean isEntity() {
-    if (!EntityCheck.hasEntityAnnotation(classAnnotation)) {
-      return false;
-    }
-    if (classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION)) {
-      // only 'interesting' if it has persistent fields or equals/hashCode.
-      // Some MappedSuperclass like com.avaje.ebean.Model don't need any enhancement
-      boolean shouldEnhance = hasEqualsOrHashCode() || hasPersistentFields();
-      if (isLog(8)) {
-        log("mappedSuperClass with equals/hashCode or persistentFields: " + shouldEnhance);
-      }
-      return shouldEnhance;
-    }
-    return true;
+    return EntityCheck.hasEntityAnnotation(classAnnotation);
   }
 
   /**
