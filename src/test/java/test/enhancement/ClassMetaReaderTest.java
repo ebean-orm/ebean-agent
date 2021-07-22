@@ -46,7 +46,7 @@ public class ClassMetaReaderTest {
 
     assertNotNull(classMeta);
     assertFalse(classMeta.hasPersistentFields());
-    assertFalse(classMeta.isEntity());
+    assertTrue(classMeta.isEntity());
   }
 
   @Test
