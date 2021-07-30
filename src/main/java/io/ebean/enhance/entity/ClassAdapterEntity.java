@@ -58,15 +58,13 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
    */
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-
     classMeta.setClassName(name, superName);
 
-    int n = 1 + interfaces.length;
-    String[] c = new String[n];
+    String[] c = new String[interfaces.length + 1];
     for (int i = 0; i < interfaces.length; i++) {
       c[i] = interfaces[i];
       if (c[i].equals(C_ENTITYBEAN)) {
-        classMeta.setEntityBeanInterface(true);
+        throw new NoEnhancementRequiredException();
       }
       if (c[i].equals(C_SCALAOBJECT)) {
         classMeta.setScalaInterface(true);
@@ -75,18 +73,11 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
         classMeta.setGroovyInterface(true);
       }
     }
-
-    if (classMeta.hasEntityBeanInterface()) {
-      // Just use the original interfaces
-      c = interfaces;
-    } else {
-      // Add the EntityBean interface
-      c[c.length - 1] = C_ENTITYBEAN;
-      if (classMeta.isLog(8)) {
-        classMeta.log("... add EntityBean interface");
-      }
+    // add the EntityBean interface
+    c[c.length - 1] = C_ENTITYBEAN;
+    if (classMeta.isLog(8)) {
+      classMeta.log("... add EntityBean interface");
     }
-
     if (!superName.equals("java/lang/Object")) {
       // read information about superClasses...
       if (classMeta.isLog(7)) {
@@ -98,7 +89,6 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
         classMeta.setSuperMeta(superMeta);
       }
     }
-
     super.visit(version, access, name, signature, superName, c);
   }
 
@@ -106,17 +96,6 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
     classMeta.addClassAnnotation(desc);
     return super.visitAnnotation(desc, visible);
-  }
-
-  /**
-   * Return true if this is the enhancement marker field.
-   * <p>
-   * The existence of this field is used to confirm that the class has been
-   * enhanced (rather than solely relying on the EntityBean interface).
-   * <p>
-   */
-  private boolean isEbeanFieldMarker(String name) {
-    return name.equals(MarkerField._EBEAN_MARKER);
   }
 
   private boolean isPropertyChangeListenerField(String desc) {
@@ -129,24 +108,10 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
    */
   @Override
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-
     if ((access & Opcodes.ACC_STATIC) != 0) {
-      // static field...
-      if (isEbeanFieldMarker(name)) {
-        classMeta.setAlreadyEnhanced(true);
-        if (isLog(4)) {
-          log("Found ebean marker field " + name + " " + value);
-        }
-      } else {
-        if (isLog(4)) {
-          log("Skip intercepting static field " + name);
-        }
-      }
-
       // no interception of static fields
       return super.visitField(access, name, desc, signature, value);
     }
-
     if (isPropertyChangeListenerField(desc)) {
       if (isLog(4)) {
         classMeta.log("Found existing PropertyChangeSupport field " + name);
@@ -154,17 +119,14 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       // no interception on PropertyChangeSupport field
       return super.visitField(access, name, desc, signature, value);
     }
-
     if ((access & Opcodes.ACC_TRANSIENT) != 0) {
       // no interception of transient fields
       return super.visitField(access, name, desc, signature, value);
     }
-
     if ((access & Opcodes.ACC_FINAL) != 0) {
       // remove final modifier from fields (for lazy loading partials in Java9+)
       access = (access ^ Opcodes.ACC_FINAL);
     }
-
     FieldVisitor fv = super.visitField(access, name, desc, signature, value);
     return classMeta.createLocalFieldVisitor(fv, name, desc);
   }
@@ -174,27 +136,17 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
    */
   @Override
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-
     if (firstMethod) {
       if (classMeta.isAlreadyEnhanced()) {
         throw new NoEnhancementRequiredException();
       }
-
       if (classMeta.hasEntityBeanInterface()) {
         log("Enhancing when EntityBean interface already exists!");
       }
-
-      // always add the marker field on every enhanced class
-      String marker = MarkerField.addField(cv, classMeta);
-      if (isLog(4)) {
-        log("... add marker field \"" + marker + "\"");
-      }
-
       IndexFieldWeaver.addPropertiesField(cv, classMeta);
       if (isLog(4)) {
         log("... add _ebean_props field");
       }
-
       if (!classMeta.isSuperClassEntity()) {
         // only add the intercept and identity fields if
         // the superClass is not also enhanced
@@ -230,13 +182,11 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
     }
 
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-
     if (interceptEntityMethod(access, name, desc)) {
       // change the method replacing the relevant GETFIELD PUTFIELD with
       // our special field methods with interception...
       return new MethodFieldAdapter(mv, classMeta, name + " " + desc);
     }
-
     // just leave as is, no interception etc
     return mv;
   }
@@ -247,21 +197,15 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
    */
   @Override
   public void visitEnd() {
-
     if (!classMeta.isEntityEnhancementRequired()) {
       throw new NoEnhancementRequiredException();
     }
-
     if (!classMeta.hasStaticInit()) {
       IndexFieldWeaver.addPropertiesInit(cv, classMeta);
     }
-
     if (!classMeta.hasDefaultConstructor()) {
       DefaultConstructor.add(cv, classMeta);
     }
-
-    MarkerField.addGetMarker(cv, classMeta);
-
     if (isLog(4)) {
       log("... add _ebean_getPropertyNames() and _ebean_getPropertyName()");
     }
@@ -293,7 +237,6 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
   }
 
   private boolean isConstructor(String name, String desc) {
-
     if (name.equals(INIT)) {
       if (desc.equals(NOARG_VOID)) {
         classMeta.setHasDefaultConstructor(true);
@@ -304,17 +247,14 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
   }
 
   private boolean isStaticInit(String name, String desc) {
-
     if (name.equals(CLINIT) && desc.equals(NOARG_VOID)) {
       classMeta.setHasStaticInit(true);
       return true;
     }
-
     return false;
   }
 
   private boolean interceptEntityMethod(int access, String name, String desc) {
-
     if ((access & Opcodes.ACC_STATIC) != 0) {
       // no interception of static methods?
       if (isLog(4)) {
@@ -322,17 +262,14 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       }
       return false;
     }
-
     if (name.equals("hashCode") && desc.equals("()I")) {
       classMeta.setHasEqualsOrHashcode(true);
       return true;
     }
-
     if (name.equals("equals") && desc.equals("(Ljava/lang/Object;)Z")) {
       classMeta.setHasEqualsOrHashcode(true);
       return true;
     }
-
     // don't intercept toString as its is used during debugging etc
     return !name.equals("toString") || !desc.equals("()Ljava/lang/String;");
   }
