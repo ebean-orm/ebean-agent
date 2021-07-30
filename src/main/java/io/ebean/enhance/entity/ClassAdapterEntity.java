@@ -58,6 +58,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
    */
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+    skipMockitoMock(name);
     classMeta.setClassName(name, superName);
 
     String[] c = new String[interfaces.length + 1];
@@ -90,6 +91,15 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       }
     }
     super.visit(version, access, name, signature, superName, c);
+  }
+
+  /**
+   * Do not enhance a Mockito mock or spy.
+   */
+  private void skipMockitoMock(String name) {
+    if (name.contains(MOCKITO_MOCK)) {
+      throw new NoEnhancementRequiredException();
+    }
   }
 
   @Override

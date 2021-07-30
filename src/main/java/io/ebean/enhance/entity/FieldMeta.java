@@ -139,8 +139,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
    */
   public boolean isTransient() {
     return annotations.contains("Ljavax/persistence/Transient;")
-      || annotations.contains(L_DRAFT)
-      || fieldName.equals(MOCKITO_INTERCEPTOR);
+      || annotations.contains(L_DRAFT);
   }
 
   /**
