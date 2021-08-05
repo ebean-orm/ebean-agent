@@ -185,6 +185,10 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     return annotations.contains("Ljavax/persistence/Embedded;");
   }
 
+  boolean hasOrderColumn() {
+    return annotations.contains("Ljavax/persistence/OrderColumn;");
+  }
+
   /**
    * Return true if the field is local to this class. Returns false if the field
    * is actually on a super class.
@@ -414,7 +418,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       VisitUtil.visitIntInsn(mv, indexPosition);
       mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "initialisedMany", "(I)V", false);
 
-      if (isManyToMany()) {
+      if (isManyToMany() || hasOrderColumn()) {
         // turn on modify listening for ManyToMany
         Label l6 = new Label();
         mv.visitLabel(l6);
