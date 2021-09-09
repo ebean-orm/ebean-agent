@@ -2,7 +2,7 @@ package test.enhancement;
 
 
 import io.ebean.bean.EntityBean;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.domain.XModelA;
 import test.model.domain.XModelB;
 import test.model.domain.XModelC;

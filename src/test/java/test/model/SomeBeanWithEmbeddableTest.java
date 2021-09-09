@@ -1,6 +1,6 @@
 package test.model;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.enhancement.BaseTest;
 
 public class SomeBeanWithEmbeddableTest extends BaseTest {

@@ -1,6 +1,6 @@
 package test.enhancement;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.Customer;
 
 import java.io.ByteArrayInputStream;
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SerializeEntityBeanTest extends BaseTest {
 

@@ -1,9 +1,9 @@
 package test.enhancement;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.AMappedSuperChild;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MappedSuperWithEqualsTest extends BaseTest {
 

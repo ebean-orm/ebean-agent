@@ -1,13 +1,13 @@
 package test.model.domain.finder;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.domain.query.QProduct;
 import test.enhancement.BaseTest;
 
 import java.lang.reflect.Field;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class FinderTest extends BaseTest {

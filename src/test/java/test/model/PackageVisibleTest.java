@@ -1,10 +1,10 @@
 package test.model;
 
 import io.ebean.bean.EntityBean;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.enhancement.BaseTest;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test that beans which have package visibility are enhanced.

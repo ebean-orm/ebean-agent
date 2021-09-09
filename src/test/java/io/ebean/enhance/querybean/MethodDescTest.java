@@ -1,9 +1,9 @@
 package io.ebean.enhance.querybean;
 
 import io.ebean.enhance.asm.Opcodes;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class MethodDescTest {

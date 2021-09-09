@@ -1,11 +1,11 @@
 package test.enhancement;
 
 import io.ebean.bean.EntityBean;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.SomeBeanWithInterface;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  */

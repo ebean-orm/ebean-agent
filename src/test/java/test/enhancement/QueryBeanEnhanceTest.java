@@ -2,15 +2,15 @@ package test.enhancement;
 
 
 import io.ebean.typequery.PLong;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.domain.query.QAddress;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class QueryBeanEnhanceTest extends BaseTest {
 

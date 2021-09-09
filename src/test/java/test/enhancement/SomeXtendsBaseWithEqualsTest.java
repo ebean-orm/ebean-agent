@@ -1,9 +1,9 @@
 package test.enhancement;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.SomeXtendsBaseWithEquals;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  */

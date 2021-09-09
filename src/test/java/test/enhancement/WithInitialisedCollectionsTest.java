@@ -1,7 +1,7 @@
 package test.enhancement;
 
 import io.ebean.bean.EntityBean;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.Contact;
 import test.model.WithInitialisedCollectionAndAtTransient;
 import test.model.WithInitialisedCollectionAndTransient;
@@ -11,10 +11,10 @@ import test.model.WithInitialisedCollectionsAndConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WithInitialisedCollectionsTest extends BaseTest {
 
