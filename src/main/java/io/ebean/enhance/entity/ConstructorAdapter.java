@@ -74,8 +74,21 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
   }
 
   @Override
-  public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+  public void visitLabel(Label label) {
+    if (!deferredCode.consumeVisitLabel(label)) {
+      super.visitLabel(label);
+    }
+  }
 
+  @Override
+  public void visitLineNumber(int line, Label start) {
+    if (!deferredCode.consumeVisitLineNumber(line, start)) {
+      super.visitLineNumber(line, start);
+    }
+  }
+
+  @Override
+  public void visitFieldInsn(int opcode, String owner, String name, String desc) {
     if (deferredCode.consumeVisitFieldInsn(opcode, name)) {
       // we have removed all the instructions initialising the many property
       return;
@@ -128,12 +141,10 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
    * </pre>
    */
   private void addInitialisationIfRequired(int opcode, String owner, String name, String desc) {
-
     if (C_MODEL.equals(owner) && INIT.equals(name)) {
       addConstructorInit(owner);
       return;
     }
-
     if (opcode == INVOKESPECIAL && name.equals(INIT) && desc.equals(NOARG_VOID)) {
       if (meta.isSuperClassEntity()) {
         if (meta.isLog(4)) {
@@ -154,11 +165,9 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
   }
 
   private void addConstructorInit(String owner) {
-
     if (meta.isLog(4)) {
       meta.log("... adding intercept <init> in CONSTRUCTOR:" + constructorDesc + " OWNER/SUPER:" + owner);
     }
-
     if (constructorInitializationDone) {
       // hopefully this is never called but put it in here to be on the safe side.
       String msg = "Error in Enhancement. Only expecting to add <init> of intercept object"
@@ -182,7 +191,6 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
       constructorInitializationDone = true;
     }
   }
-
 
   @Override
   public void visitParameter(String name, int access) {
@@ -251,12 +259,6 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
   }
 
   @Override
-  public void visitLabel(Label label) {
-    deferredCode.flush();
-    super.visitLabel(label);
-  }
-
-  @Override
   public void visitLdcInsn(Object cst) {
     deferredCode.flush();
     super.visitLdcInsn(cst);
@@ -314,12 +316,6 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
   public AnnotationVisitor visitLocalVariableAnnotation(int typeRef, TypePath typePath, Label[] start, Label[] end, int[] index, String desc, boolean visible) {
     deferredCode.flush();
     return super.visitLocalVariableAnnotation(typeRef, typePath, start, end, index, desc, visible);
-  }
-
-  @Override
-  public void visitLineNumber(int line, Label start) {
-    deferredCode.flush();
-    super.visitLineNumber(line, start);
   }
 
   @Override
