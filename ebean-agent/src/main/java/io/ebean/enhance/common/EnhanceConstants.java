@@ -16,6 +16,8 @@ public interface EnhanceConstants {
   String TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
   String TYPEQUERYBEAN_ANNOTATION = "Lio/ebean/typequery/TypeQueryBean;";
 
+  String NORMALIZE_ANNOTATION = "Lio/ebean/annotation/Normalize;";
+
   String JAVAX_PERSISTENCE = "Ljavax/persistence/";
 
   String ENTITY_ANNOTATION = "Ljavax/persistence/Entity;";

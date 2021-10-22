@@ -1,4 +1,4 @@
-entity-packages: test.model.domain
+entity-packages: test.model.domain, de.foconis
 transactional-packages: test
 querybean-packages: test.model, foo
 post-json-getter: test.normalize.PostJsonGetter

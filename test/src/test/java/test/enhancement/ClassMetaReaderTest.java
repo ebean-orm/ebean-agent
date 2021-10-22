@@ -9,6 +9,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import io.ebean.enhance.asm.Type;
+import io.ebean.enhance.common.AgentManifest;
+import io.ebean.enhance.common.AnnotationInfo;
+import io.ebean.enhance.common.ClassMetaCache;
+
+import io.ebean.enhance.common.ClassMeta;
+import io.ebean.enhance.common.ClassMetaReader;
+import io.ebean.enhance.entity.ClassPathClassBytesReader;
+import io.ebean.enhance.common.EnhanceContext;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 

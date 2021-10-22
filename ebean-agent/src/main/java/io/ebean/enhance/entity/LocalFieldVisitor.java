@@ -3,6 +3,7 @@ package io.ebean.enhance.entity;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.Attribute;
 import io.ebean.enhance.asm.FieldVisitor;
+import io.ebean.enhance.common.AnnotationInfoVisitor;
 import io.ebean.enhance.common.EnhanceConstants;
 
 import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
@@ -39,7 +40,11 @@ public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants 
       if (!visible && desc.equals(L_JETBRAINS_NOTNULL)) {
         fv.visitAnnotation(L_EBEAN_NOTNULL, true);
       }
-      return fv.visitAnnotation(desc, visible);
+      AnnotationVisitor av = fv.visitAnnotation(desc, visible);
+      if (desc.equals(NORMALIZE_ANNOTATION)) {
+        av = new AnnotationInfoVisitor(null, fieldMeta.getNormalizeAnnotationInfo(), av);
+      }
+      return av;
     } else {
       return null;
     }

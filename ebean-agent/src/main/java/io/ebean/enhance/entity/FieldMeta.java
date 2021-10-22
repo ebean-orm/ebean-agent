@@ -1,11 +1,15 @@
 package io.ebean.enhance.entity;
 
 import io.ebean.enhance.asm.*;
+import io.ebean.enhance.asm.commons.GeneratorAdapter;
+import io.ebean.enhance.common.AnnotationInfo;
+
 import io.ebean.enhance.common.ClassMeta;
 import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.VisitUtil;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Holds meta data for a field.
@@ -37,6 +41,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
 
   private int indexPosition;
   private int sortOrder;
+  private AnnotationInfo normalizeAnnotationInfo;
 
   /**
    * Construct based on field name and desc from reading byte code.
@@ -65,6 +70,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
     } else {
       this.postJsonGetter = null;
     }
+    this.normalizeAnnotationInfo = new AnnotationInfo(null);
   }
 
   @Override
@@ -118,6 +124,10 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
    */
   public boolean isPrimitiveType() {
     return primitiveType;
+  }
+
+  public AnnotationInfo getNormalizeAnnotationInfo() {
+    return this.normalizeAnnotationInfo;
   }
 
   /**
@@ -201,6 +211,11 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
 
   private boolean isManyToMany() {
     return annotations.contains("Ljavax/persistence/ManyToMany;");
+  }
+
+  public boolean isOne() {
+    return annotations.contains("Ljavax/persistence/OneToOne;")
+      || annotations.contains("Ljavax/persistence/ManyToOne;");
   }
 
   /**
@@ -564,12 +579,38 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
 
     // ALOAD or ILOAD etc
     int iLoadOpcode = asmType.getOpcode(Opcodes.ILOAD);
-    MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), setMethodName, setMethodDesc, null, null);
+    int iStoreOpcode = asmType.getOpcode(Opcodes.ISTORE);
+
+    MethodVisitor originalMv = cw.visitMethod(ACC_PROTECTED, setMethodName, setMethodDesc, null, null);
+
+    GeneratorAdapter mv = new GeneratorAdapter(originalMv, ACC_PROTECTED, setMethodName, setMethodDesc);
     mv.visitCode();
 
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
+    // FOCONIS Normalizer
+    List<Type> normalizers = (List<Type>) normalizeAnnotationInfo.getValue("value");
+    if (normalizers != null) {
+      // found a field normalizer. This normalizer is used regardless of the datatype.
+      mv.visitVarInsn(iLoadOpcode, 1);
+      for (Type normalizer : normalizers) {
+        mv.visitMethodInsn(INVOKESTATIC, normalizer.getInternalName(), "normalize",
+          "(" +  asmType.getDescriptor() +")" +  asmType.getDescriptor(), false);
+      }
+      mv.visitVarInsn(iStoreOpcode, 1);
+    } else {
+      normalizers = classMeta.getClassNormalizers();
+      if (normalizers != null && asmType.getDescriptor().equals(L_STRING)) {
+        mv.visitVarInsn(iLoadOpcode, 1);
+        for (Type normalizer : normalizers) {
+          mv.visitMethodInsn(INVOKESTATIC, normalizer.getInternalName(), "normalize",
+            "(Ljava/lang/String;)Ljava/lang/String;", false);
+        }
+        mv.visitVarInsn(iStoreOpcode, 1);
+      }
+    }
+
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, fieldClass, INTERCEPT_FIELD, L_INTERCEPT);
     if (isInterceptSet()) {
