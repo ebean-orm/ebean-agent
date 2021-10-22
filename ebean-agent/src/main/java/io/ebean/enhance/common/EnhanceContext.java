@@ -50,6 +50,7 @@ public class EnhanceContext {
   private final int accProtected;
   private final int accPrivate;
   private final int ebeanInternalVersion;
+  private final String postJsonGetter;
 
   private SummaryInfo summaryInfo;
 
@@ -63,6 +64,7 @@ public class EnhanceContext {
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest, ClassMetaCache metaCache) {
     this.manifest = manifest;
     this.enableProfileLocation = manifest.isEnableProfileLocation();
+    this.postJsonGetter = manifest.getPostJsonGetter();
     this.accPublic = manifest.accPublic();
     this.accProtected = manifest.accProtected();
     this.accPrivate = manifest.accPrivate();
@@ -324,6 +326,13 @@ public class EnhanceContext {
    */
   public boolean isCheckNullManyFields() {
     return manifest.isCheckNullManyFields();
+  }
+
+  /**
+   * Returns, which postJsonGetter class should be used.
+   */
+  public String getPostJsonGetter() {
+    return postJsonGetter;
   }
 
   /**
