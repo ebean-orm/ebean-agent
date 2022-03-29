@@ -1,3 +1,9 @@
+[![Build](https://github.com/ebean-orm/ebean-agent/actions/workflows/build.yml/badge.svg)](https://github.com/ebean-orm/ebean-agent/actions/workflows/build.yml)
+[![Maven Central : ebean](https://maven-badges.herokuapp.com/maven-central/io.ebean/ebean-agent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.ebean/ebean-agent)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/ebean-orm/ebean-agent/blob/master/LICENSE)
+[![ebean-agent EA](https://github.com/ebean-orm/ebean-agent/actions/workflows/jdk-ea.yml/badge.svg)](https://github.com/ebean-orm/ebean-agent/actions/workflows/jdk-ea.yml)
+
+
 ebean-agent
 ====================
 
