@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.avaje</groupId>
+    <artifactId>java8-oss</artifactId>
+    <version>3.6</version>
+  </parent>
+
+  <groupId>io.ebean</groupId>
+  <artifactId>ebean-agent-test</artifactId>
+  <version>1</version>
+  <name>ebean agent test</name>
+  <description>Runs agent tests using </description>
+
+  <properties>
+    <ebean.agent.version>12.16.1-SNAPSHOT</ebean.agent.version>
+    <ebean.version>12.9.0</ebean.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.ebean</groupId>
+      <artifactId>ebean-agent</artifactId>
+      <version>12.16.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.avaje</groupId>
+      <artifactId>avaje-agentloader</artifactId>
+      <version>4.3</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.ebean</groupId>
+      <artifactId>ebean</artifactId>
+      <version>${ebean.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--    <dependency>-->
+    <!--      <groupId>io.swagger.core.v3</groupId>-->
+    <!--      <artifactId>swagger-annotations</artifactId>-->
+    <!--      <version>2.0.8</version>-->
+    <!--      <scope>provided</scope>-->
+    <!--    </dependency>-->
+
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>1.5.22</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.ebean</groupId>
+      <artifactId>ebean-querybean</artifactId>
+      <version>${ebean.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.ebean</groupId>
+      <artifactId>querybean-generator</artifactId>
+      <version>${ebean.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.ebean</groupId>
+      <artifactId>ebean-test</artifactId>
+      <version>${ebean.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.avaje.composite</groupId>
+      <artifactId>logback</artifactId>
+      <version>1.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.11.2</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.avaje.composite</groupId>
+      <artifactId>composite-testing</artifactId>
+      <version>3.1</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>io.ebean</groupId>
+        <artifactId>ebean-maven-plugin</artifactId>
+        <version>12.16.0</version>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>process-test-classes</phase>
+            <configuration>
+              <transformArgs>debug=0</transformArgs>
+            </configuration>
+            <goals>
+              <goal>testEnhance</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
+
