@@ -15,7 +15,7 @@
   <description>Runs agent tests using</description>
 
   <properties>
-    <ebean.agent.version>12.16.1-SNAPSHOT</ebean.agent.version>
+    <ebean.agent.version>12.16.2-SNAPSHOT</ebean.agent.version>
     <ebean.version>12.9.0</ebean.version>
   </properties>
 
@@ -23,7 +23,7 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean-agent</artifactId>
-      <version>12.16.1-SNAPSHOT</version>
+      <version>${ebean.agent.version}</version>
     </dependency>
 
     <dependency>
@@ -102,7 +102,7 @@
           <dependency>
             <groupId>io.ebean</groupId>
             <artifactId>ebean-agent</artifactId>
-            <version>12.16.1-SNAPSHOT</version>
+            <version>${ebean.agent.version}</version>
           </dependency>
         </dependencies>
         <executions>
