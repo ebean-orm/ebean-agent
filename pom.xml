@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.avaje</groupId>
     <artifactId>java8-oss</artifactId>
@@ -8,120 +8,34 @@
   </parent>
 
   <groupId>io.ebean</groupId>
-  <artifactId>ebean-agent</artifactId>
-  <version>12.16.0</version>
-  <packaging>jar</packaging>
-
-  <name>ebean-agent</name>
-  <url>https://ebean-orm.github.io/</url>
-
-  <scm>
-    <developerConnection>scm:git:git@github.com:ebean-orm/ebean-agent.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
+  <artifactId>ebean-agent-parent</artifactId>
+  <version>1</version>
+  <packaging>pom</packaging>
+  <name>ebean agent parent</name>
 
   <properties>
-    <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
-    <ebean.version>12.9.0</ebean.version>
+    <nexus.staging.autoReleaseAfterClose>false</nexus.staging.autoReleaseAfterClose>
   </properties>
 
-  <dependencies>
+  <modules>
+    <module>agent</module>
+    <module>test</module>
+  </modules>
 
-    <dependency>
-      <groupId>org.apache.ant</groupId>
-      <artifactId>ant</artifactId>
-      <version>1.10.11</version>
-      <scope>provided</scope>
-    </dependency>
+  <profiles>
+    <profile>
+      <id>release</id>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>test</module>
+      </modules>
+    </profile>
+  </profiles>
 
-    <dependency>
-      <groupId>org.avaje</groupId>
-      <artifactId>avaje-agentloader</artifactId>
-      <version>4.3</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.ebean</groupId>
-      <artifactId>ebean</artifactId>
-      <version>${ebean.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-<!--    <dependency>-->
-<!--      <groupId>io.swagger.core.v3</groupId>-->
-<!--      <artifactId>swagger-annotations</artifactId>-->
-<!--      <version>2.0.8</version>-->
-<!--      <scope>provided</scope>-->
-<!--    </dependency>-->
-
-    <dependency>
-      <groupId>io.swagger</groupId>
-      <artifactId>swagger-annotations</artifactId>
-      <version>1.5.22</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.ebean</groupId>
-      <artifactId>ebean-querybean</artifactId>
-      <version>${ebean.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.ebean</groupId>
-      <artifactId>querybean-generator</artifactId>
-      <version>${ebean.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.ebean</groupId>
-      <artifactId>ebean-test</artifactId>
-      <version>${ebean.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.avaje.composite</groupId>
-      <artifactId>logback</artifactId>
-      <version>1.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>3.11.2</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.avaje.composite</groupId>
-      <artifactId>composite-testing</artifactId>
-      <version>3.1</version>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.0</version>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <build-version>${project.version}</build-version>
-            </manifestEntries>
-            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-
-  </build>
 </project>
+
