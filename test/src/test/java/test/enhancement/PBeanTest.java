@@ -1,10 +1,10 @@
 package test.enhancement;
 
 import io.ebean.bean.EntityBean;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.PBean;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  */

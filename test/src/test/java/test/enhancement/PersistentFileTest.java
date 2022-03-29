@@ -1,9 +1,9 @@
 package test.enhancement;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.PersistentFile;
 
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  */

@@ -5,12 +5,7 @@ import io.ebean.annotation.DbArray;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Entity
 public class Customer extends BaseEntity {

@@ -1,10 +1,10 @@
 package test.enhancement;
 
 import io.ebean.enhance.asm.Opcodes;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.AssertJUnit.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BitwiseFinalTest {
 

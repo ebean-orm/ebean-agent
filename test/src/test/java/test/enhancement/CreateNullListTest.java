@@ -3,20 +3,14 @@ package test.enhancement;
 import io.ebean.bean.EntityBean;
 import io.ebean.bean.EntityBeanIntercept;
 import io.ebean.common.BeanList;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.Contact;
 import test.model.Customer;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateNullListTest extends BaseTest {
 

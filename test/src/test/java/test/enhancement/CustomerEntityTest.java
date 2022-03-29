@@ -2,16 +2,14 @@ package test.enhancement;
 
 import io.ebean.bean.EntityBean;
 import io.ebean.bean.EntityBeanIntercept;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.BaseEntity;
 import test.model.Customer;
 
 import java.lang.reflect.Field;
 import java.util.Date;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerEntityTest extends BaseTest {
 
@@ -32,12 +30,12 @@ public class CustomerEntityTest extends BaseTest {
       assertEquals("one", names[2]);
 
     } catch (Exception e) {
-      Assert.fail();
+      fail();
     }
 
 
     Customer customer = new Customer();
-    Assert.assertTrue(customer instanceof EntityBean);
+    assertTrue(customer instanceof EntityBean);
 
     EntityBean custEb = (EntityBean)customer;
 
@@ -93,10 +91,10 @@ public class CustomerEntityTest extends BaseTest {
     assertLoaded(customerIntercept, 0, 1, 3);
     assertNotLoaded(customerIntercept, 2, 4);
 
-    Assert.assertTrue(customer.hashCode() > 0);
+    assertTrue(customer.hashCode() > 0);
 
-    Assert.assertTrue(customerIntercept.isNew());
-    Assert.assertFalse(customerIntercept.isDirty());
+    assertTrue(customerIntercept.isNew());
+    assertFalse(customerIntercept.isDirty());
     customerIntercept.setLoaded();
 
     // Will not change (set dirty flag)
@@ -105,8 +103,8 @@ public class CustomerEntityTest extends BaseTest {
 
     // This will set it to be modified
     customer.setName("nameModified");
-    Assert.assertTrue(customerIntercept.isDirty());
-    Assert.assertTrue(customerIntercept.isNewOrDirty());
+    assertTrue(customerIntercept.isDirty());
+    assertTrue(customerIntercept.isNewOrDirty());
     assertChanged(customerIntercept, 3);
     assertNotChanged(customerIntercept, 0,1,2,4);
 

@@ -1,20 +1,13 @@
 package test.enhancement;
 
 import io.ebean.bean.EntityBean;
-import org.testng.annotations.Test;
-import test.model.Contact;
-import test.model.WithInitialisedCollectionAndAtTransient;
-import test.model.WithInitialisedCollectionAndTransient;
-import test.model.WithInitialisedCollections;
-import test.model.WithInitialisedCollectionsAndConstructor;
+import org.junit.jupiter.api.Test;
+import test.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WithInitialisedCollectionsTest extends BaseTest {
 

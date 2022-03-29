@@ -1,7 +1,6 @@
 package io.ebean.example;
 
 import io.ebean.TxScope;
-//import io.ebean.annotation.PersistBatch;
 import io.ebean.annotation.Transactional;
 import io.ebean.bean.HelpTx;
 import io.ebeaninternal.api.HelpScopeTrans;

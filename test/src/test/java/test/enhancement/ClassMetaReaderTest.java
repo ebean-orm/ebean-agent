@@ -1,25 +1,16 @@
 package test.enhancement;
 
+import io.ebean.enhance.asm.Type;
+import io.ebean.enhance.common.*;
+import io.ebean.enhance.entity.ClassPathClassBytesReader;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import io.ebean.annotation.Transactional;
-import io.ebean.enhance.asm.Type;
-import io.ebean.enhance.common.AgentManifest;
-import io.ebean.enhance.common.AnnotationInfo;
-import io.ebean.enhance.common.ClassMetaCache;
-import org.testng.annotations.Test;
-
-import io.ebean.enhance.common.ClassMeta;
-import io.ebean.enhance.common.ClassMetaReader;
-import io.ebean.enhance.entity.ClassPathClassBytesReader;
-import io.ebean.enhance.common.EnhanceContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClassMetaReaderTest {
 

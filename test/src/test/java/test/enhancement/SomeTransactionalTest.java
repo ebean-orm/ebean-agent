@@ -1,14 +1,12 @@
 package test.enhancement;
 
 import io.ebean.annotation.SomePath;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.SomeTransactionalService;
 
 import java.lang.reflect.Method;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SomeTransactionalTest extends BaseTest {
 

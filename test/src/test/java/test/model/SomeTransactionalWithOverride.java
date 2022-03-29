@@ -1,10 +1,8 @@
 package test.model;
 
-import java.io.IOException;
-
-import io.ebean.Ebean;
 import io.ebean.annotation.Transactional;
-import io.ebeaninternal.api.SpiTransaction;
+
+import java.io.IOException;
 
 @Transactional(rollbackFor = { IOException.class, IllegalStateException.class }, batchSize = 42)
 public class SomeTransactionalWithOverride {

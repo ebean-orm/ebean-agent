@@ -1,7 +1,7 @@
 package test.enhancement;
 
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.testng.annotations.Test;
 import test.model.PersistentFile;
 
 public class MockEntityBeanTest extends BaseTest {

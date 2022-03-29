@@ -1,7 +1,7 @@
 package test.model;
 
 import io.ebean.DB;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.enhancement.BaseTest;
 import test.model.domain.DbGroup;
 import test.model.domain.DbPerson;

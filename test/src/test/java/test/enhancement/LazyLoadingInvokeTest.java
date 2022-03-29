@@ -3,13 +3,15 @@ package test.enhancement;
 import io.ebean.bean.BeanLoader;
 import io.ebean.bean.EntityBean;
 import io.ebean.bean.EntityBeanIntercept;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import test.model.Contact;
 import test.model.Customer;
 
 import java.util.List;
-import java.util.concurrent.locks.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LazyLoadingInvokeTest extends BaseTest {
 
@@ -26,9 +28,9 @@ public class LazyLoadingInvokeTest extends BaseTest {
     // toString does not invoke lazy loading
     String toStringValue = customer.toString();
 
-    Assert.assertNull(myBeanLoader.wasLoad);
-    Assert.assertEquals(0, myBeanLoader.count);
-    Assert.assertEquals("id:27 name:null", toStringValue);
+    assertNull(myBeanLoader.wasLoad);
+    assertEquals(0, myBeanLoader.count);
+    assertEquals("id:27 name:null", toStringValue);
   }
 
   @Test
@@ -45,12 +47,12 @@ public class LazyLoadingInvokeTest extends BaseTest {
     customer.getName();
 
     // It happened
-    Assert.assertTrue(myBeanLoader.wasLoad == intercept);
-    Assert.assertEquals(1, myBeanLoader.count);
+    assertTrue(myBeanLoader.wasLoad == intercept);
+    assertEquals(1, myBeanLoader.count);
 
     // The index on the lazy loaded property was set
-    Assert.assertEquals(3, intercept.getLazyLoadPropertyIndex());
-    Assert.assertEquals("name", intercept.getProperty(3));
+    assertEquals(3, intercept.getLazyLoadPropertyIndex());
+    assertEquals("name", intercept.getProperty(3));
   }
 
   @Test
@@ -67,12 +69,12 @@ public class LazyLoadingInvokeTest extends BaseTest {
     customer.getOne();
 
     // It happened
-    Assert.assertTrue(myBeanLoader.wasLoad == intercept);
-    Assert.assertEquals(1, myBeanLoader.count);
+    assertTrue(myBeanLoader.wasLoad == intercept);
+    assertEquals(1, myBeanLoader.count);
 
     // The index on the lazy loaded property was set
-    Assert.assertEquals(2, intercept.getLazyLoadPropertyIndex());
-    Assert.assertEquals("one", intercept.getProperty(2));
+    assertEquals(2, intercept.getLazyLoadPropertyIndex());
+    assertEquals("one", intercept.getProperty(2));
   }
 
   private void setupCustomerState(Customer customer, EntityBeanIntercept intercept, MyBeanLoader myBeanLoader) {
@@ -80,8 +82,8 @@ public class LazyLoadingInvokeTest extends BaseTest {
     customer.setId(27l);
     intercept.setBeanLoader(myBeanLoader);
     intercept.setLoaded();
-    Assert.assertNull(myBeanLoader.wasLoad);
-    Assert.assertEquals(0, myBeanLoader.count);
+    assertNull(myBeanLoader.wasLoad);
+    assertEquals(0, myBeanLoader.count);
   }
 
   @Test
@@ -98,9 +100,9 @@ public class LazyLoadingInvokeTest extends BaseTest {
     customer.setName("blah");
 
     // It happened as expected
-    Assert.assertTrue(myBeanLoader.wasLoad == intercept);
-    Assert.assertEquals(1, myBeanLoader.count);
-    Assert.assertEquals("blah", customer.getName());
+    assertTrue(myBeanLoader.wasLoad == intercept);
+    assertEquals(1, myBeanLoader.count);
+    assertEquals("blah", customer.getName());
   }
 
 
@@ -118,9 +120,9 @@ public class LazyLoadingInvokeTest extends BaseTest {
     List<Contact> contacts = customer.getContacts();
 
     // It happened as expected
-    Assert.assertTrue(myBeanLoader.wasLoad == intercept);
-    Assert.assertEquals(1, myBeanLoader.count);
-    Assert.assertNotNull(contacts);
+    assertTrue(myBeanLoader.wasLoad == intercept);
+    assertEquals(1, myBeanLoader.count);
+    assertNotNull(contacts);
   }
 
   /**
