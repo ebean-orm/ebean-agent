@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.avaje</groupId>
@@ -9,21 +7,30 @@
   </parent>
 
   <groupId>io.ebean</groupId>
-  <artifactId>ebean-agent-test</artifactId>
-  <version>1</version>
-  <name>ebean agent test</name>
-  <description>Runs agent tests using</description>
+  <artifactId>ebean-agent</artifactId>
+  <version>12.16.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>ebean-agent</name>
+  <url>https://ebean-orm.github.io/</url>
+
+  <scm>
+    <developerConnection>scm:git:git@github.com:ebean-orm/ebean-agent.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
-    <ebean.agent.version>12.16.1-SNAPSHOT</ebean.agent.version>
+    <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
     <ebean.version>12.9.0</ebean.version>
   </properties>
 
   <dependencies>
+
     <dependency>
-      <groupId>io.ebean</groupId>
-      <artifactId>ebean-agent</artifactId>
-      <version>12.16.1-SNAPSHOT</version>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.10.11</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -100,34 +107,21 @@
 
   <build>
     <plugins>
-
       <plugin>
-        <groupId>io.ebean</groupId>
-        <artifactId>ebean-maven-plugin</artifactId>
-        <version>12.16.0</version>
-        <dependencies>
-          <dependency>
-            <groupId>io.ebean</groupId>
-            <artifactId>ebean-agent</artifactId>
-            <version>12.16.1-SNAPSHOT</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>test</id>
-            <phase>process-test-classes</phase>
-            <configuration>
-              <transformArgs>debug=0</transformArgs>
-            </configuration>
-            <goals>
-              <goal>testEnhance</goal>
-            </goals>
-          </execution>
-        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <build-version>${project.version}</build-version>
+            </manifestEntries>
+            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
       </plugin>
-
     </plugins>
-  </build>
 
+  </build>
 </project>
 

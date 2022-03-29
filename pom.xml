@@ -8,34 +8,15 @@
   </parent>
 
   <groupId>io.ebean</groupId>
-  <artifactId>ebean-agent-parent</artifactId>
+  <artifactId>ebean-agent-reactor</artifactId>
   <version>1</version>
   <packaging>pom</packaging>
-  <name>ebean agent parent</name>
-
-  <properties>
-    <nexus.staging.autoReleaseAfterClose>false</nexus.staging.autoReleaseAfterClose>
-  </properties>
+  <name>ebean agent reactor</name>
 
   <modules>
-    <module>agent</module>
+    <module>ebean-agent</module>
     <module>test</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>release</id>
-    </profile>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>test</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>
 
