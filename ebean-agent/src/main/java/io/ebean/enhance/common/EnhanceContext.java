@@ -1,6 +1,7 @@
 package io.ebean.enhance.common;
 
 import io.ebean.enhance.Transformer;
+import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.entity.MessageOutput;
 
 import java.io.ByteArrayOutputStream;
@@ -9,6 +10,11 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static io.ebean.enhance.asm.Opcodes.INVOKEINTERFACE;
+import static io.ebean.enhance.asm.Opcodes.INVOKEVIRTUAL;
+import static io.ebean.enhance.common.EnhanceConstants.C_INTERCEPT_I;
+import static io.ebean.enhance.common.EnhanceConstants.C_INTERCEPT_RW;
 
 /**
  * Used to hold meta data, arguments and log levels for the enhancement.
@@ -107,7 +113,8 @@ public class EnhanceContext {
     return "packages entity:" + getEntityPackages()
       + "  transactional:" + getTransactionalPackages()
       + "  querybean:" + getQuerybeanPackages()
-      + "  profileLocation:" + enableProfileLocation;
+      + "  profileLocation:" + enableProfileLocation
+      + "  version:" + ebeanInternalVersion;
   }
 
   public Set<String> getEntityPackages() {
@@ -400,5 +407,25 @@ public class EnhanceContext {
 
   public boolean isToManyGetField() {
     return ebeanInternalVersion > 128;
+  }
+
+  public String interceptNew() {
+    return ebeanInternalVersion >= 140 ? C_INTERCEPT_RW : C_INTERCEPT_I;
+  }
+
+  public void visitMethodInsnIntercept(MethodVisitor mv, String name, String desc) {
+    mv.visitMethodInsn(interceptInvoke(), C_INTERCEPT_I, name, desc, interceptIface());
+  }
+
+  private int interceptInvoke() {
+    return ebeanInternalVersion >= 140 ? INVOKEINTERFACE : INVOKEVIRTUAL;
+  }
+
+  private boolean interceptIface() {
+    return ebeanInternalVersion >= 140;
+  }
+
+  public boolean interceptAddReadOnly() {
+    return ebeanInternalVersion >= 141;
   }
 }

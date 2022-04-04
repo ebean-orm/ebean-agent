@@ -398,6 +398,29 @@ public class ClassMeta {
     return enhanceContext.isToManyGetField();
   }
 
+  /**
+   * Return the EntityBeanIntercept type that will be new'ed up for the EntityBean.
+   * For version 140+ EntityBeanIntercept is an interface and instead we new up InterceptReadWrite.
+   */
+  public String interceptNew() {
+    return enhanceContext.interceptNew();
+  }
+
+  /**
+   * Invoke a method on EntityBeanIntercept.
+   * For version 140+ EntityBeanIntercept is an interface and this uses INVOKEINTERFACE.
+   */
+  public void visitMethodInsnIntercept(MethodVisitor mv, String name, String desc) {
+    enhanceContext.visitMethodInsnIntercept(mv, name, desc);
+  }
+
+  /**
+   * If 141+ Add InterceptReadOnly support.
+   */
+  public boolean interceptAddReadOnly() {
+    return enhanceContext.interceptAddReadOnly();
+  }
+
   private static final class MethodReader extends MethodVisitor {
 
     final MethodMeta methodMeta;

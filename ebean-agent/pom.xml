@@ -4,6 +4,7 @@
     <groupId>org.avaje</groupId>
     <artifactId>java8-oss</artifactId>
     <version>3.6</version>
+    <relativePath/>
   </parent>
 
   <groupId>io.ebean</groupId>
@@ -21,7 +22,8 @@
 
   <properties>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
-    <ebean.version>12.9.0</ebean.version>
+    <ebean.version>13.0.0</ebean.version>
+<!--    <ebean.version>13.0.1-SNAPSHOT</ebean.version>-->
   </properties>
 
   <dependencies>

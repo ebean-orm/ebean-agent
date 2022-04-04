@@ -49,7 +49,7 @@ class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
         mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
         mv.visitVarInsn(ALOAD, 0);
         fieldMeta.appendSwitchGet(mv, classMeta, false);
-        mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "setEmbeddedLoaded", "(Ljava/lang/Object;)V", false);
+        classMeta.visitMethodInsnIntercept(mv, "setEmbeddedLoaded", "(Ljava/lang/Object;)V");
       }
     }
 

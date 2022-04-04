@@ -1,10 +1,6 @@
 package io.ebean.enhance.entity;
 
-import io.ebean.enhance.asm.ClassVisitor;
-import io.ebean.enhance.asm.Label;
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.Type;
+import io.ebean.enhance.asm.*;
 import io.ebean.enhance.common.ClassMeta;
 import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.VisitUtil;
@@ -350,7 +346,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitLineNumber(5, labelStart);
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetId", NOARG_VOID, false);
+      classMeta.visitMethodInsnIntercept(mv, "preGetId", NOARG_VOID);
 
     } else if (isInterceptGet()) {
       maxVars = 2;
@@ -360,7 +356,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
       VisitUtil.visitIntInsn(mv, indexPosition);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V", false);
+      classMeta.visitMethodInsnIntercept(mv, "preGetter", "(I)V");
     }
     if (labelStart == null) {
       labelStart = labelEnd;
@@ -387,7 +383,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
     VisitUtil.visitIntInsn(mv, indexPosition);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "preGetter", "(I)V", false);
+    classMeta.visitMethodInsnIntercept(mv, "preGetter", "(I)V");
 
     Label l4 = new Label();
     if (classMeta.getEnhanceContext().isCheckNullManyFields()) {
@@ -415,7 +411,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       mv.visitVarInsn(ALOAD, 0);
       mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
       VisitUtil.visitIntInsn(mv, indexPosition);
-      mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "initialisedMany", "(I)V", false);
+      classMeta.visitMethodInsnIntercept(mv, "initialisedMany", "(I)V");
 
       if (isManyToMany() || hasOrderColumn()) {
         // turn on modify listening for ManyToMany
@@ -514,7 +510,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     if (isToMany()) {
       preSetterMethod = "preSetterMany";
     }
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, preSetterMethod, "(ZI" + preSetterArgTypes + ")V", false);
+    classMeta.visitMethodInsnIntercept(mv, preSetterMethod, "(ZI" + preSetterArgTypes + ")V");
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(2, l1);
@@ -563,7 +559,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitVarInsn(ALOAD, 0);
     mv.visitFieldInsn(GETFIELD, fieldClass, INTERCEPT_FIELD, L_INTERCEPT);
     VisitUtil.visitIntInsn(mv, indexPosition);
-    mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "setLoadedProperty", "(I)V", false);
+    classMeta.visitMethodInsnIntercept(mv, "setLoadedProperty", "(I)V");
 
     Label l2 = new Label();
     mv.visitLabel(l2);
