@@ -65,7 +65,7 @@ class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
         mv.visitFieldInsn(GETFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
         mv.visitVarInsn(ALOAD, 0);
         fieldMeta.appendSwitchGet(mv, classMeta, false);
-        mv.visitMethodInsn(INVOKEVIRTUAL, C_INTERCEPT, "isEmbeddedNewOrDirty", "(Ljava/lang/Object;)Z", false);
+        classMeta.visitMethodInsnIntercept(mv, "isEmbeddedNewOrDirty", "(Ljava/lang/Object;)Z");
 
         labelNext = new Label();
         mv.visitJumpInsn(IFEQ, labelNext);

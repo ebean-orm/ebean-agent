@@ -182,7 +182,7 @@ public class AgentManifestTest {
     assertThat(context.getTransactionalPackages()).containsOnly("org.foo");
     assertThat(context.getQuerybeanPackages()).containsOnly("org.foo");
 
-    assertThat(context.getPackagesSummary()).isEqualTo("packages entity:[org.foo.some.domain, org.foo.domain]  transactional:[org.foo]  querybean:[org.foo]  profileLocation:true");
+    assertThat(context.getPackagesSummary()).isEqualTo("packages entity:[org.foo.some.domain, org.foo.domain]  transactional:[org.foo]  querybean:[org.foo]  profileLocation:true  version:0");
 
     context.collectSummary();
     SummaryInfo emptySummary = context.getSummaryInfo();

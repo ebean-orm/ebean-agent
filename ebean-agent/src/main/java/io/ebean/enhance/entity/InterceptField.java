@@ -88,10 +88,10 @@ class InterceptField implements Opcodes, EnhanceConstants {
     mv.visitLabel(l2);
     mv.visitLineNumber(2, l2);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitTypeInsn(NEW, C_INTERCEPT);
+    mv.visitTypeInsn(NEW, meta.interceptNew());
     mv.visitInsn(DUP);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKESPECIAL, C_INTERCEPT, INIT, "(Ljava/lang/Object;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, meta.interceptNew(), INIT, "(Ljava/lang/Object;)V", false);
     mv.visitFieldInsn(PUTFIELD, className, INTERCEPT_FIELD, L_INTERCEPT);
     mv.visitLabel(l1);
     mv.visitLineNumber(3, l1);

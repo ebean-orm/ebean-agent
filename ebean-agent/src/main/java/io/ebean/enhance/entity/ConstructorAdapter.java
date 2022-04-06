@@ -178,11 +178,11 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
     } else {
       // add the initialisation of the intercept object
       super.visitVarInsn(ALOAD, 0);
-      super.visitTypeInsn(NEW, C_INTERCEPT);
+      super.visitTypeInsn(NEW, meta.interceptNew());
       super.visitInsn(DUP);
       super.visitVarInsn(ALOAD, 0);
 
-      super.visitMethodInsn(INVOKESPECIAL, C_INTERCEPT, INIT, "(Ljava/lang/Object;)V", false);
+      super.visitMethodInsn(INVOKESPECIAL, meta.interceptNew(), INIT, "(Ljava/lang/Object;)V", false);
       super.visitFieldInsn(PUTFIELD, className, INTERCEPT_FIELD, EnhanceConstants.L_INTERCEPT);
 
       if (meta.isLog(8)) {
