@@ -13,7 +13,7 @@ Enhancer Agent for Ebean ORM
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean-agent</artifactId>
-      <version>12.9.0</version>
+      <version>13.1.0</version>
     </dependency>
 ```
 
