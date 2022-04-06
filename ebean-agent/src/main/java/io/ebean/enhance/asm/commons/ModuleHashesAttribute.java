@@ -30,8 +30,9 @@ package io.ebean.enhance.asm.commons;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.ebean.enhance.asm.*;
 import io.ebean.enhance.asm.Attribute;
-import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.ByteVector;
 import io.ebean.enhance.asm.ClassReader;
 import io.ebean.enhance.asm.ClassWriter;
@@ -104,7 +105,7 @@ public final class ModuleHashesAttribute extends Attribute {
       currentOffset += 2;
       byte[] hash = new byte[hashLength];
       for (int j = 0; j < hashLength; ++j) {
-        hash[j] = (byte) (classReader.readByte(currentOffset) & 0xFF);
+        hash[j] = (byte) classReader.readByte(currentOffset);
         currentOffset += 1;
       }
       hashList.add(hash);
