@@ -18,5 +18,40 @@
     <module>test</module>
   </modules>
 
+  <repositories>
+    <repository>
+      <id>foconis-release</id>
+      <url>https://mvnrepo.foconis.de/repository/release/</url>
+    </repository>
+    <repository>
+      <id>foconis-snapshot</id>
+      <url>https://mvnrepo.foconis.de/repository/snapshot/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>foconis-release</id>
+      <url>https://mvnrepo.foconis.de/repository/release/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>foconis-snapshot</id>
+      <url>https://mvnrepo.foconis.de/repository/snapshot/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <distributionManagement>
+    <repository>
+      <id>foconis-release</id>
+      <name>FOCONIS Release Repository</name>
+      <url>https://mvnrepo.foconis.de/repository/release/</url>
+    </repository>
+    <snapshotRepository>
+      <id>foconis-snapshot</id>
+      <name>FOCONIS Snapshot Repository</name>
+      <url>https://mvnrepo.foconis.de/repository/snapshot/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
 </project>
 
