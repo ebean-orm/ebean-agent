@@ -47,6 +47,7 @@ public interface EnhanceConstants {
   String C_INTERCEPT_RO = "io/ebean/bean/InterceptReadOnly";
 
   String C_BEANCOLLECTION = "io/ebean/bean/BeanCollection";
+  String C_TOSTRINGBUILDER = "io/ebean/bean/ToStringBuilder";
 
   String L_STRING = "Ljava/lang/String;";
 

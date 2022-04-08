@@ -52,25 +52,17 @@ public class ClassMeta {
    * Set to true if the class already implements the EntityBean interface.
    */
   private boolean hasEntityBeanInterface;
-
   private boolean alreadyEnhanced;
-
   private boolean hasEqualsOrHashcode;
-
+  private boolean hasToString;
   private boolean hasDefaultConstructor;
-
   private boolean hasStaticInit;
 
   private final LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<>();
-
   private final HashSet<String> classAnnotation = new HashSet<>();
-
   private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
-
   private final ArrayList<MethodMeta> methodMetaList = new ArrayList<>();
-
   private final EnhanceContext enhanceContext;
-
   private List<FieldMeta> allFields;
 
   public ClassMeta(EnhanceContext enhanceContext, int logLevel, MessageOutput logout) {
@@ -179,15 +171,26 @@ public class ClassMeta {
     this.hasEqualsOrHashcode = hasEqualsOrHashcode;
   }
 
+  public void setHasToString() {
+    this.hasToString = true;
+  }
+
   /**
    * Return true if Equals/hashCode is implemented on this class or a super class.
    */
   public boolean hasEqualsOrHashCode() {
     if (hasEqualsOrHashcode) {
       return true;
-
     } else {
       return (superMeta != null && superMeta.hasEqualsOrHashCode());
+    }
+  }
+
+  public boolean hasToString() {
+    if (hasToString) {
+      return true;
+    } else {
+      return (superMeta != null && superMeta.hasToString());
     }
   }
 
@@ -211,7 +214,6 @@ public class ClassMeta {
    * Return the field - null when not found.
    */
   public FieldMeta getFieldPersistent(String fieldName) {
-
     FieldMeta f = fields.get(fieldName);
     if (f != null) {
       return f;
@@ -223,16 +225,13 @@ public class ClassMeta {
    * Return the list of fields local to this type (not inherited).
    */
   private List<FieldMeta> getLocalFields() {
-
     List<FieldMeta> list = new ArrayList<>();
-
     for (FieldMeta fm : fields.values()) {
       if (!fm.isObjectArray()) {
         // add field local to this entity type
         list.add(fm);
       }
     }
-
     return list;
   }
 
@@ -261,13 +260,11 @@ public class ClassMeta {
    * Return true if the class contains persistent fields.
    */
   public boolean hasPersistentFields() {
-
     for (FieldMeta fieldMeta : fields.values()) {
       if (fieldMeta.isPersistent() || fieldMeta.isTransient()) {
         return true;
       }
     }
-
     return superMeta != null && superMeta.hasPersistentFields();
   }
 
@@ -276,7 +273,6 @@ public class ClassMeta {
    * types and mappedSuperclasses.
    */
   public List<FieldMeta> getAllFields() {
-
     if (allFields != null) {
       return allFields;
     }
@@ -287,7 +283,6 @@ public class ClassMeta {
     for (int i = 0; i < allFields.size(); i++) {
       allFields.get(i).setIndexPosition(i);
     }
-
     return list;
   }
 
@@ -295,7 +290,6 @@ public class ClassMeta {
    * Add field level get set methods for each field.
    */
   public void addFieldGetSetMethods(ClassVisitor cv) {
-
     if (isEntityEnhancementRequired()) {
       for (FieldMeta fm : fields.values()) {
         fm.addGetSetMethods(cv, this);
@@ -367,7 +361,6 @@ public class ClassMeta {
   }
 
   MethodVisitor createMethodVisitor(MethodVisitor mv, String name, String desc) {
-
     MethodMeta methodMeta = new MethodMeta(annotationInfo, name, desc);
     methodMetaList.add(methodMeta);
     return new MethodReader(mv, methodMeta);
@@ -459,7 +452,6 @@ public class ClassMeta {
    * Create and return a new fieldVisitor for use when enhancing a class.
    */
   public FieldVisitor createLocalFieldVisitor(FieldVisitor fv, String name, String desc) {
-
     FieldMeta fieldMeta = new FieldMeta(this, name, desc, className);
     LocalFieldVisitor localField = new LocalFieldVisitor(fv, fieldMeta);
     if (name.startsWith("_ebean")) {

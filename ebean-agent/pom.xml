@@ -22,7 +22,7 @@
 
   <properties>
     <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
-    <ebean.version>12.16.0</ebean.version>
+    <ebean.version>13.1.0</ebean.version>
 <!--    <ebean.version>13.0.1-SNAPSHOT</ebean.version>-->
   </properties>
 
