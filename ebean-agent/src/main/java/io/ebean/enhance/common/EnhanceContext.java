@@ -409,6 +409,10 @@ public class EnhanceContext {
     return ebeanInternalVersion > 128;
   }
 
+  public boolean isEnhancedToString() {
+    return ebeanInternalVersion > 132;
+  }
+
   public String interceptNew() {
     return ebeanInternalVersion >= 140 ? C_INTERCEPT_RW : C_INTERCEPT_I;
   }

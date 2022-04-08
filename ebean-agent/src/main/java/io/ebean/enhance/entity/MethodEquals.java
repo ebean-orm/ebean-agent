@@ -30,7 +30,6 @@ class MethodEquals implements Opcodes, EnhanceConstants {
    * @param idFieldIndex the index of the id field
    */
   static void addMethods(ClassVisitor cv, ClassMeta meta, int idFieldIndex, FieldMeta idFieldMeta) {
-
     if (meta.hasEqualsOrHashCode()) {
       // already has a equals or hashcode method...
       // so we will not add our identity based one
@@ -50,7 +49,6 @@ class MethodEquals implements Opcodes, EnhanceConstants {
       addEquals(cv, meta);
       addHashCode(cv, meta);
     }
-
   }
 
   /**

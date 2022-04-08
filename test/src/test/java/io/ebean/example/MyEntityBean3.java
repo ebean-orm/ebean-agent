@@ -6,16 +6,19 @@ import io.ebean.bean.EntityBeanIntercept;
 import test.model.MyEmbeddedBean;
 
 import javax.persistence.Id;
+import java.util.List;
 
-public class MyEntityBean3 extends Model implements EntityBean {
+public class MyEntityBean3 extends Model implements EntityBean, EbString {
 
   EbiInterface intercept;
 
   @Id
-  Long id;
+  long id;
+  String name;
 
   MyEmbeddedBean foo;
   MyEmbeddedBean bar;
+  List<MyEntityBean3> children;
 
   public Object _ebean_newInstanceReadOnly() {
     return new MyEntityBean3(null);
@@ -25,8 +28,62 @@ public class MyEntityBean3 extends Model implements EntityBean {
     intercept = new EbiReadOnly(this);
   }
 
-  MyEntityBean3() {
+  public MyEntityBean3() {
     intercept = new EbiReadWrite(this);
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public MyEmbeddedBean getFoo() {
+    return foo;
+  }
+
+  public void setFoo(MyEmbeddedBean foo) {
+    this.foo = foo;
+  }
+
+  public MyEmbeddedBean getBar() {
+    return bar;
+  }
+
+  public void setBar(MyEmbeddedBean bar) {
+    this.bar = bar;
+  }
+
+  public List<MyEntityBean3> getChildren() {
+    return children;
+  }
+
+  public void setChildren(List<MyEntityBean3> children) {
+    this.children = children;
+  }
+
+  @Override
+  public String toString() {
+    ToStringBuilder builder = new ToStringBuilder();
+    toString(builder);
+    return builder.toString();
+  }
+
+  public void toString(ToStringBuilder sb) {
+    sb.start(this);
+    sb.add("id", id);
+    sb.add("name", name);
+    sb.add("foo", foo);
+    sb.add("bar1", bar);
+    sb.add("bar2", bar);
+    sb.add("children", children);
+    sb.end();
   }
 
   Long getId() {

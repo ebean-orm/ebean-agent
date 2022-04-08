@@ -13,7 +13,7 @@ import java.util.HashSet;
  * This can then generate the appropriate byte code for this field.
  * </p>
  */
-public class FieldMeta implements Opcodes, EnhanceConstants {
+public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMeta> {
 
   private final ClassMeta classMeta;
   private final String fieldClass;
@@ -35,6 +35,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
   private final String setNoInterceptMethodName;
 
   private int indexPosition;
+  private int sortOrder;
 
   /**
    * Construct based on field name and desc from reading byte code.
@@ -58,6 +59,36 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     this.setMethodName = "_ebean_set_" + name;
     this.getNoInterceptMethodName = "_ebean_getni_" + name;
     this.setNoInterceptMethodName = "_ebean_setni_" + name;
+  }
+
+  @Override
+  public int compareTo(FieldMeta other) {
+    return Integer.compare(sortOrder, other.sortOrder);
+  }
+
+  /**
+   * Set a sort order based on the 'type' of property plus it's natural order.
+   */
+  void setSortOrder(int i) {
+    if (isId()) {
+      sortOrder = i - 10_000;
+    } else if (isToMany()) {
+      sortOrder = i + 10_000;
+    } else if (isToOne()) {
+      sortOrder = i + 9_000;
+    } else if (isEmbedded()) {
+      sortOrder = i + 8_000;
+    } else if (isDbJson()) {
+      sortOrder = i + 7_000;
+    } else if (isDbArray()) {
+      sortOrder = i + 6_000;
+    } else if (isWhen()) {
+      sortOrder = i + 2_000;
+    } else if (isVersion()) {
+      sortOrder = i + 1_000;
+    } else {
+      sortOrder = i;
+    }
   }
 
   public void setIndexPosition(int indexPosition) {
@@ -149,6 +180,11 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
       || annotations.contains("Ljavax/persistence/EmbeddedId;"));
   }
 
+  private boolean isToOne() {
+    return annotations.contains("Ljavax/persistence/OneToOne;")
+      || annotations.contains("Ljavax/persistence/ManyToOne;");
+  }
+
   /**
    * Return true if this is a OneToMany or ManyToMany field.
    */
@@ -171,6 +207,20 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
 
   private boolean isDbArray() {
     return annotations.contains("Lio/ebean/annotation/DbArray;");
+  }
+
+  private boolean isDbJson() {
+    return annotations.contains("Lio/ebean/annotation/DbJson;")
+      || annotations.contains("Lio/ebean/annotation/DbJsonB;");
+  }
+
+  private boolean isWhen() {
+    return annotations.contains("Lio/ebean/annotation/WhenModified;")
+      || annotations.contains("Lio/ebean/annotation/WhenCreated;");
+  }
+
+  private boolean isVersion() {
+    return annotations.contains("Ljavax/persistence/Version;");
   }
 
   /**
@@ -572,5 +622,4 @@ public class FieldMeta implements Opcodes, EnhanceConstants {
     mv.visitMaxs(4, 2);
     mv.visitEnd();
   }
-
 }

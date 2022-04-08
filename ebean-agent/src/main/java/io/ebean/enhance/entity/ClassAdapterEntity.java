@@ -240,6 +240,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
     MethodIsEmbeddedNewOrDirty.addMethod(cv, classMeta);
     MethodNewInstance.addMethod(cv, classMeta);
     MethodNewInstanceReadOnly.interceptAddReadOnly(cv, classMeta);
+    MethodToString.addMethod(cv, classMeta);
 
     // register with the agentContext
     enhanceContext.addClassMeta(classMeta);
@@ -281,7 +282,11 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       classMeta.setHasEqualsOrHashcode(true);
       return true;
     }
-    // don't intercept toString as its is used during debugging etc
-    return !name.equals("toString") || !desc.equals("()Ljava/lang/String;");
+    if (name.equals("toString") && desc.equals("()Ljava/lang/String;")) {
+      // don't intercept toString as its is used during debugging etc
+      classMeta.setHasToString();
+      return false;
+    }
+    return true;
   }
 }
