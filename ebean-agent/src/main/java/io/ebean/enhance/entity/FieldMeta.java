@@ -23,7 +23,6 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
   private final HashSet<String> annotations = new HashSet<>();
 
   private final Type asmType;
-
   private final boolean primitiveType;
   private final boolean objectType;
 

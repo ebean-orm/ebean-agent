@@ -89,12 +89,9 @@ class MethodEquals implements Opcodes, EnhanceConstants {
    * </pre>
    */
   private static void addGetIdentityPrimitive(ClassVisitor cv, ClassMeta classMeta, FieldMeta idFieldMeta) {
-
     String className = classMeta.getClassName();
 
-    MethodVisitor mv;
-
-    mv = cv.visitMethod(classMeta.accPrivate(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", null, null);
+    MethodVisitor mv = cv.visitMethod(classMeta.accPrivate(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     Label l1 = new Label();
@@ -201,12 +198,9 @@ class MethodEquals implements Opcodes, EnhanceConstants {
    * </pre>
    */
   private static void addGetIdentityObject(ClassVisitor cv, ClassMeta classMeta, int idFieldIndex) {
-
     String className = classMeta.getClassName();
 
-    MethodVisitor mv;
-
-    mv = cv.visitMethod(classMeta.accPrivate(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", null, null);
+    MethodVisitor mv = cv.visitMethod(classMeta.accPrivate(), _EBEAN_GET_IDENTITY, "()Ljava/lang/Object;", null, null);
     mv.visitCode();
     Label l0 = new Label();
     Label l1 = new Label();
@@ -312,10 +306,7 @@ class MethodEquals implements Opcodes, EnhanceConstants {
    * </pre>
    */
   private static void addEquals(ClassVisitor cv, ClassMeta classMeta) {
-
-    MethodVisitor mv;
-
-    mv = cv.visitMethod(classMeta.accPublic(), "equals", "(Ljava/lang/Object;)Z", null, null);
+    MethodVisitor mv = cv.visitMethod(classMeta.accPublic(), "equals", "(Ljava/lang/Object;)Z", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);
@@ -383,10 +374,7 @@ class MethodEquals implements Opcodes, EnhanceConstants {
    * </code></pre>
    */
   private static void addHashCode(ClassVisitor cv, ClassMeta meta) {
-
-    MethodVisitor mv;
-
-    mv = cv.visitMethod(meta.accPublic(), "hashCode", "()I", null, null);
+    MethodVisitor mv = cv.visitMethod(meta.accPublic(), "hashCode", "()I", null, null);
     mv.visitCode();
     Label l0 = new Label();
     mv.visitLabel(l0);

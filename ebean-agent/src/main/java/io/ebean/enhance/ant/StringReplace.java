@@ -6,7 +6,6 @@ package io.ebean.enhance.ant;
  */
 public class StringReplace {
 
-
   /**
    * This method takes a String and will replace all occurrences of the match
    * String with that of the replace String.

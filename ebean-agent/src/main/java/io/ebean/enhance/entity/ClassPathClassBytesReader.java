@@ -22,7 +22,6 @@ public class ClassPathClassBytesReader implements ClassBytesReader {
 
   @Override
   public byte[] getClassBytes(String className, ClassLoader classLoader) {
-
     try (URLClassLoader cl = new URLClassLoader(urls, classLoader)) {
       String resource = className.replace('.', '/') + ".class";
       URL url = cl.getResource(resource);

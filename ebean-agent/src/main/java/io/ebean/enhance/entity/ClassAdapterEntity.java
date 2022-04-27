@@ -24,11 +24,8 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants {
 
   private final EnhanceContext enhanceContext;
-
   private final ClassLoader classLoader;
-
   private final ClassMeta classMeta;
-
   private boolean firstMethod = true;
 
   public ClassAdapterEntity(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {

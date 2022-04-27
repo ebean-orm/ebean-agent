@@ -41,7 +41,6 @@ import java.util.Properties;
 public class Transformer implements ClassFileTransformer {
 
   public static final int EBEAN_ASM_VERSION = Opcodes.ASM9;
-
   private static String version;
 
   /**
@@ -76,13 +75,10 @@ public class Transformer implements ClassFileTransformer {
   }
 
   private static Instrumentation instrumentation;
-
   private static Transformer transformer;
 
   private final EnhanceContext enhanceContext;
-
   private final List<CommonSuperUnresolved> unresolved = new ArrayList<>();
-
   private boolean keepUnresolved;
 
   public Transformer(ClassLoader classLoader, String agentArgs) {
@@ -263,7 +259,6 @@ public class Transformer implements ClassFileTransformer {
    * Perform entity bean enhancement.
    */
   private void entityEnhancement(ClassLoader loader, TransformRequest request) {
-
     ClassReader cr = new ClassReader(request.getBytes());
     ClassWriterWithoutClassLoading cw = new ClassWriterWithoutClassLoading(ClassWriter.COMPUTE_FRAMES, loader);
     ClassAdapterEntity ca = new ClassAdapterEntity(cw, loader, enhanceContext);
@@ -281,7 +276,6 @@ public class Transformer implements ClassFileTransformer {
         ca.log("already enhanced entity");
       }
       request.enhancedEntity(null);
-
     } catch (NoEnhancementRequiredException e) {
       if (ca.isLog(4)) {
         ca.log("skipped entity enhancement");
@@ -355,7 +349,6 @@ public class Transformer implements ClassFileTransformer {
    * enhancement.
    */
   private DetectEnhancement detect(ClassLoader classLoader, byte[] classfileBuffer) {
-
     DetectEnhancement detect = new DetectEnhancement(classLoader, enhanceContext);
     ClassReader cr = new ClassReader(classfileBuffer);
     cr.accept(detect, ClassReader.SKIP_CODE + ClassReader.SKIP_DEBUG + ClassReader.SKIP_FRAMES);

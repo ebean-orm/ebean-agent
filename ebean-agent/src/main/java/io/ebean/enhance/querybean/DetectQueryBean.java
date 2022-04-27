@@ -27,7 +27,6 @@ public class DetectQueryBean {
    * Convert package to slash notation taking into account trailing wildcard.
    */
   private static String convert(String pkg) {
-
     pkg = pkg.trim();
     if (pkg.endsWith("*")) {
       pkg = pkg.substring(0, pkg.length() - 1);
@@ -57,7 +56,6 @@ public class DetectQueryBean {
    * Return true if this class is a query bean using naming conventions for query beans.
    */
   public boolean isQueryBean(String owner) {
-
     int subPackagePos = owner.lastIndexOf("/query/");
     if (subPackagePos > -1) {
       String suffix = owner.substring(subPackagePos);

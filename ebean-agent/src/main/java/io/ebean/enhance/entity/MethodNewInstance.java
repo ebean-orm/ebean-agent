@@ -18,7 +18,6 @@ class MethodNewInstance {
    * Add the _ebean_newInstance() method.
    */
   static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
-
     MethodVisitor mv = cv.visitMethod(classMeta.accPublic(), "_ebean_newInstance", "()Ljava/lang/Object;", null, null);
     mv.visitCode();
     Label l0 = new Label();

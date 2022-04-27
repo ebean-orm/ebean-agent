@@ -35,7 +35,6 @@ class FieldInfo implements Opcodes, Constants, EnhanceConstants {
    * Add the 'property access method' that callers should use (instead of get field).
    */
   void writeMethod(ClassVisitor cw, boolean typeQueryRootBean) {
-
     // simple why to determine the property is an associated bean type
     boolean assocProperty = desc.contains("/QAssoc");
 

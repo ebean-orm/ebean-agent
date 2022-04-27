@@ -14,9 +14,7 @@ class TypeQueryAddMethods implements Opcodes {
    * Add the generated 'property access' methods.
    */
   static void add(ClassVisitor cw, ClassInfo classInfo, boolean typeQueryRootBean) {
-
     List<FieldInfo> fields = classInfo.getFields();
-
     if (fields != null) {
       for (FieldInfo field : fields) {
         field.writeMethod(cw, typeQueryRootBean);

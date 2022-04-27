@@ -39,7 +39,6 @@ public class InputStreamTransform {
   public byte[] transform(String className, File file) throws IOException, IllegalClassFormatException {
     try {
       return transform(className, new FileInputStream(file));
-
     } catch (FileNotFoundException e){
       throw new RuntimeException(e);
     }
@@ -49,13 +48,9 @@ public class InputStreamTransform {
   * Transform a input stream.
   */
   public byte[] transform(String className, InputStream is) throws IOException, IllegalClassFormatException {
-
     try {
-
       byte[] classBytes = readBytes(is);
-
       return transformer.transform(classLoader, className, null, null, classBytes);
-
     } finally {
       if (is != null){
         is.close();
@@ -76,7 +71,6 @@ public class InputStreamTransform {
   * Helper method to write bytes to a OutputStream.
   */
   public static void writeBytes(byte[] bytes, OutputStream os) throws IOException {
-
     try (BufferedOutputStream bos = new BufferedOutputStream(os)) {
       try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
         byte[] buf = new byte[1028];
@@ -91,7 +85,6 @@ public class InputStreamTransform {
 
 
   public static byte[] readBytes(InputStream is) throws IOException {
-
     try (BufferedInputStream bis = new BufferedInputStream(is)) {
       try (ByteArrayOutputStream baos = new ByteArrayOutputStream(4096)) {
         byte[] buf = new byte[1028];
@@ -100,7 +93,6 @@ public class InputStreamTransform {
         while ((len = bis.read(buf, 0, buf.length)) > -1){
           baos.write(buf, 0, len);
         }
-
         return baos.toByteArray();
       }
     }

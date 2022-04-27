@@ -17,9 +17,7 @@ import static io.ebean.enhance.common.EnhanceConstants.C_OBJECT;
 public class ClassMetaCache {
 
   private final Map<String, ClassMeta> cache = new HashMap<>();
-
   private final Map<String, ClassMeta> fallbackCache = new HashMap<>();
-
   private int fallbackHits;
 
   public ClassMetaCache() {

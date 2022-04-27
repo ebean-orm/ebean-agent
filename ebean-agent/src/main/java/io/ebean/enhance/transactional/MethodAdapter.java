@@ -24,16 +24,13 @@ import java.util.ArrayList;
 class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes {
 
   private static final String TX_FIELD_PREFIX = ClassAdapterTransactional.TX_FIELD_PREFIX;
-
   private static final Type txScopeType = Type.getType("L" + C_TXSCOPE + ";");
   private static final Type helpScopeTrans = Type.getType(L_HELPSCOPETRANS);
 
   private final AnnotationInfo annotationInfo;
   private final ClassAdapterTransactional classAdapter;
   private final ProfileMethodInstruction profileMethod;
-
   private boolean transactional;
-
   private int posTxScope;
 
   MethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
@@ -327,13 +324,10 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
     if (!transactional) {
       return;
     }
-
     if (opcode == RETURN) {
       visitInsn(ACONST_NULL);
-
     } else if (opcode == ARETURN || opcode == ATHROW) {
       dup();
-
     } else {
       if (opcode == LRETURN || opcode == DRETURN) {
         dup2();

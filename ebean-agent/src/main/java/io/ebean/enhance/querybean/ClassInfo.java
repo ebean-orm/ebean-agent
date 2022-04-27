@@ -13,21 +13,13 @@ import java.util.List;
 class ClassInfo implements Constants {
 
   private final EnhanceContext enhanceContext;
-
   private final String className;
-
   private boolean addedMarkerAnnotation;
-
   private boolean typeQueryBean;
-
   private boolean typeQueryUser;
-
   private boolean alreadyEnhanced;
-
   private List<FieldInfo> fields;
-
   private boolean hasBasicConstructor;
-
   private boolean hasMainConstructor;
 
   public ClassInfo(EnhanceContext enhanceContext, String className) {
@@ -102,7 +94,6 @@ class ClassInfo implements Constants {
    * Add the type query bean field. We will create a 'property access' method for each field.
    */
   void addField(int access, String name, String desc, String signature) {
-
     if (((access & Opcodes.ACC_PUBLIC) != 0)) {
       if (fields == null) {
         fields = new ArrayList<>();
@@ -170,7 +161,6 @@ class ClassInfo implements Constants {
    * Add fields and constructors to assoc type query beans as necessary.
    */
   void addAssocBeanExtras(ClassVisitor cv) {
-
     if (isLog(4)) {
       String msg = "... add fields";
       if (!hasBasicConstructor) {

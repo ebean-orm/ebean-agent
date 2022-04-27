@@ -6,7 +6,6 @@ public class MethodMeta {
 
   private final String name;
   private final String desc;
-
   private final AnnotationInfo annotationInfo;
 
   public MethodMeta(AnnotationInfo classAnnotationInfo, String name, String desc) {

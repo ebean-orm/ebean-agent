@@ -38,41 +38,27 @@ public class ClassAdapterTransactional extends ClassVisitor {
   private static final Logger logger = Logger.getLogger(ClassAdapterTransactional.class.getName());
 
   static final String QP_FIELD_PREFIX = "_$ebpq";
-
   static final String TX_FIELD_PREFIX = "_$ebpt";
-
   private static final String IO_EBEAN_FINDER = "io/ebean/Finder";
-
   private static final String $_COMPANION = "$Companion";
-
   private static final String INIT_PROFILE_LOCATIONS = "_$initProfileLocations";
   private static final String LKOTLIN_METADATA = "Lkotlin/Metadata;";
   private static final String _$EBP = "_$ebp";
   private static final String LIO_EBEAN_PROFILE_LOCATION = "Lio/ebean/ProfileLocation;";
 
   private final EnhanceContext enhanceContext;
-
   private final ClassLoader classLoader;
-
   private final ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<>();
-
   /**
    * Class level annotation information.
    */
   private AnnotationInfo classAnnotationInfo;
-
   private String className;
-
   private boolean markAsKotlin;
-
   private boolean existingStaticInitialiser;
-
   private boolean finder;
-
   private int queryProfileCount;
-
   private int transactionProfileCount;
-
   private final Map<Integer, String> txLabels = new LinkedHashMap<>();
 
   public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
@@ -108,9 +94,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
    * </p>
    */
   AnnotationInfo getInterfaceTransactionalInfo(String methodName, String methodDesc) {
-
     AnnotationInfo interfaceAnnotationInfo = null;
-
     for (int i = 0; i < transactionalInterfaces.size(); i++) {
       ClassMeta interfaceMeta = transactionalInterfaces.get(i);
       AnnotationInfo ai = interfaceMeta.getInterfaceTransactionalInfo(methodName, methodDesc);
@@ -130,7 +114,6 @@ public class ClassAdapterTransactional extends ClassVisitor {
         }
       }
     }
-
     return interfaceAnnotationInfo;
   }
 
@@ -139,10 +122,8 @@ public class ClassAdapterTransactional extends ClassVisitor {
    */
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-
     className = name;
     finder = superName.equals(IO_EBEAN_FINDER);
-
     // Note: interfaces can be an empty array but not null
     int n = 1 + interfaces.length;
     String[] newInterfaces = new String[n];
@@ -165,7 +146,6 @@ public class ClassAdapterTransactional extends ClassVisitor {
 
     // Add the EnhancedTransactional interface
     newInterfaces[newInterfaces.length - 1] = EnhanceConstants.C_ENHANCEDTRANSACTIONAL;
-
     super.visit(version, access, name, signature, superName, newInterfaces);
   }
 
@@ -174,19 +154,15 @@ public class ClassAdapterTransactional extends ClassVisitor {
    */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-
     if (LKOTLIN_METADATA.equals(desc)) {
       markAsKotlin = true;
     }
-
     AnnotationVisitor av = super.visitAnnotation(desc, visible);
-
     if (desc.equals(TRANSACTIONAL_ANNOTATION)) {
       // we have class level Transactional annotation
       // which will act as default for all methods in this class
       classAnnotationInfo = new AnnotationInfo(null);
       return new AnnotationInfoVisitor(null, classAnnotationInfo, av);
-
     } else {
       return av;
     }
@@ -206,7 +182,6 @@ public class ClassAdapterTransactional extends ClassVisitor {
    */
   @Override
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
     if (name.equals(INIT_PROFILE_LOCATIONS)) {
       throw new AlreadyEnhancedException(className);
@@ -233,7 +208,6 @@ public class ClassAdapterTransactional extends ClassVisitor {
         return new StaticInitAdapter(mv, access, name, desc, className);
       }
     }
-
     return new MethodAdapter(this, mv, access, name, desc);
   }
 
@@ -332,7 +306,6 @@ public class ClassAdapterTransactional extends ClassVisitor {
    * Add a static initialization block when there was not one on the class.
    */
   private void addStaticInitialiser() {
-
     MethodVisitor mv = cv.visitMethod(ACC_STATIC, CLINIT, NOARG_VOID, null, null);
     mv.visitCode();
     Label l0 = new Label();

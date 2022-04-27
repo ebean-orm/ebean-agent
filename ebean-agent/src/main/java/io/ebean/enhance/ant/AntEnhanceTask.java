@@ -41,11 +41,8 @@ import java.io.File;
 public class AntEnhanceTask extends Task {
 
   private String classpath;
-
   private String classSource;
-
   private String transformArgs;
-
   private String packages;
 
   @Override
@@ -65,7 +62,6 @@ public class AntEnhanceTask extends Task {
 
     ClassLoader cl = AntEnhanceTask.class.getClassLoader();
     OfflineFileTransform ft = new OfflineFileTransform(t, cl, classSource);
-
     ft.process(packages);
   }
 

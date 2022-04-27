@@ -48,9 +48,7 @@ class DistillPackages {
   * Distill the list of packages into distinct top level packages.
   */
   private List<String> deriveTopLevel() {
-
     List<String> distilled = new ArrayList<>();
-
     // build the distilled list
     for (String pack : treeSet) {
       if (notAlreadyContained(distilled, pack)) {
@@ -67,7 +65,6 @@ class DistillPackages {
   * @param packages entity bean packages
   */
   private String[] convertToArray(Collection<String> packages) {
-
     String[] asArray = packages.toArray(new String[0]);
     for (int i = 0; i < asArray.length; i++) {
       asArray[i] = convert(asArray[i]);
@@ -79,7 +76,6 @@ class DistillPackages {
   * Convert package to slash notation taking into account trailing wildcard.
   */
   private String convert(String pkg) {
-
     pkg = pkg.trim();
     if (pkg.endsWith("*")) {
       pkg = pkg.substring(0, pkg.length() - 1);
@@ -92,7 +88,6 @@ class DistillPackages {
   * Return true if the package is not already contained in the distilled list.
   */
   private boolean notAlreadyContained(List<String> distilled, String pack) {
-
     for (String aDistilled : distilled) {
       if (pack.startsWith(aDistilled)) {
         return false;

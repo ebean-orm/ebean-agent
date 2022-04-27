@@ -22,12 +22,10 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
 
   private final EnhanceContext enhanceContext;
   private final ClassLoader loader;
-
   private boolean typeQueryRootBean;
   private String className;
   private String signature;
   private ClassInfo classInfo;
-
   private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
 
   public TypeQueryClassAdapter(ClassWriter cw, EnhanceContext enhanceContext, ClassLoader loader) {
@@ -38,7 +36,6 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
 
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-
     super.visit(version, access, name, signature, superName, interfaces);
     this.typeQueryRootBean = TQ_ROOT_BEAN.equals(superName);
     this.className = name;
@@ -79,7 +76,6 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
 
   @Override
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-
     if (classInfo.isTypeQueryBean()) {
       if ((access & Opcodes.ACC_STATIC) != 0) {
         if (isLog(5)) {
@@ -142,7 +138,6 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
    * Handle the constructors for assoc type query beans.
    */
   private MethodVisitor handleAssocBeanConstructor(int access, String name, String desc, String signature, String[] exceptions) {
-
     if (desc.equals(ASSOC_BEAN_BASIC_CONSTRUCTOR_DESC)) {
       classInfo.setHasBasicConstructor();
       return new TypeQueryAssocBasicConstructor(classInfo, cv, desc, signature);
@@ -184,7 +179,6 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
    * Add the marker annotation so that we don't enhance the type query bean twice.
    */
   private void addMarkerAnnotation() {
-
     if (isLog(4)) {
       log("... adding marker annotation");
     }

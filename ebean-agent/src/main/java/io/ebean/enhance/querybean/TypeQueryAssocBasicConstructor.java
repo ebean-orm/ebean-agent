@@ -14,13 +14,9 @@ import static io.ebean.enhance.common.EnhanceConstants.L_STRING;
  */
 public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter implements Opcodes, Constants {
 
-
   private final ClassInfo classInfo;
-
   private final ClassVisitor cv;
-
   private final String desc;
-
   private final String signature;
 
   /**
@@ -36,7 +32,6 @@ public class TypeQueryAssocBasicConstructor extends BaseConstructorAdapter imple
 
   @Override
   public void visitCode() {
-
     mv = cv.visitMethod(ACC_PUBLIC, INIT, desc, signature, null);
     mv.visitCode();
     Label l0 = new Label();

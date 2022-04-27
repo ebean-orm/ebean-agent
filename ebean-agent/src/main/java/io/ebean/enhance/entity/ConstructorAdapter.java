@@ -24,13 +24,9 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opcodes {
 
   private final ClassMeta meta;
-
   private final String className;
-
   private final String constructorDesc;
-
   private boolean constructorInitializationDone;
-
   /**
    * Holds an init instructions to see if it is an init of a OneToMany or ManyToMany.
    */

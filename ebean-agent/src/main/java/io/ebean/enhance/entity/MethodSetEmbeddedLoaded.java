@@ -25,11 +25,9 @@ class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
    * </pre>
    */
   static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
-
     String className = classMeta.getClassName();
 
     MethodVisitor mv;
-
     mv = cv.visitMethod(classMeta.accPublic(), "_ebean_setEmbeddedLoaded", NOARG_VOID, null, null);
     mv.visitCode();
 

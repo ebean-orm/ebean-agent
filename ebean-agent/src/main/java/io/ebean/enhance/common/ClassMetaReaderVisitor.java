@@ -19,7 +19,6 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
 
   private final ClassMeta classMeta;
-
   private final boolean readMethodMeta;
 
   ClassMetaReaderVisitor(boolean readMethodMeta, EnhanceContext context) {
@@ -45,23 +44,18 @@ class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
   */
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-
     classMeta.setClassName(name, superName);
     super.visit(version, access, name, signature, superName, interfaces);
   }
 
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-
     classMeta.addClassAnnotation(desc);
-
     AnnotationVisitor av = super.visitAnnotation(desc, visible);
-
     if (desc.equals(TRANSACTIONAL_ANNOTATION)) {
       // we have class level Transactional annotation
       // which will act as default for all methods in this class
       return new AnnotationInfoVisitor(null, classMeta.getAnnotationInfo(), av);
-
     } else {
       return av;
     }
@@ -73,7 +67,6 @@ class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
   */
   @Override
   public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-
     if ((access & Opcodes.ACC_STATIC) != 0) {
       // no interception of static fields
       if (isLog(4)) {
@@ -96,20 +89,16 @@ class ClassMetaReaderVisitor extends ClassVisitor implements EnhanceConstants {
   */
   @Override
   public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-
     boolean staticAccess = ((access & Opcodes.ACC_STATIC) != 0);
-
     if (name.equals("hashCode") && desc.equals("()I")) {
       classMeta.setHasEqualsOrHashcode(true);
     }
-
     if (name.equals("equals") && desc.equals("(Ljava/lang/Object;)Z")) {
       classMeta.setHasEqualsOrHashcode(true);
     }
     if (name.equals("toString") && desc.equals("()Ljava/lang/String;")) {
       classMeta.setHasToString();
     }
-
     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
     if (!staticAccess && readMethodMeta){
       return classMeta.createMethodVisitor(mv, name, desc);

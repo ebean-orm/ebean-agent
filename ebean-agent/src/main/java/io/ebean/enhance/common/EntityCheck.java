@@ -21,7 +21,6 @@ class EntityCheck {
   * Return true if the annotation is for an Entity, Embeddable, MappedSuperclass or DocStore.
   */
   static boolean isEntityAnnotation(String desc) {
-
     if (!desc.startsWith(EnhanceConstants.JAVAX_PERSISTENCE)) {
       return desc.equals(EnhanceConstants.DOCSTORE_ANNOTATION);
     }
@@ -34,7 +33,6 @@ class EntityCheck {
   * Return true if the class annotations contains one of the entity annotations.
   */
   public static boolean hasEntityAnnotation(Set<String> classAnnotations) {
-
     for (String entityAnnotation : entityAnnotations) {
       if (classAnnotations.contains(entityAnnotation)) {
         return true;

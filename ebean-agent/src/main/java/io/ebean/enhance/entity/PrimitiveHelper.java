@@ -17,7 +17,6 @@ class PrimitiveHelper {
   private static final Type BOOLEAN_OBJECT = Type.getType(Boolean.class);
 
   static Type getObjectWrapper(Type primitiveAsmType) {
-
     int sort = primitiveAsmType.getSort();
     switch (sort) {
       case Type.INT:

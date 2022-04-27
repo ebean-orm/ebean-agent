@@ -44,11 +44,9 @@ public class UrlPathHelper {
   * Convert a string path to be used in URL class path entry.
   */
   public static String convertUrlString(String classpath) {
-
     if (isEmpty(classpath)) {
       return "";
     }
-
     classpath = classpath.trim();
     if (classpath.length() < 2) {
       return "";

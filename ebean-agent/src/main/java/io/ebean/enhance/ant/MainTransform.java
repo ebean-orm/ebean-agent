@@ -9,7 +9,6 @@ import io.ebean.enhance.common.EnhanceContext;
 public class MainTransform {
 
   public static void main(String[] args) {
-
     if (isHelp(args)) {
       printHelp();
       return;

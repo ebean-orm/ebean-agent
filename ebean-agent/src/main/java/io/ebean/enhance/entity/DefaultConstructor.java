@@ -18,7 +18,6 @@ class DefaultConstructor {
    * Adds a default constructor.
    */
   public static void add(ClassVisitor cw, ClassMeta classMeta) {
-
     if (classMeta.isLog(4)) {
       classMeta.log("... adding default constructor, super class: " + classMeta.getSuperClassName());
     }

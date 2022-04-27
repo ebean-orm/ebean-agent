@@ -19,11 +19,8 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 
   private final ClassMeta meta;
-
   private final String className;
-
   private final String methodDescription;
-
   private boolean transientAnnotation;
 
   MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
@@ -50,19 +47,16 @@ class MethodFieldAdapter extends MethodVisitor implements Opcodes {
 
   @Override
   public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
-
     super.visitLocalVariable(name, desc, signature, start, end, index);
   }
 
   @Override
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-
     super.visitMethodInsn(opcode, owner, name, desc, itf);
   }
 
   @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
-
     if (transientAnnotation) {
       // The whole method is left as is
       super.visitFieldInsn(opcode, owner, name, desc);

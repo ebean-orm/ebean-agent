@@ -29,25 +29,18 @@ public class ClassMeta {
   private static final Logger logger = Logger.getLogger(ClassMeta.class.getName());
 
   private final MessageOutput logout;
-
   private final int logLevel;
-
   private String className;
-
   private String superClassName;
-
   private ClassMeta superMeta;
-
   /**
    * Set to true if the class implements th GroovyObject interface.
    */
   private boolean hasGroovyInterface;
-
   /**
    * Set to true if the class implements the ScalaObject interface.
    */
   private boolean hasScalaInterface;
-
   /**
    * Set to true if the class already implements the EntityBean interface.
    */
@@ -90,9 +83,7 @@ public class ClassMeta {
    * Return the transactional annotation information for a matching interface method.
    */
   public AnnotationInfo getInterfaceTransactionalInfo(String methodName, String methodDesc) {
-
     AnnotationInfo annotationInfo = null;
-
     for (int i = 0; i < methodMetaList.size(); i++) {
       MethodMeta meta = methodMetaList.get(i);
       if (meta.isMatch(methodName, methodDesc)) {
@@ -103,7 +94,6 @@ public class ClassMeta {
 
           logger.log(Level.SEVERE, msg);
           log(msg);
-
         } else {
           annotationInfo = meta.getAnnotationInfo();
           if (isLog(9)) {
@@ -112,7 +102,6 @@ public class ClassMeta {
         }
       }
     }
-
     return annotationInfo;
   }
 

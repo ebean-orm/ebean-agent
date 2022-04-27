@@ -31,11 +31,9 @@ class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
    * </pre>
    */
   static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
-
     String className = classMeta.getClassName();
 
     MethodVisitor mv;
-
     mv = cv.visitMethod(classMeta.accPublic(), "_ebean_isEmbeddedNewOrDirty", "()Z", null, null);
     mv.visitCode();
 

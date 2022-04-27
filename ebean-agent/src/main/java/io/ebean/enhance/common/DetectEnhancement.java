@@ -15,19 +15,12 @@ import static io.ebean.enhance.common.EnhanceConstants.TRANSACTIONAL_ANNOTATION;
 public class DetectEnhancement extends ClassVisitor {
 
   private final ClassLoader classLoader;
-
   private final EnhanceContext enhanceContext;
-
   private final DetectTransactionalMethod detectTransactionalMethod = new DetectTransactionalMethod();
-
   private String className;
-
   private boolean entity;
-
   private boolean enhancedEntity;
-
   private boolean transactional;
-
   private boolean enhancedTransactional;
 
   public DetectEnhancement(ClassLoader classLoader, EnhanceContext context) {
@@ -77,23 +70,19 @@ public class DetectEnhancement extends ClassVisitor {
   */
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-
     if ((access & Opcodes.ACC_INTERFACE) != 0) {
       throw new NoEnhancementRequiredException("Interface type");
     }
     if ((access & Opcodes.ACC_SYNTHETIC) != 0) {
       throw new NoEnhancementRequiredException("Synthetic type");
     }
-
     this.className = name;
     for (String anInterface : interfaces) {
       if (anInterface.equals(EnhanceConstants.C_ENTITYBEAN)) {
         enhancedEntity = true;
         entity = true;
-
       } else if (anInterface.equals(EnhanceConstants.C_ENHANCEDTRANSACTIONAL)) {
         enhancedTransactional = true;
-
       } else {
         ClassMeta interfaceMeta = enhanceContext.getInterfaceMeta(anInterface, classLoader);
         if (interfaceMeta != null && interfaceMeta.isTransactional()) {

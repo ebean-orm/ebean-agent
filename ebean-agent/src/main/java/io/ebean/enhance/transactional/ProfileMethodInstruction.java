@@ -12,7 +12,6 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
   private static final String QP_FIELD_PREFIX = ClassAdapterTransactional.QP_FIELD_PREFIX;
 
   private final ClassAdapterTransactional classAdapter;
-
   private final MethodVisitor mv;
 
   ProfileMethodInstruction(ClassAdapterTransactional classAdapter, final MethodVisitor mv) {
@@ -21,7 +20,6 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
   }
 
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-
     if (!classAdapter.isEnableProfileLocation()) {
       mv.visitMethodInsn(opcode, owner, name, desc, itf);
 

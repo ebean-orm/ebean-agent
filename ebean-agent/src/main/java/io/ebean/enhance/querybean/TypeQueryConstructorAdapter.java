@@ -14,13 +14,9 @@ import static io.ebean.enhance.common.EnhanceConstants.INIT;
 class TypeQueryConstructorAdapter extends BaseConstructorAdapter implements Opcodes, Constants {
 
   private final ClassInfo classInfo;
-
   private final String domainClass;
-
   private final ClassVisitor cv;
-
   private final String desc;
-
   private final String signature;
 
   /**
@@ -37,7 +33,6 @@ class TypeQueryConstructorAdapter extends BaseConstructorAdapter implements Opco
 
   @Override
   public void visitCode() {
-
     boolean withDatabase = WITH_DATABASE_ARGUMENT.equals(desc);
     boolean withEbeanServer = !withDatabase && WITH_EBEANSERVER_ARGUMENT.equals(desc);
 

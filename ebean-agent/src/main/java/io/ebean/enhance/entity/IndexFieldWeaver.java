@@ -44,7 +44,6 @@ class IndexFieldWeaver implements Opcodes {
   }
 
   static void addPropertiesInit(MethodVisitor mv, ClassMeta classMeta) {
-
     List<FieldMeta> fields = classMeta.getAllFields();
 
     Label l0 = new Label();
@@ -72,7 +71,6 @@ class IndexFieldWeaver implements Opcodes {
 
 
   static void addGetPropertyNames(ClassVisitor cv, ClassMeta classMeta) {
-
     MethodVisitor mv = cv.visitMethod(classMeta.accPublic(), "_ebean_getPropertyNames", "()[Ljava/lang/String;", null, null);
     mv.visitCode();
     Label l0 = new Label();
@@ -106,7 +104,6 @@ class IndexFieldWeaver implements Opcodes {
   }
 
   static void addMethods(ClassVisitor cv, ClassMeta classMeta) {
-
     List<FieldMeta> fields = classMeta.getAllFields();
     if (fields.isEmpty()) {
       return;
@@ -167,7 +164,6 @@ class IndexFieldWeaver implements Opcodes {
    * Generate the invokeGet method.
    */
   private static void generateGetField(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields, boolean intercept) {
-
     String className = classMeta.getClassName();
 
     MethodVisitor mv;
@@ -239,8 +235,6 @@ class IndexFieldWeaver implements Opcodes {
    * </p>
    */
   private static void generateSetField(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields, boolean intercept) {
-
-
     String className = classMeta.getClassName();
 
     MethodVisitor mv;

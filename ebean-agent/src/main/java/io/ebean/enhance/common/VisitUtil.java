@@ -12,7 +12,6 @@ public class VisitUtil implements Opcodes {
   * </p>
   */
   public static void visitIntInsn(MethodVisitor mv, int value) {
-
     switch (value) {
       case 0:
         mv.visitInsn(ICONST_0);

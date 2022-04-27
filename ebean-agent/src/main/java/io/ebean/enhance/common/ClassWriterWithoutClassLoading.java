@@ -29,13 +29,9 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 public class ClassWriterWithoutClassLoading extends ClassWriter {
 
   private final Map<String, Set<String>> type2instanceOfs = new HashMap<>();
-
   private final Map<String, String> type2superclass = new HashMap<>();
-
   private final Map<String, Boolean> type2isInterface = new HashMap<>();
-
   private final ClassLoader classLoader;
-
   private List<CommonSuperUnresolved> unresolved = new ArrayList<>();
 
   public ClassWriterWithoutClassLoading(ClassReader classReader, int flags, ClassLoader classLoader) {
