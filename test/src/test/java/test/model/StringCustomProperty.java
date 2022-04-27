@@ -2,10 +2,7 @@ package test.model;
 
 import io.ebean.annotation.DocStore;
 
-import javax.persistence.DiscriminatorValue;
-
 @DocStore
-@DiscriminatorValue("string")
 public class StringCustomProperty extends CustomProperty<String> {
 
   private String value;

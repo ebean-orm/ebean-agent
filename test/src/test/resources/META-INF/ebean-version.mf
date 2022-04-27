@@ -1,2 +1,2 @@
-ebean-version: 129
+ebean-version: 133
 not-ebean-version: 141
