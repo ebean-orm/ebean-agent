@@ -10,7 +10,6 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 public class AnnotationInfoVisitor extends AnnotationVisitor {
 
   private final AnnotationInfo info;
-
   private final String prefix;
 
   public AnnotationInfoVisitor(String prefix, AnnotationInfo info, AnnotationVisitor av) {

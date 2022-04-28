@@ -1,6 +1,7 @@
 package io.ebean.enhance.common;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Helper to parse javaagent or ant string arguments.
@@ -10,10 +11,8 @@ class ArgParser {
   /**
   * Parse the args returning as name value pairs.
   */
-  static HashMap<String,String> parse(String args){
-
-    HashMap<String,String> map = new HashMap<>();
-
+  static Map<String,String> parse(String args){
+    Map<String,String> map = new HashMap<>();
     if (args != null){
       String[] split = args.split(";");
       for (String nameValuePair : split) {
@@ -23,7 +22,6 @@ class ArgParser {
         }
       }
     }
-
     return map;
   }
 }

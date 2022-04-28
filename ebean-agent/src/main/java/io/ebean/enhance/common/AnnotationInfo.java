@@ -3,14 +3,14 @@ package io.ebean.enhance.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Collects the annotation information.
  */
 public class AnnotationInfo {
 
-  private final HashMap<String,Object> valueMap = new HashMap<>();
-
+  private final Map<String,Object> valueMap = new HashMap<>();
   private AnnotationInfo parent;
 
   /**

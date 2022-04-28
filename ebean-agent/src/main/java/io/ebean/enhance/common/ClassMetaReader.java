@@ -13,7 +13,6 @@ import io.ebean.enhance.asm.ClassReader;
 public class ClassMetaReader {
 
   private final ClassMetaCache metaCache;
-
   private final EnhanceContext enhanceContext;
 
   public ClassMetaReader(EnhanceContext enhanceContext, ClassMetaCache metaCache) {

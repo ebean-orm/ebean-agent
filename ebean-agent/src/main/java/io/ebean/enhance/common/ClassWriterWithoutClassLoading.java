@@ -18,11 +18,11 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
 /**
  * ClassWriter without class loading. Fixes problems on dynamic enhancement mentioned here:
- * https://github.com/ebean-orm/ebean-agent/issues/59
+ * <a href="https://github.com/ebean-orm/ebean-agent/issues/59">https://github.com/ebean-orm/ebean-agent/issues/59</a>
  *
  * Idea taken from here:
  *
- * https://github.com/zygote1984/AspectualAdapters/blob/master/ALIA4J-NOIRIn-all/src/org/alia4j/noirin/transform/ClassWriterWithoutClassLoading.java
+ * <a href="https://github.com/zygote1984/AspectualAdapters/blob/master/ALIA4J-NOIRIn-all/src/org/alia4j/noirin/transform/ClassWriterWithoutClassLoading.java">https://github.com/zygote1984/AspectualAdapters/blob/master/ALIA4J-NOIRIn-all/src/org/alia4j/noirin/transform/ClassWriterWithoutClassLoading.java</a>
  *
  * @author praml
  */
@@ -32,7 +32,7 @@ public class ClassWriterWithoutClassLoading extends ClassWriter {
   private final Map<String, String> type2superclass = new HashMap<>();
   private final Map<String, Boolean> type2isInterface = new HashMap<>();
   private final ClassLoader classLoader;
-  private List<CommonSuperUnresolved> unresolved = new ArrayList<>();
+  private final List<CommonSuperUnresolved> unresolved = new ArrayList<>();
 
   public ClassWriterWithoutClassLoading(ClassReader classReader, int flags, ClassLoader classLoader) {
     super(classReader, flags);

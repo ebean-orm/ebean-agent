@@ -7,6 +7,7 @@ import io.ebean.enhance.entity.MessageOutput;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +26,7 @@ public class EnhanceContext {
 
   private final AgentManifest manifest;
   private final IgnoreClassHelper ignoreClassHelper;
-  private final HashMap<String, String> agentArgsMap;
+  private final Map<String, String> agentArgsMap;
   private final ClassMetaReader reader;
   private final ClassBytesReader classBytesReader;
   private MessageOutput logout;
