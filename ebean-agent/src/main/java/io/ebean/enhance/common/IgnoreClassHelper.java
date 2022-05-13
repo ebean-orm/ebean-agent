@@ -71,6 +71,7 @@ class IgnoreClassHelper {
     ignoreTwoLevel.add("io/ebean");
     ignoreTwoLevel.add("io/ebeaninternal");
     ignoreTwoLevel.add("io/ebeanservice");
+    ignoreTwoLevel.add("io/opentelemetry");
 
     ignoreThreeLevel.add("io/avaje/config");
     ignoreThreeLevel.add("io/avaje/classpath");

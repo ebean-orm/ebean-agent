@@ -43,6 +43,8 @@ class IgnoreClassHelperTest {
     assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/inject/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/http/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/jex/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("io/opentelemetry/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("io/opentelemetry/foo/Something"));
 
     assertFalse(ignoreClassHelper.isIgnoreClass("play/Something"));
     assertFalse(ignoreClassHelper.isIgnoreClass("play/db/Something"));
