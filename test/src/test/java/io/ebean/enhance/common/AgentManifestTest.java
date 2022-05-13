@@ -35,7 +35,7 @@ public class AgentManifestTest {
     AgentManifest manifest = new AgentManifest();
     manifest.readEbeanVersion(this.getClass().getClassLoader(), "META-INF/test_ebean-version.mf");
 
-    assertThat(manifest.getEbeanInternalVersion()).isEqualTo(129);
+    assertThat(manifest.getEnhancementVersion()).isEqualTo(129);
   }
 
   @Test

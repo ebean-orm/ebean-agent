@@ -32,7 +32,7 @@ public class AgentManifest {
   private boolean checkNullManyFields = true;
   private boolean enableProfileLocation = true;
   private boolean synthetic = true;
-  private int ebeanInternalVersion;
+  private int enhancementVersion;
 
   public AgentManifest(ClassLoader classLoader) {
     this.detectQueryBean = new DetectQueryBean();
@@ -82,8 +82,8 @@ public class AgentManifest {
     return detectQueryBean.isQueryBean(owner);
   }
 
-  public int getEbeanInternalVersion() {
-    return ebeanInternalVersion;
+  public int getEnhancementVersion() {
+    return enhancementVersion;
   }
 
   /**
@@ -179,7 +179,7 @@ public class AgentManifest {
         final Manifest manifest = manifest(UrlHelper.openNoCache(url));
         final String value = manifest.getMainAttributes().getValue("ebean-version");
         if (value != null) {
-          ebeanInternalVersion = Integer.parseInt(value.trim());
+          enhancementVersion = Integer.parseInt(value.trim());
         }
         loadedResources.add(path);
       } catch (Exception e) {

@@ -85,7 +85,7 @@ public class EnhanceContext {
     if (ver != null) {
       return Integer.parseInt(ver);
     }
-    return manifest.getEbeanInternalVersion();
+    return manifest.getEnhancementVersion();
   }
 
   public void withClassLoader(ClassLoader loader) {
