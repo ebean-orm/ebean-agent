@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class IgnoreClassHelperTest {
+class IgnoreClassHelperTest {
 
   @Test
-  public void test() {
+  void test() {
 
     IgnoreClassHelper ignoreClassHelper = new IgnoreClassHelper();
 
@@ -23,7 +23,6 @@ public class IgnoreClassHelperTest {
     assertTrue(ignoreClassHelper.isIgnoreClass("junit/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("javax/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("jakarta/Something"));
-    assertTrue(ignoreClassHelper.isIgnoreClass("play/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("sbt/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("scala/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("sun/Something"));
@@ -45,6 +44,9 @@ public class IgnoreClassHelperTest {
     assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/http/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("io/avaje/jex/Something"));
 
+    assertFalse(ignoreClassHelper.isIgnoreClass("play/Something"));
+    assertFalse(ignoreClassHelper.isIgnoreClass("play/db/Something"));
+    assertFalse(ignoreClassHelper.isIgnoreClass("play/db/ebean/Something"));
     assertFalse(ignoreClassHelper.isIgnoreClass("org/avaje/Something"));
     assertFalse(ignoreClassHelper.isIgnoreClass("io/avaje/Something"));
     assertFalse(ignoreClassHelper.isIgnoreClass("org/koda/Foo"));

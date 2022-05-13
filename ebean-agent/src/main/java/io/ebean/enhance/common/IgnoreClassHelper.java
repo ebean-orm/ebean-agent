@@ -22,7 +22,6 @@ class IgnoreClassHelper {
     ignoreOneLevel.add("java");
     ignoreOneLevel.add("javax");
     ignoreOneLevel.add("jakarta");
-    ignoreOneLevel.add("play");
     ignoreOneLevel.add("sbt");
     ignoreOneLevel.add("scala");
     ignoreOneLevel.add("sun");
