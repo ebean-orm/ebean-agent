@@ -7,15 +7,16 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClassMetaReaderTest {
+class ClassMetaReaderTest {
 
   @Test
-  public void checkOtherClass_withAnnotations() throws ClassNotFoundException {
+  void checkOtherClass_withAnnotations() throws ClassNotFoundException {
 
     ClassMetaReader classMetaReader = createClassMetaReader();
 
@@ -28,7 +29,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkNoEnhanceMappedSuper_hasNoPersistentFields() throws ClassNotFoundException {
+  void checkNoEnhanceMappedSuper_hasNoPersistentFields() throws ClassNotFoundException {
 
     ClassMetaReader classMetaReader = createClassMetaReader();
 
@@ -41,7 +42,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkEnhanceMappedSuper_hasPersistentField() throws ClassNotFoundException {
+  void checkEnhanceMappedSuper_hasPersistentField() throws ClassNotFoundException {
 
     ClassMetaReader classMetaReader = createClassMetaReader();
 
@@ -54,7 +55,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkEnhanceMappedSuper_hasPersistentFieldId() throws ClassNotFoundException {
+  void checkEnhanceMappedSuper_hasPersistentFieldId() throws ClassNotFoundException {
 
     ClassMetaReader classMetaReader = createClassMetaReader();
 
@@ -67,7 +68,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkTransactionalAtClassLevel() throws ClassNotFoundException {
+  void checkTransactionalAtClassLevel() throws ClassNotFoundException {
 
     ClassMetaReader classMetaReader = createClassMetaReader();
 
@@ -91,7 +92,7 @@ public class ClassMetaReaderTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void checkClassOverrideCls() throws ClassNotFoundException {
+  void checkClassOverrideCls() throws ClassNotFoundException {
 
     ClassMeta classMeta = getClassMetaForOverrideTests();
 
@@ -105,7 +106,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkClassOverrideMethod1() throws ClassNotFoundException {
+  void checkClassOverrideMethod1() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
 
     // Method1 has no annotation, so it must take the annotation from class level
@@ -116,7 +117,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkClassOverrideMethod2() throws ClassNotFoundException {
+  void checkClassOverrideMethod2() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
 
     // Method2 has @Transactional(rollbackFor = ArrayIndexOutOfBoundsException.class)
@@ -127,7 +128,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkClassOverrideMethod3() throws ClassNotFoundException {
+  void checkClassOverrideMethod3() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
 
     // Method3 has @Transactional(rollbackFor = {})
@@ -137,7 +138,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkClassOverrideMethod4() throws ClassNotFoundException {
+  void checkClassOverrideMethod4() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
 
     // Method4 has @Transactional(batchSize = 23)
@@ -148,7 +149,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkClassOverrideMethod5() throws ClassNotFoundException {
+  void checkClassOverrideMethod5() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
 
     // Method5 has @Transactional
@@ -159,7 +160,7 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void checkClassOverrideMethod6() throws ClassNotFoundException {
+  void checkClassOverrideMethod6() throws ClassNotFoundException {
     ClassMeta classMeta = getClassMetaForOverrideTests();
 
     // Method5 has @Transactional
@@ -169,7 +170,25 @@ public class ClassMetaReaderTest {
   }
 
   @Test
-  public void testEnhanceContext() {
+  void supplyVersionViaArgument() throws IOException {
+    ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
+    try (URLClassLoader emptyClassloader = new URLClassLoader(new URL[0])) {
+
+      AgentManifest manifest = new AgentManifest(emptyClassloader);
+      assertThat(manifest.getEbeanInternalVersion()).isEqualTo(133);
+
+      EnhanceContext enhanceContext0 = new EnhanceContext(reader,"debug=1", manifest);
+      assertThat(enhanceContext0.isEnhancedToString()).isTrue();
+      assertThat(enhanceContext0.interceptNew()).isEqualTo("io/ebean/bean/EntityBeanIntercept");
+
+      EnhanceContext enhanceContext141 = new EnhanceContext(reader,"version=141;debug=1", manifest);
+      assertThat(enhanceContext141.isEnhancedToString()).isTrue();
+      assertThat(enhanceContext141.interceptNew()).isEqualTo("io/ebean/bean/InterceptReadWrite");
+    }
+  }
+
+  @Test
+  void testEnhanceContext() {
 
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
     AgentManifest manifest = new AgentManifest(getClass().getClassLoader());

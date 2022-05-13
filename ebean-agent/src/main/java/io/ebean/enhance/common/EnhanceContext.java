@@ -55,8 +55,8 @@ public class EnhanceContext {
     this.accPublic = manifest.accPublic();
     this.accProtected = manifest.accProtected();
     this.accPrivate = manifest.accPrivate();
-    this.ebeanInternalVersion = manifest.getEbeanInternalVersion();
     this.agentArgsMap = ArgParser.parse(agentArgs);
+    this.ebeanInternalVersion = versionOf(manifest);
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
     this.filterQueryBean = new FilterQueryBean(manifest);
     this.ignoreClassHelper = new IgnoreClassHelper();
@@ -75,9 +75,17 @@ public class EnhanceContext {
         logger.log(Level.WARNING, "Agent debug argument [" + debugValue + "] is not an int?");
       }
     }
-    if (getPropertyBoolean("printversion", false)) {
-      System.out.println("ebean agent version: " + Transformer.getVersion());
+    if (logLevel > 0 || getPropertyBoolean("printversion", false)) {
+      System.out.println("ebean-agent version:" + Transformer.getVersion() + " enhancement:" + ebeanInternalVersion + " resources:" + manifest.getLoadedResources());
     }
+  }
+
+  private int versionOf(AgentManifest manifest) {
+    String ver = agentArgsMap.get("version");
+    if (ver != null) {
+      return Integer.parseInt(ver);
+    }
+    return manifest.getEbeanInternalVersion();
   }
 
   public void withClassLoader(ClassLoader loader) {
