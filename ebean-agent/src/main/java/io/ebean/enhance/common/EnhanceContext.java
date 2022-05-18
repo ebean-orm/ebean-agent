@@ -39,7 +39,7 @@ public class EnhanceContext {
   private final int accPublic;
   private final int accProtected;
   private final int accPrivate;
-  private final int ebeanInternalVersion;
+  private final int enhancementVersion;
   private SummaryInfo summaryInfo;
 
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest) {
@@ -56,7 +56,7 @@ public class EnhanceContext {
     this.accProtected = manifest.accProtected();
     this.accPrivate = manifest.accPrivate();
     this.agentArgsMap = ArgParser.parse(agentArgs);
-    this.ebeanInternalVersion = versionOf(manifest);
+    this.enhancementVersion = versionOf(manifest);
     this.filterEntityTransactional = new FilterEntityTransactional(manifest);
     this.filterQueryBean = new FilterQueryBean(manifest);
     this.ignoreClassHelper = new IgnoreClassHelper();
@@ -76,7 +76,7 @@ public class EnhanceContext {
       }
     }
     if (logLevel > 0 || getPropertyBoolean("printversion", false)) {
-      System.out.println("ebean-agent version:" + Transformer.getVersion() + " enhancement:" + ebeanInternalVersion + " resources:" + manifest.getLoadedResources());
+      System.out.println("ebean-agent version:" + Transformer.getVersion() + " enhancement:" + enhancementVersion + " resources:" + manifest.getLoadedResources());
     }
   }
 
@@ -108,7 +108,7 @@ public class EnhanceContext {
       + "  transactional:" + getTransactionalPackages()
       + "  querybean:" + getQuerybeanPackages()
       + "  profileLocation:" + enableProfileLocation
-      + "  version:" + ebeanInternalVersion;
+      + "  version:" + enhancementVersion;
   }
 
   public Set<String> getEntityPackages() {
@@ -396,15 +396,15 @@ public class EnhanceContext {
   }
 
   public boolean isToManyGetField() {
-    return ebeanInternalVersion > 128;
+    return enhancementVersion > 128;
   }
 
   public boolean isEnhancedToString() {
-    return ebeanInternalVersion > 132;
+    return enhancementVersion > 132;
   }
 
   public String interceptNew() {
-    return ebeanInternalVersion >= 140 ? C_INTERCEPT_RW : C_INTERCEPT_I;
+    return enhancementVersion >= 140 ? C_INTERCEPT_RW : C_INTERCEPT_I;
   }
 
   public void visitMethodInsnIntercept(MethodVisitor mv, String name, String desc) {
@@ -412,14 +412,14 @@ public class EnhanceContext {
   }
 
   private int interceptInvoke() {
-    return ebeanInternalVersion >= 140 ? INVOKEINTERFACE : INVOKEVIRTUAL;
+    return enhancementVersion >= 140 ? INVOKEINTERFACE : INVOKEVIRTUAL;
   }
 
   private boolean interceptIface() {
-    return ebeanInternalVersion >= 140;
+    return enhancementVersion >= 140;
   }
 
   public boolean interceptAddReadOnly() {
-    return ebeanInternalVersion >= 141;
+    return enhancementVersion >= 141;
   }
 }
