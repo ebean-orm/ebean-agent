@@ -25,10 +25,7 @@ import static io.ebean.enhance.asm.Opcodes.BIPUSH;
 import static io.ebean.enhance.asm.Opcodes.INVOKESTATIC;
 import static io.ebean.enhance.asm.Opcodes.PUTSTATIC;
 import static io.ebean.enhance.asm.Opcodes.RETURN;
-import static io.ebean.enhance.common.EnhanceConstants.CLINIT;
-import static io.ebean.enhance.common.EnhanceConstants.INIT;
-import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
-import static io.ebean.enhance.common.EnhanceConstants.TRANSACTIONAL_ANNOTATION;
+import static io.ebean.enhance.common.EnhanceConstants.*;
 
 /**
  * ClassAdapter used to add transactional support.
@@ -123,6 +120,10 @@ public class ClassAdapterTransactional extends ClassVisitor {
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
     className = name;
+    if (C_QUERYBEAN.equals(superName)) {
+      // query beans do not need profile locations
+      throw new NoEnhancementRequiredException();
+    }
     finder = superName.equals(IO_EBEAN_FINDER);
     // Note: interfaces can be an empty array but not null
     int n = 1 + interfaces.length;
