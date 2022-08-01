@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.avaje</groupId>
     <artifactId>java8-oss</artifactId>
-    <version>3.8</version>
+    <version>3.9</version>
     <relativePath/>
   </parent>
 
@@ -16,7 +16,7 @@
   <description>Runs agent tests using</description>
 
   <properties>
-    <ebean.agent.version>13.6.6-SNAPSHOT</ebean.agent.version>
+    <ebean.agent.version>13.6.7-SNAPSHOT</ebean.agent.version>
     <ebean.version>13.4.0</ebean.version>
 <!--    <ebean.version>13.0.1-SNAPSHOT</ebean.version>-->
   </properties>
