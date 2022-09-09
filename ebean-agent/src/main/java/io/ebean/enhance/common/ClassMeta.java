@@ -57,6 +57,7 @@ public class ClassMeta {
   private final ArrayList<MethodMeta> methodMetaList = new ArrayList<>();
   private final EnhanceContext enhanceContext;
   private List<FieldMeta> allFields;
+  private boolean recordType;
 
   public ClassMeta(EnhanceContext enhanceContext, int logLevel, MessageOutput logout) {
     this.enhanceContext = enhanceContext;
@@ -297,7 +298,7 @@ public class ClassMeta {
    * Return true if this is a query bean.
    */
   public boolean isQueryBean() {
-    return classAnnotation.contains(EnhanceConstants.TYPEQUERYBEAN_ANNOTATION);
+    return classAnnotation.contains(TYPEQUERYBEAN_ANNOTATION);
   }
 
   /**
@@ -401,6 +402,14 @@ public class ClassMeta {
    */
   public boolean interceptAddReadOnly() {
     return enhanceContext.interceptAddReadOnly();
+  }
+
+  public void setRecordType(boolean recordType) {
+    this.recordType = recordType;
+  }
+
+  public boolean isRecordType() {
+    return recordType;
   }
 
   private static final class MethodReader extends MethodVisitor {

@@ -56,9 +56,11 @@ class MethodEquals implements Opcodes, EnhanceConstants {
    * _ebean_getIdentity() method.
    */
   static void addIdentityField(ClassVisitor cv, ClassMeta meta) {
-    int access = meta.accProtected() + ACC_TRANSIENT;
-    FieldVisitor f0 = cv.visitField(access, IDENTITY_FIELD, L_OBJECT, null, null);
-    f0.visitEnd();
+    if (!meta.isRecordType()) {
+      int access = meta.accProtected() + ACC_TRANSIENT;
+      FieldVisitor f0 = cv.visitField(access, IDENTITY_FIELD, L_OBJECT, null, null);
+      f0.visitEnd();
+    }
   }
 
   /**

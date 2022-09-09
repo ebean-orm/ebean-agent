@@ -28,6 +28,7 @@ public interface EnhanceConstants {
   String C_ENTITYBEAN = "io/ebean/bean/EntityBean";
   String C_SCALAOBJECT = "scala/ScalaObject";
   String C_GROOVYOBJECT = "groovy/lang/GroovyObject";
+  String C_RECORDTYPE = "java/lang/Record";
   String C_INTERCEPT_I = "io/ebean/bean/EntityBeanIntercept";
   String C_INTERCEPT_RW = "io/ebean/bean/InterceptReadWrite";
   String C_INTERCEPT_RO = "io/ebean/bean/InterceptReadOnly";
