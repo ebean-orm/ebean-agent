@@ -27,7 +27,7 @@ class MethodNewInstanceReadOnly {
   }
 
   static void add_newInstanceReadOnly(ClassVisitor cv, ClassMeta meta) {
-    MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "_ebean_newInstanceReadOnly", "()Ljava/lang/Object;", null, null);
+    MethodVisitor mv = cv.visitMethod(meta.accPublic(), "_ebean_newInstanceReadOnly", "()Ljava/lang/Object;", null, null);
     mv.visitCode();
     Label label0 = new Label();
     mv.visitLabel(label0);
@@ -45,7 +45,7 @@ class MethodNewInstanceReadOnly {
   }
 
   static void add_initSuper(ClassVisitor cv, ClassMeta meta) {
-    MethodVisitor mv = cv.visitMethod(ACC_PROTECTED, "<init>", "(L" + C_ENTITYBEAN + ";)V", null, null);
+    MethodVisitor mv = cv.visitMethod(meta.accProtected(), "<init>", "(L" + C_ENTITYBEAN + ";)V", null, null);
     mv.visitCode();
     Label label0 = new Label();
     mv.visitLabel(label0);
@@ -66,7 +66,7 @@ class MethodNewInstanceReadOnly {
   }
 
   static void add_initLocal(ClassVisitor cv, ClassMeta meta) {
-    MethodVisitor mv = cv.visitMethod(ACC_PROTECTED, "<init>", "(L" + C_ENTITYBEAN + ";)V", null, null);
+    MethodVisitor mv = cv.visitMethod(meta.accProtected(), "<init>", "(L" + C_ENTITYBEAN + ";)V", null, null);
     mv.visitCode();
     Label label0 = new Label();
     mv.visitLabel(label0);
