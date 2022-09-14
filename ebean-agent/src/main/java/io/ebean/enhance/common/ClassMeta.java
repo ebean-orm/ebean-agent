@@ -17,9 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
-import static io.ebean.enhance.common.EnhanceConstants.C_OBJECT;
-import static io.ebean.enhance.common.EnhanceConstants.TRANSACTIONAL_ANNOTATION;
-import static io.ebean.enhance.common.EnhanceConstants.TYPEQUERYBEAN_ANNOTATION;
+import static io.ebean.enhance.common.EnhanceConstants.*;
 
 /**
  * Holds the meta data for an entity bean class that is being enhanced.
@@ -122,6 +120,9 @@ public class ClassMeta {
   public void setClassName(String className, String superClassName) {
     this.className = className;
     this.superClassName = superClassName;
+    if (superClassName.equals(C_RECORDTYPE)) {
+      recordType = true;
+    }
   }
 
   public String getSuperClassName() {
@@ -402,10 +403,6 @@ public class ClassMeta {
    */
   public boolean interceptAddReadOnly() {
     return enhanceContext.interceptAddReadOnly();
-  }
-
-  public void setRecordType(boolean recordType) {
-    this.recordType = recordType;
   }
 
   public boolean isRecordType() {

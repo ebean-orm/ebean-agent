@@ -64,9 +64,6 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
       if (c[i].equals(C_ENTITYBEAN)) {
         throw new NoEnhancementRequiredException();
       }
-      if (c[i].equals(C_RECORDTYPE)) {
-        classMeta.setRecordType(true);
-      }
       if (c[i].equals(C_SCALAOBJECT)) {
         classMeta.setScalaInterface(true);
       }
