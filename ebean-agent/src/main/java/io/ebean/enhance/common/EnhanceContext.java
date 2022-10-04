@@ -36,6 +36,7 @@ public class EnhanceContext {
   private final FilterQueryBean filterQueryBean;
   private boolean throwOnError;
   private final boolean enableProfileLocation;
+  private final boolean enableEntityFieldAccess;
   private final int accPublic;
   private final int accProtected;
   private final int accPrivate;
@@ -52,6 +53,7 @@ public class EnhanceContext {
   public EnhanceContext(ClassBytesReader classBytesReader, String agentArgs, AgentManifest manifest, ClassMetaCache metaCache) {
     this.manifest = manifest;
     this.enableProfileLocation = manifest.isEnableProfileLocation();
+    this.enableEntityFieldAccess = manifest.isEnableEntityFieldAccess();
     this.accPublic = manifest.accPublic();
     this.accProtected = manifest.accProtected();
     this.accPrivate = manifest.accPrivate();
@@ -127,6 +129,10 @@ public class EnhanceContext {
     return classBytesReader.getClassBytes(className, classLoader);
   }
 
+  public boolean isEntityBean(String owner) {
+    return manifest.isDetectEntityBean(owner);
+  }
+
   /**
    * Return true if the owner class is a type query bean.
    * <p>
@@ -165,6 +171,10 @@ public class EnhanceContext {
     } else {
       return s.trim().equalsIgnoreCase("true");
     }
+  }
+
+  public boolean isEnableEntityFieldAccess() {
+    return enableEntityFieldAccess;
   }
 
   /**
@@ -370,6 +380,15 @@ public class EnhanceContext {
   public void summaryQueryBeanCaller(String className) {
     if (summaryInfo != null) {
       summaryInfo.addQueryBeanCaller(className);
+    }
+  }
+
+  /**
+   * Add the enhanced class with field access replacement to summary information.
+   */
+  public void summaryFieldAccessUser(String className) {
+    if (summaryInfo != null) {
+      summaryInfo.addFieldAccessUser(className);
     }
   }
 

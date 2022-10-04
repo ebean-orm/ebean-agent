@@ -13,6 +13,7 @@ import io.ebean.enhance.common.EnhanceContext;
 import io.ebean.enhance.common.NoEnhancementRequiredException;
 
 import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
+import static io.ebean.enhance.common.EnhanceConstants.C_ENTITYBEAN;
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
 
 /**
@@ -41,6 +42,11 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
     this.className = name;
     this.signature = signature;
     this.classInfo = new ClassInfo(enhanceContext, name);
+    for (String interfaceType : interfaces) {
+      if (interfaceType.equals(C_ENTITYBEAN)) {
+        classInfo.setEntityBean();
+      }
+    }
   }
 
   /**
@@ -165,12 +171,14 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
       if (isLog(2)) {
         classInfo.log("enhanced as query bean");
       }
+    } else if (classInfo.isFieldAccessUser()) {
+      enhanceContext.summaryFieldAccessUser(className);
     } else if (classInfo.isTypeQueryUser()) {
       if (isLog(4)) {
         classInfo.log("enhanced - getfield calls replaced");
       }
     } else {
-      throw new NoEnhancementRequiredException("Not a type bean or caller of type beans");
+      throw new NoEnhancementRequiredException("No query bean enhancement");
     }
     super.visitEnd();
   }

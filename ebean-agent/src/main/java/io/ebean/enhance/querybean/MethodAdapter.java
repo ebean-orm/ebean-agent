@@ -27,14 +27,41 @@ class MethodAdapter extends MethodVisitor implements Opcodes {
     return enhanceContext.isQueryBean(owner, loader);
   }
 
+  private boolean isEntityBean(String owner) {
+    return enhanceContext.isEntityBean(owner);
+  }
+
   @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+    if (opcode == GETSTATIC || opcode == PUTSTATIC) {
+      super.visitFieldInsn(opcode, owner, name, desc);
+      return;
+    }
     if (opcode == GETFIELD && isQueryBean(owner)) {
       classInfo.addGetFieldIntercept(owner, name);
       mv.visitMethodInsn(INVOKEVIRTUAL, owner, "_" + name, "()" + desc, false);
     } else {
+      if (opcode == GETFIELD && fieldAccessReplacement(owner)) {
+        classInfo.markEntityFieldAccess("get", owner, name);
+        mv.visitMethodInsn(INVOKEVIRTUAL, owner, "_ebean_get_" + name, "()" + desc, false);
+        return;
+      } else if (opcode == PUTFIELD && fieldAccessReplacement(owner)) {
+        classInfo.markEntityFieldAccess("set", owner, name);
+        mv.visitMethodInsn(INVOKEVIRTUAL, owner, "_ebean_set_" + name, "(" + desc + ")V", false);
+        return;
+      }
       super.visitFieldInsn(opcode, owner, name, desc);
     }
+  }
+
+  private boolean fieldAccessReplacement(String owner) {
+    return !classInfo.isEntityBean()
+      && enhanceContext.isEnableEntityFieldAccess()
+      && isOtherEntityClass(owner);
+  }
+
+  private boolean isOtherEntityClass(String owner) {
+    return !classInfo.getClassName().equals(owner) && isEntityBean(owner);
   }
 
 }

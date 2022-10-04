@@ -15,6 +15,7 @@ public class SummaryInfo {
   private final Set<String> entities = new HashSet<>();
   private final Set<String> queryBeans = new HashSet<>();
   private final Set<String> queryBeanCallers = new HashSet<>();
+  private final Set<String> fieldAccessUsers = new HashSet<>();
   private final Set<String> transactional = new HashSet<>();
 
   SummaryInfo(List<String> loadedResources) {
@@ -55,6 +56,9 @@ public class SummaryInfo {
     return !queryBeanCallers.isEmpty();
   }
 
+  public boolean hasFieldAccess() {
+    return !fieldAccessUsers.isEmpty();
+  }
 
   public String toString() {
     return " entities:" + entities + " queryBeans:" + queryBeans + " tqb:" + transactional;
@@ -74,6 +78,10 @@ public class SummaryInfo {
 
   void addQueryBeanCaller(String className) {
     queryBeanCallers.add(className);
+  }
+
+  void addFieldAccessUser(String className) {
+    fieldAccessUsers.add(className);
   }
 
   private String summary(String prefix, Set<String> beans) {
@@ -106,6 +114,13 @@ public class SummaryInfo {
    */
   public String queryCallers() {
     return summary("Query Callers", queryBeanCallers);
+  }
+
+  /**
+   * Return a summary of the beans enhanced that call query beans.
+   */
+  public String fieldAccess() {
+    return summary(" Field Access", fieldAccessUsers);
   }
 
   /**

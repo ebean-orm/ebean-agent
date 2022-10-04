@@ -17,14 +17,24 @@ class ClassInfo implements Constants {
   private boolean addedMarkerAnnotation;
   private boolean typeQueryBean;
   private boolean typeQueryUser;
+  private boolean fieldAccessUser;
   private boolean alreadyEnhanced;
   private List<FieldInfo> fields;
   private boolean hasBasicConstructor;
   private boolean hasMainConstructor;
+  private boolean entityBean;
 
   public ClassInfo(EnhanceContext enhanceContext, String className) {
     this.enhanceContext = enhanceContext;
     this.className = className;
+  }
+
+  public void setEntityBean() {
+    entityBean = true;
+  }
+
+  public boolean isEntityBean() {
+    return entityBean;
   }
 
   /**
@@ -69,6 +79,10 @@ class ClassInfo implements Constants {
    */
   boolean isTypeQueryUser() {
     return typeQueryUser;
+  }
+
+  public boolean isFieldAccessUser() {
+    return fieldAccessUser;
   }
 
   /**
@@ -133,6 +147,13 @@ class ClassInfo implements Constants {
       log("change getfield " + owner + " name:" + name);
     }
     typeQueryUser = true;
+  }
+
+  void markEntityFieldAccess(String type, String owner, String name) {
+    if (isLog(2)) {
+      log("replace " + type + " field access " + owner + "." + name);
+    }
+    fieldAccessUser = true;
   }
 
   public boolean isLog(int level) {

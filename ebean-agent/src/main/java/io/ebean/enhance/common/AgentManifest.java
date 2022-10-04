@@ -31,6 +31,7 @@ public class AgentManifest {
   private boolean transientInternalFields;
   private boolean checkNullManyFields = true;
   private boolean enableProfileLocation = true;
+  private boolean enableEntityFieldAccess = true;
   private boolean synthetic = true;
   private int enhancementVersion;
 
@@ -78,6 +79,10 @@ public class AgentManifest {
       + " transactionalPackages:" + transactionalPackages;
   }
 
+  public boolean isDetectEntityBean(String owner) {
+    return detectQueryBean.isEntityBean(owner);
+  }
+
   public boolean isDetectQueryBean(String owner) {
     return detectQueryBean.isQueryBean(owner);
   }
@@ -93,6 +98,9 @@ public class AgentManifest {
     return enableProfileLocation;
   }
 
+  public boolean isEnableEntityFieldAccess() {
+    return enableEntityFieldAccess;
+  }
 
   /**
    * Return the debug level read from ebean.mf
@@ -234,6 +242,10 @@ public class AgentManifest {
     String locationMode = attributes.getValue("profile-location");
     if (locationMode != null) {
       enableProfileLocation = Boolean.parseBoolean(locationMode);
+    }
+    String fieldAccessMode = attributes.getValue("entity-field-access");
+    if (fieldAccessMode != null) {
+      enableEntityFieldAccess = Boolean.parseBoolean(fieldAccessMode);
     }
     String syntheticOption = attributes.getValue("synthetic");
     if (syntheticOption != null) {
