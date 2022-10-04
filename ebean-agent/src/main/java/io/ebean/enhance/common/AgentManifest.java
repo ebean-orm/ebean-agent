@@ -31,7 +31,7 @@ public class AgentManifest {
   private boolean transientInternalFields;
   private boolean checkNullManyFields = true;
   private boolean enableProfileLocation = true;
-  private boolean enableEntityFieldAccess = true;
+  private boolean enableEntityFieldAccess;
   private boolean synthetic = true;
   private int enhancementVersion;
 
