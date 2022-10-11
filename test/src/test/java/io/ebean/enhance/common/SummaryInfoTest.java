@@ -28,7 +28,9 @@ public class SummaryInfoTest {
 
     assertTrue(summaryInfo.hasQueryBeans());
     assertFalse(summaryInfo.hasQueryCallers());
+    assertFalse(summaryInfo.hasFieldAccess());
     assertEquals("Query Callers (0)  pkgs[] beans[]", summaryInfo.queryCallers());
+    assertEquals(" Field Access (0)  pkgs[] beans[]", summaryInfo.fieldAccess());
   }
 
   @Test
@@ -51,11 +53,13 @@ public class SummaryInfoTest {
     summaryInfo.addQueryBean("org/model/query/QCustomer");
     summaryInfo.addQueryBeanCaller("org/dao/MyDao");
     summaryInfo.addTransactional("org/dao/OtherDao");
+    summaryInfo.addFieldAccessUser("org/model/CustomerTest");
 
     summaryInfo.prepare();
     assertFalse(summaryInfo.isEmpty());
     assertTrue(summaryInfo.hasEntities());
     assertTrue(summaryInfo.hasQueryBeans());
+    assertTrue(summaryInfo.hasFieldAccess());
     assertTrue(summaryInfo.hasQueryCallers());
     assertTrue(summaryInfo.hasTransactional());
 
@@ -63,6 +67,7 @@ public class SummaryInfoTest {
     assertEquals("   QueryBeans (1)  pkgs[org/model/query] beans[QCustomer]", summaryInfo.queryBeans());
     assertEquals("Transactional (1)  pkgs[org/dao] beans[OtherDao]", summaryInfo.transactional());
     assertEquals("Query Callers (1)  pkgs[org/dao] beans[MyDao]", summaryInfo.queryCallers());
+    assertEquals(" Field Access (1)  pkgs[org/model] beans[CustomerTest]", summaryInfo.fieldAccess());
   }
 
   @Test
@@ -74,12 +79,14 @@ public class SummaryInfoTest {
     assertFalse(summaryInfo.hasEntities());
     assertFalse(summaryInfo.hasQueryBeans());
     assertFalse(summaryInfo.hasQueryCallers());
+    assertFalse(summaryInfo.hasFieldAccess());
     assertFalse(summaryInfo.hasTransactional());
 
     assertEquals("     Entities (0)  pkgs[] beans[]", summaryInfo.entities());
     assertEquals("   QueryBeans (0)  pkgs[] beans[]", summaryInfo.queryBeans());
     assertEquals("Transactional (0)  pkgs[] beans[]", summaryInfo.transactional());
     assertEquals("Query Callers (0)  pkgs[] beans[]", summaryInfo.queryCallers());
+    assertEquals(" Field Access (0)  pkgs[] beans[]", summaryInfo.fieldAccess());
   }
 
   @Test

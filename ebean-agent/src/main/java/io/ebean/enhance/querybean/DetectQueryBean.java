@@ -79,6 +79,10 @@ public class DetectQueryBean {
     return false;
   }
 
+  public boolean isEntityBean(String owner) {
+    return isQueryBeanPackage(owner);
+  }
+
   /**
    * Check that the class follows query bean naming convention.
    */
