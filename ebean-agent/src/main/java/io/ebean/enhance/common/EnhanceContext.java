@@ -308,6 +308,10 @@ public class EnhanceContext {
     return logLevel;
   }
 
+  public boolean isTransientInitMany() {
+    return manifest.isTransientInitMany();
+  }
+
   /**
    * Return true if internal ebean fields in entity classes should be transient.
    */

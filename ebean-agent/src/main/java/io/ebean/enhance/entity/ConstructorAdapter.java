@@ -85,7 +85,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
 
   @Override
   public void visitFieldInsn(int opcode, String owner, String name, String desc) {
-    if (deferredCode.consumeVisitFieldInsn(opcode, name)) {
+    if (deferredCode.consumeVisitFieldInsn(opcode, owner, name, desc)) {
       // we have removed all the instructions initialising the many property
       return;
     }
