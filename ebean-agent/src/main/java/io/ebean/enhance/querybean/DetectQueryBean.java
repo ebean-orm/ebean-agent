@@ -61,18 +61,15 @@ public class DetectQueryBean {
       String suffix = owner.substring(subPackagePos);
       if (isQueryBeanSuffix(suffix)) {
         String domainPackage = owner.substring(0, subPackagePos + 1);
-        return isQueryBeanPackage(domainPackage);
+        return isEntityBeanPackage(domainPackage);
       }
     }
     return false;
   }
 
-  /**
-   * Check that the class is in an expected package (sub package of a package containing entity beans).
-   */
-  private boolean isQueryBeanPackage(String domainPackage) {
-    for (String aPackage : entityPackages) {
-      if (domainPackage.startsWith(aPackage)) {
+  private boolean isEntityBeanPackage(String domainPackage) {
+    for (String pkg : entityPackages) {
+      if (domainPackage.startsWith(pkg)) {
         return true;
       }
     }
@@ -80,7 +77,7 @@ public class DetectQueryBean {
   }
 
   public boolean isEntityBean(String owner) {
-    return isQueryBeanPackage(owner);
+    return isEntityBeanPackage(owner);
   }
 
   /**
