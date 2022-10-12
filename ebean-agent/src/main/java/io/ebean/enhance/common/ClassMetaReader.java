@@ -31,7 +31,7 @@ public class ClassMetaReader {
         meta = readFromResource(readMethodAnnotations, name, classLoader);
         if (meta != null) {
           if (meta.isCheckSuperClassForEntity()) {
-            ClassMeta superMeta = getWithCache(readMethodAnnotations, meta.getSuperClassName(), classLoader);
+            ClassMeta superMeta = getWithCache(readMethodAnnotations, meta.superClassName(), classLoader);
             if (superMeta != null && superMeta.isEntity()) {
               meta.setSuperMeta(superMeta);
             }

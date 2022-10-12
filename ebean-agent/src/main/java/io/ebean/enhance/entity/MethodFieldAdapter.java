@@ -26,7 +26,7 @@ class MethodFieldAdapter extends MethodVisitor implements Opcodes {
   MethodFieldAdapter(MethodVisitor mv, ClassMeta meta, String methodDescription) {
     super(EBEAN_ASM_VERSION, mv);
     this.meta = meta;
-    this.className = meta.getClassName();
+    this.className = meta.className();
     this.methodDescription = methodDescription;
   }
 

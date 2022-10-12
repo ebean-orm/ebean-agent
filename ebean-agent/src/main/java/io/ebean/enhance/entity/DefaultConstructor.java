@@ -22,7 +22,7 @@ class DefaultConstructor {
    */
   public static void add(ClassVisitor cw, ClassMeta classMeta) {
     if (classMeta.isLog(4)) {
-      classMeta.log("... adding default constructor, super class: " + classMeta.getSuperClassName());
+      classMeta.log("... adding default constructor, super class: " + classMeta.superClassName());
     }
 
     MethodVisitor underlyingMV = cw.visitMethod(classMeta.accPublic(), INIT, NOARG_VOID, null, null);
@@ -34,7 +34,7 @@ class DefaultConstructor {
     mv.visitLabel(l0);
     mv.visitLineNumber(1, l0);
     mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKESPECIAL, classMeta.getSuperClassName(), INIT, NOARG_VOID, false);
+    mv.visitMethodInsn(INVOKESPECIAL, classMeta.superClassName(), INIT, NOARG_VOID, false);
     for (Map.Entry<String, List<DeferredCode>> entry : classMeta.transientInit().entrySet()) {
       if (classMeta.isLog(2)) {
         classMeta.log("... default constructor, init transient " + entry.getKey());
@@ -50,7 +50,7 @@ class DefaultConstructor {
 
     Label l2 = new Label();
     mv.visitLabel(l2);
-    mv.visitLocalVariable("this", "L" + classMeta.getClassName() + ";", null, l0, l2, 0);
+    mv.visitLocalVariable("this", "L" + classMeta.className() + ";", null, l0, l2, 0);
     mv.visitMaxs(1, 1);
     mv.visitEnd();
   }

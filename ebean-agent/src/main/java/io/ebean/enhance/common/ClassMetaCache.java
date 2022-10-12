@@ -52,7 +52,7 @@ public class ClassMetaCache {
     Collection<ClassMeta> values = cache.values();
     for (ClassMeta value : values) {
       if (value.isMappedSuper()) {
-        fallbackCache.put(value.getClassName(), value);
+        fallbackCache.put(value.className(), value);
       }
     }
     cache.clear();

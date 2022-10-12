@@ -35,7 +35,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
   ConstructorAdapter(MethodVisitor mv, ClassMeta meta, String constructorDesc) {
     super(EBEAN_ASM_VERSION, mv);
     this.meta = meta;
-    this.className = meta.getClassName();
+    this.className = meta.className();
     this.constructorDesc = constructorDesc;
     this.deferredCode = new ConstructorDeferredCode(meta, mv);
   }
@@ -93,7 +93,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
       super.visitFieldInsn(opcode, owner, name, desc);
       return;
     }
-    FieldMeta fieldMeta = meta.getFieldPersistent(name);
+    FieldMeta fieldMeta = meta.field(name);
     if (fieldMeta == null || !fieldMeta.isPersistent()) {
       // leave transient fields in constructor alone
       if (meta.isLog(4)) {
@@ -146,11 +146,11 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
         if (meta.isLog(4)) {
           meta.log("... skipping intercept <init> ... handled by super class... CONSTRUCTOR: owner:" + owner + " " + constructorDesc);
         }
-      } else if (owner.equals(meta.getClassName())) {
+      } else if (owner.equals(meta.className())) {
         if (meta.isLog(4)) {
           meta.log("... skipping intercept <init> ... handled by other constructor... CONSTRUCTOR: owner:" + owner + " " + constructorDesc);
         }
-      } else if (owner.equals(meta.getSuperClassName())) {
+      } else if (owner.equals(meta.superClassName())) {
         addConstructorInit(owner);
       } else {
         if (meta.isLog(4)) {
@@ -167,7 +167,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
     if (constructorInitializationDone) {
       // hopefully this is never called but put it in here to be on the safe side.
       String msg = "Error in Enhancement. Only expecting to add <init> of intercept object"
-        + " once but it is trying to add it twice for " + meta.getClassName() + " CONSTRUCTOR:"
+        + " once but it is trying to add it twice for " + meta.className() + " CONSTRUCTOR:"
         + constructorDesc + " OWNER:" + owner;
       System.err.println(msg);
 

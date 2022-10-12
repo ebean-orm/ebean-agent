@@ -23,14 +23,14 @@ class MethodNewInstance {
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(10, l0);
-    mv.visitTypeInsn(NEW, classMeta.getClassName());
+    mv.visitTypeInsn(NEW, classMeta.className());
     mv.visitInsn(DUP);
-    mv.visitMethodInsn(INVOKESPECIAL, classMeta.getClassName(), INIT, NOARG_VOID, false);
+    mv.visitMethodInsn(INVOKESPECIAL, classMeta.className(), INIT, NOARG_VOID, false);
     mv.visitInsn(ARETURN);
 
     Label l1 = new Label();
     mv.visitLabel(l1);
-    mv.visitLocalVariable("this", "L" + classMeta.getClassName() + ";", null, l0, l1, 0);
+    mv.visitLocalVariable("this", "L" + classMeta.className() + ";", null, l0, l1, 0);
     mv.visitMaxs(2, 1);
     mv.visitEnd();
   }

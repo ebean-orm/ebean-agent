@@ -241,7 +241,7 @@ public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants
 
     // register with the agentContext
     enhanceContext.addClassMeta(classMeta);
-    enhanceContext.summaryEntity(classMeta.getClassName());
+    enhanceContext.summaryEntity(classMeta.className());
     super.visitEnd();
   }
 

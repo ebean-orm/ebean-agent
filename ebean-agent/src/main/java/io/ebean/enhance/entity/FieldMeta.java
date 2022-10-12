@@ -238,14 +238,14 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
    * is actually on a super class.
    */
   boolean isLocalField(ClassMeta classMeta) {
-    return fieldClass.equals(classMeta.getClassName());
+    return fieldClass.equals(classMeta.className());
   }
 
   /**
    * Append byte code to return the Id value (for primitives).
    */
   void appendGetPrimitiveIdValue(MethodVisitor mv, ClassMeta classMeta) {
-    mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc, false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.className(), getMethodName, getMethodDesc, false);
   }
 
   /**
@@ -298,13 +298,13 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
   void appendSwitchGet(MethodVisitor mv, ClassMeta classMeta, boolean intercept) {
     if (intercept) {
       // use the special get method with interception...
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getMethodName, getMethodDesc, false);
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.className(), getMethodName, getMethodDesc, false);
     } else {
       if (isLocalField(classMeta)) {
-        mv.visitFieldInsn(GETFIELD, classMeta.getClassName(), fieldName, fieldDesc);
+        mv.visitFieldInsn(GETFIELD, classMeta.className(), fieldName, fieldDesc);
       } else {
         // field is on a superclass... so use virtual getNoInterceptMethodName
-        mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), getNoInterceptMethodName, getMethodDesc, false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.className(), getNoInterceptMethodName, getMethodDesc, false);
       }
     }
     if (primitiveType) {
@@ -328,9 +328,9 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
 
     if (intercept) {
       // go through the set method to check for interception...
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setMethodName, setMethodDesc, false);
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.className(), setMethodName, setMethodDesc, false);
     } else {
-      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.getClassName(), setNoInterceptMethodName, setMethodDesc, false);
+      mv.visitMethodInsn(INVOKEVIRTUAL, classMeta.className(), setNoInterceptMethodName, setMethodDesc, false);
     }
   }
 
@@ -339,7 +339,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
    */
   public void addGetSetMethods(ClassVisitor cv, ClassMeta classMeta) {
     if (!isLocalField(classMeta)) {
-      String msg = "ERROR: " + fieldClass + " != " + classMeta.getClassName() + " for field "
+      String msg = "ERROR: " + fieldClass + " != " + classMeta.className() + " for field "
         + fieldName + " " + fieldDesc;
       throw new RuntimeException(msg);
     }
@@ -383,7 +383,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
     // ARETURN or IRETURN
     int iReturnOpcode = asmType.getOpcode(Opcodes.IRETURN);
 
-    String className = classMeta.getClassName();
+    String className = classMeta.className();
 
     Label labelEnd = new Label();
     Label labelStart = null;
@@ -423,7 +423,7 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
   }
 
   private void addGetForMany(MethodVisitor mv) {
-    String className = classMeta.getClassName();
+    String className = classMeta.className();
     String ebCollection = getInitCollectionClass();
 
     Label l0 = new Label();
@@ -435,10 +435,10 @@ public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMet
     classMeta.visitMethodInsnIntercept(mv, "preGetter", "(I)V");
 
     Label l4 = new Label();
-    if (classMeta.getEnhanceContext().isCheckNullManyFields()) {
+    if (classMeta.context().isCheckNullManyFields()) {
       if (ebCollection == null) {
         String msg = "Unexpected collection type [" + Type.getType(fieldDesc).getClassName() + "] for ["
-        + classMeta.getClassName() + "." + fieldName + "] expected either java.util.List, java.util.Set or java.util.Map ";
+        + classMeta.className() + "." + fieldName + "] expected either java.util.List, java.util.Set or java.util.Map ";
         throw new RuntimeException(msg);
       }
       Label l3 = new Label();

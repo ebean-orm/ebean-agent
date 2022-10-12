@@ -31,7 +31,7 @@ class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
    * </pre>
    */
   static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
-    String className = classMeta.getClassName();
+    String className = classMeta.className();
 
     MethodVisitor mv;
     mv = cv.visitMethod(classMeta.accPublic(), "_ebean_isEmbeddedNewOrDirty", "()Z", null, null);
@@ -41,7 +41,7 @@ class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 
     Label labelNext = null;
 
-    List<FieldMeta> allFields = classMeta.getAllFields();
+    List<FieldMeta> allFields = classMeta.allFields();
     for (int i = 0; i < allFields.size(); i++) {
       FieldMeta fieldMeta = allFields.get(i);
       if (fieldMeta.isEmbedded()) {

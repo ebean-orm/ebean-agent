@@ -18,7 +18,7 @@ import static io.ebean.enhance.common.EnhanceConstants.C_INTERCEPT_I;
 import static io.ebean.enhance.common.EnhanceConstants.C_INTERCEPT_RW;
 
 /**
- * Used to hold meta data, arguments and log levels for the enhancement.
+ * Used to hold metadata, arguments and log levels for the enhancement.
  */
 public class EnhanceContext {
 
@@ -255,7 +255,7 @@ public class EnhanceContext {
   }
 
   public void addClassMeta(ClassMeta meta) {
-    map.put(meta.getClassName(), meta);
+    map.put(meta.className(), meta);
   }
 
   public ClassMeta get(String className) {

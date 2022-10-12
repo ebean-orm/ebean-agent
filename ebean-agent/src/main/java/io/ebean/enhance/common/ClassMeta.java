@@ -61,7 +61,7 @@ public class ClassMeta {
   /**
    * Return the enhance context which has options for enhancement.
    */
-  public EnhanceContext getEnhanceContext() {
+  public EnhanceContext context() {
     return enhanceContext;
   }
 
@@ -69,14 +69,14 @@ public class ClassMeta {
    * Return the AnnotationInfo collected on methods.
    * Used to determine Transactional method enhancement.
    */
-  public AnnotationInfo getAnnotationInfo() {
+  public AnnotationInfo annotationInfo() {
     return annotationInfo;
   }
 
   /**
    * Return the transactional annotation information for a matching interface method.
    */
-  public AnnotationInfo getInterfaceTransactionalInfo(String methodName, String methodDesc) {
+  public AnnotationInfo interfaceTransactionalInfo(String methodName, String methodDesc) {
     AnnotationInfo annotationInfo = null;
     for (int i = 0; i < methodMetaList.size(); i++) {
       MethodMeta meta = methodMetaList.get(i);
@@ -120,7 +120,7 @@ public class ClassMeta {
     }
   }
 
-  public String getSuperClassName() {
+  public String superClassName() {
     return superClassName;
   }
 
@@ -184,7 +184,7 @@ public class ClassMeta {
    * Return true if the field is a persistent field.
    */
   public boolean isFieldPersistent(String fieldName) {
-    FieldMeta f = getFieldPersistent(fieldName);
+    FieldMeta f = field(fieldName);
     return (f != null) && f.isPersistent();
   }
 
@@ -192,7 +192,7 @@ public class ClassMeta {
     if (!enhanceContext.isTransientInitMany()) {
       return false;
     }
-    FieldMeta f = getFieldPersistent(fieldName);
+    FieldMeta f = field(fieldName);
     return (f != null && f.isTransient());
   }
 
@@ -200,25 +200,25 @@ public class ClassMeta {
    * Return true if the field is a persistent many field that we want to consume the init on.
    */
   public boolean isConsumeInitMany(String fieldName) {
-    FieldMeta f = getFieldPersistent(fieldName);
+    FieldMeta f = field(fieldName);
     return (f != null && f.isPersistent() && f.isInitMany());
   }
 
   /**
    * Return the field - null when not found.
    */
-  public FieldMeta getFieldPersistent(String fieldName) {
+  public FieldMeta field(String fieldName) {
     FieldMeta f = fields.get(fieldName);
     if (f != null) {
       return f;
     }
-    return (superMeta == null) ? null : superMeta.getFieldPersistent(fieldName);
+    return (superMeta == null) ? null : superMeta.field(fieldName);
   }
 
   /**
    * Return the list of fields local to this type (not inherited).
    */
-  private List<FieldMeta> getLocalFields() {
+  private List<FieldMeta> localFields() {
     List<FieldMeta> list = new ArrayList<>();
     for (FieldMeta fm : fields.values()) {
       if (!fm.isObjectArray()) {
@@ -266,11 +266,11 @@ public class ClassMeta {
    * Return the list of all fields including ones inherited from entity super
    * types and mappedSuperclasses.
    */
-  public List<FieldMeta> getAllFields() {
+  public List<FieldMeta> allFields() {
     if (allFields != null) {
       return allFields;
     }
-    List<FieldMeta> list = getLocalFields();
+    List<FieldMeta> list = localFields();
     addInheritedFields(list);
 
     this.allFields = list;
@@ -336,7 +336,7 @@ public class ClassMeta {
   /**
    * Return the className of this entity class.
    */
-  public String getClassName() {
+  public String className() {
     return className;
   }
 
@@ -494,7 +494,7 @@ public class ClassMeta {
     return hasStaticInit;
   }
 
-  public String getDescription() {
+  public String description() {
     StringBuilder sb = new StringBuilder();
     appendDescription(sb);
     return sb.toString();

@@ -15,7 +15,7 @@ import static io.ebean.enhance.common.EnhanceConstants.C_TOSTRINGBUILDER;
 class MethodToString {
 
   static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
-    if (!classMeta.getEnhanceContext().isEnhancedToString()) {
+    if (!classMeta.context().isEnhancedToString()) {
       return;
     }
     if (!classMeta.hasToString()) {
@@ -39,7 +39,7 @@ class MethodToString {
     mv.visitLineNumber(3, label1);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitVarInsn(ALOAD, 1);
-    mv.visitMethodInsn(INVOKEVIRTUAL, meta.getClassName(), "toString", "(L" + C_TOSTRINGBUILDER + ";)V", false);
+    mv.visitMethodInsn(INVOKEVIRTUAL, meta.className(), "toString", "(L" + C_TOSTRINGBUILDER + ";)V", false);
     Label label2 = new Label();
     mv.visitLabel(label2);
     mv.visitLineNumber(4, label2);
@@ -48,7 +48,7 @@ class MethodToString {
     mv.visitInsn(ARETURN);
     Label label3 = new Label();
     mv.visitLabel(label3);
-    mv.visitLocalVariable("this", "L" + meta.getClassName() + ";", null, label0, label3, 0);
+    mv.visitLocalVariable("this", "L" + meta.className() + ";", null, label0, label3, 0);
     mv.visitLocalVariable("builder", "L" + C_TOSTRINGBUILDER + ";", null, label1, label3, 1);
     mv.visitMaxs(2, 2);
     mv.visitEnd();
@@ -64,7 +64,7 @@ class MethodToString {
     mv.visitVarInsn(ALOAD, 0);
     mv.visitMethodInsn(INVOKEVIRTUAL, C_TOSTRINGBUILDER, "start", "(Ljava/lang/Object;)V", false);
 
-    for (FieldMeta fieldMeta : copyAndSort(meta.getAllFields())) {
+    for (FieldMeta fieldMeta : copyAndSort(meta.allFields())) {
       Label label1 = new Label();
       mv.visitLabel(label1);
       mv.visitLineNumber(3, label1);
@@ -86,7 +86,7 @@ class MethodToString {
     mv.visitInsn(RETURN);
     Label label9 = new Label();
     mv.visitLabel(label9);
-    mv.visitLocalVariable("this", "L" + meta.getClassName() + ";", null, label0, label9, 0);
+    mv.visitLocalVariable("this", "L" + meta.className() + ";", null, label0, label9, 0);
     mv.visitLocalVariable("sb", "L" + C_TOSTRINGBUILDER + ";", null, label0, label9, 1);
     mv.visitMaxs(4, 2);
     mv.visitEnd();

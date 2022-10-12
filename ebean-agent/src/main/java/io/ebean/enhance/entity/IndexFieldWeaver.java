@@ -44,7 +44,7 @@ class IndexFieldWeaver implements Opcodes {
   }
 
   static void addPropertiesInit(MethodVisitor mv, ClassMeta classMeta) {
-    List<FieldMeta> fields = classMeta.getAllFields();
+    List<FieldMeta> fields = classMeta.allFields();
 
     Label l0 = new Label();
     mv.visitLabel(l0);
@@ -66,7 +66,7 @@ class IndexFieldWeaver implements Opcodes {
       }
     }
 
-    mv.visitFieldInsn(PUTSTATIC, classMeta.getClassName(), _EBEAN_PROPS, "[Ljava/lang/String;");
+    mv.visitFieldInsn(PUTSTATIC, classMeta.className(), _EBEAN_PROPS, "[Ljava/lang/String;");
   }
 
 
@@ -76,11 +76,11 @@ class IndexFieldWeaver implements Opcodes {
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(13, l0);
-    mv.visitFieldInsn(GETSTATIC, classMeta.getClassName(), _EBEAN_PROPS, "[Ljava/lang/String;");
+    mv.visitFieldInsn(GETSTATIC, classMeta.className(), _EBEAN_PROPS, "[Ljava/lang/String;");
     mv.visitInsn(ARETURN);
     Label l1 = new Label();
     mv.visitLabel(l1);
-    mv.visitLocalVariable("this", "L" + classMeta.getClassName() + ";", null, l0, l1, 0);
+    mv.visitLocalVariable("this", "L" + classMeta.className() + ";", null, l0, l1, 0);
     mv.visitMaxs(1, 1);
     mv.visitEnd();
   }
@@ -91,20 +91,20 @@ class IndexFieldWeaver implements Opcodes {
     Label l0 = new Label();
     mv.visitLabel(l0);
     mv.visitLineNumber(16, l0);
-    mv.visitFieldInsn(GETSTATIC, classMeta.getClassName(), _EBEAN_PROPS, "[Ljava/lang/String;");
+    mv.visitFieldInsn(GETSTATIC, classMeta.className(), _EBEAN_PROPS, "[Ljava/lang/String;");
     mv.visitVarInsn(ILOAD, 1);
     mv.visitInsn(AALOAD);
     mv.visitInsn(ARETURN);
     Label l1 = new Label();
     mv.visitLabel(l1);
-    mv.visitLocalVariable("this", "L" + classMeta.getClassName() + ";", null, l0, l1, 0);
+    mv.visitLocalVariable("this", "L" + classMeta.className() + ";", null, l0, l1, 0);
     mv.visitLocalVariable("pos", "I", null, l0, l1, 1);
     mv.visitMaxs(2, 2);
     mv.visitEnd();
   }
 
   static void addMethods(ClassVisitor cv, ClassMeta classMeta) {
-    List<FieldMeta> fields = classMeta.getAllFields();
+    List<FieldMeta> fields = classMeta.allFields();
     if (fields.isEmpty()) {
       return;
     }
@@ -164,7 +164,7 @@ class IndexFieldWeaver implements Opcodes {
    * Generate the invokeGet method.
    */
   private static void generateGetField(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields, boolean intercept) {
-    String className = classMeta.getClassName();
+    String className = classMeta.className();
 
     MethodVisitor mv;
     if (intercept) {
@@ -235,7 +235,7 @@ class IndexFieldWeaver implements Opcodes {
    * </p>
    */
   private static void generateSetField(ClassVisitor cv, ClassMeta classMeta, List<FieldMeta> fields, boolean intercept) {
-    String className = classMeta.getClassName();
+    String className = classMeta.className();
 
     MethodVisitor mv;
     if (intercept) {
