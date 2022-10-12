@@ -94,7 +94,7 @@ class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opco
       return;
     }
     FieldMeta fieldMeta = meta.field(name);
-    if (fieldMeta == null || !fieldMeta.isPersistent()) {
+    if (fieldMeta == null || fieldMeta.isTransient()) {
       // leave transient fields in constructor alone
       if (meta.isLog(4)) {
         meta.log("... visitFieldInsn (in constructor but non-persistent)- " + opcode + " owner:" + owner + ":" + name + ":" + desc);

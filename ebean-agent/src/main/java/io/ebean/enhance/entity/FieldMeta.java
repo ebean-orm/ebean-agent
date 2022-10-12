@@ -13,7 +13,7 @@ import java.util.HashSet;
  * This can then generate the appropriate byte code for this field.
  * </p>
  */
-public class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMeta> {
+public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<FieldMeta> {
 
   private final ClassMeta classMeta;
   private final String fieldClass;
