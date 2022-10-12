@@ -19,7 +19,7 @@ import static io.ebean.enhance.asm.Opcodes.*;
  * Reads all the META-INF/ebean.mf and META-INF/ebean-generated-info.mf resources with the locations
  * of all the entity beans (and hence locations of query beans).
  */
-public class AgentManifest {
+public final class AgentManifest {
 
   private final Set<Integer> classLoaderIdentities = new HashSet<>();
   private final List<String> loadedResources = new ArrayList<>();
@@ -88,7 +88,7 @@ public class AgentManifest {
     return detectQueryBean.isQueryBean(owner);
   }
 
-  public int getEnhancementVersion() {
+  public int enhancementVersion() {
     return enhancementVersion;
   }
 
@@ -106,21 +106,21 @@ public class AgentManifest {
   /**
    * Return the debug level read from ebean.mf
    */
-  public int getDebugLevel() {
+  public int debugLevel() {
     return debugLevel;
   }
 
   /**
    * Return the paths that manifests were loaded from.
    */
-  public List<String> getLoadedResources() {
+  public List<String> loadedResources() {
     return loadedResources;
   }
 
   /**
    * Return the parsed set of packages that type query beans are in.
    */
-  public Set<String> getEntityPackages() {
+  public Set<String> entityPackages() {
     return entityPackages;
   }
 
@@ -172,7 +172,7 @@ public class AgentManifest {
    * Return the packages that should be enhanced for transactional.
    * An empty set means all packages are scanned for transaction classes and methods.
    */
-  public Set<String> getTransactionalPackages() {
+  public Set<String> transactionalPackages() {
     return transactionalPackages;
   }
 
@@ -180,7 +180,7 @@ public class AgentManifest {
    * Return the packages that should be enhanced for query bean use.
    * An empty set means all packages are scanned for transaction classes and methods.
    */
-  public Set<String> getQuerybeanPackages() {
+  public Set<String> querybeanPackages() {
     return querybeanPackages;
   }
 

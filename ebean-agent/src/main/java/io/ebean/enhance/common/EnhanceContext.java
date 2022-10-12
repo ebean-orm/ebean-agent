@@ -66,8 +66,8 @@ public class EnhanceContext {
     this.classBytesReader = classBytesReader;
     this.reader = new ClassMetaReader(this, metaCache);
 
-    if (manifest.getDebugLevel() > -1) {
-      logLevel = manifest.getDebugLevel();
+    if (manifest.debugLevel() > -1) {
+      logLevel = manifest.debugLevel();
     }
     String debugValue = agentArgsMap.get("debug");
     if (debugValue != null) {
@@ -78,7 +78,7 @@ public class EnhanceContext {
       }
     }
     if (logLevel > 0 || getPropertyBoolean("printversion", false)) {
-      System.out.println("ebean-agent version:" + Transformer.getVersion() + " enhancement:" + enhancementVersion + " resources:" + manifest.getLoadedResources());
+      System.out.println("ebean-agent version:" + Transformer.getVersion() + " enhancement:" + enhancementVersion + " resources:" + manifest.loadedResources());
     }
   }
 
@@ -87,13 +87,13 @@ public class EnhanceContext {
     if (ver != null) {
       return Integer.parseInt(ver);
     }
-    return manifest.getEnhancementVersion();
+    return manifest.enhancementVersion();
   }
 
   public void withClassLoader(ClassLoader loader) {
     if (manifest.readManifest(loader)) {
       if (logLevel > 1) {
-        log(null, "loaded entity packages: " + manifest.getEntityPackages());
+        log(null, "loaded entity packages: " + manifest.entityPackages());
       }
     }
   }
@@ -114,15 +114,15 @@ public class EnhanceContext {
   }
 
   public Set<String> getEntityPackages() {
-    return manifest.getEntityPackages();
+    return manifest.entityPackages();
   }
 
   public Set<String> getTransactionalPackages() {
-    return manifest.getTransactionalPackages();
+    return manifest.transactionalPackages();
   }
 
   public Set<String> getQuerybeanPackages() {
-    return manifest.getQuerybeanPackages();
+    return manifest.querybeanPackages();
   }
 
   public byte[] getClassBytes(String className, ClassLoader classLoader) {
@@ -348,7 +348,7 @@ public class EnhanceContext {
    * Turn on the summary collection of the enhancement.
    */
   public void collectSummary() {
-    this.summaryInfo = new SummaryInfo(manifest.getLoadedResources());
+    this.summaryInfo = new SummaryInfo(manifest.loadedResources());
   }
 
   /**

@@ -12,10 +12,10 @@ class FilterEntityTransactional {
 
   FilterEntityTransactional(AgentManifest manifest) {
     // if no packages for either then run detection on everything
-    noFiltering = manifest.getTransactionalPackages().isEmpty() || manifest.getEntityPackages().isEmpty();
-    DistillPackages distill = new DistillPackages().add(manifest.getEntityPackages());
+    noFiltering = manifest.transactionalPackages().isEmpty() || manifest.entityPackages().isEmpty();
+    DistillPackages distill = new DistillPackages().add(manifest.entityPackages());
     if (!manifest.isTransactionalNone()) {
-      distill.add(manifest.getTransactionalPackages());
+      distill.add(manifest.transactionalPackages());
     }
     this.topLevelPackages = distill.distill();
   }

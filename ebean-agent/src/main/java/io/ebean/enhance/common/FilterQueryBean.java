@@ -15,10 +15,10 @@ class FilterQueryBean {
     // if no packages for either then run detection on everything
     ignoreAll = manifest.isQueryBeanNone();
     // if no query beans packages we need to run detection on everything
-    detectOnAll = manifest.getQuerybeanPackages().isEmpty();
-    DistillPackages distill = new DistillPackages().add(manifest.getEntityPackages());
+    detectOnAll = manifest.querybeanPackages().isEmpty();
+    DistillPackages distill = new DistillPackages().add(manifest.entityPackages());
     if (!manifest.isQueryBeanNone()) {
-      distill.add(manifest.getQuerybeanPackages());
+      distill.add(manifest.querybeanPackages());
     }
     this.topLevelPackages = distill.distill();
   }

@@ -15,8 +15,8 @@ public class AgentManifestTest {
 
     AgentManifest manifest = new AgentManifest(this.getClass().getClassLoader());
 
-    assertThat(manifest.getTransactionalPackages()).contains("test");
-    assertThat(manifest.getEntityPackages()).contains("test.model.domain");
+    assertThat(manifest.transactionalPackages()).contains("test");
+    assertThat(manifest.entityPackages()).contains("test.model.domain");
 
     FilterEntityTransactional filterEntityTransactional = new FilterEntityTransactional(manifest);
     assertTrue(filterEntityTransactional.detectEnhancement("test/model/domain/Foo"));
@@ -35,7 +35,7 @@ public class AgentManifestTest {
     AgentManifest manifest = new AgentManifest();
     manifest.readEbeanVersion(this.getClass().getClassLoader(), "META-INF/test_ebean-version.mf");
 
-    assertThat(manifest.getEnhancementVersion()).isEqualTo(129);
+    assertThat(manifest.enhancementVersion()).isEqualTo(129);
   }
 
   @Test
@@ -44,8 +44,8 @@ public class AgentManifestTest {
     AgentManifest manifest = new AgentManifest();
     manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_basic.mf");
 
-    assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain");
-    assertThat(manifest.getTransactionalPackages()).contains("aone","btwo.services","cthree.other");
+    assertThat(manifest.entityPackages()).contains("aone.domain", "btwo.domain");
+    assertThat(manifest.transactionalPackages()).contains("aone","btwo.services","cthree.other");
 
     FilterEntityTransactional filterEntityTransactional = new FilterEntityTransactional(manifest);
     assertTrue(filterEntityTransactional.detectEnhancement("aone/Any"));
@@ -69,12 +69,12 @@ public class AgentManifestTest {
     AgentManifest manifest = new AgentManifest();
     manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_none.mf");
 
-    assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain", "cthree.other");
+    assertThat(manifest.entityPackages()).contains("aone.domain", "btwo.domain", "cthree.other");
     assertThat(manifest.isTransactionalNone()).isTrue();
     assertThat(manifest.isQueryBeanNone()).isTrue();
 
-    assertThat(manifest.getTransactionalPackages()).containsExactly("none");
-    assertThat(manifest.getQuerybeanPackages()).containsExactly("none");
+    assertThat(manifest.transactionalPackages()).containsExactly("none");
+    assertThat(manifest.querybeanPackages()).containsExactly("none");
 
     FilterEntityTransactional filterEntityTransactional = new FilterEntityTransactional(manifest);
 
@@ -103,15 +103,15 @@ public class AgentManifestTest {
     AgentManifest manifest = new AgentManifest();
     manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_old.mf");
 
-    assertThat(manifest.getEntityPackages()).contains("aone.domain", "btwo.domain", "cthree.other");
+    assertThat(manifest.entityPackages()).contains("aone.domain", "btwo.domain", "cthree.other");
     assertThat(manifest.isTransactionalNone()).isFalse();
     assertThat(manifest.isQueryBeanNone()).isFalse();
 
     assertThat(manifest.isTransientInternalFields()).isFalse();
     assertThat(manifest.isCheckNullManyFields()).isTrue();
 
-    assertThat(manifest.getTransactionalPackages()).isEmpty();
-    assertThat(manifest.getQuerybeanPackages()).isEmpty();
+    assertThat(manifest.transactionalPackages()).isEmpty();
+    assertThat(manifest.querybeanPackages()).isEmpty();
 
 
     FilterEntityTransactional filterEntityTransactional = new FilterEntityTransactional(manifest);
@@ -142,14 +142,14 @@ public class AgentManifestTest {
     AgentManifest manifest = new AgentManifest();
     manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_expected.mf");
 
-    assertThat(manifest.getEntityPackages()).contains("org.foo.domain", "org.foo.some.domain");
+    assertThat(manifest.entityPackages()).contains("org.foo.domain", "org.foo.some.domain");
     assertThat(manifest.isTransactionalNone()).isFalse();
     assertThat(manifest.isQueryBeanNone()).isFalse();
     assertThat(manifest.isTransientInternalFields()).isTrue();
     assertThat(manifest.isCheckNullManyFields()).isFalse();
 
-    assertThat(manifest.getTransactionalPackages()).containsExactly("org.foo");
-    assertThat(manifest.getQuerybeanPackages()).containsExactly("org.foo");
+    assertThat(manifest.transactionalPackages()).containsExactly("org.foo");
+    assertThat(manifest.querybeanPackages()).containsExactly("org.foo");
 
 
     FilterEntityTransactional filterEntityTransactional = new FilterEntityTransactional(manifest);
@@ -218,9 +218,9 @@ public class AgentManifestTest {
     AgentManifest manifest = new AgentManifest();
     manifest.readManifests(this.getClass().getClassLoader(), "META-INF/test_top.mf");
 
-    assertThat(manifest.getEntityPackages()).containsOnly("org.one.myapp.domain");
-    assertThat(manifest.getTransactionalPackages()).containsOnly("org.one.myapp");
-    assertThat(manifest.getQuerybeanPackages()).containsOnly("org.one.myapp");
+    assertThat(manifest.entityPackages()).containsOnly("org.one.myapp.domain");
+    assertThat(manifest.transactionalPackages()).containsOnly("org.one.myapp");
+    assertThat(manifest.querybeanPackages()).containsOnly("org.one.myapp");
   }
 
 }
