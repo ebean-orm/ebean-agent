@@ -157,7 +157,7 @@ public class Transformer implements ClassFileTransformer {
   }
 
   public int getLogLevel() {
-    return enhanceContext.getLogLevel();
+    return enhanceContext.logLevel();
   }
 
   public EnhanceContext getEnhanceContext() {

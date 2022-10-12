@@ -20,7 +20,7 @@ import static io.ebean.enhance.common.EnhanceConstants.C_INTERCEPT_RW;
 /**
  * Used to hold metadata, arguments and log levels for the enhancement.
  */
-public class EnhanceContext {
+public final class EnhanceContext {
 
   private static final Logger logger = Logger.getLogger(EnhanceContext.class.getName());
 
@@ -77,7 +77,7 @@ public class EnhanceContext {
         logger.log(Level.WARNING, "Agent debug argument [" + debugValue + "] is not an int?");
       }
     }
-    if (logLevel > 0 || getPropertyBoolean("printversion", false)) {
+    if (logLevel > 0 || propertyBoolean("printversion", false)) {
       System.out.println("ebean-agent version:" + Transformer.getVersion() + " enhancement:" + enhancementVersion + " resources:" + manifest.loadedResources());
     }
   }
@@ -102,30 +102,35 @@ public class EnhanceContext {
     this.logLevel = logLevel;
   }
 
+  @Deprecated
+  public String getPackagesSummary() {
+    return packagesSummary();
+  }
+
   /**
    * Return the summary of the packages controlling enhancement.
    */
-  public String getPackagesSummary() {
-    return "packages entity:" + getEntityPackages()
-      + "  transactional:" + getTransactionalPackages()
-      + "  querybean:" + getQuerybeanPackages()
+  public String packagesSummary() {
+    return "packages entity:" + entityPackages()
+      + "  transactional:" + transactionalPackages()
+      + "  querybean:" + querybeanPackages()
       + "  profileLocation:" + enableProfileLocation
       + "  version:" + enhancementVersion;
   }
 
-  public Set<String> getEntityPackages() {
+  public Set<String> entityPackages() {
     return manifest.entityPackages();
   }
 
-  public Set<String> getTransactionalPackages() {
+  public Set<String> transactionalPackages() {
     return manifest.transactionalPackages();
   }
 
-  public Set<String> getQuerybeanPackages() {
+  public Set<String> querybeanPackages() {
     return manifest.querybeanPackages();
   }
 
-  public byte[] getClassBytes(String className, ClassLoader classLoader) {
+  public byte[] classBytes(String className, ClassLoader classLoader) {
     return classBytesReader.getClassBytes(className, classLoader);
   }
 
@@ -138,7 +143,6 @@ public class EnhanceContext {
    * <p>
    * If true typically means the caller needs to change GETFIELD calls to instead invoke the generated
    * 'property access' methods.
-   * </p>
    */
   public boolean isQueryBean(String owner, ClassLoader classLoader) {
     if (manifest.isDetectQueryBean(owner)) {
@@ -160,12 +164,12 @@ public class EnhanceContext {
   /**
    * Return a value from the entity arguments using its key.
    */
-  private String getProperty(String key) {
+  private String property(String key) {
     return agentArgsMap.get(key.toLowerCase());
   }
 
-  private boolean getPropertyBoolean(String key, boolean defaultValue) {
-    String s = getProperty(key);
+  private boolean propertyBoolean(String key, boolean defaultValue) {
+    String s = property(key);
     if (s == null) {
       return defaultValue;
     } else {
@@ -221,12 +225,11 @@ public class EnhanceContext {
   }
 
   /**
-   * Read the class meta data for a super class.
+   * Read the class metadata for a super class.
    * <p>
    * Typically used to read meta data for inheritance hierarchy.
-   * </p>
    */
-  public ClassMeta getSuperMeta(String superClassName, ClassLoader classLoader) {
+  public ClassMeta superMeta(String superClassName, ClassLoader classLoader) {
     try {
       if (isIgnoreClass(superClassName)) {
         return null;
@@ -238,12 +241,11 @@ public class EnhanceContext {
   }
 
   /**
-   * Read the class meta data for an interface.
+   * Read the class metadata for an interface.
    * <p>
    * Typically used to check the interface to see if it is transactional.
-   * </p>
    */
-  public ClassMeta getInterfaceMeta(String interfaceClassName, ClassLoader classLoader) {
+  public ClassMeta interfaceMeta(String interfaceClassName, ClassLoader classLoader) {
     try {
       if (isIgnoreClass(interfaceClassName)) {
         return null;
@@ -304,7 +306,7 @@ public class EnhanceContext {
   /**
    * Return the log level.
    */
-  public int getLogLevel() {
+  public int logLevel() {
     return logLevel;
   }
 
@@ -324,7 +326,6 @@ public class EnhanceContext {
    * <p>
    * On getting a many that is null Ebean will create an empty List, Set or Map. If it is a
    * ManyToMany it will turn on Modify listening.
-   * </p>
    */
   public boolean isCheckNullManyFields() {
     return manifest.isCheckNullManyFields();
@@ -396,13 +397,18 @@ public class EnhanceContext {
     }
   }
 
+  @Deprecated
+  public SummaryInfo getSummaryInfo() {
+    return summaryInfo();
+  }
+
   /**
    * Return the summary of the enhancement.
    * <p>
    * Note that <code>collectSummary()</code> must be called in order for summary
    * information to be collected and returned here.
    */
-  public SummaryInfo getSummaryInfo() {
+  public SummaryInfo summaryInfo() {
     return summaryInfo.prepare();
   }
 

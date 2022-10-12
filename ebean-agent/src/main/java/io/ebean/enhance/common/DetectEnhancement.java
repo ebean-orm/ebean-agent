@@ -84,7 +84,7 @@ public class DetectEnhancement extends ClassVisitor {
       } else if (anInterface.equals(EnhanceConstants.C_ENHANCEDTRANSACTIONAL)) {
         enhancedTransactional = true;
       } else {
-        ClassMeta interfaceMeta = enhanceContext.getInterfaceMeta(anInterface, classLoader);
+        ClassMeta interfaceMeta = enhanceContext.interfaceMeta(anInterface, classLoader);
         if (interfaceMeta != null && interfaceMeta.isTransactional()) {
           transactional = true;
           if (isLog(9)) {

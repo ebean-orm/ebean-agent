@@ -35,8 +35,8 @@ public class MainTransform {
 
     OfflineFileTransform ft = new OfflineFileTransform(t, cl, inDir);
     final EnhanceContext enhanceContext = t.getEnhanceContext();
-    if (enhanceContext.getLogLevel() > 0) {
-      System.out.println(enhanceContext.getPackagesSummary());
+    if (enhanceContext.logLevel() > 0) {
+      System.out.println(enhanceContext.packagesSummary());
     }
 
     ft.process(pkg);

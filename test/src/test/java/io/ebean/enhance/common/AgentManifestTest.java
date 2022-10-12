@@ -176,16 +176,16 @@ public class AgentManifestTest {
 
     assertThat(context.isTransientInternalFields()).isTrue();
     assertThat(context.isCheckNullManyFields()).isFalse();
-    assertThat(context.getLogLevel()).isEqualTo(5);
+    assertThat(context.logLevel()).isEqualTo(5);
 
-    assertThat(context.getEntityPackages()).containsOnly("org.foo.some.domain", "org.foo.domain");
-    assertThat(context.getTransactionalPackages()).containsOnly("org.foo");
-    assertThat(context.getQuerybeanPackages()).containsOnly("org.foo");
+    assertThat(context.entityPackages()).containsOnly("org.foo.some.domain", "org.foo.domain");
+    assertThat(context.transactionalPackages()).containsOnly("org.foo");
+    assertThat(context.querybeanPackages()).containsOnly("org.foo");
 
-    assertThat(context.getPackagesSummary()).isEqualTo("packages entity:[org.foo.some.domain, org.foo.domain]  transactional:[org.foo]  querybean:[org.foo]  profileLocation:true  version:0");
+    assertThat(context.packagesSummary()).isEqualTo("packages entity:[org.foo.some.domain, org.foo.domain]  transactional:[org.foo]  querybean:[org.foo]  profileLocation:true  version:0");
 
     context.collectSummary();
-    SummaryInfo emptySummary = context.getSummaryInfo();
+    SummaryInfo emptySummary = context.summaryInfo();
     assertThat(emptySummary.loadedResources()).containsOnly("META-INF/test_expected.mf");
 
     assertThat(emptySummary.entities()).isEqualTo("     Entities (0)  pkgs[] beans[]");
@@ -193,7 +193,7 @@ public class AgentManifestTest {
     context.collectSummary();
     context.summaryEntity("org/foo/domain/Customer");
 
-    SummaryInfo summary = context.getSummaryInfo();
+    SummaryInfo summary = context.summaryInfo();
     assertThat(summary.entities()).isEqualTo("     Entities (1)  pkgs[org/foo/domain] beans[Customer]");
   }
 
@@ -207,9 +207,9 @@ public class AgentManifestTest {
     assertThat(context.isTransientInternalFields()).isFalse();
     assertThat(context.isCheckNullManyFields()).isTrue();
 
-    assertThat(context.getEntityPackages()).containsOnly("btwo.domain", "aone.domain", "cthree.other");
-    assertThat(context.getTransactionalPackages()).isEmpty();
-    assertThat(context.getQuerybeanPackages()).isEmpty();
+    assertThat(context.entityPackages()).containsOnly("btwo.domain", "aone.domain", "cthree.other");
+    assertThat(context.transactionalPackages()).isEmpty();
+    assertThat(context.querybeanPackages()).isEmpty();
   }
 
   @Test

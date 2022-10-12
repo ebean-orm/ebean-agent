@@ -133,7 +133,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
       if (newInterfaces[i].equals(EnhanceConstants.C_ENHANCEDTRANSACTIONAL)) {
         throw new AlreadyEnhancedException(name);
       }
-      ClassMeta interfaceMeta = enhanceContext.getInterfaceMeta(newInterfaces[i], classLoader);
+      ClassMeta interfaceMeta = enhanceContext.interfaceMeta(newInterfaces[i], classLoader);
       if (interfaceMeta != null && interfaceMeta.isTransactional()) {
         // the interface was transactional. We gather its information
         // because our methods inherit that transactional configuration
