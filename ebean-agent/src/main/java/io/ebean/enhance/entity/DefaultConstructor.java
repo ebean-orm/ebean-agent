@@ -5,9 +5,6 @@ import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.common.ClassMeta;
 
-import java.util.List;
-import java.util.Map;
-
 import static io.ebean.enhance.asm.Opcodes.*;
 import static io.ebean.enhance.common.EnhanceConstants.INIT;
 import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
@@ -35,13 +32,11 @@ class DefaultConstructor {
     mv.visitLineNumber(1, l0);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitMethodInsn(INVOKESPECIAL, classMeta.superClassName(), INIT, NOARG_VOID, false);
-    for (Map.Entry<String, List<DeferredCode>> entry : classMeta.transientInit().entrySet()) {
+    for (CapturedInitCode entry : classMeta.transientInit()) {
       if (classMeta.isLog(2)) {
-        classMeta.log("... default constructor, init transient " + entry.getKey());
+        classMeta.log("... default constructor, init transient " + entry.name() + " type: " + entry.type());
       }
-      for (DeferredCode deferredCode : entry.getValue()) {
-        deferredCode.write(mv);
-      }
+      entry.write(mv);
     }
     Label l1 = new Label();
     mv.visitLabel(l1);

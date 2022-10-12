@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,10 +27,14 @@ class BeanWithTransientInitTest {
     assertThat(bean1.transientColl1()).isInstanceOf(HashSet.class);
     assertThat(bean1.transientColl2()).isInstanceOf(HashMap.class);
     assertThat(bean1.transientColl3()).isInstanceOf(HashSet.class);
+    assertThat(bean1.transientColl4()).isInstanceOf(TreeSet.class);
+    assertThat(bean1.transientLock()).isInstanceOf(ReentrantLock.class);
 
     assertThat(bean2.transientColl1()).isInstanceOf(HashSet.class);
     assertThat(bean2.transientColl2()).isInstanceOf(HashMap.class);
     assertThat(bean2.transientColl3()).isInstanceOf(TreeSet.class);
+    assertThat(bean2.transientColl4()).isInstanceOf(TreeSet.class);
+    assertThat(bean2.transientLock()).isInstanceOf(ReentrantLock.class);
 
     DB.save(bean1);
     DB.save(bean2);
@@ -45,10 +50,14 @@ class BeanWithTransientInitTest {
     assertThat(bean1.transientColl1()).isInstanceOf(HashSet.class);
     assertThat(bean1.transientColl2()).isInstanceOf(HashMap.class);
     assertThat(bean1.transientColl3()).isInstanceOf(HashSet.class);
+    assertThat(bean1.transientColl4()).isInstanceOf(TreeSet.class);
+    assertThat(bean1.transientLock()).isInstanceOf(ReentrantLock.class);
 
     assertThat(bean2.getName()).isEqualTo("Rob");
     assertThat(bean2.transientColl1()).isInstanceOf(HashSet.class);
     assertThat(bean2.transientColl2()).isInstanceOf(HashMap.class);
     assertThat(bean2.transientColl3()).isInstanceOf(HashSet.class);// HashSet from first constructor wins, not TreeSet.class
+    assertThat(bean2.transientColl4()).isInstanceOf(TreeSet.class);
+    assertThat(bean2.transientLock()).isInstanceOf(ReentrantLock.class);
   }
 }

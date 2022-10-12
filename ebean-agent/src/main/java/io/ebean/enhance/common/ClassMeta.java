@@ -43,7 +43,7 @@ public class ClassMeta {
   private boolean hasDefaultConstructor;
   private boolean hasStaticInit;
 
-  private final Map<String,List<DeferredCode>> transientInitCodes = new LinkedHashMap<>();
+  private final Map<String, CapturedInitCode> transientInitCode = new LinkedHashMap<>();
   private final LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<>();
   private final HashSet<String> classAnnotation = new HashSet<>();
   private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
@@ -188,8 +188,8 @@ public class ClassMeta {
     return (f != null) && f.isPersistent();
   }
 
-  public boolean isInitTransientMany(String fieldName) {
-    if (!enhanceContext.isTransientInitMany()) {
+  public boolean isInitTransient(String fieldName) {
+    if (!enhanceContext.isTransientInit()) {
       return false;
     }
     FieldMeta f = field(fieldName);
@@ -412,14 +412,18 @@ public class ClassMeta {
     return recordType;
   }
 
-  public void addTransientInit(String fieldName, List<DeferredCode> initialiseCode) {
-    // TODO: Detect if we have inconsistency in initialisation of transient collections
-    // occuring across multiple constructors
-    transientInitCodes.put(fieldName, initialiseCode);
+  public void addTransientInit(CapturedInitCode deferredInitCode) {
+    CapturedInitCode old = transientInitCode.put(deferredInitCode.name(), deferredInitCode);
+    if (old != null && !old.type().equals(deferredInitCode.type())) {
+      transientInitCode.put(deferredInitCode.name(), old);
+      String msg = "ERROR: Transient field " + old.name() + " initialised in constructor with 2 different types " + old.mismatch(deferredInitCode.type()) + ", this is not supported ";
+      log(msg);
+      System.err.println(msg);
+    }
   }
 
-  public Map<String, List<DeferredCode>> transientInit() {
-    return transientInitCodes;
+  public Collection<CapturedInitCode> transientInit() {
+    return transientInitCode.values();
   }
 
   private static final class MethodReader extends MethodVisitor {
