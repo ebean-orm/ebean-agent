@@ -4,15 +4,9 @@ import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.entity.FieldMeta;
-import io.ebean.enhance.entity.LocalFieldVisitor;
-import io.ebean.enhance.entity.MessageOutput;
-import io.ebean.enhance.entity.MethodMeta;
+import io.ebean.enhance.entity.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +43,7 @@ public class ClassMeta {
   private boolean hasDefaultConstructor;
   private boolean hasStaticInit;
 
+  private final Map<String,List<DeferredCode>> transientInitCodes = new LinkedHashMap<>();
   private final LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<>();
   private final HashSet<String> classAnnotation = new HashSet<>();
   private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
@@ -191,6 +186,14 @@ public class ClassMeta {
   public boolean isFieldPersistent(String fieldName) {
     FieldMeta f = getFieldPersistent(fieldName);
     return (f != null) && f.isPersistent();
+  }
+
+  public boolean isInitTransientMany(String fieldName) {
+    if (!enhanceContext.isTransientInitMany()) {
+      return false;
+    }
+    FieldMeta f = getFieldPersistent(fieldName);
+    return (f != null && f.isTransient());
   }
 
   /**
@@ -407,6 +410,16 @@ public class ClassMeta {
 
   public boolean isRecordType() {
     return recordType;
+  }
+
+  public void addTransientInit(String fieldName, List<DeferredCode> initialiseCode) {
+    // TODO: Detect if we have inconsistency in initialisation of transient collections
+    // occuring across multiple constructors
+    transientInitCodes.put(fieldName, initialiseCode);
+  }
+
+  public Map<String, List<DeferredCode>> transientInit() {
+    return transientInitCodes;
   }
 
   private static final class MethodReader extends MethodVisitor {
