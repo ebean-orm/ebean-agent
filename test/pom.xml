@@ -37,6 +37,13 @@
 
     <dependency>
       <groupId>io.ebean</groupId>
+      <artifactId>ebean-annotation</artifactId>
+      <version>8.3</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
       <version>${ebean.version}</version>
       <scope>provided</scope>

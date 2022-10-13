@@ -35,12 +35,12 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
 
   private int indexPosition;
   private int sortOrder;
+  private boolean notNull;
 
   /**
    * Construct based on field name and desc from reading byte code.
    * <p>
    * Used for reading local fields (not inherited) via visiting the class bytes.
-   * </p>
    */
   public FieldMeta(ClassMeta classMeta, String name, String desc, String fieldClass) {
     this.classMeta = classMeta;
@@ -113,11 +113,22 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
     return primitiveType;
   }
 
+  public void setNotNull() {
+    this.notNull = true;
+  }
+
+  public boolean isNullable() {
+    return !notNull;
+  }
+
   /**
    * Add a field annotation.
    */
   void addAnnotationDesc(String desc) {
     annotations.add(desc);
+    if (!notNull && desc.equals(L_EBEAN_NOTNULL)) {
+      notNull = true;
+    }
   }
 
   /**
@@ -201,7 +212,11 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
    * This means these properties are lazy initialised on demand.
    */
   public boolean isInitMany() {
-    return isToMany() || isDbArray();
+    return isToMany() || isInitDbArray();
+  }
+
+  private boolean isInitDbArray() {
+    return isDbArray() && (notNull || !classMeta.isAllowNullableDbArray());
   }
 
   private boolean isDbArray() {

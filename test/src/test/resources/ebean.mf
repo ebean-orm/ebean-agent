@@ -6,4 +6,5 @@ debug: 3
 synthetic: false
 transient-init: true
 transient-init-error: false
+allow-nullable-dbarray: true
 

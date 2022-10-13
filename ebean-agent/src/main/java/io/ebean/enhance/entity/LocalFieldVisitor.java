@@ -38,11 +38,20 @@ public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants 
     if (fv != null) {
       if (!visible && desc.equals(L_JETBRAINS_NOTNULL)) {
         fv.visitAnnotation(L_EBEAN_NOTNULL, true);
+        fieldMeta.setNotNull();
+      }
+      if (fieldMeta.isNullable() && annotationWithNullable(desc)) {
+        // looking for nullable=false attribute on Column or DbArray
+        return new FieldAnnotationVisitor(fieldMeta, fv.visitAnnotation(desc, visible));
       }
       return fv.visitAnnotation(desc, visible);
     } else {
       return null;
     }
+  }
+
+  private boolean annotationWithNullable(String desc) {
+    return L_COLUMN_ANNOTATION.equals(desc) || L_DBARRAY.equals(desc);
   }
 
   @Override
