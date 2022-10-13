@@ -391,6 +391,13 @@ public class ClassMeta {
   }
 
   /**
+   * If field access use public rather than protected plus usually with synthetic.
+   */
+  public int accAccessor() {
+    return enhanceContext.isEnableEntityFieldAccess() ? accPublic() : accProtected();
+  }
+
+  /**
    * ACC_PRIVATE with maybe ACC_SYNTHETIC.
    */
   public int accPrivate() {

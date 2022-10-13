@@ -377,7 +377,7 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
    * Add a get field method with interception.
    */
   private void addGet(ClassVisitor cw, ClassMeta classMeta) {
-    MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), getMethodName, getMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(classMeta.accAccessor(), getMethodName, getMethodDesc, null, null);
     mv.visitCode();
 
     if (isInitMany()) {
@@ -537,7 +537,7 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
 
     // ALOAD or ILOAD etc
     int iLoadOpcode = asmType.getOpcode(Opcodes.ILOAD);
-    MethodVisitor mv = cw.visitMethod(classMeta.accProtected(), setMethodName, setMethodDesc, null, null);
+    MethodVisitor mv = cw.visitMethod(classMeta.accAccessor(), setMethodName, setMethodDesc, null, null);
     mv.visitCode();
 
     Label l0 = new Label();
