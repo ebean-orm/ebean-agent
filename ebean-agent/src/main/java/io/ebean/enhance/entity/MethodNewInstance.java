@@ -12,7 +12,7 @@ import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
 /**
  * Adds the _ebean_newInstance() method.
  */
-class MethodNewInstance {
+final class MethodNewInstance {
 
   /**
    * Add the _ebean_newInstance() method.

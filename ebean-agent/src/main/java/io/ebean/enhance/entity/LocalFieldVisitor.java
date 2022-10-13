@@ -10,7 +10,7 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 /**
  * Used to collect information about a field (specifically from field annotations).
  */
-public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants {
+public final class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants {
 
   private final FieldMeta fieldMeta;
 
@@ -28,8 +28,8 @@ public class LocalFieldVisitor extends FieldVisitor implements EnhanceConstants 
   /**
    * Return the field name.
    */
-  public String getName() {
-    return fieldMeta.getFieldName();
+  public String name() {
+    return fieldMeta.name();
   }
 
   @Override

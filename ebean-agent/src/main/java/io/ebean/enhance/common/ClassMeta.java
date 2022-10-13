@@ -507,7 +507,7 @@ public class ClassMeta {
         log("... ignore field " + name);
       }
     } else {
-      fields.put(localField.getName(), fieldMeta);
+      fields.put(localField.name(), fieldMeta);
     }
     return localField;
   }

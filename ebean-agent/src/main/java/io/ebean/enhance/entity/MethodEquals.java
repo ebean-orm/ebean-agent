@@ -16,7 +16,7 @@ import io.ebean.enhance.common.VisitUtil;
  * having a single ID property and no existing equals() or hashCode() methods.
  * </p>
  */
-class MethodEquals implements Opcodes, EnhanceConstants {
+final class MethodEquals implements Opcodes, EnhanceConstants {
 
   private static final String _EBEAN_GET_IDENTITY = "_ebean_getIdentity";
 
@@ -39,7 +39,7 @@ class MethodEquals implements Opcodes, EnhanceConstants {
     } else {
       if (meta.isLog(3)) {
         meta.log("adding equals() hashCode() and _ebean_getIdentity() with Id field "
-          + idFieldMeta.getName() + " index:" + idFieldIndex + " primitive:" + idFieldMeta.isPrimitiveType());
+          + idFieldMeta.name() + " index:" + idFieldIndex + " primitive:" + idFieldMeta.isPrimitiveType());
       }
       if (idFieldMeta.isPrimitiveType()) {
         addGetIdentityPrimitive(cv, meta, idFieldMeta);

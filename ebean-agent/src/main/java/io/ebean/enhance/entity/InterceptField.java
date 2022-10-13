@@ -11,7 +11,7 @@ import io.ebean.enhance.common.EnhanceConstants;
 /**
  * Generate the _ebean_getIntercept() method and field.
  */
-class InterceptField implements Opcodes, EnhanceConstants {
+final class InterceptField implements Opcodes, EnhanceConstants {
 
   /**
    * Add the _ebean_intercept field.

@@ -99,10 +99,7 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
     return fieldName;
   }
 
-  /**
-   * Return the field name.
-   */
-  public String getFieldName() {
+  public String name() {
     return fieldName;
   }
 
@@ -129,13 +126,6 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
     if (!notNull && desc.equals(L_EBEAN_NOTNULL)) {
       notNull = true;
     }
-  }
-
-  /**
-   * Return the field name.
-   */
-  public String getName() {
-    return fieldName;
   }
 
   private boolean isInterceptGet() {
@@ -369,7 +359,7 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
     addSetNoIntercept(cv, classMeta);
   }
 
-  private String getInitCollectionClass() {
+  private String initCollectionClass() {
     final boolean dbArray = isDbArray();
     if (fieldDesc.equals("Ljava/util/List;")) {
       return dbArray ? ARRAYLIST : BEANLIST;
@@ -439,7 +429,7 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
 
   private void addGetForMany(MethodVisitor mv) {
     String className = classMeta.className();
-    String ebCollection = getInitCollectionClass();
+    String ebCollection = initCollectionClass();
 
     Label l0 = new Label();
     mv.visitLabel(l0);

@@ -12,7 +12,7 @@ import static io.ebean.enhance.common.EnhanceConstants.*;
 /**
  * Add support for the InterceptReadOnly implementation of EntityBeanIntercept.
  */
-class MethodNewInstanceReadOnly {
+final class MethodNewInstanceReadOnly {
 
   static void interceptAddReadOnly(ClassVisitor cv, ClassMeta meta) {
     if (!meta.interceptAddReadOnly()) {

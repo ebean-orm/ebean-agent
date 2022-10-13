@@ -2,7 +2,7 @@ package io.ebean.enhance.entity;
 
 import io.ebean.enhance.common.AnnotationInfo;
 
-public class MethodMeta {
+public final class MethodMeta {
 
   private final String name;
   private final String desc;

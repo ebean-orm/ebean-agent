@@ -21,7 +21,7 @@ import static io.ebean.enhance.common.EnhanceConstants.NOARG_VOID;
  * This includes the createCopy, getField and setField methods etc.
  * </p>
  */
-class IndexFieldWeaver implements Opcodes {
+final class IndexFieldWeaver implements Opcodes {
 
   private static final String _EBEAN_PROPS = "_ebean_props";
 
@@ -61,7 +61,7 @@ class IndexFieldWeaver implements Opcodes {
         FieldMeta field = fields.get(i);
         mv.visitInsn(DUP);
         VisitUtil.visitIntInsn(mv, i);
-        mv.visitLdcInsn(field.getName());
+        mv.visitLdcInsn(field.name());
         mv.visitInsn(AASTORE);
       }
     }

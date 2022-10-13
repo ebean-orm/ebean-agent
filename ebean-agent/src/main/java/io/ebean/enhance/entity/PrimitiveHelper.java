@@ -5,7 +5,7 @@ import io.ebean.enhance.asm.Type;
 /**
  * Maps primitive types to their Object types.
  */
-class PrimitiveHelper {
+final class PrimitiveHelper {
 
   private static final Type INTEGER_OBJECT = Type.getType(Integer.class);
   private static final Type SHORT_OBJECT = Type.getType(Short.class);

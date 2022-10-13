@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Generate the _ebean_setEmbeddedLoaded() method.
  */
-class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
+final class MethodSetEmbeddedLoaded implements Opcodes, EnhanceConstants {
 
   /**
    * Generate the _ebean_setEmbeddedLoaded() method.

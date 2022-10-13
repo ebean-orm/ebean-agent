@@ -21,7 +21,7 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
  * This is NOT used for subclass generation.
  * </p>
  */
-public class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants {
+public final class ClassAdapterEntity extends ClassVisitor implements EnhanceConstants {
 
   private final EnhanceContext enhanceContext;
   private final ClassLoader classLoader;

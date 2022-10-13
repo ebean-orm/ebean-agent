@@ -13,15 +13,13 @@ import io.ebean.enhance.common.EnhanceConstants;
 import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
 /**
- * Modify the constructor to additionally initialise the entityBeanIntercept
- * field.
- *
+ * Modify the constructor to additionally initialise the entityBeanIntercept field.
  * <pre class="code">
  * // added into constructor
  * _ebean_intercept = new EntityBeanIntercept(this);
  * </pre>
  */
-class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opcodes {
+final class ConstructorAdapter extends MethodVisitor implements EnhanceConstants, Opcodes {
 
   private final ClassMeta meta;
   private final String className;

@@ -12,7 +12,7 @@ import java.util.List;
 import static io.ebean.enhance.asm.Opcodes.*;
 import static io.ebean.enhance.common.EnhanceConstants.C_TOSTRINGBUILDER;
 
-class MethodToString {
+final class MethodToString {
 
   static void addMethod(ClassVisitor cv, ClassMeta classMeta) {
     if (!classMeta.context().isEnhancedToString()) {
@@ -69,7 +69,7 @@ class MethodToString {
       mv.visitLabel(label1);
       mv.visitLineNumber(3, label1);
       mv.visitVarInsn(ALOAD, 1);
-      mv.visitLdcInsn(fieldMeta.getName());
+      mv.visitLdcInsn(fieldMeta.name());
       mv.visitVarInsn(ALOAD, 0);
       fieldMeta.appendSwitchGet(mv, meta, false);
       mv.visitMethodInsn(INVOKEVIRTUAL, C_TOSTRINGBUILDER, "add", "(Ljava/lang/String;Ljava/lang/Object;)V", false);

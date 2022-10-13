@@ -16,7 +16,7 @@ import java.util.List;
  * to make the enhancement more robust.
  * </p>
  */
-class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
+final class MethodIsEmbeddedNewOrDirty implements Opcodes, EnhanceConstants {
 
   /**
    * Generate the _ebean_isEmbeddedNewOrDirty() method.

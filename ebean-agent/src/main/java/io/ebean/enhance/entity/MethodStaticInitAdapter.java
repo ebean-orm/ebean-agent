@@ -5,7 +5,7 @@ import io.ebean.enhance.common.ClassMeta;
 
 import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
-class MethodStaticInitAdapter extends MethodVisitor {
+final class MethodStaticInitAdapter extends MethodVisitor {
 
   private final ClassMeta classMeta;
 
