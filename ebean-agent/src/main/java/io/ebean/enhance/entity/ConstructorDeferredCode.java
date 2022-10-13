@@ -55,6 +55,7 @@ final class ConstructorDeferredCode implements Opcodes {
   private final MethodVisitor mv;
   private final List<DeferredCode> codes = new ArrayList<>();
   private State state = State.UNSET;
+  private String stateInitialiseType;
 
   ConstructorDeferredCode(ClassMeta meta, MethodVisitor mv) {
     this.meta = meta;
@@ -84,7 +85,7 @@ final class ConstructorDeferredCode implements Opcodes {
    * and was proceeded by a deferred ALOAD (for NEW) or Collection init (for CHECKCAST).
    */
   boolean deferVisitTypeInsn(int opcode, String type) {
-    if (opcode == NEW && stateAload() && isCollection(type)) {
+    if (opcode == NEW && stateAload()) { // && isCollection(type)) {
       codes.add(new NewCollection(type));
       state = State.NEW_COLLECTION;
       return true;
@@ -122,43 +123,45 @@ final class ConstructorDeferredCode implements Opcodes {
    * and was proceeded by a deferred DUP.
    */
   boolean deferVisitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-    if (opcode == INVOKESPECIAL && stateDup() && isCollectionInit(owner, name, desc)) {
-      codes.add(new CollectionInit(opcode, owner, name, desc, itf));
+    if (opcode == INVOKESPECIAL && stateDup() && isNoArgInit(name, desc)) {
+      codes.add(new NoArgInit(opcode, owner, name, desc, itf));
       state = State.INVOKE_SPECIAL;
+      stateInitialiseType = owner;
       return true;
     }
     flush();
     return false;
   }
 
-  /**
-   * Return true if this is an init of a ArrayList, HashSet, LinkedHashSet.
-   */
-  private boolean isCollectionInit(String owner, String name, String desc) {
-    return name.equals(INIT) && desc.equals(NOARG_VOID) && isCollection(owner);
+  private boolean isNoArgInit(String name, String desc) {
+    return name.equals(INIT) && desc.equals(NOARG_VOID);
   }
 
   /**
    * Return true if we have consumed all the deferred code that initialises a persistent collection.
    */
   boolean consumeVisitFieldInsn(int opcode, String owner, String name, String desc) {
-    if (opcode == PUTFIELD && stateConsumeDeferred()) {
-      if (meta.isConsumeInitMany(name)) {
-        if (meta.isLog(3)) {
-          meta.log("... consumed init of many: " + name);
+    if (opcode == PUTFIELD) {
+      if (stateConsumeDeferred()) {
+        if (meta.isConsumeInitMany(name) && isConsumeManyType()) {
+          if (meta.isLog(3)) {
+            meta.log("... consumed init of many: " + name);
+          }
+          state = State.UNSET;
+          codes.clear();
+          return true;
+        } else if (meta.isInitTransient(name)) {
+          // keep the initialisation code for transient to 'replay'
+          // it when adding a default constructor if needed
+          if (meta.isLog(3)) {
+            meta.log("... init transient: " + name + " type: " + stateInitialiseType);
+          }
+          meta.addTransientInit(new CapturedInitCode(codes, opcode, owner, name, desc, stateInitialiseType));
+        } else if (meta.isTransient(name)) {
+          meta.addUnsupportedTransientInit(name);
         }
-        state = State.UNSET;
-        codes.clear();
-        return true;
-      } else if (meta.isInitTransientMany(name)) {
-        // keep the initialisation code for transient collection to
-        // 'replay' it when adding a default constructor if needed
-        if (meta.isLog(3)) {
-          meta.log("... init transient many: " + name);
-        }
-        List<DeferredCode> copy = new ArrayList<>(codes);
-        copy.add(new PutField(opcode, owner, name, desc));
-        meta.addTransientInit(name, copy);
+      } else if (meta.isTransient(name)) {
+        meta.addUnsupportedTransientInit(name);
       }
     }
     flush();
@@ -220,31 +223,14 @@ final class ConstructorDeferredCode implements Opcodes {
   }
 
   /**
-   * Return true if this is a collection type used to initialise persistent collections.
+   * Return true if the type being initialised is valid for auto initialisation of ToMany or DbArray.
    */
-  private boolean isCollection(String type) {
-    return ("java/util/ArrayList".equals(type)
-      || "java/util/LinkedHashSet".equals(type)
-      // || "java/util/TreeSet".equals(type)
-      || "java/util/HashSet".equals(type)
-      || "java/util/LinkedHashMap".equals(type)
-      // || "java/util/TreeMap".equals(type)
-      || "java/util/HashMap".equals(type));
-  }
-
-  private static class PutField implements DeferredCode {
-    final int opcode;
-    final String owner,name, desc;
-    public PutField(int opcode, String owner, String name, String desc) {
-      this.opcode = opcode;
-      this.owner = owner;
-      this.name = name;
-      this.desc = desc;
-    }
-    @Override
-    public void write(MethodVisitor mv) {
-      mv.visitFieldInsn(opcode, owner, name, desc);
-    }
+  private boolean isConsumeManyType() {
+    return ("java/util/ArrayList".equals(stateInitialiseType)
+      || "java/util/LinkedHashSet".equals(stateInitialiseType)
+      || "java/util/HashSet".equals(stateInitialiseType));
+      //|| "java/util/LinkedHashMap".equals(stateInitialiseType)
+      //|| "java/util/HashMap".equals(stateInitialiseType));
   }
 
   private static class ALoad implements DeferredCode {
@@ -342,7 +328,7 @@ final class ConstructorDeferredCode implements Opcodes {
   /**
    * Typically INVOKESPECIAL java/util/ArrayList.<init> ()V
    */
-  private static class CollectionInit implements DeferredCode {
+  private static class NoArgInit implements DeferredCode {
 
     final int opcode;
     final String owner;
@@ -350,7 +336,7 @@ final class ConstructorDeferredCode implements Opcodes {
     final String desc;
     final boolean itf;
 
-    CollectionInit(int opcode, String owner, String name, String desc, boolean itf) {
+    NoArgInit(int opcode, String owner, String name, String desc, boolean itf) {
       this.opcode = opcode;
       this.owner = owner;
       this.name = name;

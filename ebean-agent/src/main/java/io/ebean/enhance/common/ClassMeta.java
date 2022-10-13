@@ -43,7 +43,15 @@ public class ClassMeta {
   private boolean hasDefaultConstructor;
   private boolean hasStaticInit;
 
-  private final Map<String,List<DeferredCode>> transientInitCodes = new LinkedHashMap<>();
+  /**
+   * If enhancement is adding a default constructor - only single type is supported initialising transient fields.
+   */
+  private final Set<String> unsupportedTransientMultipleTypes = new LinkedHashSet<>();
+  /**
+   * If enhancement is adding a default constructor - only default constructors are supported initialising transient fields.
+   */
+  private final Set<String> unsupportedTransientInitialisation = new LinkedHashSet<>();
+  private final Map<String, CapturedInitCode> transientInitCode = new LinkedHashMap<>();
   private final LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<>();
   private final HashSet<String> classAnnotation = new HashSet<>();
   private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
@@ -188,12 +196,16 @@ public class ClassMeta {
     return (f != null) && f.isPersistent();
   }
 
-  public boolean isInitTransientMany(String fieldName) {
-    if (!enhanceContext.isTransientInitMany()) {
-      return false;
-    }
+  public boolean isTransient(String fieldName) {
     FieldMeta f = field(fieldName);
     return (f != null && f.isTransient());
+  }
+
+  public boolean isInitTransient(String fieldName) {
+    if (!enhanceContext.isTransientInit()) {
+      return false;
+    }
+    return isTransient(fieldName);
   }
 
   /**
@@ -412,14 +424,36 @@ public class ClassMeta {
     return recordType;
   }
 
-  public void addTransientInit(String fieldName, List<DeferredCode> initialiseCode) {
-    // TODO: Detect if we have inconsistency in initialisation of transient collections
-    // occuring across multiple constructors
-    transientInitCodes.put(fieldName, initialiseCode);
+  public void addTransientInit(CapturedInitCode deferredInitCode) {
+    CapturedInitCode old = transientInitCode.put(deferredInitCode.name(), deferredInitCode);
+    if (old != null && !old.type().equals(deferredInitCode.type())) {
+      transientInitCode.put(deferredInitCode.name(), old);
+      unsupportedTransientMultipleTypes.add("field: " + old.name() + " types: " + old.type() + " " + deferredInitCode.type());
+    }
   }
 
-  public Map<String, List<DeferredCode>> transientInit() {
-    return transientInitCodes;
+  public Collection<CapturedInitCode> transientInit() {
+    return transientInitCode.values();
+  }
+
+  public void addUnsupportedTransientInit(String name) {
+    unsupportedTransientInitialisation.add(name);
+  }
+
+  public boolean hasTransientFieldErrors() {
+    return !unsupportedTransientMultipleTypes.isEmpty() || !unsupportedTransientInitialisation.isEmpty();
+  }
+
+  public String transientFieldErrorMessage() {
+    String msg = "ERROR: Entity class without default constructor has unsupported initialisation of transient fields. Entity class: " + className;
+    if (!unsupportedTransientMultipleTypes.isEmpty()) {
+      msg += " - fields initialised in constructor with 2 different types - " + unsupportedTransientMultipleTypes;
+    }
+    if (!unsupportedTransientInitialisation.isEmpty()) {
+      msg += " - Unsupported initialisation of transient fields - " + unsupportedTransientInitialisation;
+    }
+    msg += " Refer: https://ebean.io/docs/trouble-shooting#transient-initialisation";
+    return msg;
   }
 
   private static final class MethodReader extends MethodVisitor {

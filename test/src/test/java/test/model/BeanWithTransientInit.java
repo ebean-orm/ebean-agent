@@ -2,6 +2,8 @@ package test.model;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Bean with Transient collections and multiple constructors.
@@ -21,6 +23,18 @@ public class BeanWithTransientInit {
   }
   @Transient
   private final Set<String> coll3;
+
+  /**
+   * Check transient initialisation of non persistence collection type.
+   */
+  @Transient
+  private final Set<String> coll4 = new TreeSet<>();
+
+  /**
+   * Check transient initialisation of non collection type.
+   */
+  @Transient
+  private final Lock lock = new ReentrantLock();
 
   public BeanWithTransientInit(UUID id) {
     this.coll3 = new HashSet<>();
@@ -60,4 +74,11 @@ public class BeanWithTransientInit {
     return coll3;
   }
 
+  public Set<String> transientColl4() {
+    return coll4;
+  }
+
+  public Lock transientLock() {
+    return lock;
+  }
 }

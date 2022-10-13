@@ -4,5 +4,6 @@ querybean-packages: test.model, foo
 query-labels: true
 debug: 3
 synthetic: false
-transient-init-many: true
+transient-init: true
+transient-init-error: false
 

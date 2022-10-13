@@ -29,7 +29,8 @@ public final class AgentManifest {
   private final DetectQueryBean detectQueryBean;
   private int debugLevel = -1;
   private boolean transientInternalFields;
-  private boolean transientInitMany;
+  private boolean transientInit;
+  private boolean transientInitThrowError;
   private boolean checkNullManyFields = true;
   private boolean enableProfileLocation = true;
   private boolean enableEntityFieldAccess;
@@ -131,8 +132,18 @@ public final class AgentManifest {
     return transactionalPackages.contains("none") && transactionalPackages.size() == 1;
   }
 
-  public boolean isTransientInitMany() {
-    return transientInitMany;
+  /**
+   * Return true if enhancement should add initialisation of transient fields when adding a default constructor.
+   */
+  public boolean isTransientInit() {
+    return transientInit;
+  }
+
+  /**
+   * Return true if an error should be thrown when adding a default constructor and transient fields can't be initialised.
+   */
+  public boolean isTransientInitThrowError() {
+    return transientInitThrowError;
   }
 
   /**
@@ -276,7 +287,8 @@ public final class AgentManifest {
   }
 
   private void readOptions(Attributes attributes) {
-    transientInitMany = bool("transient-init-many", transientInitMany, attributes);
+    transientInit = bool("transient-init", transientInit, attributes);
+    transientInitThrowError = bool("transient-init-error", transientInit, attributes);
     transientInternalFields = bool("transient-internal-fields", transientInternalFields, attributes);
     checkNullManyFields = bool("check-null-many-fields", checkNullManyFields, attributes);
   }

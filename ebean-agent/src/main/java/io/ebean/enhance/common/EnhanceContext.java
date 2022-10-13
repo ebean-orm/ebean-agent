@@ -310,8 +310,12 @@ public final class EnhanceContext {
     return logLevel;
   }
 
-  public boolean isTransientInitMany() {
-    return manifest.isTransientInitMany();
+  public boolean isTransientInit() {
+    return manifest.isTransientInit();
+  }
+
+  public boolean isTransientInitThrowError() {
+    return manifest.isTransientInitThrowError();
   }
 
   /**
