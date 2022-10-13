@@ -141,21 +141,27 @@ final class ConstructorDeferredCode implements Opcodes {
    * Return true if we have consumed all the deferred code that initialises a persistent collection.
    */
   boolean consumeVisitFieldInsn(int opcode, String owner, String name, String desc) {
-    if (opcode == PUTFIELD && stateConsumeDeferred()) {
-      if (meta.isConsumeInitMany(name) && isConsumeManyType()) {
-        if (meta.isLog(3)) {
-          meta.log("... consumed init of many: " + name);
+    if (opcode == PUTFIELD) {
+      if (stateConsumeDeferred()) {
+        if (meta.isConsumeInitMany(name) && isConsumeManyType()) {
+          if (meta.isLog(3)) {
+            meta.log("... consumed init of many: " + name);
+          }
+          state = State.UNSET;
+          codes.clear();
+          return true;
+        } else if (meta.isInitTransient(name)) {
+          // keep the initialisation code for transient to 'replay'
+          // it when adding a default constructor if needed
+          if (meta.isLog(3)) {
+            meta.log("... init transient: " + name + " type: " + stateInitialiseType);
+          }
+          meta.addTransientInit(new CapturedInitCode(codes, opcode, owner, name, desc, stateInitialiseType));
+        } else if (meta.isTransient(name)) {
+          meta.addUnsupportedTransientInit(name);
         }
-        state = State.UNSET;
-        codes.clear();
-        return true;
-      } else if (meta.isInitTransient(name)) {
-        // keep the initialisation code for transient to 'replay'
-        // it when adding a default constructor if needed
-        if (meta.isLog(3)) {
-          meta.log("... init transient: " + name + " type: " + stateInitialiseType);
-        }
-        meta.addTransientInit(new CapturedInitCode(codes, opcode, owner, name, desc, stateInitialiseType));
+      } else if (meta.isTransient(name)) {
+        meta.addUnsupportedTransientInit(name);
       }
     }
     flush();

@@ -314,6 +314,10 @@ public final class EnhanceContext {
     return manifest.isTransientInit();
   }
 
+  public boolean isTransientInitThrowError() {
+    return manifest.isTransientInitThrowError();
+  }
+
   /**
    * Return true if internal ebean fields in entity classes should be transient.
    */

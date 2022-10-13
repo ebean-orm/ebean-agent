@@ -21,6 +21,14 @@ class DefaultConstructor {
     if (classMeta.isLog(4)) {
       classMeta.log("... adding default constructor, super class: " + classMeta.superClassName());
     }
+    if (classMeta.hasTransientFieldErrors()) {
+      if (classMeta.context().isTransientInitThrowError()) {
+        throw new RuntimeException(classMeta.transientFieldErrorMessage());
+      } else {
+        // the default constructor being added will leave some transient fields uninitialised (null, 0, false etc)
+        System.err.println(classMeta.transientFieldErrorMessage());
+      }
+    }
 
     MethodVisitor underlyingMV = cw.visitMethod(classMeta.accPublic(), INIT, NOARG_VOID, null, null);
 

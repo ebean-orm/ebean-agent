@@ -42,9 +42,6 @@ class BeanWithTransientInitTest {
     bean1 = DB.find(BeanWithTransientInit.class, id1);
     bean2 = DB.find(BeanWithTransientInit.class, id2);
 
-    // Fetching the bean again, does not trigger the initializers
-    // I also don't think, that this can be handeld by the enhancer
-    // Possible solution: Print warning (or fail) when enhancing.
 
     assertThat(bean1.getName()).isEqualTo("Roland");
     assertThat(bean1.transientColl1()).isInstanceOf(HashSet.class);
