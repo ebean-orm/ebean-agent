@@ -81,6 +81,10 @@ public class ClassMeta {
     return annotationInfo;
   }
 
+  public boolean isAllowNullableDbArray() {
+    return enhanceContext.isAllowNullableDbArray();
+  }
+
   /**
    * Return the transactional annotation information for a matching interface method.
    */

@@ -335,6 +335,10 @@ public final class EnhanceContext {
     return manifest.isCheckNullManyFields();
   }
 
+  public boolean isAllowNullableDbArray() {
+    return manifest.isAllowNullableDbArray();
+  }
+
   /**
    * Return true if transform should throw exception rather than log and return null.
    */

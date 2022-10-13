@@ -2,7 +2,9 @@ package test.model;
 
 
 import io.ebean.annotation.DbArray;
+import io.ebean.annotation.NotNull;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.*;
@@ -26,7 +28,7 @@ public class Customer extends BaseEntity {
   @DbArray
   Set<String> codes2 = new HashSet<>();
 
-  @DbArray
+  @DbArray(nullable = false)
   List<String> codesList2 = new ArrayList<>();
 
   @DbArray
@@ -34,6 +36,17 @@ public class Customer extends BaseEntity {
 
   @DbArray
   Set<String> codesTree = new TreeSet<>();
+
+  @DbArray(nullable = false)
+  List<String> nonNullArrayOne;
+
+  @NotNull
+  @DbArray
+  Set<String> nonNullArrayTwo;
+
+  @Column(nullable = false)
+  @DbArray
+  List<String> nonNullArrayThree;
 
   public Customer() {
     codesList3.add("foo");
@@ -90,5 +103,17 @@ public class Customer extends BaseEntity {
 
   public Set<String> getCodesTree() {
     return codesTree;
+  }
+
+  public List<String> nonNullArrayOne() {
+    return nonNullArrayOne;
+  }
+
+  public Set<String> nonNullArrayTwo() {
+    return nonNullArrayTwo;
+  }
+
+  public List<String> nonNullArrayThree() {
+    return nonNullArrayThree;
   }
 }

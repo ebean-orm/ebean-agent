@@ -53,4 +53,6 @@ public interface EnhanceConstants {
   String LINKEDHASHMAP = "java/util/LinkedHashMap";
   String L_JETBRAINS_NOTNULL = "Lorg/jetbrains/annotations/NotNull;";
   String L_EBEAN_NOTNULL = "Lio/ebean/annotation/NotNull;";
+  String L_COLUMN_ANNOTATION = "Ljavax/persistence/Column;";
+  String L_DBARRAY = "Lio/ebean/annotation/DbArray;";
 }

@@ -28,6 +28,7 @@ public final class AgentManifest {
   private final Set<String> querybeanPackages = new HashSet<>();
   private final DetectQueryBean detectQueryBean;
   private int debugLevel = -1;
+  private boolean allowNullableDbArray;
   private boolean transientInternalFields;
   private boolean transientInit;
   private boolean transientInitThrowError;
@@ -158,6 +159,10 @@ public final class AgentManifest {
    */
   public boolean isCheckNullManyFields() {
     return checkNullManyFields;
+  }
+
+  public boolean isAllowNullableDbArray() {
+    return allowNullableDbArray;
   }
 
   public int accPublic() {
@@ -291,6 +296,7 @@ public final class AgentManifest {
     transientInitThrowError = bool("transient-init-error", transientInit, attributes);
     transientInternalFields = bool("transient-internal-fields", transientInternalFields, attributes);
     checkNullManyFields = bool("check-null-many-fields", checkNullManyFields, attributes);
+    allowNullableDbArray = bool("allow-nullable-dbarray", allowNullableDbArray, attributes);
   }
 
   private boolean bool(String key, boolean defaultValue, Attributes attributes) {

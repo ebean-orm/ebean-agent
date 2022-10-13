@@ -23,17 +23,20 @@ public class CreateNullListTest extends BaseTest {
 
     assertTrue(intercept.isNew());
 
-    Set<String> codes = customer.getCodes();
-    assertNotNull(codes);
-    assertThat(codes).isInstanceOf(LinkedHashSet.class);
+    assertNotNull(customer.nonNullArrayOne());
+    assertNotNull(customer.nonNullArrayTwo());
+    assertNotNull(customer.nonNullArrayThree());
+    assertThat(customer.nonNullArrayOne()).isInstanceOf(ArrayList.class);
+    assertThat(customer.nonNullArrayTwo()).isInstanceOf(LinkedHashSet.class);
+    assertThat(customer.nonNullArrayThree()).isInstanceOf(ArrayList.class);
 
-    List<String> codesList = customer.getCodesList();
-    assertNotNull(codesList);
-    assertThat(codesList).isInstanceOf(ArrayList.class);
+    assertNull(customer.getCodes());
+
+    assertNull(customer.getCodesList());
 
     Set<String> codes2 = customer.getCodes2();
-    assertNotNull(codes);
-    assertThat(codes2).isInstanceOf(LinkedHashSet.class);
+    assertNotNull(codes2);
+    assertThat(codes2).isInstanceOf(HashSet.class);
 
     List<String> codesList2 = customer.getCodesList2();
     assertNotNull(codesList2);
@@ -46,15 +49,12 @@ public class CreateNullListTest extends BaseTest {
     // contacts created automatically when "checkNullManyFields" is set
     List<Contact> contacts = customer.getContacts();
     assertNotNull(contacts);
-
     // Not invoking lazy loading btw
     assertTrue(contacts.isEmpty());
 
     contacts.add(new Contact("1"));
-    assertFalse(contacts.isEmpty());
-
+    assertThat(contacts).isNotEmpty();
     assertTrue(contacts instanceof BeanList<?>);
-
   }
 
 }
