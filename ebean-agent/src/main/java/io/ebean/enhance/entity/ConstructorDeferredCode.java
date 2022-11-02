@@ -44,7 +44,8 @@ final class ConstructorDeferredCode implements Opcodes {
     DUP,
     INVOKE_SPECIAL,
     KT_CHECKCAST,   // optional kotlin state
-    KT_LABEL        // optional kotlin state
+    KT_LABEL,        // optional kotlin state
+    KT_EMPTYLIST
   }
 
   private static final ALoad ALOAD_INSTRUCTION = new ALoad();
@@ -129,12 +130,24 @@ final class ConstructorDeferredCode implements Opcodes {
       stateInitialiseType = owner;
       return true;
     }
+    if (opcode == INVOKESTATIC && stateAload() && kotlinEmptyList(owner, name, desc)) {
+      codes.add(new NoArgInit(opcode, owner, name, desc, itf));
+      state = State.KT_EMPTYLIST;
+      stateInitialiseType = "java/util/ArrayList";
+      return true;
+    }
     flush();
     return false;
   }
 
   private boolean isNoArgInit(String name, String desc) {
     return name.equals(INIT) && desc.equals(NOARG_VOID);
+  }
+
+  private boolean kotlinEmptyList(String owner, String name, String desc) {
+    return owner.equals("kotlin/collections/CollectionsKt")
+      && name.equals("emptyList")
+      && desc.equals("()Ljava/util/List;");
   }
 
   /**
@@ -219,7 +232,7 @@ final class ConstructorDeferredCode implements Opcodes {
   }
 
   private boolean stateConsumeDeferred() {
-    return state == State.INVOKE_SPECIAL || state == State.KT_CHECKCAST;
+    return state == State.INVOKE_SPECIAL || state == State.KT_CHECKCAST || state == State.KT_EMPTYLIST;
   }
 
   /**
