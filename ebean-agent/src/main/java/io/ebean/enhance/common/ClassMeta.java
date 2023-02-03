@@ -311,7 +311,7 @@ public class ClassMeta {
    * Return true if this is a mapped superclass.
    */
   boolean isMappedSuper() {
-    return classAnnotation.contains(EnhanceConstants.MAPPEDSUPERCLASS_ANNOTATION);
+    return classAnnotation.contains(EnhanceConstants.JX_MAPPEDSUPERCLASS_ANNOTATION) || classAnnotation.contains(EnhanceConstants.JK_MAPPEDSUPERCLASS_ANNOTATION);
   }
 
   /**

@@ -13,11 +13,19 @@ public interface EnhanceConstants {
   String TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
   String TYPEQUERYBEAN_ANNOTATION = "Lio/ebean/typequery/TypeQueryBean;";
 
-  String JAVAX_PERSISTENCE = "Ljavax/persistence/";
-  String ENTITY_ANNOTATION = "Ljavax/persistence/Entity;";
   String DOCSTORE_ANNOTATION = "Lio/ebean/annotation/DocStore;";
-  String EMBEDDABLE_ANNOTATION = "Ljavax/persistence/Embeddable;";
-  String MAPPEDSUPERCLASS_ANNOTATION = "Ljavax/persistence/MappedSuperclass;";
+
+  String JX_JAVAX_PERSISTENCE = "Ljavax/persistence/";// TODO can revert JX contants to old names for compatibility
+  String JX_ENTITY_ANNOTATION = "Ljavax/persistence/Entity;";
+  String JX_EMBEDDABLE_ANNOTATION = "Ljavax/persistence/Embeddable;";
+  String JX_MAPPEDSUPERCLASS_ANNOTATION = "Ljavax/persistence/MappedSuperclass;";
+  String JX_COLUMN_ANNOTATION = "Ljavax/persistence/Column;";
+
+  String JK_JAVAX_PERSISTENCE = "Ljakarta/persistence/";
+  String JK_ENTITY_ANNOTATION = "Ljakarta/persistence/Entity;";
+  String JK_EMBEDDABLE_ANNOTATION = "Ljakarta/persistence/Embeddable;";
+  String JK_MAPPEDSUPERCLASS_ANNOTATION = "Ljakarta/persistence/MappedSuperclass;";
+  String JK_COLUMN_ANNOTATION = "Ljakarta/persistence/Column;";
 
   String IDENTITY_FIELD = "_ebean_identity";
   String INTERCEPT_FIELD = "_ebean_intercept";
@@ -53,6 +61,5 @@ public interface EnhanceConstants {
   String LINKEDHASHMAP = "java/util/LinkedHashMap";
   String L_JETBRAINS_NOTNULL = "Lorg/jetbrains/annotations/NotNull;";
   String L_EBEAN_NOTNULL = "Lio/ebean/annotation/NotNull;";
-  String L_COLUMN_ANNOTATION = "Ljavax/persistence/Column;";
   String L_DBARRAY = "Lio/ebean/annotation/DbArray;";
 }

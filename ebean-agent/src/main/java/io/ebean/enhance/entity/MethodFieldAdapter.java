@@ -31,7 +31,7 @@ final class MethodFieldAdapter extends MethodVisitor implements Opcodes {
   }
 
   /**
-   * Checks for the javax/persistence/Transient annotation.
+   * Checks for the javax/persistence/Transient or jakarta/persistence/Transient annotation.
    * <p>
    * If this annotation is on the method then field interception is not
    * applied (Aka the method is not transformed).
@@ -39,7 +39,7 @@ final class MethodFieldAdapter extends MethodVisitor implements Opcodes {
    */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-    if (desc.equals("Ljavax/persistence/Transient;")) {
+    if (desc.equals("Ljavax/persistence/Transient;") || desc.equals("Ljakarta/persistence/Transient;")) {
       transientAnnotation = true;
     }
     return super.visitAnnotation(desc, visible);
