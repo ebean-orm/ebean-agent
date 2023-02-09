@@ -5,6 +5,23 @@ package io.ebean.enhance.common;
  */
 public interface EnhanceConstants {
 
+  interface Javax {
+    String PERSISTENCE = "Ljavax/persistence/";
+    String Entity = "Ljavax/persistence/Entity;";
+    String Embeddable = "Ljavax/persistence/Embeddable;";
+    String MappedSuperclass = "Ljavax/persistence/MappedSuperclass;";
+    String Column = "Ljavax/persistence/Column;";
+    String Transient = "Ljavax/persistence/Transient;";
+    String Id = "Ljavax/persistence/Id;";
+    String EmbeddedId = "Ljavax/persistence/EmbeddedId;";
+    String OneToOne = "Ljavax/persistence/OneToOne;";
+    String ManyToOne = "Ljavax/persistence/ManyToOne;";
+    String OneToMany = "Ljavax/persistence/OneToMany;";
+    String ManyToMany = "Ljavax/persistence/ManyToMany;";
+    String Version = "Ljavax/persistence/Version;";
+    String Embedded = "Ljavax/persistence/Embedded;";
+    String OrderColumn = "Ljavax/persistence/OrderColumn;";
+  }
   String INIT = "<init>";
   String CLINIT = "<clinit>";
   String NOARG_VOID = "()V";
@@ -12,12 +29,7 @@ public interface EnhanceConstants {
 
   String TRANSACTIONAL_ANNOTATION = "Lio/ebean/annotation/Transactional;";
   String TYPEQUERYBEAN_ANNOTATION = "Lio/ebean/typequery/TypeQueryBean;";
-
-  String JAVAX_PERSISTENCE = "Ljavax/persistence/";
-  String ENTITY_ANNOTATION = "Ljavax/persistence/Entity;";
   String DOCSTORE_ANNOTATION = "Lio/ebean/annotation/DocStore;";
-  String EMBEDDABLE_ANNOTATION = "Ljavax/persistence/Embeddable;";
-  String MAPPEDSUPERCLASS_ANNOTATION = "Ljavax/persistence/MappedSuperclass;";
 
   String IDENTITY_FIELD = "_ebean_identity";
   String INTERCEPT_FIELD = "_ebean_intercept";
@@ -53,6 +65,5 @@ public interface EnhanceConstants {
   String LINKEDHASHMAP = "java/util/LinkedHashMap";
   String L_JETBRAINS_NOTNULL = "Lorg/jetbrains/annotations/NotNull;";
   String L_EBEAN_NOTNULL = "Lio/ebean/annotation/NotNull;";
-  String L_COLUMN_ANNOTATION = "Ljavax/persistence/Column;";
   String L_DBARRAY = "Lio/ebean/annotation/DbArray;";
 }
