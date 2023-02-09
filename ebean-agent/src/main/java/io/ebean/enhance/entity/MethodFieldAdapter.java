@@ -17,7 +17,7 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
  * Transient annotation then it is not transformed in this way.
  * </p>
  */
-final class MethodFieldAdapter extends MethodVisitor implements Opcodes {
+final class MethodFieldAdapter extends MethodVisitor implements Opcodes, EnhanceConstants {
 
   private final ClassMeta meta;
   private final String className;
@@ -39,7 +39,7 @@ final class MethodFieldAdapter extends MethodVisitor implements Opcodes {
    */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-    if (desc.equals(EnhanceConstants.Javax.Transient)) {
+    if (desc.equals(Javax.Transient) || desc.equals(Jakarta.Transient)) {
       transientAnnotation = true;
     }
     return super.visitAnnotation(desc, visible);

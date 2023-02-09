@@ -14,7 +14,7 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 import static io.ebean.enhance.common.EnhanceConstants.*;
 
 /**
- * Holds the meta data for an entity bean class that is being enhanced.
+ * Holds the meta-data for an entity bean class that is being enhanced.
  */
 public class ClassMeta {
 
@@ -311,7 +311,7 @@ public class ClassMeta {
    * Return true if this is a mapped superclass.
    */
   boolean isMappedSuper() {
-    return classAnnotation.contains(EnhanceConstants.Javax.MappedSuperclass);
+    return classAnnotation.contains(Javax.MappedSuperclass) || classAnnotation.contains(Jakarta.MappedSuperclass);
   }
 
   /**

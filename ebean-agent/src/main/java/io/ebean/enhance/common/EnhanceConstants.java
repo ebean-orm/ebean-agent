@@ -22,6 +22,22 @@ public interface EnhanceConstants {
     String Embedded = "Ljavax/persistence/Embedded;";
     String OrderColumn = "Ljavax/persistence/OrderColumn;";
   }
+  interface Jakarta {
+    String Entity = "Ljakarta/persistence/Entity;";
+    String Embeddable = "Ljakarta/persistence/Embeddable;";
+    String MappedSuperclass = "Ljakarta/persistence/MappedSuperclass;";
+    String Column = "Ljakarta/persistence/Column;";
+    String Transient = "Ljakarta/persistence/Transient;";
+    String Id = "Ljakarta/persistence/Id;";
+    String EmbeddedId = "Ljakarta/persistence/EmbeddedId;";
+    String OneToOne = "Ljakarta/persistence/OneToOne;";
+    String ManyToOne = "Ljakarta/persistence/ManyToOne;";
+    String OneToMany = "Ljakarta/persistence/OneToMany;";
+    String ManyToMany = "Ljakarta/persistence/ManyToMany;";
+    String Version = "Ljakarta/persistence/Version;";
+    String Embedded = "Ljakarta/persistence/Embedded;";
+    String OrderColumn = "Ljakarta/persistence/OrderColumn;";
+  }
   String INIT = "<init>";
   String CLINIT = "<clinit>";
   String NOARG_VOID = "()V";

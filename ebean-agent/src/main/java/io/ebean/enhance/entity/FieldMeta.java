@@ -165,7 +165,7 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
    * Return true if this is a transient field.
    */
   public boolean isTransient() {
-    return annotations.contains(Javax.Transient)
+    return annotations.contains(Javax.Transient) || annotations.contains(Jakarta.Transient)
       || annotations.contains(L_DRAFT);
   }
 
@@ -173,28 +173,27 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
    * Return true if this is an ID field.
    * <p>
    * ID fields are used in generating equals() logic based on identity.
-   * </p>
    */
   public boolean isId() {
-    return (annotations.contains(Javax.Id)
-      || annotations.contains(Javax.EmbeddedId));
+    return annotations.contains(Javax.Id) || annotations.contains(Jakarta.Id)
+      || annotations.contains(Javax.EmbeddedId) || annotations.contains(Jakarta.EmbeddedId);
   }
 
   private boolean isToOne() {
-    return annotations.contains(Javax.OneToOne)
-      || annotations.contains(Javax.ManyToOne);
+    return annotations.contains(Javax.OneToOne) || annotations.contains(Jakarta.OneToOne)
+      || annotations.contains(Javax.ManyToOne) || annotations.contains(Jakarta.ManyToOne);
   }
 
   /**
    * Return true if this is a OneToMany or ManyToMany field.
    */
   public boolean isToMany() {
-    return annotations.contains(Javax.OneToMany)
-      || annotations.contains(Javax.ManyToMany);
+    return annotations.contains(Javax.OneToMany) || annotations.contains(Jakarta.OneToMany)
+      || annotations.contains(Javax.ManyToMany) || annotations.contains(Jakarta.ManyToMany);
   }
 
   private boolean isManyToMany() {
-    return annotations.contains(Javax.ManyToMany);
+    return annotations.contains(Javax.ManyToMany) || annotations.contains(Jakarta.ManyToMany);
   }
 
   /**
@@ -224,18 +223,18 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
   }
 
   private boolean isVersion() {
-    return annotations.contains(Javax.Version);
+    return annotations.contains(Javax.Version) || annotations.contains(Jakarta.Version);
   }
 
   /**
    * Return true if this is an Embedded field.
    */
   boolean isEmbedded() {
-    return annotations.contains(Javax.Embedded);
+    return annotations.contains(Javax.Embedded) || annotations.contains(Jakarta.Embedded);
   }
 
   boolean hasOrderColumn() {
-    return annotations.contains(Javax.OrderColumn);
+    return annotations.contains(Javax.OrderColumn) || annotations.contains(Jakarta.OrderColumn);
   }
 
   /**
