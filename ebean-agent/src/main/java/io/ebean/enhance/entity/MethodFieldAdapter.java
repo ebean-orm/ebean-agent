@@ -5,6 +5,7 @@ import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.common.ClassMeta;
+import io.ebean.enhance.common.EnhanceConstants;
 
 import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
@@ -16,7 +17,7 @@ import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
  * Transient annotation then it is not transformed in this way.
  * </p>
  */
-final class MethodFieldAdapter extends MethodVisitor implements Opcodes {
+final class MethodFieldAdapter extends MethodVisitor implements Opcodes, EnhanceConstants {
 
   private final ClassMeta meta;
   private final String className;
@@ -31,15 +32,14 @@ final class MethodFieldAdapter extends MethodVisitor implements Opcodes {
   }
 
   /**
-   * Checks for the javax/persistence/Transient annotation.
+   * Checks for the Transient annotation.
    * <p>
    * If this annotation is on the method then field interception is not
    * applied (Aka the method is not transformed).
-   * </p>
    */
   @Override
   public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-    if (desc.equals("Ljavax/persistence/Transient;")) {
+    if (desc.equals(Javax.Transient) || desc.equals(Jakarta.Transient)) {
       transientAnnotation = true;
     }
     return super.visitAnnotation(desc, visible);
