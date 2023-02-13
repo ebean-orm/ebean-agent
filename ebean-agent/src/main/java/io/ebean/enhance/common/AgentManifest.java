@@ -209,6 +209,12 @@ public final class AgentManifest {
         final String value = manifest.getMainAttributes().getValue("ebean-version");
         if (value != null) {
           enhancementVersion = Integer.parseInt(value.trim());
+          if (enhancementVersion > 141) {
+            // default these to true for ebean version 13.12.0 or higher
+            allowNullableDbArray = true;
+            transientInit = true;
+            transientInitThrowError = true;
+          }
         }
         loadedResources.add(path);
       } catch (Exception e) {
