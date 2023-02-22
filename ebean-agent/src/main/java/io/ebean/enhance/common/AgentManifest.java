@@ -5,11 +5,7 @@ import io.ebean.enhance.querybean.DetectQueryBean;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -35,6 +31,10 @@ public final class AgentManifest {
   private boolean checkNullManyFields = true;
   private boolean enableProfileLocation = true;
   private boolean enableEntityFieldAccess;
+  /**
+   * Default the mode to NONE for consistency with existing behavior. Long term preference is AUTO.
+   */
+  private EnhanceContext.ProfileLineNumberMode profileLineNumberMode = EnhanceContext.ProfileLineNumberMode.NONE;
   private boolean synthetic = true;
   private int enhancementVersion;
 
@@ -103,6 +103,10 @@ public final class AgentManifest {
 
   public boolean isEnableEntityFieldAccess() {
     return enableEntityFieldAccess;
+  }
+
+  public EnhanceContext.ProfileLineNumberMode profileLineMode() {
+    return profileLineNumberMode;
   }
 
   /**
@@ -269,6 +273,14 @@ public final class AgentManifest {
     String locationMode = attributes.getValue("profile-location");
     if (locationMode != null) {
       enableProfileLocation = Boolean.parseBoolean(locationMode);
+    }
+    String profileWithLine = attributes.getValue("profile-line-number-mode");
+    if (profileWithLine != null) {
+      try {
+        profileLineNumberMode = EnhanceContext.ProfileLineNumberMode.valueOf(profileWithLine.toUpperCase().trim());
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
     String fieldAccessMode = attributes.getValue("entity-field-access");
     if (fieldAccessMode != null) {

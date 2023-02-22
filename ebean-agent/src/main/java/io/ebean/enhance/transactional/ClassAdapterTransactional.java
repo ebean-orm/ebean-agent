@@ -13,9 +13,7 @@ import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.EnhanceContext;
 import io.ebean.enhance.common.NoEnhancementRequiredException;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,6 +44,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
   private final EnhanceContext enhanceContext;
   private final ClassLoader classLoader;
   private final ArrayList<ClassMeta> transactionalInterfaces = new ArrayList<>();
+  private final EnhanceContext.ProfileLineNumberMode profileLineNumberMode;
   /**
    * Class level annotation information.
    */
@@ -57,11 +56,18 @@ public class ClassAdapterTransactional extends ClassVisitor {
   private int queryProfileCount;
   private int transactionProfileCount;
   private final Map<Integer, String> txLabels = new LinkedHashMap<>();
+  /**
+   * ProfileLocation index to (method name + queryBean type)
+   */
+  private final Map<Integer,String> locationToMethodName = new HashMap<>();
+  private final Set<String> methodNames = new HashSet<>();
+  private final Set<String> overloadedMethodNames = new HashSet<>();
 
   public ClassAdapterTransactional(ClassVisitor cv, ClassLoader classLoader, EnhanceContext context) {
     super(EBEAN_ASM_VERSION, cv);
     this.classLoader = classLoader;
     this.enhanceContext = context;
+    this.profileLineNumberMode = context.profileLineMode();
   }
 
   public String className() {
@@ -271,11 +277,13 @@ public class ClassAdapterTransactional extends ClassVisitor {
     MethodVisitor mv = cv.visitMethod(enhanceContext.accPrivate() + ACC_STATIC, "_$initProfileLocations", NOARG_VOID, null, null);
     mv.visitCode();
 
+    final boolean supportsProfileWithLine = enhanceContext.supportsProfileWithLine();
     for (int i = 0; i < queryProfileCount; i++) {
       Label l0 = new Label();
       mv.visitLabel(l0);
       mv.visitLineNumber(1, l0);
-      mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", "create", "()Lio/ebean/ProfileLocation;", true);
+      String createMethod = supportsProfileWithLine && includeLineNumber(i) ? "createWithLine" : "create";
+      mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", createMethod, "()Lio/ebean/ProfileLocation;", true);
       mv.visitFieldInsn(PUTSTATIC, className, QP_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;");
     }
 
@@ -283,10 +291,15 @@ public class ClassAdapterTransactional extends ClassVisitor {
       Label l0 = new Label();
       mv.visitLabel(l0);
       mv.visitLineNumber(2, l0);
-      mv.visitIntInsn(BIPUSH, 0);
       String label = getTxnLabel(i);
-      mv.visitLdcInsn(label);
-      mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", "create", "(ILjava/lang/String;)Lio/ebean/ProfileLocation;", true);
+      if (supportsProfileWithLine) {
+        mv.visitLdcInsn(label);
+        mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", "create", "(Ljava/lang/String;)Lio/ebean/ProfileLocation;", true);
+      } else {
+        mv.visitIntInsn(BIPUSH, 0); // always 0 for historic reasons
+        mv.visitLdcInsn(label);
+        mv.visitMethodInsn(INVOKESTATIC, "io/ebean/ProfileLocation", "create", "(ILjava/lang/String;)Lio/ebean/ProfileLocation;", true);
+      }
       mv.visitFieldInsn(PUTSTATIC, className, TX_FIELD_PREFIX + i, "Lio/ebean/ProfileLocation;");
     }
 
@@ -328,11 +341,35 @@ public class ClassAdapterTransactional extends ClassVisitor {
     return enhanceContext.isEnableProfileLocation();
   }
 
+  int nextQueryProfileLocation() {
+    return queryProfileCount++;
+  }
+
   /**
    * Return the next index for query profile location.
    */
-  int nextQueryProfileLocation() {
+  int nextQueryProfileLocation(String methodName, String queryBeanType) {
+    if (profileLineNumberMode == EnhanceContext.ProfileLineNumberMode.AUTO) {
+      // looking to determine if the methodName + queryBean is unique (desire no line numbers) or not unique
+      // implying there is method overloading (desire line numbers to identify the code executing the query)
+      final String key = methodName + queryBeanType;
+      locationToMethodName.put(queryProfileCount, key);
+      if (!methodNames.add(key)) {
+        overloadedMethodNames.add(key);
+      }
+    }
     return queryProfileCount++;
+  }
+
+  /**
+   * Include the line number when method overloading means we can't identify the query by method name only.
+   */
+  private boolean includeLineNumber(int pos) {
+    if (profileLineNumberMode == EnhanceContext.ProfileLineNumberMode.ALL) {
+      return true;
+    }
+    final String name = locationToMethodName.get(pos);
+    return name != null && overloadedMethodNames.contains(name);
   }
 
   /**

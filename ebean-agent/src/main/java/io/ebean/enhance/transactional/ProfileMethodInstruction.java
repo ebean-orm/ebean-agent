@@ -13,10 +13,12 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
 
   private final ClassAdapterTransactional classAdapter;
   private final MethodVisitor mv;
+  private final String methodName;
 
-  ProfileMethodInstruction(ClassAdapterTransactional classAdapter, final MethodVisitor mv) {
+  ProfileMethodInstruction(ClassAdapterTransactional classAdapter, final MethodVisitor mv, String methodName) {
     this.classAdapter = classAdapter;
     this.mv = mv;
+    this.methodName = methodName;
   }
 
   public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
@@ -26,7 +28,7 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
     } else if (INIT.equals(name) && classAdapter.isQueryBean(owner)) {
       mv.visitMethodInsn(opcode, owner, name, desc, itf);
       if (!isAssocQueryBean(owner)) {
-        int fieldIdx = classAdapter.nextQueryProfileLocation();
+        int fieldIdx = classAdapter.nextQueryProfileLocation(methodName, owner);
         if (classAdapter.isLog(4)) {
           classAdapter.log("add profile location " + fieldIdx);
         }
