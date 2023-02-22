@@ -24,6 +24,21 @@ public final class EnhanceContext {
 
   private static final Logger logger = Logger.getLogger(EnhanceContext.class.getName());
 
+  public enum ProfileLineNumberMode {
+    /**
+     * Line numbering on profile location when method + queryBean type is not unique
+     */
+    AUTO,
+    /**
+     * No line numbering on profile locations
+     */
+    NONE,
+    /**
+     * Line numbering on all profile locations
+     */
+    ALL
+  }
+
   private final AgentManifest manifest;
   private final IgnoreClassHelper ignoreClassHelper;
   private final Map<String, String> agentArgsMap;
@@ -37,6 +52,7 @@ public final class EnhanceContext {
   private boolean throwOnError;
   private final boolean enableProfileLocation;
   private final boolean enableEntityFieldAccess;
+  private final ProfileLineNumberMode profileLineNumberMode;
   private final int accPublic;
   private final int accProtected;
   private final int accPrivate;
@@ -54,6 +70,7 @@ public final class EnhanceContext {
     this.manifest = manifest;
     this.enableProfileLocation = manifest.isEnableProfileLocation();
     this.enableEntityFieldAccess = manifest.isEnableEntityFieldAccess();
+    this.profileLineNumberMode = manifest.profileLineMode();
     this.accPublic = manifest.accPublic();
     this.accProtected = manifest.accProtected();
     this.accPrivate = manifest.accPrivate();
@@ -458,5 +475,13 @@ public final class EnhanceContext {
 
   public boolean interceptAddReadOnly() {
     return enhancementVersion >= 141;
+  }
+
+  public boolean supportsProfileWithLine() {
+    return enhancementVersion >= 143; // Ebean 13.13.1 onwards
+  }
+
+  public ProfileLineNumberMode profileLineMode() {
+    return profileLineNumberMode;
   }
 }

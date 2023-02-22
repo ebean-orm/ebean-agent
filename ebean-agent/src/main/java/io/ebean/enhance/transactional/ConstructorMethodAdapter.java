@@ -15,7 +15,7 @@ class ConstructorMethodAdapter extends MethodVisitor implements EnhanceConstants
 
   ConstructorMethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv) {
     super(EBEAN_ASM_VERSION, mv);
-    this.profileMethod = new ProfileMethodInstruction(classAdapter, mv);
+    this.profileMethod = new ProfileMethodInstruction(classAdapter, mv, "<init>");
   }
 
   @Override

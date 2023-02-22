@@ -36,7 +36,7 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
   MethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
     super(mv, access, name, desc);
     this.classAdapter = classAdapter;
-    this.profileMethod = new ProfileMethodInstruction(classAdapter, mv);
+    this.profileMethod = new ProfileMethodInstruction(classAdapter, mv, name);
     // inherit from class level Transactional annotation
     AnnotationInfo parentInfo = classAdapter.getClassAnnotationInfo();
 
