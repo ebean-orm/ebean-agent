@@ -21,6 +21,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   private final ClassLoader loader;
   private boolean typeQueryRootBean;
   private String className;
+  private String superName;
   private String signature;
   private ClassInfo classInfo;
   private final AnnotationInfo annotationInfo = new AnnotationInfo(null);
@@ -35,6 +36,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
     super.visit(version, access, name, signature, superName, interfaces);
     this.typeQueryRootBean = TQ_ROOT_BEAN.equals(superName);
+    this.superName = superName;
     this.className = name;
     this.signature = signature;
     this.classInfo = new ClassInfo(enhanceContext, name);
@@ -142,11 +144,11 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   private MethodVisitor handleAssocBeanConstructor(int access, String name, String desc, String signature, String[] exceptions) {
     if (desc.equals(ASSOC_BEAN_BASIC_CONSTRUCTOR_DESC)) {
       classInfo.setHasBasicConstructor();
-      return new TypeQueryAssocBasicConstructor(classInfo, cv, desc, signature);
+      return new TypeQueryAssocBasicConstructor(superName, classInfo, cv, desc, signature);
     }
     if (desc.equals(ASSOC_BEAN_MAIN_CONSTRUCTOR_DESC)) {
       classInfo.setHasMainConstructor();
-      return new TypeQueryAssocMainConstructor(classInfo, cv, desc, signature);
+      return new TypeQueryAssocMainConstructor(superName, classInfo, cv, desc, signature);
     }
     // leave as is
     return super.visitMethod(access, name, desc, signature, exceptions);
@@ -159,7 +161,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
     }
     if (classInfo.isTypeQueryBean()) {
       if (!typeQueryRootBean) {
-        classInfo.addAssocBeanExtras(cv);
+        classInfo.addAssocBeanExtras(cv, superName);
       } else {
         enhanceContext.summaryQueryBean(className);
       }

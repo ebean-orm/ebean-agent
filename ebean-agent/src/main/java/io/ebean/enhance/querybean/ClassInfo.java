@@ -181,7 +181,7 @@ class ClassInfo implements Constants {
   /**
    * Add fields and constructors to assoc type query beans as necessary.
    */
-  void addAssocBeanExtras(ClassVisitor cv) {
+  void addAssocBeanExtras(ClassVisitor cv, String superName) {
     if (isLog(4)) {
       String msg = "... add fields";
       if (!hasBasicConstructor) {
@@ -195,11 +195,11 @@ class ClassInfo implements Constants {
 
     if (!hasBasicConstructor) {
       // add the assoc bean basic constructor
-      new TypeQueryAssocBasicConstructor(this, cv, ASSOC_BEAN_BASIC_CONSTRUCTOR_DESC, ASSOC_BEAN_BASIC_SIG).visitCode();
+      new TypeQueryAssocBasicConstructor(superName, this, cv, ASSOC_BEAN_BASIC_CONSTRUCTOR_DESC, ASSOC_BEAN_BASIC_SIG).visitCode();
     }
     if (!hasMainConstructor) {
       // add the assoc bean main constructor
-      new TypeQueryAssocMainConstructor(this, cv, ASSOC_BEAN_MAIN_CONSTRUCTOR_DESC, ASSOC_BEAN_MAIN_SIG).visitCode();
+      new TypeQueryAssocMainConstructor(superName, this, cv, ASSOC_BEAN_MAIN_CONSTRUCTOR_DESC, ASSOC_BEAN_MAIN_SIG).visitCode();
     }
 
   }
