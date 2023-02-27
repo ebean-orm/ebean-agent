@@ -16,14 +16,16 @@ public class TypeQueryAssocMainConstructor extends BaseConstructorAdapter implem
 
   private final ClassInfo classInfo;
   private final ClassVisitor cv;
+  private final String superName;
   private final String desc;
   private final String signature;
 
   /**
    * Construct for a query bean class given its associated entity bean domain class and a class visitor.
    */
-  public TypeQueryAssocMainConstructor(ClassInfo classInfo, ClassVisitor cv, String desc, String signature) {
+  public TypeQueryAssocMainConstructor(String superName, ClassInfo classInfo, ClassVisitor cv, String desc, String signature) {
     super();
+    this.superName = superName;
     this.cv = cv;
     this.classInfo = classInfo;
     this.desc = desc;
@@ -41,7 +43,7 @@ public class TypeQueryAssocMainConstructor extends BaseConstructorAdapter implem
     mv.visitVarInsn(ALOAD, 1);
     mv.visitVarInsn(ALOAD, 2);
     mv.visitVarInsn(ALOAD, 3);
-    mv.visitMethodInsn(INVOKESPECIAL, TQ_ASSOC_BEAN, INIT, "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, superName, INIT, "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
     Label l1 = new Label();
     mv.visitLabel(l1);
     mv.visitLineNumber(2, l1);
