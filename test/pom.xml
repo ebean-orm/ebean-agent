@@ -3,20 +3,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.avaje</groupId>
-    <artifactId>java8-oss</artifactId>
-    <version>3.9</version>
-    <relativePath/>
+    <groupId>io.ebean</groupId>
+    <artifactId>ebean-agent-reactor</artifactId>
+    <version>13.15.0</version>
   </parent>
 
-  <groupId>io.ebean</groupId>
   <artifactId>ebean-agent-test</artifactId>
-  <version>13.14.1</version>
   <name>ebean agent test</name>
   <description>Runs agent tests using</description>
 
   <properties>
-    <ebean.agent.version>13.14.1</ebean.agent.version>
     <ebean.version>13.4.0</ebean.version>
   </properties>
 
@@ -24,7 +20,7 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean-agent</artifactId>
-      <version>${ebean.agent.version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -117,7 +113,7 @@
           <dependency>
             <groupId>io.ebean</groupId>
             <artifactId>ebean-agent</artifactId>
-            <version>${ebean.agent.version}</version>
+            <version>${project.version}</version>
           </dependency>
         </dependencies>
         <executions>
