@@ -9,7 +9,7 @@
 
   <groupId>io.ebean</groupId>
   <artifactId>ebean-agent</artifactId>
-  <version>13.15.2</version>
+  <version>13.16.0</version>
   <packaging>jar</packaging>
 
   <name>ebean-agent</name>
@@ -21,7 +21,7 @@
   </scm>
 
   <properties>
-    <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
+    <nexus.staging.autoReleaseAfterClose>false</nexus.staging.autoReleaseAfterClose>
     <ebean.version>13.1.0</ebean.version>
 <!--    <ebean.version>13.0.1-SNAPSHOT</ebean.version>-->
   </properties>
