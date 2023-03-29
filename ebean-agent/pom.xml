@@ -21,7 +21,7 @@
   </scm>
 
   <properties>
-    <nexus.staging.autoReleaseAfterClose>false</nexus.staging.autoReleaseAfterClose>
+    <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
     <ebean.version>13.1.0</ebean.version>
 <!--    <ebean.version>13.0.1-SNAPSHOT</ebean.version>-->
   </properties>
