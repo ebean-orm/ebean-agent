@@ -37,10 +37,10 @@ Provides a small and fast bytecode manipulation framework.
 
 <p>
 The <a href="http://asm.ow2.org/">ASM</a> framework is organized
-around the {@link ClassVisitor ClassVisitor},
-{@link FieldVisitor FieldVisitor},
-{@link MethodVisitor MethodVisitor} and
-{@link AnnotationVisitor AnnotationVisitor} abstract classes,
+around the {@link io.ebean.enhance.asm.ClassVisitor ClassVisitor},
+{@link io.ebean.enhance.asm.FieldVisitor FieldVisitor},
+{@link io.ebean.enhance.asm.MethodVisitor MethodVisitor} and
+{@link io.ebean.enhance.asm.AnnotationVisitor AnnotationVisitor} abstract classes,
 which allow one to visit the fields, methods and annotations of a class,
 including the bytecode instructions of each method.
 
@@ -53,7 +53,7 @@ including the bytecode instructions of each method.
 
 <p>
 In order to generate a class from scratch, only the {@link
-ClassWriter ClassWriter} class is necessary. Indeed,
+io.ebean.enhance.asm.ClassWriter ClassWriter} class is necessary. Indeed,
 in order to generate a class, one must just call its visit<em>Xxx</em>
 methods with the appropriate arguments to generate the desired fields
 and methods.

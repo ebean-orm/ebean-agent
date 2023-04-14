@@ -27,8 +27,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.Opcodes;
 
 /**
