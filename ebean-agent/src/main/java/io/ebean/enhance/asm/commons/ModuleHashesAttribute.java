@@ -31,7 +31,7 @@ package io.ebean.enhance.asm.commons;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.ebean.enhance.asm.*;
+import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.Attribute;
 import io.ebean.enhance.asm.ByteVector;
 import io.ebean.enhance.asm.ClassReader;
