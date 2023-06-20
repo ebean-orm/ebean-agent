@@ -20,6 +20,8 @@ class IgnoreClassHelperTest {
     assertTrue(ignoreClassHelper.isIgnoreClass("java/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("org/joda/LocalDate"));
     assertTrue(ignoreClassHelper.isIgnoreClass("org/apache/Something"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("com/apple/eawt/Foo"));
+    assertTrue(ignoreClassHelper.isIgnoreClass("com/apple/laf/Foo"));
     assertTrue(ignoreClassHelper.isIgnoreClass("junit/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("javax/Something"));
     assertTrue(ignoreClassHelper.isIgnoreClass("jakarta/Something"));
@@ -55,6 +57,8 @@ class IgnoreClassHelperTest {
     assertFalse(ignoreClassHelper.isIgnoreClass("foo/Foo"));
     assertFalse(ignoreClassHelper.isIgnoreClass("bar/pixie/Foo"));
     assertFalse(ignoreClassHelper.isIgnoreClass("bar/poo/Foo"));
+    assertFalse(ignoreClassHelper.isIgnoreClass("com/apple/Foo"));
+    assertFalse(ignoreClassHelper.isIgnoreClass("com/apple/other/Foo"));
   }
 
 }
