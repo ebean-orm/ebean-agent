@@ -78,6 +78,8 @@ class IgnoreClassHelper {
     ignoreThreeLevel.add("io/avaje/http");
     ignoreThreeLevel.add("io/avaje/inject");
     ignoreThreeLevel.add("io/avaje/jex");
+    ignoreThreeLevel.add("com/apple/eawt");
+    ignoreThreeLevel.add("com/apple/laf");
   }
 
   IgnoreClassHelper() {
