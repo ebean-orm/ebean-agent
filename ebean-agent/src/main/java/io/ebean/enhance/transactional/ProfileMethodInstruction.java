@@ -65,7 +65,7 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
   }
 
   private boolean isAssocQueryBean(String owner) {
-    return owner.contains("/query/assoc/QAssoc");
+    return owner.contains("/query/assoc/QAssoc") || owner.endsWith("$Assoc");
   }
 
   private boolean isNewUpdateQuery(String name, String desc) {
