@@ -27,7 +27,7 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
 
     } else if (INIT.equals(name) && classAdapter.isQueryBean(owner)) {
       mv.visitMethodInsn(opcode, owner, name, desc, itf);
-      if (!isAssocQueryBean(owner)) {
+      if (!filterManyInit(desc) && !isAssocQueryBean(owner)) {
         int fieldIdx = classAdapter.nextQueryProfileLocation(methodName, owner);
         if (classAdapter.isLog(4)) {
           classAdapter.log("add profile location " + fieldIdx);
@@ -62,6 +62,11 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
         mv.visitMethodInsn(opcode, owner, name, desc, itf);
       }
     }
+  }
+
+  /** Constructor used in Assoc query bean filterMany() */
+  private static boolean filterManyInit(String desc) {
+    return "(Lio/ebean/ExpressionList;)V".equals(desc);
   }
 
   private boolean isAssocQueryBean(String owner) {
