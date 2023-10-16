@@ -212,6 +212,22 @@ class ClassMetaReaderTest {
     assertFalse(enhanceContext.detectEntityTransactionalEnhancement("line/foo/Me"));
   }
 
+  @Test
+  void testEnhanceContextFilter() {
+
+    ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
+    AgentManifest manifest = new AgentManifest(getClass().getClassLoader());
+    EnhanceContext enhanceContext = new EnhanceContext(reader, "debug=1;packages=jim,org.foo", manifest);
+
+    assertFalse(enhanceContext.isIgnoreClass("jim/bob/Me"));
+    assertFalse(enhanceContext.isIgnoreClass("jim/Me"));
+    assertFalse(enhanceContext.isIgnoreClass("org/foo/Me"));
+    assertFalse(enhanceContext.isIgnoreClass("org/foo/bar/Me"));
+
+    assertTrue(enhanceContext.isIgnoreClass("com/Me"));
+    assertTrue(enhanceContext.isIgnoreClass("com/some/Me"));
+  }
+
   private ClassMetaReader createClassMetaReader() {
 
     ClassPathClassBytesReader reader = new ClassPathClassBytesReader(new URL[0]);
