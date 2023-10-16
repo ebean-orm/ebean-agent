@@ -127,7 +127,7 @@
             <id>test</id>
             <phase>process-test-classes</phase>
             <configuration>
-              <transformArgs>debug=0</transformArgs>
+              <transformArgs>debug=1;packages=test,org.foo</transformArgs>
             </configuration>
             <goals>
               <goal>testEnhance</goal>
