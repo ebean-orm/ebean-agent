@@ -363,10 +363,10 @@ public final class FieldMeta implements Opcodes, EnhanceConstants, Comparable<Fi
     if (fieldDesc.equals("Ljava/util/List;")) {
       return dbArray ? ARRAYLIST : BEANLIST;
     }
-    if (fieldDesc.equals("Ljava/util/Set;")) {
+    if (fieldDesc.equals("Ljava/util/Set;") || fieldDesc.equals("Ljava/util/SequencedSet;")) {
       return dbArray ? LINKEDHASHSET : BEANSET;
     }
-    if (fieldDesc.equals("Ljava/util/Map;")) {
+    if (fieldDesc.equals("Ljava/util/Map;") || fieldDesc.equals("Ljava/util/SequencedMap;")) {
       return dbArray ? LINKEDHASHMAP : BEANMAP;
     }
     return null;
