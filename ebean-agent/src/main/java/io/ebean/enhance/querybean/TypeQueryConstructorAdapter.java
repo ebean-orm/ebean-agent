@@ -20,6 +20,7 @@ class TypeQueryConstructorAdapter extends BaseConstructorAdapter implements Opco
   private final String signature;
 
   /**
+   * OLD Type Query beans ONLY, prior to {@code @TypeQueryBean("v1")}.
    * Construct for a query bean class given its associated entity bean domain class and a class visitor.
    */
   TypeQueryConstructorAdapter(ClassInfo classInfo, String domainClass, ClassVisitor cv, String desc, String signature) {
