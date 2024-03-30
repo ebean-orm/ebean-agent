@@ -38,13 +38,6 @@ class TypeQueryConstructorForAlias extends BaseConstructorAdapter implements Opc
     mv.visitVarInsn(ALOAD, 0);
     mv.visitVarInsn(ILOAD, 1);
     mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, INIT, "(Z)V", false);
-    Label l1 = new Label();
-    mv.visitLabel(l1);
-    mv.visitLineNumber(2, l1);
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitVarInsn(ALOAD, 0);
-    mv.visitMethodInsn(INVOKEVIRTUAL, classInfo.getClassName(), "setRoot", "(Ljava/lang/Object;)V", false);
-
 
     // init all the properties
     List<FieldInfo> fields = classInfo.getFields();
