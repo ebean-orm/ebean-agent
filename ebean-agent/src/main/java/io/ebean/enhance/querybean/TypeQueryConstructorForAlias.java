@@ -11,18 +11,20 @@ import static io.ebean.enhance.common.EnhanceConstants.INIT;
 /**
  * Overrides the constructor to initialise all the fields (for use with 'Alias' select()/fetch() use).
  */
-class TypeQueryConstructorForAlias extends BaseConstructorAdapter implements Opcodes, Constants {
+final class TypeQueryConstructorForAlias extends BaseConstructorAdapter implements Opcodes, Constants {
 
   private final ClassInfo classInfo;
   private final ClassVisitor cv;
+  private final String superName;
 
   /**
    * Construct for a query bean class and a class visitor.
    */
-  TypeQueryConstructorForAlias(ClassInfo classInfo, ClassVisitor cv) {
+  TypeQueryConstructorForAlias(ClassInfo classInfo, ClassVisitor cv, String superName) {
     super();
     this.cv = cv;
     this.classInfo = classInfo;
+    this.superName = superName;
   }
 
   /**
@@ -37,7 +39,7 @@ class TypeQueryConstructorForAlias extends BaseConstructorAdapter implements Opc
     mv.visitLineNumber(1, l0);
     mv.visitVarInsn(ALOAD, 0);
     mv.visitVarInsn(ILOAD, 1);
-    mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, INIT, "(Z)V", false);
+    mv.visitMethodInsn(INVOKESPECIAL, superName, INIT, "(Z)V", false);
 
     // init all the properties
     List<FieldInfo> fields = classInfo.getFields();

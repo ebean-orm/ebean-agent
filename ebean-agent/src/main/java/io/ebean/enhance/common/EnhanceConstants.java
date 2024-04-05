@@ -51,7 +51,6 @@ public interface EnhanceConstants {
   String INTERCEPT_FIELD = "_ebean_intercept";
   String C_OBJECT = "java/lang/Object";
   String C_MODEL = "io/ebean/Model";
-  String C_QUERYBEAN = "io/ebean/typequery/TQRootBean";
   String C_ENHANCEDTRANSACTIONAL = "io/ebean/bean/EnhancedTransactional";
   String C_ENTITYBEAN = "io/ebean/bean/EntityBean";
   String C_SCALAOBJECT = "scala/ScalaObject";
