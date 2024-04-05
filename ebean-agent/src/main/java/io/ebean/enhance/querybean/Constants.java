@@ -17,11 +17,6 @@ interface Constants {
    */
   String ANNOTATION_TYPE_QUERY_BEAN = EnhanceConstants.TYPEQUERYBEAN_ANNOTATION;
 
-  /**
-   * The TQRootBean object class name.
-   */
-  String TQ_ROOT_BEAN = "io/ebean/typequery/TQRootBean";
-
   String ASSOC_BEAN_BASIC_CONSTRUCTOR_DESC = "(Ljava/lang/String;Ljava/lang/Object;I)V";
 
   String ASSOC_BEAN_MAIN_CONSTRUCTOR_DESC = "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;I)V";

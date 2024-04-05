@@ -11,22 +11,24 @@ import static io.ebean.enhance.common.EnhanceConstants.INIT;
  * Changes the existing constructor to remove all the field initialisation as these are going to be
  * initialised lazily by calls to our generated methods.
  */
-class TypeQueryConstructorAdapter extends BaseConstructorAdapter implements Opcodes, Constants {
+final class TypeQueryConstructorAdapter extends BaseConstructorAdapter implements Opcodes, Constants {
 
   private final ClassInfo classInfo;
   private final String domainClass;
   private final ClassVisitor cv;
   private final String desc;
   private final String signature;
+  private final String superName;
 
   /**
    * OLD Type Query beans ONLY, prior to {@code @TypeQueryBean("v1")}.
    * Construct for a query bean class given its associated entity bean domain class and a class visitor.
    */
-  TypeQueryConstructorAdapter(ClassInfo classInfo, String domainClass, ClassVisitor cv, String desc, String signature) {
+  TypeQueryConstructorAdapter(ClassInfo classInfo, String superName, String domainClass, ClassVisitor cv, String desc, String signature) {
     super();
     this.cv = cv;
     this.classInfo = classInfo;
+    this.superName = superName;
     this.domainClass = domainClass;
     this.desc = desc;
     this.signature = signature;
@@ -46,12 +48,12 @@ class TypeQueryConstructorAdapter extends BaseConstructorAdapter implements Opco
     mv.visitLdcInsn(Type.getType("L" + domainClass + ";"));
     if (withDatabase) {
       mv.visitVarInsn(ALOAD, 1);
-      mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, INIT, "(Ljava/lang/Class;Lio/ebean/Database;)V", false);
+      mv.visitMethodInsn(INVOKESPECIAL, superName, INIT, "(Ljava/lang/Class;Lio/ebean/Database;)V", false);
     } else if (withEbeanServer) {
       mv.visitVarInsn(ALOAD, 1);
-      mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, INIT, "(Ljava/lang/Class;Lio/ebean/EbeanServer;)V", false);
+      mv.visitMethodInsn(INVOKESPECIAL, superName, INIT, "(Ljava/lang/Class;Lio/ebean/EbeanServer;)V", false);
     } else {
-      mv.visitMethodInsn(INVOKESPECIAL, TQ_ROOT_BEAN, INIT, "(Ljava/lang/Class;)V", false);
+      mv.visitMethodInsn(INVOKESPECIAL, superName, INIT, "(Ljava/lang/Class;)V", false);
     }
 
     Label l1 = new Label();

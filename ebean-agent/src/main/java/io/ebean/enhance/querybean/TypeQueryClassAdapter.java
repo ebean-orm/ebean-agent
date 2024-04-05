@@ -15,7 +15,7 @@ import static io.ebean.enhance.common.EnhanceConstants.INIT;
 /**
  * Reads/visits the class and performs the appropriate enhancement if necessary.
  */
-public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
+public final class TypeQueryClassAdapter extends ClassVisitor implements Constants {
 
   private final EnhanceContext enhanceContext;
   private final ClassLoader loader;
@@ -35,7 +35,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
     super.visit(version, access, name, signature, superName, interfaces);
-    this.typeQueryRootBean = TQ_ROOT_BEAN.equals(superName);
+    this.typeQueryRootBean = TypeQueryUtil.isQueryBean(superName);
     this.superName = superName;
     this.className = name;
     this.signature = signature;
@@ -97,7 +97,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
       if (name.equals(INIT)) {
         if (desc.equals("(Z)V")) {
           // Constructor for alias initialises all the properties/fields
-          return new TypeQueryConstructorForAlias(classInfo, cv);
+          return new TypeQueryConstructorForAlias(classInfo, cv, superName);
         }
         if (hasVersion()) {
           // no enhancement on constructors required
@@ -106,7 +106,7 @@ public class TypeQueryClassAdapter extends ClassVisitor implements Constants {
         if (!typeQueryRootBean) {
           return handleAssocBeanConstructor(access, name, desc, signature, exceptions);
         }
-        return new TypeQueryConstructorAdapter(classInfo, getDomainClass(), cv, desc, signature);
+        return new TypeQueryConstructorAdapter(classInfo, superName, getDomainClass(), cv, desc, signature);
       }
       if (!desc.startsWith("()L")) {
         if (isLog(5)) {

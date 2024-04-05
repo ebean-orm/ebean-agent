@@ -12,6 +12,7 @@ import io.ebean.enhance.common.ClassMeta;
 import io.ebean.enhance.common.EnhanceConstants;
 import io.ebean.enhance.common.EnhanceContext;
 import io.ebean.enhance.common.NoEnhancementRequiredException;
+import io.ebean.enhance.querybean.TypeQueryUtil;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -28,7 +29,7 @@ import static io.ebean.enhance.common.EnhanceConstants.*;
 /**
  * ClassAdapter used to add transactional support.
  */
-public class ClassAdapterTransactional extends ClassVisitor {
+public final class ClassAdapterTransactional extends ClassVisitor {
 
   private static final Logger logger = Logger.getLogger(ClassAdapterTransactional.class.getName());
 
@@ -126,7 +127,7 @@ public class ClassAdapterTransactional extends ClassVisitor {
   @Override
   public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
     className = name;
-    if (C_QUERYBEAN.equals(superName)) {
+    if (TypeQueryUtil.isQueryBean(superName)) {
       // query beans do not need profile locations
       throw new NoEnhancementRequiredException();
     }
