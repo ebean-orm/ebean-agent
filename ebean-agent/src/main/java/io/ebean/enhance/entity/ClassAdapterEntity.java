@@ -5,10 +5,7 @@ import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
 import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.common.ClassMeta;
-import io.ebean.enhance.common.EnhanceConstants;
-import io.ebean.enhance.common.EnhanceContext;
-import io.ebean.enhance.common.NoEnhancementRequiredException;
+import io.ebean.enhance.common.*;
 
 import static io.ebean.enhance.Transformer.EBEAN_ASM_VERSION;
 
@@ -58,21 +55,22 @@ public final class ClassAdapterEntity extends ClassVisitor implements EnhanceCon
     skipMockitoMock(name);
     classMeta.setClassName(name, superName);
 
-    String[] c = new String[interfaces.length + 1];
+    String[] newInterfaces = new String[interfaces.length + 1];
     for (int i = 0; i < interfaces.length; i++) {
-      c[i] = interfaces[i];
-      if (c[i].equals(C_ENTITYBEAN)) {
+      newInterfaces[i] = interfaces[i];
+      if (newInterfaces[i].equals(C_ENTITYBEAN)) {
         throw new NoEnhancementRequiredException();
       }
-      if (c[i].equals(C_SCALAOBJECT)) {
+      if (newInterfaces[i].equals(C_SCALAOBJECT)) {
         classMeta.setScalaInterface(true);
       }
-      if (c[i].equals(C_GROOVYOBJECT)) {
+      if (newInterfaces[i].equals(C_GROOVYOBJECT)) {
         classMeta.setGroovyInterface(true);
       }
     }
     // add the EntityBean interface
-    c[c.length - 1] = C_ENTITYBEAN;
+    newInterfaces[newInterfaces.length - 1] = C_ENTITYBEAN;
+    String newSignature = VisitUtil.signatureAppend(signature, C_ENTITYBEAN);
     if (classMeta.isLog(8)) {
       classMeta.log("... add EntityBean interface");
     }
@@ -87,7 +85,7 @@ public final class ClassAdapterEntity extends ClassVisitor implements EnhanceCon
         classMeta.setSuperMeta(superMeta);
       }
     }
-    super.visit(version, access, name, signature, superName, c);
+    super.visit(version, access, name, newSignature, superName, newInterfaces);
   }
 
   /**

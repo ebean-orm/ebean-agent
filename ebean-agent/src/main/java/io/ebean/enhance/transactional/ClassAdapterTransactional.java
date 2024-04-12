@@ -5,13 +5,7 @@ import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.Label;
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.common.AlreadyEnhancedException;
-import io.ebean.enhance.common.AnnotationInfo;
-import io.ebean.enhance.common.AnnotationInfoVisitor;
-import io.ebean.enhance.common.ClassMeta;
-import io.ebean.enhance.common.EnhanceConstants;
-import io.ebean.enhance.common.EnhanceContext;
-import io.ebean.enhance.common.NoEnhancementRequiredException;
+import io.ebean.enhance.common.*;
 import io.ebean.enhance.querybean.TypeQueryUtil;
 
 import java.util.*;
@@ -154,7 +148,8 @@ public final class ClassAdapterTransactional extends ClassVisitor {
 
     // Add the EnhancedTransactional interface
     newInterfaces[newInterfaces.length - 1] = EnhanceConstants.C_ENHANCEDTRANSACTIONAL;
-    super.visit(version, access, name, signature, superName, newInterfaces);
+    String newSignature = VisitUtil.signatureAppend(signature, C_ENHANCEDTRANSACTIONAL);
+    super.visit(version, access, name, newSignature, superName, newInterfaces);
   }
 
   /**
