@@ -9,11 +9,7 @@ public final class VisitUtil implements Opcodes {
    * Append the interfaceType to the existing class signature.
    */
   public static String signatureAppend(String signature, String interfaceType) {
-    if (signature == null) {
-      return 'L' + interfaceType + ';';
-    } else {
-      return signature + 'L' + interfaceType + ';';
-    }
+    return signature == null ? null : signature + 'L' + interfaceType + ';';
   }
 
   /**
