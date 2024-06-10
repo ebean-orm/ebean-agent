@@ -80,6 +80,7 @@ class IgnoreClassHelper {
     ignoreThreeLevel.add("io/avaje/jex");
     ignoreThreeLevel.add("com/apple/eawt");
     ignoreThreeLevel.add("com/apple/laf");
+    ignoreThreeLevel.add("org/jetbrains/coverage");
   }
 
   IgnoreClassHelper() {
