@@ -534,8 +534,9 @@ final class MethodWriter extends MethodVisitor {
    * the number of stack elements. The local variables start at index 3 and are followed by the
    * operand stack elements. In summary frame[0] = offset, frame[1] = numLocal, frame[2] = numStack.
    * Local variables and operand stack entries contain abstract types, as defined in {@link Frame},
-   * but restricted to {@link Frame#CONSTANT_KIND}, {@link Frame#REFERENCE_KIND} or {@link
-   * Frame#UNINITIALIZED_KIND} abstract types. Long and double types use only one array entry.
+   * but restricted to {@link Frame#CONSTANT_KIND}, {@link Frame#REFERENCE_KIND}, {@link
+   * Frame#UNINITIALIZED_KIND} or {@link Frame#FORWARD_UNINITIALIZED_KIND} abstract types. Long and
+   * double types use only one array entry.
    */
   private int[] currentFrame;
 
@@ -650,7 +651,7 @@ final class MethodWriter extends MethodVisitor {
   @Override
   public AnnotationVisitor visitAnnotationDefault() {
     defaultValue = new ByteVector();
-    return new AnnotationWriter(symbolTable, /* useNamedValues = */ false, defaultValue, null);
+    return new AnnotationWriter(symbolTable, /* useNamedValues= */ false, defaultValue, null);
   }
 
   @Override
@@ -693,7 +694,7 @@ final class MethodWriter extends MethodVisitor {
     if (visible) {
       if (lastRuntimeVisibleParameterAnnotations == null) {
         lastRuntimeVisibleParameterAnnotations =
-            new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
+            new AnnotationWriter[Type.getArgumentCount(descriptor)];
       }
       return lastRuntimeVisibleParameterAnnotations[parameter] =
           AnnotationWriter.create(
@@ -701,7 +702,7 @@ final class MethodWriter extends MethodVisitor {
     } else {
       if (lastRuntimeInvisibleParameterAnnotations == null) {
         lastRuntimeInvisibleParameterAnnotations =
-            new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
+            new AnnotationWriter[Type.getArgumentCount(descriptor)];
       }
       return lastRuntimeInvisibleParameterAnnotations[parameter] =
           AnnotationWriter.create(
@@ -1199,7 +1200,7 @@ final class MethodWriter extends MethodVisitor {
   @Override
   public void visitLabel(final Label label) {
     // Resolve the forward references to this label, if any.
-    hasAsmInstructions |= label.resolve(code.data, code.length);
+    hasAsmInstructions |= label.resolve(code.data, stackMapTableEntries, code.length);
     // visitLabel starts a new basic block (except for debug only labels), so we need to update the
     // previous and current block references and list of successors.
     if ((label.flags & Label.FLAG_DEBUG_ONLY) != 0) {
@@ -1518,14 +1519,14 @@ final class MethodWriter extends MethodVisitor {
       return lastCodeRuntimeVisibleTypeAnnotation =
           new AnnotationWriter(
               symbolTable,
-              /* useNamedValues = */ true,
+              /* useNamedValues= */ true,
               typeAnnotation,
               lastCodeRuntimeVisibleTypeAnnotation);
     } else {
       return lastCodeRuntimeInvisibleTypeAnnotation =
           new AnnotationWriter(
               symbolTable,
-              /* useNamedValues = */ true,
+              /* useNamedValues= */ true,
               typeAnnotation,
               lastCodeRuntimeInvisibleTypeAnnotation);
     }
@@ -1641,7 +1642,7 @@ final class MethodWriter extends MethodVisitor {
           code.data[endOffset] = (byte) Opcodes.ATHROW;
           // Emit a frame for this unreachable block, with no local and a Throwable on the stack
           // (so that the ATHROW could consume this Throwable if it were reachable).
-          int frameIndex = visitFrameStart(startOffset, /* numLocal = */ 0, /* numStack = */ 1);
+          int frameIndex = visitFrameStart(startOffset, /* numLocal= */ 0, /* numStack= */ 1);
           currentFrame[frameIndex] =
               Frame.getAbstractTypeFromInternalName(symbolTable, "java/lang/Throwable");
           visitFrameEnd();
@@ -1795,7 +1796,7 @@ final class MethodWriter extends MethodVisitor {
     if (compute == COMPUTE_ALL_FRAMES) {
       Label nextBasicBlock = new Label();
       nextBasicBlock.frame = new Frame(nextBasicBlock);
-      nextBasicBlock.resolve(code.data, code.length);
+      nextBasicBlock.resolve(code.data, stackMapTableEntries, code.length);
       lastBasicBlock.nextBasicBlock = nextBasicBlock;
       lastBasicBlock = nextBasicBlock;
       currentBasicBlock = null;
@@ -1979,9 +1980,8 @@ final class MethodWriter extends MethodVisitor {
           .putByte(Frame.ITEM_OBJECT)
           .putShort(symbolTable.addConstantClass((String) type).index);
     } else {
-      stackMapTableEntries
-          .putByte(Frame.ITEM_UNINITIALIZED)
-          .putShort(((Label) type).bytecodeOffset);
+      stackMapTableEntries.putByte(Frame.ITEM_UNINITIALIZED);
+      ((Label) type).put(stackMapTableEntries);
     }
   }
 

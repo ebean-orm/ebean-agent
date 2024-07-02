@@ -217,6 +217,7 @@ public class ClassWriter extends ClassVisitor {
   /**
    * Indicates what must be automatically computed in {@link MethodWriter}. Must be one of {@link
    * MethodWriter#COMPUTE_NOTHING}, {@link MethodWriter#COMPUTE_MAX_STACK_AND_LOCAL}, {@link
+   * MethodWriter#COMPUTE_MAX_STACK_AND_LOCAL_FROM_FRAMES}, {@link
    * MethodWriter#COMPUTE_INSERTED_FRAMES}, or {@link MethodWriter#COMPUTE_ALL_FRAMES}.
    */
   private int compute;
@@ -773,7 +774,7 @@ public class ClassWriter extends ClassVisitor {
     lastRecordComponent = null;
     firstAttribute = null;
     compute = hasFrames ? MethodWriter.COMPUTE_INSERTED_FRAMES : MethodWriter.COMPUTE_NOTHING;
-    new ClassReader(classFile, 0, /* checkClassVersion = */ false)
+    new ClassReader(classFile, 0, /* checkClassVersion= */ false)
         .accept(
             this,
             attributes,

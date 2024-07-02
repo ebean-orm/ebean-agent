@@ -36,10 +36,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-
+import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
 import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.Opcodes;
 
 /**
