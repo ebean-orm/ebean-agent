@@ -30,13 +30,12 @@ package io.ebean.enhance.asm.commons;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import io.ebean.enhance.asm.Label;
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.ConstantDynamic;
 import io.ebean.enhance.asm.Handle;
+import io.ebean.enhance.asm.Label;
+import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
 import io.ebean.enhance.asm.Type;
 
 /**
