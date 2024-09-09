@@ -490,6 +490,10 @@ public final class EnhanceContext {
     return enhancementVersion >= 143; // Ebean 13.13.1 onwards
   }
 
+  public boolean improvedQueryBeans() {
+    return enhancementVersion >= 145;
+  }
+
   public ProfileLineNumberMode profileLineMode() {
     return profileLineNumberMode;
   }

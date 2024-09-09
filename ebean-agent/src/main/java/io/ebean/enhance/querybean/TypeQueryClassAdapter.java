@@ -104,7 +104,11 @@ public final class TypeQueryClassAdapter extends ClassVisitor implements Constan
           return super.visitMethod(access, name, desc, signature, exceptions);
         }
         if (!typeQueryRootBean) {
-          return handleAssocBeanConstructor(access, name, desc, signature, exceptions);
+          if (enhanceContext.improvedQueryBeans()) {
+            return super.visitMethod(access, name, desc, signature, exceptions);
+          } else {
+             return handleAssocBeanConstructor(access, name, desc, signature, exceptions);
+          }
         }
         return new TypeQueryConstructorAdapter(classInfo, superName, getDomainClass(), cv, desc, signature);
       }
@@ -161,7 +165,9 @@ public final class TypeQueryClassAdapter extends ClassVisitor implements Constan
     }
     if (classInfo.isTypeQueryBean()) {
       if (!typeQueryRootBean) {
-        classInfo.addAssocBeanExtras(cv, superName);
+        if (!enhanceContext.improvedQueryBeans()) {
+          classInfo.addAssocBeanExtras(cv, superName);
+        }
       } else {
         enhanceContext.summaryQueryBean(className);
       }
