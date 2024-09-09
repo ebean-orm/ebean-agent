@@ -70,7 +70,10 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
   }
 
   private boolean isAssocQueryBean(String owner) {
-    return owner.contains("/query/assoc/QAssoc") || owner.endsWith("$Assoc");
+    return owner.contains("/query/assoc/QAssoc")
+      || owner.endsWith("$Assoc")
+      || owner.endsWith("$AssocMany")
+      || owner.endsWith("$AssocOne");
   }
 
   private boolean isNewUpdateQuery(String name, String desc) {
