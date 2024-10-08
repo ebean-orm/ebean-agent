@@ -62,14 +62,12 @@ class FieldInfo implements Opcodes, Constants, EnhanceConstants {
 
     if (assocProperty) {
       if (typeQueryRootBean) {
-        mv.visitInsn(ICONST_1);
-        mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;I)V", false);
+        mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;)V", false);
       } else {
         mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_ROOT, L_OBJECT);
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, classInfo.getClassName(), FIELD_PATH, L_STRING);
-        mv.visitInsn(ICONST_1);
-        mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;I)V", false);
+        mv.visitMethodInsn(INVOKESPECIAL, internalName, INIT, "(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)V", false);
       }
 
     } else {
