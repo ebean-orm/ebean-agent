@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.ebean</groupId>
     <artifactId>ebean-agent-reactor</artifactId>
-    <version>14.6.0</version>
+    <version>14.7.0</version>
   </parent>
 
   <artifactId>ebean-agent-test</artifactId>

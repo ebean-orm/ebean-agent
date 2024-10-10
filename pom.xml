@@ -9,7 +9,7 @@
 
   <groupId>io.ebean</groupId>
   <artifactId>ebean-agent-reactor</artifactId>
-  <version>14.6.0</version>
+  <version>14.7.0</version>
   <packaging>pom</packaging>
   <name>ebean agent reactor</name>
 

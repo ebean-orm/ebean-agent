@@ -396,6 +396,9 @@ public class GeneratorAdapter extends LocalVariablesSorter {
       mv.visitInsn(Opcodes.ACONST_NULL);
     } else {
       switch (value.getSort()) {
+        case Type.VOID:
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Void", "TYPE", CLASS_DESCRIPTOR);
+          break;
         case Type.BOOLEAN:
           mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Boolean", "TYPE", CLASS_DESCRIPTOR);
           break;
