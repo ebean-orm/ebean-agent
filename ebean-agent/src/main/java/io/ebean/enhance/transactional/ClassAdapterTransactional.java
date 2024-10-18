@@ -330,6 +330,10 @@ public final class ClassAdapterTransactional extends ClassVisitor {
     mv.visitEnd();
   }
 
+  boolean fluidQueryBuilders() {
+    return enhanceContext.fluidQueryBuilders();
+  }
+
   /**
    * Return true if profile location enhancement is on.
    */
