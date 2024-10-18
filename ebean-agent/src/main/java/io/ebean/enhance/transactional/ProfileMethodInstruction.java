@@ -33,7 +33,10 @@ class ProfileMethodInstruction implements EnhanceConstants, Opcodes {
           classAdapter.log("add profile location " + fieldIdx);
         }
         mv.visitFieldInsn(GETSTATIC, classAdapter.className(), QP_FIELD_PREFIX + fieldIdx, "Lio/ebean/ProfileLocation;");
-        mv.visitMethodInsn(INVOKEVIRTUAL, owner, "setProfileLocation", "(Lio/ebean/ProfileLocation;)Ljava/lang/Object;", false);
+        String descriptor = classAdapter.fluidQueryBuilders()
+          ? "(Lio/ebean/ProfileLocation;)Lio/ebean/typequery/QueryBean;"
+          : "(Lio/ebean/ProfileLocation;)Ljava/lang/Object;";
+        mv.visitMethodInsn(INVOKEVIRTUAL, owner, "setProfileLocation", descriptor, false);
         mv.visitTypeInsn(CHECKCAST, owner);
       }
 
