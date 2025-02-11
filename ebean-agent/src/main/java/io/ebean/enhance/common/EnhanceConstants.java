@@ -65,7 +65,9 @@ public interface EnhanceConstants {
   String L_STRING = "Ljava/lang/String;";
   String L_OBJECT = "Ljava/lang/Object;";
   String L_INTERCEPT = "Lio/ebean/bean/EntityBeanIntercept;";
-  String L_HELPSCOPETRANS = "Lio/ebeaninternal/api/HelpScopeTrans;";
+  String HELPSCOPETRANS = "io/ebeaninternal/api/HelpScopeTrans";
+  String AOPTRANSACTIONSCOPE = "io/ebean/plugin/AOPTransactionScope";
+
   String L_DRAFT = "Lio/ebean/annotation/Draft;";
   String C_TXSCOPE = "io/ebean/TxScope";
   String C_TXTYPE = "io/ebean/annotation/TxType";

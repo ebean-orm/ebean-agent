@@ -25,17 +25,18 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
 
   private static final String TX_FIELD_PREFIX = ClassAdapterTransactional.TX_FIELD_PREFIX;
   private static final Type txScopeType = Type.getType("L" + C_TXSCOPE + ";");
-  private static final Type helpScopeTrans = Type.getType(L_HELPSCOPETRANS);
 
   private final AnnotationInfo annotationInfo;
   private final ClassAdapterTransactional classAdapter;
   private final ProfileMethodInstruction profileMethod;
+  private final String aopTransactionScope;
   private boolean transactional;
   private int posTxScope;
 
   MethodAdapter(ClassAdapterTransactional classAdapter, final MethodVisitor mv, final int access, final String name, final String desc) {
     super(mv, access, name, desc);
     this.classAdapter = classAdapter;
+    this.aopTransactionScope =  classAdapter.useAopTransactionScope() ? AOPTRANSACTIONSCOPE : HELPSCOPETRANS;
     this.profileMethod = new ProfileMethodInstruction(classAdapter, mv, name);
     // inherit from class level Transactional annotation
     AnnotationInfo parentInfo = classAdapter.getClassAnnotationInfo();
@@ -314,10 +315,9 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
     }
 
     mv.visitVarInsn(ALOAD, posTxScope);
-    mv.visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "enter", "("
+    mv.visitMethodInsn(INVOKESTATIC, aopTransactionScope, "enter", "("
       + txScopeType.getDescriptor() + ")V", false);
   }
-
 
   @Override
   protected void onFinally(int opcode) {
@@ -337,7 +337,7 @@ class MethodAdapter extends FinallyAdapter implements EnhanceConstants, Opcodes 
       box(getReturnType());
     }
     visitIntInsn(SIPUSH, opcode);
-    visitMethodInsn(INVOKESTATIC, helpScopeTrans.getInternalName(), "exit", "(Ljava/lang/Object;I)V", false);
+    visitMethodInsn(INVOKESTATIC, aopTransactionScope, "exit", "(Ljava/lang/Object;I)V", false);
   }
 
 }
