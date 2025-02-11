@@ -341,6 +341,10 @@ public final class ClassAdapterTransactional extends ClassVisitor {
     return enhanceContext.isEnableProfileLocation();
   }
 
+  boolean useAopTransactionScope() {
+    return enhanceContext.useAopTransactionScope();
+  }
+
   int nextQueryProfileLocation() {
     return queryProfileCount++;
   }

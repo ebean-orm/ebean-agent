@@ -498,6 +498,10 @@ public final class EnhanceContext {
     return enhancementVersion >= 148;
   }
 
+  public boolean useAopTransactionScope() {
+    return enhancementVersion >= 149;
+  }
+
   public ProfileLineNumberMode profileLineMode() {
     return profileLineNumberMode;
   }
