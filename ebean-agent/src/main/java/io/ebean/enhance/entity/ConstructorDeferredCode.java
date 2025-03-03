@@ -45,7 +45,7 @@ final class ConstructorDeferredCode implements Opcodes {
     INVOKE_SPECIAL,
     KT_CHECKCAST,   // optional kotlin state
     KT_LABEL,        // optional kotlin state
-    KT_EMPTYLIST
+    EMPTY
   }
 
   private static final ALoad ALOAD_INSTRUCTION = new ALoad();
@@ -130,11 +130,25 @@ final class ConstructorDeferredCode implements Opcodes {
       stateInitialiseType = owner;
       return true;
     }
-    if (opcode == INVOKESTATIC && stateAload() && kotlinEmptyList(owner, name, desc)) {
-      codes.add(new NoArgInit(opcode, owner, name, desc, itf));
-      state = State.KT_EMPTYLIST;
-      stateInitialiseType = "java/util/ArrayList";
-      return true;
+    if (opcode == INVOKESTATIC && stateAload()) {
+      if (emptyList(owner, name, desc) || kotlinEmptyList(owner, name, desc)) {
+        codes.add(new NoArgInit(opcode, owner, name, desc, itf));
+        state = State.EMPTY;
+        stateInitialiseType = "java/util/ArrayList";
+        return true;
+      }
+      if (emptySet(owner, name, desc)) {
+        codes.add(new NoArgInit(opcode, owner, name, desc, itf));
+        state = State.EMPTY;
+        stateInitialiseType = "java/util/LinkedHashSet";
+        return true;
+      }
+      if (emptyMap(owner, name, desc)) {
+        codes.add(new NoArgInit(opcode, owner, name, desc, itf));
+        state = State.EMPTY;
+        stateInitialiseType = "java/util/LinkedHashMap";
+        return true;
+      }
     }
     flush();
     return false;
@@ -142,6 +156,24 @@ final class ConstructorDeferredCode implements Opcodes {
 
   private boolean isNoArgInit(String name, String desc) {
     return name.equals(INIT) && desc.equals(NOARG_VOID);
+  }
+
+  private boolean emptyList(String owner, String name, String desc) {
+    return desc.equals("()Ljava/util/List;")
+      && ((owner.equals("java/util/List") && name.equals("of"))
+      || (owner.equals("java/util/Collections") && name.equals("emptyList")));
+  }
+
+  private boolean emptySet(String owner, String name, String desc) {
+    return desc.equals("()Ljava/util/Set;")
+      && ((owner.equals("java/util/Set") && name.equals("of"))
+      || (owner.equals("java/util/Collections") && name.equals("emptySet")));
+  }
+
+  private boolean emptyMap(String owner, String name, String desc) {
+    return desc.equals("()Ljava/util/Map;")
+      && ((owner.equals("java/util/Map") && name.equals("of"))
+      || (owner.equals("java/util/Collections") && name.equals("emptyMap")));
   }
 
   private boolean kotlinEmptyList(String owner, String name, String desc) {
@@ -232,17 +264,17 @@ final class ConstructorDeferredCode implements Opcodes {
   }
 
   private boolean stateConsumeDeferred() {
-    return state == State.INVOKE_SPECIAL || state == State.KT_CHECKCAST || state == State.KT_EMPTYLIST;
+    return state == State.INVOKE_SPECIAL || state == State.KT_CHECKCAST || state == State.EMPTY;
   }
 
   /**
    * Return true if the type being initialised is valid for auto initialisation of ToMany or DbArray.
    */
   private boolean isConsumeManyType() {
-    return ("java/util/ArrayList".equals(stateInitialiseType)
+    return "java/util/ArrayList".equals(stateInitialiseType)
       || "java/util/LinkedHashSet".equals(stateInitialiseType)
-      || "java/util/HashSet".equals(stateInitialiseType));
-      //|| "java/util/LinkedHashMap".equals(stateInitialiseType)
+      || "java/util/HashSet".equals(stateInitialiseType)
+      || "java/util/LinkedHashMap".equals(stateInitialiseType);
       //|| "java/util/HashMap".equals(stateInitialiseType));
   }
 
