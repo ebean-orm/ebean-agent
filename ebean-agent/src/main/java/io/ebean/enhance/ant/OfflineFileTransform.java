@@ -1,5 +1,6 @@
 package io.ebean.enhance.ant;
 
+import io.ebean.enhance.EnhancementException;
 import io.ebean.enhance.Transformer;
 import io.ebean.enhance.common.InputStreamTransform;
 
@@ -60,7 +61,6 @@ public class OfflineFileTransform {
    * Process the packageNames as comma delimited string.
    */
   public void process(String packageNames) {
-
     if (packageNames == null) {
       // just process all directories
       processPackage("");
@@ -69,7 +69,6 @@ public class OfflineFileTransform {
 
     Set<String> pkgNames = new LinkedHashSet<>();
     Collections.addAll(pkgNames, packageNames.split(","));
-
     process(pkgNames);
   }
 
@@ -81,7 +80,6 @@ public class OfflineFileTransform {
    * </p>
    */
   public void process(Set<String> packageNames) {
-
     if (packageNames == null || packageNames.isEmpty()) {
       // just process all directories
       inputStreamTransform.log(2, "processing all directories (as no explicit packages)");
@@ -90,9 +88,7 @@ public class OfflineFileTransform {
     }
 
     for (String pkgName : packageNames) {
-
       String pkg = pkgName.trim().replace('.', '/');
-
       if (pkg.endsWith("**")) {
         pkg = pkg.substring(0, pkg.length() - 2);
       } else if (pkg.endsWith("*")) {
@@ -100,7 +96,6 @@ public class OfflineFileTransform {
       }
 
       pkg = trimSlash(pkg);
-
       processPackage(pkg);
     }
   }
@@ -142,15 +137,20 @@ public class OfflineFileTransform {
   }
 
   private void transformFile(File file) throws IOException, IllegalClassFormatException {
-
     String className = getClassName(file);
-
-    byte[] result = inputStreamTransform.transform(className, file);
-
-    if (result != null) {
-      InputStreamTransform.writeBytes(result, file);
-      if (listener != null && logLevel > 0) {
-        listener.logEvent("Enhanced " + file);
+    try {
+      byte[] result = inputStreamTransform.transform(className, file);
+      if (result != null) {
+        InputStreamTransform.writeBytes(result, file);
+        if (listener != null && logLevel > 0) {
+          listener.logEvent("Enhanced " + file);
+        }
+      }
+    } catch (EnhancementException e) {
+      if (listener != null) {
+        listener.logError("Error enhancing class " + className + " " + e.getMessage());
+      } else {
+        throw e;
       }
     }
   }

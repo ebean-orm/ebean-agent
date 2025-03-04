@@ -45,7 +45,8 @@ final class ConstructorDeferredCode implements Opcodes {
     INVOKE_SPECIAL,
     KT_CHECKCAST,   // optional kotlin state
     KT_LABEL,        // optional kotlin state
-    EMPTY
+    EMPTY,
+    MAYBE_UNSUPPORTED
   }
 
   private static final ALoad ALOAD_INSTRUCTION = new ALoad();
@@ -131,26 +132,27 @@ final class ConstructorDeferredCode implements Opcodes {
       return true;
     }
     if (opcode == INVOKESTATIC && stateAload()) {
-      if (emptyList(owner, name, desc) || kotlinEmptyList(owner, name, desc)) {
+      if (kotlinEmptyList(owner, name, desc)) { // emptyList(owner, name, desc) ||
         codes.add(new NoArgInit(opcode, owner, name, desc, itf));
         state = State.EMPTY;
         stateInitialiseType = "java/util/ArrayList";
         return true;
       }
-      if (emptySet(owner, name, desc)) {
-        codes.add(new NoArgInit(opcode, owner, name, desc, itf));
-        state = State.EMPTY;
-        stateInitialiseType = "java/util/LinkedHashSet";
-        return true;
-      }
-      if (emptyMap(owner, name, desc)) {
-        codes.add(new NoArgInit(opcode, owner, name, desc, itf));
-        state = State.EMPTY;
-        stateInitialiseType = "java/util/LinkedHashMap";
-        return true;
-      }
+//      if (emptySet(owner, name, desc)) {
+//        codes.add(new NoArgInit(opcode, owner, name, desc, itf));
+//        state = State.EMPTY;
+//        stateInitialiseType = "java/util/LinkedHashSet";
+//        return true;
+//      }
+//      if (emptyMap(owner, name, desc)) {
+//        codes.add(new NoArgInit(opcode, owner, name, desc, itf));
+//        state = State.EMPTY;
+//        stateInitialiseType = "java/util/LinkedHashMap";
+//        return true;
+//      }
     }
     flush();
+    state = State.MAYBE_UNSUPPORTED;
     return false;
   }
 
@@ -158,23 +160,23 @@ final class ConstructorDeferredCode implements Opcodes {
     return name.equals(INIT) && desc.equals(NOARG_VOID);
   }
 
-  private boolean emptyList(String owner, String name, String desc) {
-    return desc.equals("()Ljava/util/List;")
-      && ((owner.equals("java/util/List") && name.equals("of"))
-      || (owner.equals("java/util/Collections") && name.equals("emptyList")));
-  }
-
-  private boolean emptySet(String owner, String name, String desc) {
-    return desc.equals("()Ljava/util/Set;")
-      && ((owner.equals("java/util/Set") && name.equals("of"))
-      || (owner.equals("java/util/Collections") && name.equals("emptySet")));
-  }
-
-  private boolean emptyMap(String owner, String name, String desc) {
-    return desc.equals("()Ljava/util/Map;")
-      && ((owner.equals("java/util/Map") && name.equals("of"))
-      || (owner.equals("java/util/Collections") && name.equals("emptyMap")));
-  }
+//  private boolean emptyList(String owner, String name, String desc) {
+//    return desc.equals("()Ljava/util/List;")
+//      && ((owner.equals("java/util/List") && name.equals("of"))
+//      || (owner.equals("java/util/Collections") && name.equals("emptyList")));
+//  }
+//
+//  private boolean emptySet(String owner, String name, String desc) {
+//    return desc.equals("()Ljava/util/Set;")
+//      && ((owner.equals("java/util/Set") && name.equals("of"))
+//      || (owner.equals("java/util/Collections") && name.equals("emptySet")));
+//  }
+//
+//  private boolean emptyMap(String owner, String name, String desc) {
+//    return desc.equals("()Ljava/util/Map;")
+//      && ((owner.equals("java/util/Map") && name.equals("of"))
+//      || (owner.equals("java/util/Collections") && name.equals("emptyMap")));
+//  }
 
   private boolean kotlinEmptyList(String owner, String name, String desc) {
     return owner.equals("kotlin/collections/CollectionsKt")
@@ -188,13 +190,18 @@ final class ConstructorDeferredCode implements Opcodes {
   boolean consumeVisitFieldInsn(int opcode, String owner, String name, String desc) {
     if (opcode == PUTFIELD) {
       if (stateConsumeDeferred()) {
-        if (meta.isConsumeInitMany(name) && isConsumeManyType()) {
-          if (meta.isLog(3)) {
-            meta.log("... consumed init of many: " + name);
+        if (meta.isConsumeInitMany(name)) {
+          if (isConsumeManyType()) {
+            if (meta.isLog(3)) {
+              meta.log("... consumed init of many: " + name);
+            }
+            state = State.UNSET;
+            codes.clear();
+            return true;
+          } else {
+            // a OneToMany/ManyToMany is initialised in an unsupported manor
+            meta.addUnsupportedInitMany(name);
           }
-          state = State.UNSET;
-          codes.clear();
-          return true;
         } else if (meta.isInitTransient(name)) {
           // keep the initialisation code for transient to 'replay'
           // it when adding a default constructor if needed
@@ -264,7 +271,7 @@ final class ConstructorDeferredCode implements Opcodes {
   }
 
   private boolean stateConsumeDeferred() {
-    return state == State.INVOKE_SPECIAL || state == State.KT_CHECKCAST || state == State.EMPTY;
+    return state == State.INVOKE_SPECIAL || state == State.KT_CHECKCAST || state == State.EMPTY || state == State.MAYBE_UNSUPPORTED;
   }
 
   /**

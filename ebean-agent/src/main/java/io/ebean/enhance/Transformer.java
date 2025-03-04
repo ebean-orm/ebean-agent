@@ -191,6 +191,9 @@ public class Transformer implements ClassFileTransformer {
       // the class is an interface
       log(8, className, "No Enhancement required " + e.getMessage());
       return null;
+    } catch (EnhancementException e) {
+      enhanceContext.log(className, "Transform error " + e.getMessage());
+      throw e;
     } catch (IllegalArgumentException | IllegalStateException e) {
       log(2, className, "No enhancement on class due to " + e);
       return null;
