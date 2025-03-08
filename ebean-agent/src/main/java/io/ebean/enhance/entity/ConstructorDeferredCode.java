@@ -189,7 +189,7 @@ final class ConstructorDeferredCode implements Opcodes {
    */
   boolean consumeVisitFieldInsn(int opcode, String owner, String name, String desc) {
     if (opcode == PUTFIELD) {
-      if (state == State.MAYBE_UNSUPPORTED && meta.isConsumeInitMany(name)) {
+      if (meta.isConsumeInitMany(name) && unsupportedInitialisation()) {
         // a OneToMany/ManyToMany is initialised in an unsupported manor
         meta.addUnsupportedInitMany(name);
         flush();
@@ -219,6 +219,15 @@ final class ConstructorDeferredCode implements Opcodes {
     }
     flush();
     return false;
+  }
+
+  /**
+   * Return true when a OneToMany or ManyToMany is not initialised in a supported manor.
+   */
+  private boolean unsupportedInitialisation() {
+    return state == State.MAYBE_UNSUPPORTED
+      || state == State.UNSET // proceeded by GETSTATIC field bytecode like Collections.EMPTY_LIST
+      || state == State.INVOKE_SPECIAL && !isConsumeManyType(); // e.g. new BeanList()
   }
 
   boolean consumeVisitLabel(Label label) {
