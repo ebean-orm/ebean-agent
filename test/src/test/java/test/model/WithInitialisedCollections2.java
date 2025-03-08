@@ -26,6 +26,11 @@ public class WithInitialisedCollections2 extends BaseEntity {
   @OneToMany(cascade = CascadeType.PERSIST)
   Map<Long,Contact> mapCollEmpty = Collections.emptyMap();
 
+  // @OneToMany final List<Contact> listCollNotValidInitialisation0 = new io.ebean.common.BeanList<>();
+  // @OneToMany final List<Contact> listCollNotValidInitialisation1 = Collections.EMPTY_LIST;
+  // @OneToMany final List<Contact> listCollNotValidInitialisation2 = List.of(new Contact("junk"));
+  // @OneToMany final List<Contact> listCollNotValidInitialisation3 = Collections.unmodifiableList(Collections.emptyList());
+
   @Transient
   List<String> transientList = List.of();
   @Transient
