@@ -79,6 +79,10 @@ final class ConstructorDeferredCode implements Opcodes {
       state = State.ALOAD;
       return true;
     }
+    if (opcode == ALOAD) {
+      // maybe constructor initialisation of OneToMany
+      state = State.ALOAD;
+    }
     return false;
   }
 
@@ -225,6 +229,10 @@ final class ConstructorDeferredCode implements Opcodes {
    * Return true when a OneToMany or ManyToMany is not initialised in a supported manor.
    */
   private boolean unsupportedInitialisation() {
+    if (state == State.ALOAD) {
+      // allow constructor initialisation of a OneToMany
+      return false;
+    }
     return state == State.MAYBE_UNSUPPORTED
       || state == State.UNSET // proceeded by GETSTATIC field bytecode like Collections.EMPTY_LIST
       || state == State.INVOKE_SPECIAL && !isConsumeManyType(); // e.g. new BeanList()
