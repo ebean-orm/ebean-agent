@@ -50,6 +50,7 @@ public class ClassMeta {
   /**
    * If enhancement is adding a default constructor - only default constructors are supported initialising transient fields.
    */
+  private final Set<String> unsupportedInitMany = new LinkedHashSet<>();
   private final Set<String> unsupportedTransientInitialisation = new LinkedHashSet<>();
   private final Map<String, CapturedInitCode> transientInitCode = new LinkedHashMap<>();
   private final LinkedHashMap<String, FieldMeta> fields = new LinkedHashMap<>();
@@ -445,6 +446,20 @@ public class ClassMeta {
 
   public Collection<CapturedInitCode> transientInit() {
     return transientInitCode.values();
+  }
+
+  public void addUnsupportedInitMany(String name) {
+    unsupportedInitMany.add(name);
+  }
+
+  public boolean hasUnsupportedInitMany() {
+    return !unsupportedInitMany.isEmpty();
+  }
+
+  public String initFieldErrorMessage() {
+    return "ERROR: Unsupported initialisation of @OneToMany or @ManyToMany on: "
+      + className + " fields: " + unsupportedInitMany
+      + " Refer: https://ebean.io/docs/trouble-shooting#initialisation-error";
   }
 
   public void addUnsupportedTransientInit(String name) {

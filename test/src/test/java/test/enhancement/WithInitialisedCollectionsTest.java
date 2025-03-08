@@ -7,10 +7,10 @@ import test.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WithInitialisedCollectionsTest extends BaseTest {
-
 
   @Test
   public void test() {
@@ -18,7 +18,7 @@ public class WithInitialisedCollectionsTest extends BaseTest {
     WithInitialisedCollections bean = new WithInitialisedCollections();
     assertNotNull(bean);
 
-    assertTrue(bean instanceof EntityBean);
+    assertInstanceOf(EntityBean.class, bean);
 
     EntityBean eb = (EntityBean)bean;
     String[] props = eb._ebean_getPropertyNames();
@@ -43,7 +43,6 @@ public class WithInitialisedCollectionsTest extends BaseTest {
 
     assertNotNull(bean.getMyset());
     assertNotNull(bean.getMyLinkedSet());
-
   }
 
 
@@ -53,7 +52,7 @@ public class WithInitialisedCollectionsTest extends BaseTest {
     WithInitialisedCollectionAndTransient bean = new WithInitialisedCollectionAndTransient();
     assertNotNull(bean);
 
-    assertTrue(bean instanceof EntityBean);
+    assertInstanceOf(EntityBean.class, bean);
 
     assertNotNull(bean.getBuffer());
 
@@ -69,7 +68,7 @@ public class WithInitialisedCollectionsTest extends BaseTest {
     WithInitialisedCollectionAndAtTransient bean = new WithInitialisedCollectionAndAtTransient();
     assertNotNull(bean);
 
-    assertTrue(bean instanceof EntityBean);
+    assertInstanceOf(EntityBean.class, bean);
 
     assertNotNull(bean.getBuffer());
 
@@ -87,6 +86,6 @@ public class WithInitialisedCollectionsTest extends BaseTest {
 
     WithInitialisedCollectionsAndConstructor bean = new WithInitialisedCollectionsAndConstructor(contacts);
 
-    assertTrue(bean.getContacts().size() == 1);
+    assertThat(bean.getContacts()).hasSize(1);
   }
 }

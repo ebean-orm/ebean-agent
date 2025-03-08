@@ -28,6 +28,7 @@ public final class AgentManifest {
   private boolean transientInternalFields;
   private boolean transientInit;
   private boolean transientInitThrowError;
+  private boolean unsupportedInitThrowError = true;
   private boolean checkNullManyFields = true;
   private boolean enableProfileLocation = true;
   private boolean enableEntityFieldAccess;
@@ -149,6 +150,10 @@ public final class AgentManifest {
    */
   public boolean isTransientInitThrowError() {
     return transientInitThrowError;
+  }
+
+  public boolean isUnsupportedInitThrowError() {
+    return unsupportedInitThrowError;
   }
 
   /**
@@ -315,6 +320,7 @@ public final class AgentManifest {
     transientInternalFields = bool("transient-internal-fields", transientInternalFields, attributes);
     checkNullManyFields = bool("check-null-many-fields", checkNullManyFields, attributes);
     allowNullableDbArray = bool("allow-nullable-dbarray", allowNullableDbArray, attributes);
+    unsupportedInitThrowError = bool("unsupported-init-error", unsupportedInitThrowError, attributes);
   }
 
   private boolean bool(String key, boolean defaultValue, Attributes attributes) {

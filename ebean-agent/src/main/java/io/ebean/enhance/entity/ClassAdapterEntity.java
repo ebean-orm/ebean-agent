@@ -1,5 +1,6 @@
 package io.ebean.enhance.entity;
 
+import io.ebean.enhance.EnhancementException;
 import io.ebean.enhance.asm.AnnotationVisitor;
 import io.ebean.enhance.asm.ClassVisitor;
 import io.ebean.enhance.asm.FieldVisitor;
@@ -204,6 +205,14 @@ public final class ClassAdapterEntity extends ClassVisitor implements EnhanceCon
   public void visitEnd() {
     if (!classMeta.isEntityEnhancementRequired()) {
       throw new NoEnhancementRequiredException();
+    }
+    if (classMeta.hasUnsupportedInitMany()) {
+      if (classMeta.context().isUnsupportedInitThrowError()) {
+        throw new EnhancementException(classMeta.initFieldErrorMessage());
+      } else {
+        // the default constructor being added will leave some transient fields uninitialised (null, 0, false etc)
+        System.err.println(classMeta.initFieldErrorMessage());
+      }
     }
     if (!classMeta.hasStaticInit()) {
       IndexFieldWeaver.addPropertiesInit(cv, classMeta);
