@@ -17,18 +17,22 @@ class WithInitialisedCollections2Test extends BaseTest {
 
     assertThat(bean.listOf()).isInstanceOf(BeanList.class);
     assertThat(bean.listCollEmpty()).isInstanceOf(BeanList.class);
+    assertThat(bean.listCollLinked()).isInstanceOf(BeanList.class);
     assertThat(bean.setOf()).isInstanceOf(BeanSet.class);
     assertThat(bean.setCollEmpty()).isInstanceOf(BeanSet.class);
     assertThat(bean.mapOf()).isInstanceOf(BeanMap.class);
     assertThat(bean.mapCollEmpty()).isInstanceOf(BeanMap.class);
+    assertThat(bean.mapCollHash()).isInstanceOf(BeanMap.class);
 
 
     assertThat(bean.transientList()).isNotInstanceOf(BeanList.class);
     assertThat(bean.transientList2()).isNotInstanceOf(BeanList.class);
+    assertThat(bean.transientList3()).isNotInstanceOf(BeanList.class);
     assertThat(bean.transientSet()).isNotInstanceOf(BeanSet.class);
     assertThat(bean.transientSet2()).isNotInstanceOf(BeanSet.class);
     assertThat(bean.transientMap()).isNotInstanceOf(BeanMap.class);
     assertThat(bean.transientMap2()).isNotInstanceOf(BeanMap.class);
+    assertThat(bean.transientMap3()).isNotInstanceOf(BeanMap.class);
 
 
     // these methods work because the underlying collection is a BeanCollection
