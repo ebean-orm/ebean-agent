@@ -297,10 +297,11 @@ final class ConstructorDeferredCode implements Opcodes {
    */
   private boolean isConsumeManyType() {
     return "java/util/ArrayList".equals(stateInitialiseType)
+      || "java/util/LinkedList".equals(stateInitialiseType)
       || "java/util/LinkedHashSet".equals(stateInitialiseType)
       || "java/util/HashSet".equals(stateInitialiseType)
-      || "java/util/LinkedHashMap".equals(stateInitialiseType);
-      //|| "java/util/HashMap".equals(stateInitialiseType));
+      || "java/util/LinkedHashMap".equals(stateInitialiseType)
+      || "java/util/HashMap".equals(stateInitialiseType);
   }
 
   private static class ALoad implements DeferredCode {

@@ -25,6 +25,11 @@ public class WithInitialisedCollections2 extends BaseEntity {
   final Set<Contact> setCollEmpty = Collections.emptySet();
   @OneToMany(cascade = CascadeType.PERSIST)
   Map<Long,Contact> mapCollEmpty = Collections.emptyMap();
+  @OneToMany(cascade = CascadeType.PERSIST)
+  Map<Long,Contact> mapCollHash = new HashMap<>();
+
+  @OneToMany(cascade = CascadeType.PERSIST)
+  final List<Contact> listCollLinked = new LinkedList<>();
 
   // @OneToMany final List<Contact> listCollNotValidInitialisation0 = new io.ebean.common.BeanList<>();
   // @OneToMany final List<Contact> listCollNotValidInitialisation1 = Collections.EMPTY_LIST;
@@ -38,11 +43,15 @@ public class WithInitialisedCollections2 extends BaseEntity {
   @Transient
   Map<String,Contact> transientMap = Map.of();
   @Transient
+  List<String> transientList3 = new LinkedList<>();
+  @Transient
   List<String> transientList2 = Collections.emptyList();
   @Transient
   Set<String> transientSet2 = Collections.emptySet();
   @Transient
   Map<String,Contact> transientMap2 = Collections.emptyMap();
+  @Transient
+  Map<String,Contact> transientMap3 = new HashMap<>();
 
   public String name() {
     return name;
@@ -99,5 +108,21 @@ public class WithInitialisedCollections2 extends BaseEntity {
 
   public Map<String, Contact> transientMap2() {
     return transientMap2;
+  }
+
+  public List<Contact> listCollLinked() {
+    return listCollLinked;
+  }
+
+  public List<String> transientList3() {
+    return transientList3;
+  }
+
+  public Map<Long, Contact> mapCollHash() {
+    return mapCollHash;
+  }
+
+  public Map<String, Contact> transientMap3() {
+    return transientMap3;
   }
 }
