@@ -94,6 +94,11 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.38</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -104,6 +109,11 @@
         <version>3.11.0</version>
         <configuration>
           <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.38</version>
+            </path>
             <path>
               <groupId>io.ebean</groupId>
               <artifactId>querybean-generator</artifactId>
