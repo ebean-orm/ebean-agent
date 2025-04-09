@@ -46,6 +46,7 @@ final class ConstructorDeferredCode implements Opcodes {
     KT_CHECKCAST,   // optional kotlin state
     KT_LABEL,        // optional kotlin state
     EMPTY,
+    GETFIELD,
     MAYBE_UNSUPPORTED
   }
 
@@ -222,6 +223,9 @@ final class ConstructorDeferredCode implements Opcodes {
       }
     }
     flush();
+    if (opcode == GETFIELD) {
+      state = State.GETFIELD;
+    }
     return false;
   }
 
@@ -229,8 +233,8 @@ final class ConstructorDeferredCode implements Opcodes {
    * Return true when a OneToMany or ManyToMany is not initialised in a supported manor.
    */
   private boolean unsupportedInitialisation() {
-    if (state == State.ALOAD) {
-      // allow constructor initialisation of a OneToMany
+    if (state == State.ALOAD || state == State.GETFIELD) {
+      // allow constructor initialisation of a OneToMany via constructor arg or builder
       return false;
     }
     return state == State.MAYBE_UNSUPPORTED
