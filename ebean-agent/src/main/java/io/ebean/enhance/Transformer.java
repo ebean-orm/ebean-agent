@@ -244,7 +244,7 @@ public class Transformer implements ClassFileTransformer {
   private void logUnresolvedCommonSuper(String className) {
     if (!keepUnresolved && !unresolved.isEmpty()) {
       for (CommonSuperUnresolved commonUnresolved : unresolved) {
-        log(0, className, commonUnresolved.getMessage());
+        log(2, className, commonUnresolved.getMessage());
       }
       unresolved.clear();
     }
