@@ -29,7 +29,6 @@
 package io.ebean.enhance.asm.commons;
 
 import io.ebean.enhance.asm.*;
-import io.ebean.enhance.asm.ByteVector;
 
 /**
  * A ModuleTarget attribute. This attribute is specific to the OpenJDK and may change in the future.

@@ -27,12 +27,7 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.AnnotationVisitor;
-import io.ebean.enhance.asm.Label;
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.Type;
-import io.ebean.enhance.asm.TypePath;
+import io.ebean.enhance.asm.*;
 
 /**
  * A {@link MethodVisitor} that renumbers local variables in their order of appearance. This adapter

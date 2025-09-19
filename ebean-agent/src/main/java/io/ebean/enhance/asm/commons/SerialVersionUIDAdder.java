@@ -27,6 +27,11 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm.commons;
 
+import io.ebean.enhance.asm.ClassVisitor;
+import io.ebean.enhance.asm.FieldVisitor;
+import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
@@ -36,10 +41,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import io.ebean.enhance.asm.ClassVisitor;
-import io.ebean.enhance.asm.FieldVisitor;
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
 
 /**
  * A {@link ClassVisitor} that adds a serial version unique identifier to a class if missing. A
