@@ -28,11 +28,10 @@
 
 package io.ebean.enhance.asm.commons;
 
+import io.ebean.enhance.asm.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import io.ebean.enhance.asm.*;
-import io.ebean.enhance.asm.ByteVector;
 
 /**
  * A ModuleHashes attribute. This attribute is specific to the OpenJDK and may change in the future.

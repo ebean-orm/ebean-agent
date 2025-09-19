@@ -27,16 +27,12 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package io.ebean.enhance.asm.commons;
 
+import io.ebean.enhance.asm.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import io.ebean.enhance.asm.ConstantDynamic;
-import io.ebean.enhance.asm.Handle;
-import io.ebean.enhance.asm.Label;
-import io.ebean.enhance.asm.MethodVisitor;
-import io.ebean.enhance.asm.Opcodes;
-import io.ebean.enhance.asm.Type;
 
 /**
  * A {@link MethodVisitor} to insert before, after and around advices in methods and constructors.
