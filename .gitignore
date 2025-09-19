@@ -6,4 +6,5 @@ target/
 .idea
 log/
 *.sql
+.DS_Store
 
