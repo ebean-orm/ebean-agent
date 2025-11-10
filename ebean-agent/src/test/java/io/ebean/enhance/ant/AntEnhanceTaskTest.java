@@ -10,7 +10,7 @@ class AntEnhanceTaskTest {
   @Test
   void combine() {
     String result = AntEnhanceTask.combine("com/one/**, com/two/**", "debug=1");
-    assertThat(result).isEqualTo("packages=com/one/, com/two/,debug=1");
+    assertThat(result).isEqualTo("packages=com/one/, com/two/;debug=1");
   }
 
   @Test
