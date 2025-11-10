@@ -4,8 +4,6 @@ import io.ebean.enhance.Transformer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
-import java.io.File;
-
 /**
  * An ANT task that can enhance entity beans etc for use by Ebean.
  * <p>
@@ -25,18 +23,16 @@ import java.io.File;
  * </ul>
  * </p>
  *
- * <pre class="code">
+ * <pre class="code">{@code
  *
- * 	 &lt;taskdef name=&quot;ebeanEnhance&quot; classname=&quot;AntEnhanceTask&quot; classpath=&quot;bin&quot; /&gt;
- *
- *   &lt;target name=&quot;enhance&quot; depends=&quot;compile&quot;&gt;
- *       &lt;ebeanEnhance
- *            classSource=&quot;${bin.dir}&quot;
- *            packages=&quot;com.avaje.ebean.meta.**, com.acme.myapp.entity.**&quot;
- *            transformArgs=&quot;debug=1&quot; /&gt;
- *   &lt;/target&gt;
- *
- * </pre>
+ * 	 <taskdef name="ebeanEnhance" classname="AntEnhanceTask" classpath="bin" />
+ *   <target name="enhance" depends="compile">
+ *       <ebeanEnhance
+ *            classSource="${bin.dir}"
+ *            packages="com.avaje.ebean.meta.**, com.acme.myapp.entity.**"
+ *            transformArgs="debug=1" />
+ *   </target>
+ * }</pre>
  */
 public class AntEnhanceTask extends Task {
 
@@ -47,22 +43,24 @@ public class AntEnhanceTask extends Task {
 
   @Override
   public void execute() throws BuildException {
-
-//    StringBuilder extraClassPath = new StringBuilder();
-//    extraClassPath.append(classSource);
-//    if (classpath != null)
-//    {
-//      if (!extraClassPath.toString().endsWith(";"))
-//      {
-//        extraClassPath.append(";");
-//      }
-//      extraClassPath.append(classpath);
-//    }
-    Transformer t = new Transformer(null, transformArgs);//extraClassPath.toString(),
+    String agentArgs = combine(packages, transformArgs);
+    Transformer t = new Transformer(null, agentArgs);
 
     ClassLoader cl = AntEnhanceTask.class.getClassLoader();
     OfflineFileTransform ft = new OfflineFileTransform(t, cl, classSource);
     ft.process(packages);
+  }
+
+  /**
+   * Combine the packages into the transformArgs to filter enhanced classes via PackageFilter.
+   */
+  static String combine(String packages, String transformArgs) {
+    StringBuilder args = new StringBuilder();
+    args.append("packages=").append(packages.replace("**", ""));
+    if (transformArgs != null && !transformArgs.isEmpty()) {
+      args.append(',').append(transformArgs);
+    }
+    return args.toString();
   }
 
   /**
