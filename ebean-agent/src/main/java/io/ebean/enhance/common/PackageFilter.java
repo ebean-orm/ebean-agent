@@ -10,10 +10,11 @@ final class PackageFilter {
   PackageFilter(String packages) {
     List<String> prefixes = new ArrayList<>();
     for (String pkg : packages.split(",")) {
-      String replace = pkg.replace('.', '/').trim() + '/';
-      if (!replace.isEmpty()) {
-        prefixes.add(replace);
+      String replace = pkg.replace('.', '/').trim();
+      if (!replace.endsWith("/")) {
+        replace += '/';
       }
+      prefixes.add(replace);
     }
     packagePrefixes = prefixes.toArray(new String[]{});
   }
