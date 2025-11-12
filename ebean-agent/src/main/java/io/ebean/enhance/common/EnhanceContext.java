@@ -230,8 +230,8 @@ public final class EnhanceContext {
    * known libraries JDBC drivers etc can be skipped.
    */
   public boolean isIgnoreClass(String className) {
-    if (packageFilter != null && packageFilter.ignore(className)) {
-      return true;
+    if (packageFilter != null) {
+      return packageFilter.ignore(className);
     }
     return ignoreClassHelper.isIgnoreClass(className);
   }

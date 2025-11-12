@@ -1,5 +1,8 @@
 package io.ebean.enhance.ant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.ebean.enhance.Transformer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -55,12 +58,14 @@ public class AntEnhanceTask extends Task {
    * Combine the packages into the transformArgs to filter enhanced classes via PackageFilter.
    */
   static String combine(String packages, String transformArgs) {
-    StringBuilder args = new StringBuilder();
-    args.append("packages=").append(packages.replace("**", ""));
-    if (transformArgs != null && !transformArgs.isEmpty()) {
-      args.append(',').append(transformArgs);
+    List<String> args = new ArrayList<>();
+    if (packages != null && !packages.isEmpty()) {
+      args.add("packages=" + packages.replace("**", ""));
     }
-    return args.toString();
+    if (transformArgs != null && !transformArgs.isEmpty()) {
+      args.add(transformArgs);
+    }
+    return String.join(";", args);
   }
 
   /**
