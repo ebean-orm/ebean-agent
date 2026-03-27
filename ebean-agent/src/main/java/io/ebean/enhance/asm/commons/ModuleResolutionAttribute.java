@@ -28,7 +28,11 @@
 
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.*;
+import io.ebean.enhance.asm.Attribute;
+import io.ebean.enhance.asm.ByteVector;
+import io.ebean.enhance.asm.ClassReader;
+import io.ebean.enhance.asm.ClassWriter;
+import io.ebean.enhance.asm.Label;
 
 /**
  * A ModuleResolution attribute. This attribute is specific to the OpenJDK and may change in the
@@ -78,7 +82,7 @@ public final class ModuleResolutionAttribute extends Attribute {
 
   /**
    * Constructs an empty {@link ModuleResolutionAttribute}. This object can be passed as a prototype
-   * to the {@link ClassReader#accept(ClassVisitor, Attribute[], int)} method.
+   * to the {@link ClassReader#accept(io.ebean.enhance.asm.ClassVisitor, Attribute[], int)} method.
    */
   public ModuleResolutionAttribute() {
     this(0);
