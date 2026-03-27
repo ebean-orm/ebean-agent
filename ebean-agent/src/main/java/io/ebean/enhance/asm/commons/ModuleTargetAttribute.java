@@ -28,7 +28,11 @@
 
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.*;
+import io.ebean.enhance.asm.Attribute;
+import io.ebean.enhance.asm.ByteVector;
+import io.ebean.enhance.asm.ClassReader;
+import io.ebean.enhance.asm.ClassWriter;
+import io.ebean.enhance.asm.Label;
 
 /**
  * A ModuleTarget attribute. This attribute is specific to the OpenJDK and may change in the future.
@@ -52,7 +56,7 @@ public final class ModuleTargetAttribute extends Attribute {
 
   /**
    * Constructs an empty {@link ModuleTargetAttribute}. This object can be passed as a prototype to
-   * the {@link ClassReader#accept(ClassVisitor, Attribute[], int)} method.
+   * the {@link ClassReader#accept(io.ebean.enhance.asm.ClassVisitor, Attribute[], int)} method.
    */
   public ModuleTargetAttribute() {
     this(null);

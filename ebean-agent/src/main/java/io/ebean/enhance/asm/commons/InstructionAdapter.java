@@ -28,7 +28,12 @@
 
 package io.ebean.enhance.asm.commons;
 
-import io.ebean.enhance.asm.*;
+import io.ebean.enhance.asm.ConstantDynamic;
+import io.ebean.enhance.asm.Handle;
+import io.ebean.enhance.asm.Label;
+import io.ebean.enhance.asm.MethodVisitor;
+import io.ebean.enhance.asm.Opcodes;
+import io.ebean.enhance.asm.Type;
 
 /**
  * A {@link MethodVisitor} providing a more detailed API to generate and transform instructions.
@@ -539,6 +544,9 @@ public class InstructionAdapter extends MethodVisitor {
       final String descriptor,
       final Handle bootstrapMethodHandle,
       final Object... bootstrapMethodArguments) {
+    if (api < Opcodes.ASM5) {
+      throw new UnsupportedOperationException("This feature requires ASM5");
+    }
     invokedynamic(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
   }
 
@@ -1064,7 +1072,7 @@ public class InstructionAdapter extends MethodVisitor {
    * @param descriptor the method's descriptor (see {@link Type}).
    * @deprecated use {@link #invokevirtual(String, String, String, boolean)} instead.
    */
-  @Deprecated
+  @Deprecated(forRemoval = false)
   public void invokevirtual(final String owner, final String name, final String descriptor) {
     if (api >= Opcodes.ASM5) {
       invokevirtual(owner, name, descriptor, false);
@@ -1103,7 +1111,7 @@ public class InstructionAdapter extends MethodVisitor {
    * @param descriptor the method's descriptor (see {@link Type}).
    * @deprecated use {@link #invokespecial(String, String, String, boolean)} instead.
    */
-  @Deprecated
+  @Deprecated(forRemoval = false)
   public void invokespecial(final String owner, final String name, final String descriptor) {
     if (api >= Opcodes.ASM5) {
       invokespecial(owner, name, descriptor, false);
@@ -1142,7 +1150,7 @@ public class InstructionAdapter extends MethodVisitor {
    * @param descriptor the method's descriptor (see {@link Type}).
    * @deprecated use {@link #invokestatic(String, String, String, boolean)} instead.
    */
-  @Deprecated
+  @Deprecated(forRemoval = false)
   public void invokestatic(final String owner, final String name, final String descriptor) {
     if (api >= Opcodes.ASM5) {
       invokestatic(owner, name, descriptor, false);
