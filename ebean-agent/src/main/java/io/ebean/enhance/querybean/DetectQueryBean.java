@@ -54,12 +54,21 @@ public class DetectQueryBean {
 
   /**
    * Return true if this class is a query bean using naming conventions for query beans.
+   * <p>
+   * When no entity packages are configured (e.g. ebean.mf was not accessible to the
+   * classloader — a known Gradle Kotlin KAPT scenario), fall back to naming-convention
+   * detection only, consistent with {@code FilterQueryBean.detectOnAll} behaviour.
+   * </p>
    */
   public boolean isQueryBean(String owner) {
     int subPackagePos = owner.lastIndexOf("/query/");
     if (subPackagePos > -1) {
       String suffix = owner.substring(subPackagePos);
       if (isQueryBeanSuffix(suffix)) {
+        if (entityPackages.isEmpty()) {
+          // No entity packages loaded (manifest not found) — trust naming convention.
+          return true;
+        }
         String domainPackage = owner.substring(0, subPackagePos + 1);
         return isEntityBeanPackage(domainPackage);
       }
