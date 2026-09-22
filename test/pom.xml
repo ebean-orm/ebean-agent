@@ -97,7 +97,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.38</version>
+      <version>1.18.48</version>
     </dependency>
   </dependencies>
 
@@ -106,13 +106,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
+        <version>3.16.0</version>
         <configuration>
           <annotationProcessorPaths>
             <path>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
-              <version>1.18.38</version>
+              <version>1.18.48</version>
             </path>
             <path>
               <groupId>io.ebean</groupId>
@@ -125,7 +125,7 @@
       <plugin>
         <groupId>io.ebean</groupId>
         <artifactId>ebean-maven-plugin</artifactId>
-        <version>14.11.0</version>
+        <version>19.5.0</version>
         <dependencies>
           <dependency>
             <groupId>io.ebean</groupId>
@@ -151,4 +151,3 @@
   </build>
 
 </project>
-
